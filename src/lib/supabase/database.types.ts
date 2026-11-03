@@ -23,7 +23,7 @@ export type RarityTier = "rookie" | "contender" | "elite" | "legend";
 export type MembershipStatus = "pending" | "accepted" | "declined" | "ended";
 export type AchievementLevel = "kota" | "provinsi" | "nasional" | "internasional" | "lainnya";
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       regions: {
@@ -57,7 +57,22 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["regions"]["Insert"]>;
+        Update: {
+          id?: string;
+          name?: string;
+          code?: string;
+          type?: "kota" | "kabupaten";
+          slug?: string;
+          logo_url?: string | null;
+          esi_contact_name?: string | null;
+          esi_secretariat?: string | null;
+          description?: string | null;
+          admin_mode?: "active" | "fallback";
+          is_pilot?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       accounts: {
         Row: {
@@ -80,7 +95,17 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["accounts"]["Insert"]>;
+        Update: {
+          id?: string;
+          email?: string;
+          role?: AccountRole;
+          assigned_region_id?: string | null;
+          birth_date?: string | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       guardian_consents: {
         Row: {
@@ -103,7 +128,17 @@ export interface Database {
           consented_at?: string;
           ip_address?: string | null;
         };
-        Update: Partial<Database["public"]["Tables"]["guardian_consents"]["Insert"]>;
+        Update: {
+          id?: string;
+          account_id?: string;
+          guardian_name?: string;
+          guardian_contact?: string;
+          guardian_relationship?: string;
+          consent_version?: string;
+          consented_at?: string;
+          ip_address?: string | null;
+        };
+        Relationships: [];
       };
       games: {
         Row: {
@@ -130,7 +165,19 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["games"]["Insert"]>;
+        Update: {
+          id?: string;
+          name?: string;
+          short_name?: string;
+          slug?: string;
+          publisher?: string | null;
+          category?: string | null;
+          roles_jsonb?: Json;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       profiles: {
         Row: {
@@ -183,7 +230,32 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
+        Update: {
+          id?: string;
+          account_id?: string;
+          entity_type?: EntityType;
+          esport_id?: string;
+          slug?: string;
+          display_name?: string;
+          ign?: string | null;
+          region_id?: string;
+          main_game_id?: string | null;
+          role_name?: string | null;
+          avatar_url?: string | null;
+          bio?: string | null;
+          metadata_jsonb?: Json;
+          visibility_jsonb?: Json;
+          verification_status?: VerificationStatus;
+          verified_at?: string | null;
+          verification_expires_at?: string | null;
+          verified_badge_no?: string | null;
+          rarity_tier?: RarityTier;
+          completeness_score?: number;
+          is_published?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       memberships: {
         Row: {
@@ -210,7 +282,19 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["memberships"]["Insert"]>;
+        Update: {
+          id?: string;
+          member_profile_id?: string;
+          org_profile_id?: string;
+          role_in_org?: string;
+          status?: MembershipStatus;
+          initiated_by?: "member" | "org";
+          started_at?: string | null;
+          ended_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       achievements: {
         Row: {
@@ -241,7 +325,21 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["achievements"]["Insert"]>;
+        Update: {
+          id?: string;
+          profile_id?: string;
+          title?: string;
+          level?: AchievementLevel;
+          placement?: string;
+          event_name?: string;
+          event_date?: string | null;
+          evidence_url?: string | null;
+          validation_status?: "pending" | "validated" | "rejected";
+          validated_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       verification_requests: {
         Row: {
@@ -272,7 +370,21 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["verification_requests"]["Insert"]>;
+        Update: {
+          id?: string;
+          profile_id?: string;
+          status?: VerificationStatus;
+          region_id?: string;
+          submitted_at?: string;
+          decided_at?: string | null;
+          current_reviewer_id?: string | null;
+          notes?: string | null;
+          revision_fields_jsonb?: Json;
+          evidence_files?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       audit_logs: {
         Row: {
@@ -305,7 +417,8 @@ export interface Database {
           reason: string;
           metadata_jsonb?: Json;
         };
-        Update: never; // Append-only! No updates allowed!
+        Update: never;
+        Relationships: [];
       };
       articles: {
         Row: {
@@ -338,7 +451,22 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["articles"]["Insert"]>;
+        Update: {
+          id?: string;
+          title?: string;
+          slug?: string;
+          summary?: string | null;
+          content?: string;
+          category?: string;
+          cover_image_url?: string | null;
+          region_id?: string | null;
+          author_id?: string | null;
+          status?: "draft" | "published" | "archived";
+          published_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
       notifications_queue: {
         Row: {
@@ -359,7 +487,16 @@ export interface Database {
           sent_at?: string | null;
           created_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["notifications_queue"]["Insert"]>;
+        Update: {
+          id?: string;
+          account_id?: string;
+          type?: string;
+          payload_jsonb?: Json;
+          status?: "pending" | "processing" | "sent" | "failed";
+          sent_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
       };
       reports: {
         Row: {
@@ -388,18 +525,32 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
-        Update: Partial<Database["public"]["Tables"]["reports"]["Insert"]>;
+        Update: {
+          id?: string;
+          reporter_account_id?: string | null;
+          target_profile_id?: string;
+          category?: string;
+          reason?: string;
+          evidence_urls?: Json;
+          status?: "pending" | "under_review" | "forwarded_to_esi" | "resolved" | "dismissed";
+          resolved_by?: string | null;
+          resolution_notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
     Functions: {
       transition_verification: {
         Args: {
           p_request_id: string;
           p_new_status: string;
           p_reason: string;
-          p_notes?: string | null;
-          p_revision_fields?: Json;
-          p_badge_no?: string | null;
+          p_notes: string | null;
+          p_revision_fields: Json;
+          p_badge_no: string | null;
         };
         Returns: Json;
       };
@@ -412,5 +563,7 @@ export interface Database {
         Returns: string;
       };
     };
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
-}
+};
