@@ -50,6 +50,14 @@ body {
   font-family: var(--font-sans), sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessible focus visible outlines for keyboard navigation (WCAG AA) */
+:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: 2px;
 }
 
 /* 3D Card Perspective and Transform Helpers */
@@ -109,4 +117,33 @@ body {
                     radial-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 0);
   background-position: 0 0, 16px 16px;
   background-size: 32px 32px;
+}
+
+/* Accessibility: prefers-reduced-motion overrides */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-shimmer,
+  .animate-crystal,
+  .animate-pulse {
+    animation: none !important;
+  }
+}
+
+/* Ensure mobile tap target size meets >= 44px on interactive controls */
+@media (max-width: 640px) {
+  button,
+  a[role="button"],
+  input[type="submit"],
+  input[type="button"],
+  select {
+    min-height: 40px;
+  }
 }

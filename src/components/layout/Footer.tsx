@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ShieldCheck, Award, MapPin, Mail, ExternalLink, Heart } from "lucide-react";
+import { ShieldCheck, Award, MapPin, Mail, ExternalLink, Heart, Sparkles } from "lucide-react";
 
 export function Footer() {
   return (
@@ -25,7 +25,7 @@ export function Footer() {
               Pusat data, direktori publik, dan pangkalan identitas digital atlet, pelatih, serta klub esport Sumatera Barat. Menghubungkan seluruh ekosistem melalui verifikasi resmi ESI 19 Kota dan Kabupaten.
             </p>
 
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#12151C] border border-[#22C55E]/40 text-[#22C55E] text-[10px] font-heading font-bold uppercase">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 Kemitraan ESI Sumatera Barat
@@ -57,6 +57,10 @@ export function Footer() {
             <Link href="/gallery" className="hover:text-[#D4AF37] transition-colors font-medium">
               Galeri Kartu ESPORT ID
             </Link>
+            <Link href="/design-system" className="hover:text-[#D4AF37] transition-colors font-mono text-[11px] flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-[#D4AF37]" />
+              <span>Katalog Komponen UI</span>
+            </Link>
           </div>
 
           {/* Legal & Contacts */}
@@ -64,14 +68,20 @@ export function Footer() {
             <span className="font-heading font-bold text-white uppercase tracking-wider text-xs">
               Tata Kelola & Legal
             </span>
-            <Link href="/privacy" className="hover:text-white transition-colors">
-              Kebijakan Privasi Data
+            <Link href="/me/privacy" className="hover:text-white transition-colors">
+              Pengaturan Privasi UU PDP
             </Link>
-            <Link href="/terms" className="hover:text-white transition-colors">
-              Syarat & Ketentuan Layanan
-            </Link>
-            <Link href="/#how-it-works" className="hover:text-white transition-colors">
+            <Link href="/how-it-works" className="hover:text-white transition-colors">
               Mekanisme Verifikasi Berjenjang
+            </Link>
+            <Link href="/admin/region" className="hover:text-white transition-colors text-gray-400">
+              Panel Pengcab ESI Daerah
+            </Link>
+            <Link href="/admin/province" className="hover:text-white transition-colors text-gray-400">
+              Panel Pengprov ESI Sumbar
+            </Link>
+            <Link href="/admin/platform" className="hover:text-white transition-colors text-gray-400">
+              Panel Operator Sistem
             </Link>
             <div className="mt-2 pt-2 border-t border-[#262B38]/60 flex flex-col gap-1 text-[11px]">
               <span className="text-gray-400 flex items-center gap-1">
