@@ -13,11 +13,13 @@ import {
   GraduationCap,
   Shield,
   Search,
-  Eye,
+  Share2,
+  Download,
   CheckCircle2,
   AlertTriangle,
 } from "lucide-react";
 import { EsportCard } from "@/components/card/EsportCard";
+import { ShareCardModal } from "@/components/card/ShareCardModal";
 import { GALLERY_CARDS, MockCardVariant } from "@/data/mockCards";
 import {
   CardRarity,
@@ -34,6 +36,7 @@ export default function GaleriKartuPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [cardSize, setCardSize] = useState<CardSize>("md");
   const [allFlipped, setAllFlipped] = useState(false);
+  const [shareModalCard, setShareModalCard] = useState<MockCardVariant | null>(null);
 
   // Live filter predicate
   const filteredCards = useMemo(() => {
@@ -85,17 +88,17 @@ export default function GaleriKartuPage() {
             <span className="w-1/3 bg-black" />
           </div>
           <span className="text-xs font-heading tracking-wider uppercase font-bold text-gray-300">
-            ESPORT SUMBAR • GALERI KARTU DIGITAL TCG
+            ESPORT SUMBAR • GALERI & EKSPOR KARTU DIGITAL
           </span>
         </div>
 
         <h1 className="text-3xl md:text-5xl font-heading font-extrabold uppercase tracking-tight text-white mb-3">
-          Galeri Kartu <span className="text-[#D4AF37]">3 Tipe × 4 Rarity</span>
+          Galeri & Ekspor Kartu <span className="text-[#D4AF37]">ESPORT ID</span>
         </h1>
         <p className="text-sm md:text-base text-[#9AA3B2] leading-relaxed max-w-2xl mx-auto">
-          Ekosistem kartu identitas digital untuk <strong className="text-white">Player (Atlet)</strong>,{" "}
-          <strong className="text-[#3B82F6]">Coach (Pelatih)</strong>, dan{" "}
-          <strong className="text-[#22C55E]">Team (Klub/Squad)</strong> dengan efek 3D Tilt interaktif serta pemisahan tegas Frame Rarity vs Lencana Verifikasi ESI.
+          Identitas digital resmi untuk <strong className="text-white">Player</strong>,{" "}
+          <strong className="text-[#3B82F6]">Coach</strong>, dan{" "}
+          <strong className="text-[#22C55E]">Team</strong>. Dilengkapi efek 3D Tilt, flip rekam jejak, dan fitur unduh format Story (9:16) & Feed (1:1).
         </p>
       </header>
 
@@ -146,7 +149,7 @@ export default function GaleriKartuPage() {
           </div>
         </div>
 
-        {/* Secondary Filter Bar: Rarity, Verification & Display Controls */}
+        {/* Secondary Filter Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#262B38]/70">
           <div className="flex flex-wrap items-center gap-2">
             {/* Rarity Filter */}
@@ -260,8 +263,8 @@ export default function GaleriKartuPage() {
                   initialFlipped={allFlipped}
                 />
 
-                {/* Interactive Customizer Panel */}
-                <div className="w-full bg-[#12151C] border border-[#262B38] rounded-xl p-3 flex flex-col gap-2 shadow-md">
+                {/* Interactive Customizer & Action Bar */}
+                <div className="w-full bg-[#12151C] border border-[#262B38] rounded-xl p-3 flex flex-col gap-2.5 shadow-md">
                   <div className="flex items-center justify-between border-b border-[#262B38]/80 pb-1">
                     <span className="text-xs font-heading font-bold text-white uppercase tracking-wider truncate">
                       {variant.type === "team"
@@ -273,12 +276,8 @@ export default function GaleriKartuPage() {
                     </span>
                   </div>
 
-                  <p className="text-[10px] text-[#9AA3B2] italic leading-tight">
-                    {variant.tagline}
-                  </p>
-
                   {/* Switch Rarity Frame */}
-                  <div className="flex items-center justify-between gap-1 pt-1 border-t border-[#262B38]/50">
+                  <div className="flex items-center justify-between gap-1">
                     <span className="text-[9px] uppercase font-mono tracking-wider text-[#9AA3B2] shrink-0">
                       Rarity:
                     </span>
@@ -335,6 +334,16 @@ export default function GaleriKartuPage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Action: Bagikan & Ekspor Button */}
+                  <button
+                    type="button"
+                    onClick={() => setShareModalCard(variant)}
+                    className="mt-1 w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-[#1A1E28] hover:bg-[#D4AF37] text-gray-200 hover:text-black border border-[#262B38] hover:border-[#D4AF37] text-xs font-heading font-bold uppercase tracking-wider transition-all"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>Bagikan & Ekspor Kartu</span>
+                  </button>
                 </div>
               </div>
             ))}
@@ -342,7 +351,7 @@ export default function GaleriKartuPage() {
         )}
       </section>
 
-      {/* SIDE-BY-SIDE EDUCATIONAL COMPARISON PANEL (FRAME vs LENCANA) */}
+      {/* SIDE-BY-SIDE EDUCATIONAL COMPARISON PANEL */}
       <section className="relative z-10 w-full max-w-5xl bg-[#12151C] border border-[#262B38] rounded-2xl p-6 md:p-8 shadow-2xl mb-12">
         <div className="flex items-center gap-2.5 mb-6 border-b border-[#262B38] pb-4">
           <Info className="w-5 h-5 text-[#D4AF37]" />
@@ -446,6 +455,15 @@ export default function GaleriKartuPage() {
           </div>
         </div>
       </section>
+
+      {/* SHARE / EXPORT MODAL */}
+      {shareModalCard && (
+        <ShareCardModal
+          isOpen={true}
+          onClose={() => setShareModalCard(null)}
+          cardData={shareModalCard}
+        />
+      )}
 
       {/* FOOTER */}
       <footer className="relative z-10 text-center text-xs text-[#9AA3B2] py-4">
