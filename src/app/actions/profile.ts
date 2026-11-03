@@ -34,16 +34,43 @@ export interface ProfileActionResult {
 }
 
 export async function createProfileAction(input: CreateProfileInput): Promise<ProfileActionResult> {
-  if (!input.displayName || !input.regionId) {
+  const cleanDisplayName = input.displayName?.trim();
+  const cleanRegionId = input.regionId?.trim();
+
+  // Validasi Input Sisi Server
+  if (!cleanDisplayName || !cleanRegionId) {
     return { success: false, error: "Nama tampil dan domisili Kota/Kabupaten wajib diisi." };
+  }
+
+  if (cleanDisplayName.length > 100) {
+    return { success: false, error: "Nama tampil tidak boleh melebihi 100 karakter." };
+  }
+
+  if (input.ign && input.ign.trim().length > 50) {
+    return { success: false, error: "In-Game Name (IGN) tidak boleh melebihi 50 karakter." };
+  }
+
+  if (input.bio && input.bio.trim().length > 500) {
+    return { success: false, error: "Bio profil tidak boleh melebihi 500 karakter." };
   }
 
   try {
     const supabase = await createClient();
     const { data: authData } = await supabase.auth.getUser();
 
-    // Dapatkan ID akun (atau fallback demo)
-    const accountId = authData?.user?.id || "00000000-0000-0000-0000-000000000001";
+    // Verifikasi otentikasi akun pengguna
+    let accountId = authData?.user?.id;
+    if (!accountId) {
+      const isPlaceholder = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
+      if (isPlaceholder) {
+        accountId = "00000000-0000-0000-0000-000000000001";
+      } else {
+        return {
+          success: false,
+          error: "Akses ditolak: Anda harus masuk ke akun Anda terlebih dahulu untuk membuat profil.",
+        };
+      }
+    }
 
     // 1. Validasi perlindungan anak < 18 tahun (UU PDP)
     if (input.birthDate) {
@@ -53,7 +80,7 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       const age = Math.abs(ageDate.getUTCFullYear() - 1970);
 
       if (age < 18) {
-        if (!input.guardianConsent || !input.guardianConsent.guardianName || !input.guardianConsent.guardianContact) {
+        if (!input.guardianConsent || !input.guardianConsent.guardianName?.trim() || !input.guardianConsent.guardianContact?.trim()) {
           return {
             success: false,
             error: "Pendaftaran atlet di bawah 18 tahun wajib menyertakan nama dan kontak orang tua/wali sah sesuai UU PDP.",
@@ -63,9 +90,9 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
         // Simpan persetujuan wali
         await supabase.from("guardian_consents").insert({
           account_id: accountId,
-          guardian_name: input.guardianConsent.guardianName,
-          guardian_contact: input.guardianConsent.guardianContact,
-          guardian_relationship: input.guardianConsent.guardianRelationship || "Orang Tua / Wali Sah",
+          guardian_name: input.guardianConsent.guardianName.trim().slice(0, 150),
+          guardian_contact: input.guardianConsent.guardianContact.trim().slice(0, 100),
+          guardian_relationship: (input.guardianConsent.guardianRelationship || "Orang Tua / Wali Sah").slice(0, 50),
           consent_version: "v1.0-2026",
           consented_at: new Date().toISOString(),
         });
@@ -88,7 +115,7 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
     const esportId = `ESB-${input.regionCode.toUpperCase()}-${typeCode}-${randomDigits}`;
 
     // 3. Generator Slug Ramah URL
-    const cleanName = (input.ign || input.displayName)
+    const cleanName = (input.ign || cleanDisplayName)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
@@ -112,13 +139,13 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
         entity_type: input.entityType,
         esport_id: esportId,
         slug,
-        display_name: input.displayName,
-        ign: input.ign || null,
-        region_id: input.regionId,
+        display_name: cleanDisplayName,
+        ign: input.ign?.trim() || null,
+        region_id: cleanRegionId,
         main_game_id: input.mainGameId || null,
         role_name: input.roleName || null,
         avatar_url: input.avatarUrl || null,
-        bio: input.bio || null,
+        bio: input.bio?.trim() || null,
         metadata_jsonb: (input.metadata || {}) as any,
         visibility_jsonb: (input.visibility || {
           email: false,
@@ -136,15 +163,16 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       .single();
 
     if (profileError) {
-      console.warn("Supabase profiles insert error:", profileError.message);
-      // Fallback untuk demo/preview
-      return {
-        success: true,
-        message: "Profil dan Kartu Digital berhasil diterbitkan (Mode Simulasi Pengembang).",
-        profileId: "mock-prof-" + Date.now(),
-        esportId,
-        slug,
-      };
+      if (profileError.message.includes("fetch failed") || profileError.message.includes("Invalid API key")) {
+        return {
+          success: true,
+          message: "Profil dan Kartu Digital berhasil diterbitkan (Mode Simulasi Pengembang).",
+          profileId: "mock-prof-" + Date.now(),
+          esportId,
+          slug,
+        };
+      }
+      return { success: false, error: profileError.message };
     }
 
     revalidatePath("/me/cards");
@@ -168,16 +196,34 @@ export async function updatePrivacySettingsAction(
 ): Promise<{ success: boolean; message?: string; error?: string }> {
   try {
     const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+
+    if (!authData?.user?.id) {
+      return { success: false, error: "Akses ditolak: Anda harus masuk ke akun Anda." };
+    }
+
+    // Verifikasi Kepemilikan Profil (Mencegah IDOR)
+    const { data: profileData, error: profileFetchError } = await supabase
+      .from("profiles")
+      .select("account_id")
+      .eq("id", profileId)
+      .single();
+
+    if (profileData && profileData.account_id !== authData.user.id) {
+      return { success: false, error: "Akses ditolak: Anda bukan pemilik sah dari profil ini." };
+    }
+
     const { error } = await supabase
       .from("profiles")
       .update({
         visibility_jsonb: visibility as any,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", profileId);
+      .eq("id", profileId)
+      .eq("account_id", authData.user.id); // Guard klausa akun pemilik
 
     if (error) {
-      console.warn("Update privacy fallback:", error.message);
+      return { success: false, error: error.message };
     }
 
     revalidatePath("/me/privacy");

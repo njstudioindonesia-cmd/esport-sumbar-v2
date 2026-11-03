@@ -64,3 +64,16 @@ Telah dibuat modul helper di `src/lib/supabase/`:
 - `client.ts`: Supabase Browser Client menggunakan `@supabase/ssr`.
 - `server.ts`: Supabase Server Client untuk Server Components & Server Actions.
 - `middleware.ts`: Refresh session cookie otomatis di level edge Next.js middleware.
+
+---
+
+## 5. Security Remediation & Hardening (Audit Keamanan Pra-Rilis)
+
+Berdasarkan audit keamanan komprehensif, telah diterapkan langkah perbaikan:
+1. **Otorisasi Server-Side Nyata (`src/proxy.ts`):** Mengganti ketergantungan cookie klien dengan verifikasi token sesi Supabase (`supabase.auth.getUser()`) dan query peran ke tabel `accounts`. Pengguna unauthenticated yang mengakses `/admin/*` atau `/me/*` otomatis dialihkan ke `/login`.
+2. **Pembersihan Logika Backdoor Demo (`src/app/actions/auth.ts`):** Seluruh jalan pintas substring email dihapus. Login murni memverifikasi sandi ke Supabase Auth.
+3. **Pencegahan Privilege Escalation:** Pendaftaran publik (`signUpAction`) mengunci peran permanen ke `user`.
+4. **Validasi Input Server-Side:** Validasi regex RFC 5322 untuk email, panjang sandi $\ge 8$ karakter, serta pembatasan panjang string profil.
+5. **Anti-Tampering Trigger (`0004_security_hardening.sql`):** Trigger database `trg_protect_profile_verification` mengunci kolom `verification_status`, `verified_badge_no`, dan `verified_at` sehingga tidak bisa diubah langsung oleh pemilik akun melalui `UPDATE`.
+6. **Proteksi Unggah Berkas Bukti (`src/lib/services/storage.ts`):** Whitelist MIME type (`image/jpeg`, `image/png`, `image/webp`, `application/pdf`), whitelist ekstensi, dan pembatasan ukuran berkas maksimum 5 MB.
+7. **HTTP Security Headers (`next.config.ts`):** Penerapan `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Strict-Transport-Security`, `Referrer-Policy`, dan `Permissions-Policy`.

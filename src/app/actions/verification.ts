@@ -28,33 +28,58 @@ export async function submitVerificationAction(
 ): Promise<VerificationActionResult> {
   try {
     const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+
+    // Verifikasi otentikasi
+    const userId = authData?.user?.id;
+    const isPlaceholder = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
+
+    if (!userId && !isPlaceholder) {
+      return { success: false, error: "Akses ditolak: Anda harus masuk ke akun untuk mengajukan verifikasi." };
+    }
+
+    // Verifikasi kepemilikan profil (Mencegah pengajuan atas nama atlet lain)
+    if (userId) {
+      const { data: profileRecord } = await supabase
+        .from("profiles")
+        .select("account_id")
+        .eq("id", profileId)
+        .single();
+
+      if (profileRecord && profileRecord.account_id !== userId) {
+        return { success: false, error: "Akses ditolak: Anda tidak memiliki hak atas profil ini." };
+      }
+    }
 
     // 1. Simpan pengajuan ke verification_requests
-    const { data: requestRecord, error: requestError } = await supabase
+    const { error: requestError } = await supabase
       .from("verification_requests")
       .insert({
         profile_id: profileId,
         region_id: regionId,
         status: "submitted",
-        notes,
-        evidence_files: evidenceFiles as any,
+        notes: notes?.slice(0, 1000) || "",
+        evidence_files: (evidenceFiles || []) as any,
         submitted_at: new Date().toISOString(),
-      })
-      .select("id")
-      .single();
+      });
 
     if (requestError) {
-      console.warn("Verification submit DB fallback:", requestError.message);
+      if (!isPlaceholder) {
+        return { success: false, error: requestError.message };
+      }
     }
 
     // 2. Sinkronkan status profil ke submitted
-    await supabase
-      .from("profiles")
-      .update({
-        verification_status: "submitted",
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", profileId);
+    if (userId) {
+      await supabase
+        .from("profiles")
+        .update({
+          verification_status: "submitted",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", profileId)
+        .eq("account_id", userId);
+    }
 
     revalidatePath("/me/verification");
     revalidatePath("/admin/region/queue");
@@ -89,28 +114,36 @@ export async function transitionVerificationAction(
     const { data, error } = await supabase.rpc("transition_verification", {
       p_request_id: input.requestId,
       p_new_status: input.newStatus,
-      p_reason: input.reason,
-      p_notes: input.notes || null,
+      p_reason: input.reason.trim(),
+      p_notes: input.notes?.trim() || null,
       p_revision_fields: (input.revisionFields || []) as any,
       p_badge_no: input.badgeNo || null,
     });
 
     if (error) {
-      console.warn("RPC transition_verification fallback:", error.message);
-      // Fallback state jika testing di lingkungan local offline
-      const badgeNo = input.newStatus === "verified" 
-        ? (input.badgeNo || `ESI-SB-VER-2026-${Math.floor(100000 + Math.random() * 900000)}`) 
-        : undefined;
+      // Jika error adalah offline dev placeholder, simulasikan hanya saat dev offline
+      const isPlaceholder = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
+      if (isPlaceholder && (error.message.includes("fetch failed") || error.message.includes("Invalid API key"))) {
+        const badgeNo = input.newStatus === "verified" 
+          ? (input.badgeNo || `ESI-SB-VER-2026-${Math.floor(100000 + Math.random() * 900000)}`) 
+          : undefined;
 
-      revalidatePath("/admin/region/queue");
-      revalidatePath("/admin/province/queue");
-      revalidatePath("/me/verification");
+        revalidatePath("/admin/region/queue");
+        revalidatePath("/admin/province/queue");
+        revalidatePath("/me/verification");
 
+        return {
+          success: true,
+          message: `Status berhasil dialihkan ke "${input.newStatus}" (Mode Simulasi Pengembang).`,
+          newStatus: input.newStatus,
+          badgeNo,
+        };
+      }
+
+      // Di lingkungan nyata/produksi: Laporkan penolakan otorisasi secara tegas!
       return {
-        success: true,
-        message: `Status berhasil dialihkan ke "${input.newStatus}" (Mode Simulasi Pengembang).`,
-        newStatus: input.newStatus,
-        badgeNo,
+        success: false,
+        error: `Otorisasi ditolak oleh database: ${error.message}`,
       };
     }
 

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import type { Database } from "@/lib/supabase/database.types";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -14,30 +15,89 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Refresh auth session via Supabase SSR
-  const response = await updateSession(request);
+  let response = NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
 
-  // Dapatkan auth token atau role demo dari cookies
-  const roleCookie = request.cookies.get("esport_sumbar_role")?.value;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-esport-sumbar.supabase.co";
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
 
-  // Proteksi rute admin daerah
-  if (pathname.startsWith("/admin/region")) {
-    if (roleCookie && !["region_admin", "prov_admin"].includes(roleCookie)) {
-      return NextResponse.redirect(new URL("/login?error=unauthorized_region", request.url));
+  const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get(name: string) {
+        return request.cookies.get(name)?.value;
+      },
+      set(name: string, value: string, options: CookieOptions) {
+        request.cookies.set({ name, value, ...options });
+        response = NextResponse.next({
+          request: { headers: request.headers },
+        });
+        response.cookies.set({ name, value, ...options });
+      },
+      remove(name: string, options: CookieOptions) {
+        request.cookies.set({ name, value: "", ...options });
+        response = NextResponse.next({
+          request: { headers: request.headers },
+        });
+        response.cookies.set({ name, value: "", ...options });
+      },
+    },
+  });
+
+  // Ambil sesi resmi pengguna dari Supabase Auth
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // Tangani error jaringan saat offline/dev
+    user = null;
+  }
+
+  // 1. Proteksi Rute Pengguna Terdaftar (/me/*)
+  if (pathname.startsWith("/me")) {
+    // Jika tidak terotentikasi dan bukan offline dev placeholder
+    if (!user && !supabaseUrl.includes("placeholder")) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
-  // Proteksi rute admin provinsi (eksklusif)
-  if (pathname.startsWith("/admin/province")) {
-    if (roleCookie && roleCookie !== "prov_admin") {
-      return NextResponse.redirect(new URL("/login?error=unauthorized_province", request.url));
+  // 2. Proteksi Rute Tingkat Admin (/admin/*)
+  if (pathname.startsWith("/admin")) {
+    if (!user && !supabaseUrl.includes("placeholder")) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
     }
-  }
 
-  // Proteksi rute operator platform
-  if (pathname.startsWith("/admin/platform")) {
-    if (roleCookie && roleCookie !== "platform_operator") {
-      return NextResponse.redirect(new URL("/login?error=unauthorized_operator", request.url));
+    if (user) {
+      // Ambil peran resmi pengguna dari tabel accounts
+      const { data: account } = await supabase
+        .from("accounts")
+        .select("role, assigned_region_id")
+        .eq("id", user.id)
+        .single();
+
+      const role = account?.role || "user";
+
+      // Operator Platform Eksklusif
+      if (pathname.startsWith("/admin/platform") && role !== "platform_operator") {
+        return NextResponse.redirect(new URL("/dashboard?error=unauthorized_operator", request.url));
+      }
+
+      // Pengprov ESI Sumbar Eksklusif
+      if (pathname.startsWith("/admin/province") && role !== "prov_admin") {
+        return NextResponse.redirect(new URL("/dashboard?error=unauthorized_province", request.url));
+      }
+
+      // Pengcab ESI Daerah (Admin Daerah atau Pengprov)
+      if (pathname.startsWith("/admin/region") && !["region_admin", "prov_admin"].includes(role)) {
+        return NextResponse.redirect(new URL("/dashboard?error=unauthorized_region", request.url));
+      }
     }
   }
 

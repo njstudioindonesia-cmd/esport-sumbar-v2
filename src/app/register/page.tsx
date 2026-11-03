@@ -77,8 +77,6 @@ export default function RegisterPage() {
       return;
     }
 
-    // Set cookie default user dan alihkan ke Wizard penerbitan kartu perdana
-    document.cookie = "esport_sumbar_role=user; path=/; max-age=86400; SameSite=Lax";
     router.push("/me/profile/new");
   };
 
@@ -87,11 +85,9 @@ export default function RegisterPage() {
     const formData = new FormData();
     formData.append("email", "newplayer@esportsumbar.id");
     formData.append("password", "google-oauth-token");
-    formData.append("role", "user");
     await signUpAction(formData);
     setIsLoading(false);
 
-    document.cookie = "esport_sumbar_role=user; path=/; max-age=86400; SameSite=Lax";
     router.push("/me/profile/new");
   };
 

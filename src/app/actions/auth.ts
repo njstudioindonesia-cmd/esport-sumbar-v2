@@ -16,16 +16,29 @@ export interface AuthActionResult {
   };
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function signUpAction(formData: FormData): Promise<AuthActionResult> {
   const email = formData.get("email")?.toString().trim();
   const password = formData.get("password")?.toString();
   const birthDate = formData.get("birthDate")?.toString();
-  const role = (formData.get("role")?.toString() || "user") as "user" | "region_admin" | "prov_admin" | "platform_operator";
-  const assignedRegionId = formData.get("assignedRegionId")?.toString() || null;
 
+  // Validasi Input Server-Side
   if (!email || !password) {
     return { success: false, error: "Email dan kata sandi wajib diisi." };
   }
+
+  if (!EMAIL_REGEX.test(email)) {
+    return { success: false, error: "Format alamat email tidak valid." };
+  }
+
+  if (password.length < 8) {
+    return { success: false, error: "Kata sandi minimal harus terdiri dari 8 karakter." };
+  }
+
+  // PENTING: Kunci peran pendaftar publik hanya sebagai 'user' (Cegah Privilege Escalation)
+  const role = "user";
+  const assignedRegionId = null;
 
   try {
     const supabase = await createClient();
@@ -37,11 +50,10 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
     });
 
     if (authError) {
-      // Jika error karena credentials belum terkoneksi ke live Supabase, simulasikan success untuk development
       if (authError.message.includes("fetch failed") || authError.message.includes("Invalid API key")) {
         return {
           success: true,
-          message: "Akun berhasil didaftarkan (Mode Simulasi Pengembang).",
+          message: "Akun berhasil didaftarkan (Mode Simulasi Offline Pengembang).",
           role: "user",
           user: {
             id: "mock-user-" + Date.now(),
@@ -56,7 +68,7 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
 
     const userId = authData.user?.id;
     if (userId) {
-      // 2. Sinkronisasikan ke tabel public.accounts
+      // 2. Sinkronisasikan ke tabel public.accounts dengan peran 'user'
       const { error: accountError } = await supabase.from("accounts").upsert({
         id: userId,
         email,
@@ -74,7 +86,7 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
     revalidatePath("/login");
     return {
       success: true,
-      message: "Pendaftaran berhasil! Silakan periksa email Anda atau lanjutkan login.",
+      message: "Pendaftaran berhasil! Silakan periksa email Anda untuk verifikasi atau lanjutkan masuk.",
       role,
       user: {
         id: userId || "user-id",
@@ -97,48 +109,14 @@ export async function signInAction(formData: FormData): Promise<AuthActionResult
     return { success: false, error: "Email dan kata sandi wajib diisi." };
   }
 
-  // Dukungan untuk shortcut akun demo jika dalam lingkungan preview/demo
-  if (email.includes("admin.padang") || email.includes("pengcab")) {
-    return {
-      success: true,
-      message: "Login berhasil sebagai Admin ESI Kota Padang.",
-      role: "region_admin",
-      user: {
-        id: "mock-region-admin",
-        email,
-        role: "region_admin",
-        assignedRegionId: "reg-pdg",
-      },
-    };
-  }
-  if (email.includes("prov") || email.includes("pengprov")) {
-    return {
-      success: true,
-      message: "Login berhasil sebagai Admin Pengprov ESI Sumbar.",
-      role: "prov_admin",
-      user: {
-        id: "mock-prov-admin",
-        email,
-        role: "prov_admin",
-      },
-    };
-  }
-  if (email.includes("operator") || email.includes("platform")) {
-    return {
-      success: true,
-      message: "Login berhasil sebagai Operator Platform ESPORT SUMBAR.",
-      role: "platform_operator",
-      user: {
-        id: "mock-operator",
-        email,
-        role: "platform_operator",
-      },
-    };
+  if (!EMAIL_REGEX.test(email)) {
+    return { success: false, error: "Format alamat email tidak valid." };
   }
 
   try {
     const supabase = await createClient();
 
+    // Autentikasi resmi via Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -146,10 +124,9 @@ export async function signInAction(formData: FormData): Promise<AuthActionResult
 
     if (authError) {
       if (authError.message.includes("fetch failed") || authError.message.includes("Invalid API key")) {
-        // Fallback untuk akun player biasa di lingkungan lokal
         return {
           success: true,
-          message: "Login berhasil (Mode Simulasi Pengembang).",
+          message: "Masuk berhasil (Mode Simulasi Pengembang).",
           role: "user",
           user: {
             id: "mock-user-1",
@@ -161,13 +138,17 @@ export async function signInAction(formData: FormData): Promise<AuthActionResult
       return { success: false, error: "Email atau kata sandi tidak cocok." };
     }
 
-    // Ambil data peran dari tabel accounts
+    // Ambil data peran resmi dari tabel accounts di database
     const userId = authData.user.id;
-    const { data: accountData } = await supabase
+    const { data: accountData, error: accountError } = await supabase
       .from("accounts")
       .select("role, assigned_region_id")
       .eq("id", userId)
       .single();
+
+    if (accountError && !accountData) {
+      console.warn("Profil accounts belum tersinkronisasi:", accountError?.message);
+    }
 
     const role = accountData?.role || "user";
     const assignedRegionId = accountData?.assigned_region_id || null;

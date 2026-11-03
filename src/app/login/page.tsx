@@ -47,12 +47,7 @@ export default function LoginPage() {
       return;
     }
 
-    // Set cookie role untuk proteksi rute proxy
-    if (result.role) {
-      document.cookie = `esport_sumbar_role=${result.role}; path=/; max-age=86400; SameSite=Lax`;
-    }
-
-    // Arahkan ke dashboard sesuai wewenang peran
+    // Arahkan ke dashboard sesuai wewenang peran resmi dari database
     if (result.role === "region_admin") {
       router.push("/admin/region");
     } else if (result.role === "prov_admin") {
@@ -66,16 +61,11 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
-    // Simulasi OAuth Login
     const formData = new FormData();
     formData.append("email", "player.padang@esportsumbar.id");
     formData.append("password", "google-oauth-token");
-    const result = await signInAction(formData);
+    await signInAction(formData);
     setIsLoading(false);
-
-    if (result.role) {
-      document.cookie = `esport_sumbar_role=${result.role}; path=/; max-age=86400; SameSite=Lax`;
-    }
     router.push("/dashboard");
   };
 
