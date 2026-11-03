@@ -14,6 +14,13 @@ export interface VerificationQueueItem {
   status: "submitted" | "in_review" | "revision_needed" | "regional_checked" | "verified" | "rejected";
   assignedTo?: string | null;
   reviewerNotes?: string;
+  isFallback?: boolean; // True for regions without active Pengcab ESI
+  regionalReviewer?: {
+    name: string;
+    role: string;
+    approvedAt: string;
+    notes: string;
+  };
   documents: {
     type: string;
     title: string;
@@ -276,5 +283,261 @@ export const MOCK_REGIONAL_LOGS: ActivityLogItem[] = [
     targetType: "Team",
     reason: "Surat rekomendasi klub terdaftar di KONI Padang lengkap dengan susunan pengurus.",
     logHash: "sha256:1b920da87612f0e0ab395066491a329e7104b2a86377227e74cb2292f3e8f810",
+  },
+];
+
+// ==================== PROVINCE QUEUE & LOGS (PROMPT 4.2) ====================
+
+export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
+  {
+    id: "prov-001",
+    esportId: "ESB-BKT-PL-000042",
+    name: "Fikri Alamsyah",
+    ign: "MARAWA_KING",
+    type: "player",
+    game: "Mobile Legends",
+    role: "Kapten / Roamer",
+    regionCode: "BKT",
+    regionName: "Kota Bukittinggi",
+    submittedAt: "2026-03-02T11:00:00Z",
+    daysWaiting: 2,
+    slaStatus: "normal",
+    status: "regional_checked",
+    isFallback: false,
+    regionalReviewer: {
+      name: "Admin Pengcab Bukittinggi #01",
+      role: "Pengurus Cabang ESI Kota Bukittinggi",
+      approvedAt: "02 Mar 2026, 14:10 WIB",
+      notes: "Berkas identitas domisili Bukittinggi dan sertifikasi kapten tim lengkap. Rekomendasi verifikasi emas.",
+    },
+    documents: [
+      {
+        type: "kartu_identitas",
+        title: "Kartu Pelajar SMA Negeri 1 Bukittinggi",
+        url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "01 Mar 2026",
+        fileSize: "1.5 MB",
+      },
+      {
+        type: "screenshot_game",
+        title: "Tangkapan Layar Akun Mythical Immortal MLBB",
+        url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "01 Mar 2026",
+        fileSize: "2.3 MB",
+      },
+      {
+        type: "sertifikat_prestasi",
+        title: "Sertifikat Juara 1 Piala Walikota Bukittinggi",
+        url: "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "01 Mar 2026",
+        fileSize: "3.1 MB",
+      },
+    ],
+    checklist: {
+      identityVerified: true,
+      domicileVerified: true,
+      gameProofVerified: true,
+    },
+  },
+  {
+    id: "prov-002",
+    esportId: "ESB-MTW-PL-000012",
+    name: "Sikerei Sikabaluan",
+    ign: "MentawaiSniper",
+    type: "player",
+    game: "Free Fire",
+    role: "Sniper Utama",
+    regionCode: "MTW",
+    regionName: "Kabupaten Kepulauan Mentawai",
+    submittedAt: "2026-02-20T08:30:00Z",
+    daysWaiting: 12,
+    slaStatus: "warning",
+    status: "submitted",
+    isFallback: true, // Wilayah tanpa Pengcab aktif -> ESI Provinsi bertindak langsung
+    documents: [
+      {
+        type: "kartu_identitas",
+        title: "Surat Keterangan Domisili Siberut Utara (Mentawai)",
+        url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "20 Feb 2026",
+        fileSize: "980 KB",
+      },
+      {
+        type: "screenshot_game",
+        title: "Tangkapan Layar Akun Free Fire ID: 8829104",
+        url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "20 Feb 2026",
+        fileSize: "1.7 MB",
+      },
+    ],
+    checklist: {
+      identityVerified: false,
+      domicileVerified: false,
+      gameProofVerified: false,
+    },
+  },
+  {
+    id: "prov-003",
+    esportId: "ESB-PDG-TM-000001",
+    name: "Minang Pride Esports",
+    ign: "Minang Pride",
+    type: "team",
+    game: "Mobile Legends",
+    role: "Klub Esport Terdaftar",
+    regionCode: "PDG",
+    regionName: "Kota Padang",
+    submittedAt: "2026-03-03T15:20:00Z",
+    daysWaiting: 1,
+    slaStatus: "normal",
+    status: "regional_checked",
+    isFallback: false,
+    regionalReviewer: {
+      name: "Admin Pengcab Padang #01",
+      role: "Pengurus Cabang ESI Kota Padang",
+      approvedAt: "03 Mar 2026, 17:00 WIB",
+      notes: "Akta pendirian klub, domisili sekretariat di Padang Barat, dan daftar 5 pemain inti lengkap. Siap pengesahan emas.",
+    },
+    documents: [
+      {
+        type: "akta_organisasi",
+        title: "Akta Notaris & SK Kemenkumham Klub Esport",
+        url: "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "03 Mar 2026",
+        fileSize: "4.2 MB",
+      },
+      {
+        type: "rekomendasi_koni",
+        title: "Surat Tanda Terdaftar Anggota KONI Padang",
+        url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "03 Mar 2026",
+        fileSize: "1.3 MB",
+      },
+    ],
+    checklist: {
+      identityVerified: true,
+      domicileVerified: true,
+      gameProofVerified: true,
+    },
+  },
+  {
+    id: "prov-004",
+    esportId: "ESB-PYK-PL-000088",
+    name: "Riko Fernando",
+    ign: "GalamaiShooter",
+    type: "player",
+    game: "Free Fire",
+    role: "Rusher",
+    regionCode: "PYK",
+    regionName: "Kota Payakumbuh",
+    submittedAt: "2026-02-18T14:15:00Z",
+    daysWaiting: 14,
+    slaStatus: "critical",
+    status: "regional_checked",
+    isFallback: false,
+    regionalReviewer: {
+      name: "Admin Pengcab Payakumbuh #01",
+      role: "Pengurus Cabang ESI Kota Payakumbuh",
+      approvedAt: "19 Feb 2026, 10:20 WIB",
+      notes: "Lolos daerah. Menunggu verifikasi tingkat provinsi.",
+    },
+    documents: [
+      {
+        type: "kartu_identitas",
+        title: "Kartu Mahasiswa Politeknik Pertanian Payakumbuh",
+        url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "18 Feb 2026",
+        fileSize: "1.1 MB",
+      },
+    ],
+    checklist: {
+      identityVerified: true,
+      domicileVerified: true,
+      gameProofVerified: true,
+    },
+  },
+  {
+    id: "prov-005",
+    esportId: "ESB-PSB-PL-000021",
+    name: "Ilham Syahputra",
+    ign: "PasbarHunter",
+    type: "player",
+    game: "PUBG Mobile",
+    role: "Scout / Fragger",
+    regionCode: "PSB",
+    regionName: "Kabupaten Pasaman Barat",
+    submittedAt: "2026-02-24T09:10:00Z",
+    daysWaiting: 8,
+    slaStatus: "warning",
+    status: "submitted",
+    isFallback: true, // Fallback wilayah
+    documents: [
+      {
+        type: "kartu_identitas",
+        title: "Kartu Pelajar SMAN 1 Pasaman",
+        url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
+        submittedAt: "24 Feb 2026",
+        fileSize: "1.4 MB",
+      },
+    ],
+    checklist: {
+      identityVerified: false,
+      domicileVerified: false,
+      gameProofVerified: false,
+    },
+  },
+];
+
+export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
+  {
+    id: "log-prov-001",
+    timestamp: "2026-03-04 11:25:10 WIB",
+    actorRole: "Admin Pengprov ESI Sumbar",
+    actorName: "Ketua Bidang Atlet Pengprov Sumbar",
+    regionCode: "PDG",
+    action: "Verifikasi Emas",
+    targetId: "ESB-PDG-PL-000003",
+    targetName: "Rizky 'Kaba' Ramadhan",
+    targetType: "Player",
+    reason: "Pengesahan resmi verifikasi emas ESI Sumbar. Nomor Lencana: ESI-SB-VER-2026-0038 diterbitkan.",
+    logHash: "sha256:d89ef12ab34567890abcdef1234567890abcdef1234567890abcdef123456789",
+  },
+  {
+    id: "log-prov-002",
+    timestamp: "2026-03-03 15:40:00 WIB",
+    actorRole: "Admin Pengprov ESI Sumbar",
+    actorName: "Komisi Disiplin ESI Sumbar",
+    regionCode: "SLK",
+    action: "Tangguhkan",
+    targetId: "ESB-SLK-PL-000077",
+    targetName: "Doni Putra (DONI_PRO)",
+    targetType: "Player",
+    reason: "Terbukti melakukan joki akun pada turnamen kualifikasi Porprov. Status ditangguhkan 6 bulan.",
+    logHash: "sha256:99887766554433221100aabbccddeeff99887766554433221100aabbccddeeff",
+  },
+  {
+    id: "log-prov-003",
+    timestamp: "2026-03-02 16:10:45 WIB",
+    actorRole: "Admin Pengprov ESI Sumbar",
+    actorName: "Sekretaris Umum Pengprov Sumbar",
+    regionCode: "BKT",
+    action: "Verifikasi Emas",
+    targetId: "ESB-BKT-TM-000002",
+    targetName: "Bukittinggi Cyber Esports",
+    targetType: "Team",
+    reason: "Pengesahan klub esport binaan ESI Kota Bukittinggi. Masa berlaku 12 bulan (Maret 2027).",
+    logHash: "sha256:11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff",
+  },
+  {
+    id: "log-prov-004",
+    timestamp: "2026-03-01 13:30:12 WIB",
+    actorRole: "Admin Pengprov ESI Sumbar",
+    actorName: "Admin Pengprov ESI Sumbar #01",
+    regionCode: "MTW",
+    action: "Lolos Daerah",
+    targetId: "ESB-MTW-PL-000009",
+    targetName: "Petrus Taileleu (MENTAWAI_WAVE)",
+    targetType: "Player",
+    reason: "Pemeriksaan tahap daerah jalur Fallback (wilayah tanpa pengcab) oleh Pengprov Sumbar.",
+    logHash: "sha256:556677889900aabbccddeeff11223344556677889900aabbccddeeff11223344",
   },
 ];
