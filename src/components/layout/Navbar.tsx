@@ -15,6 +15,10 @@ import {
   UserPlus,
   Shield,
   Layers,
+  Trophy,
+  Map,
+  Users,
+  Building2,
 } from "lucide-react";
 
 export function Navbar() {
@@ -23,10 +27,12 @@ export function Navbar() {
 
   const navLinks = [
     { href: "/explore", label: "Jelajah", icon: Compass },
-    { href: "/news", label: "Berita", icon: Newspaper },
+    { href: "/tournaments", label: "Turnamen", icon: Trophy },
+    { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
+    { href: "/map", label: "Peta GIS", icon: Map },
+    { href: "/communities", label: "Komunitas", icon: Users },
+    { href: "/venues", label: "Venue", icon: Building2 },
     { href: "/regions", label: "19 Daerah", icon: MapPin },
-    { href: "/gallery", label: "Galeri Kartu", icon: Layers },
-    { href: "/#how-it-works", label: "Cara Kerja", icon: HelpCircle },
   ];
 
   return (
