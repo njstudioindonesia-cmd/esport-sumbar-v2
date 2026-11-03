@@ -29,6 +29,7 @@ import { EsportCard } from "@/components/card/EsportCard";
 import { VerificationBadge } from "@/components/card/VerificationBadge";
 import { MOCK_PROVINCE_QUEUE } from "@/data/mockAdminData";
 import { GALLERY_CARDS } from "@/data/mockCards";
+import { transitionVerificationAction } from "@/app/actions/verification";
 
 interface Props {
   reviewId: string;
@@ -58,7 +59,14 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
   // Generated license number
   const officialBadgeNumber = `ESI-SB-VER-2026-${item.esportId.slice(-4)}`;
 
-  const handleGrantGoldVerification = () => {
+  const handleGrantGoldVerification = async () => {
+    await transitionVerificationAction({
+      requestId: item.id,
+      newStatus: "verified",
+      reason: "Disahkan secara resmi oleh Sidang Komisi Keabsahan Pengprov ESI Sumatera Barat.",
+      notes: "Memenuhi seluruh standar keabsahan atlet PBESI Sumbar. Diterbitkan lencana emas dengan masa aktif 12 bulan.",
+      badgeNo: officialBadgeNumber,
+    });
     setActionSuccessMessage(
       `PENGESAHAN RESMI BERHASIL! Lencana Emas ESI Sumbar dan Nomor Registrasi ${officialBadgeNumber} telah aktif dengan masa berlaku 12 bulan.`
     );
@@ -68,8 +76,15 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
     }, 2800);
   };
 
-  const handleSendRevision = () => {
+  const handleSendRevision = async () => {
     if (!revisionNotes) return;
+    await transitionVerificationAction({
+      requestId: item.id,
+      newStatus: "revision_requested",
+      reason: revisionNotes,
+      notes: revisionNotes,
+      revisionFields: [],
+    });
     setActionSuccessMessage(
       `Permintaan revisi berhasil dikirimkan kembali ke pemohon ${item.ign}.`
     );
@@ -79,8 +94,14 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
     }, 2500);
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
     if (!rejectReason) return;
+    await transitionVerificationAction({
+      requestId: item.id,
+      newStatus: "rejected",
+      reason: rejectReason,
+      notes: rejectReason,
+    });
     setActionSuccessMessage(
       `Pengajuan ${item.ign} telah ditolak di tingkat Provinsi. Dicatat di log audit PBESI.`
     );
@@ -90,8 +111,14 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
     }, 2500);
   };
 
-  const handleSuspend = () => {
+  const handleSuspend = async () => {
     if (!suspendReason) return;
+    await transitionVerificationAction({
+      requestId: item.id,
+      newStatus: "suspended",
+      reason: suspendReason,
+      notes: suspendReason,
+    });
     setActionSuccessMessage(
       `Lencana resmi atlet ${item.ign} TELAH DITANGGUHKAN. Profil berstatus 'Suspended' pada publik dan turnamen.`
     );

@@ -30,6 +30,7 @@ import { Footer } from "@/components/layout/Footer";
 import { EsportCard } from "@/components/card/EsportCard";
 import { MOCK_REGIONAL_QUEUE, VerificationQueueItem } from "@/data/mockAdminData";
 import { GALLERY_CARDS } from "@/data/mockCards";
+import { transitionVerificationAction } from "@/app/actions/verification";
 
 interface Props {
   reviewId: string;
@@ -96,7 +97,13 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
     );
   }
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
+    await transitionVerificationAction({
+      requestId: item.id,
+      newStatus: "regional_checked",
+      reason: "Berkas dan bukti verifikasi regional lengkap dan tervalidasi oleh Admin ESI Daerah.",
+      notes: "Lolos telaah daerah (Regional Checked). Berkas dilanjutkan ke Pengprov ESI Sumbar.",
+    });
     setActionSuccessMessage(
       `Pengajuan ${item.ign} berhasil disetujui (Lolos Tahap Daerah). Status diperbarui menjadi "Regional Checked" dan berkas diteruskan ke ESI Provinsi.`
     );
@@ -106,8 +113,15 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
     }, 2500);
   };
 
-  const handleSendRevision = () => {
+  const handleSendRevision = async () => {
     if (!revisionNotes) return;
+    await transitionVerificationAction({
+      requestId: item.id,
+      newStatus: "revision_requested",
+      reason: revisionNotes,
+      notes: revisionNotes,
+      revisionFields: revisionFields,
+    });
     setActionSuccessMessage(
       `Permintaan revisi telah dikirimkan ke pemohon ${item.ign}. Status diubah ke "Perlu Revisi".`
     );
@@ -117,8 +131,14 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
     }, 2500);
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
     if (!rejectReason) return;
+    await transitionVerificationAction({
+      requestId: item.id,
+      newStatus: "rejected",
+      reason: rejectReason,
+      notes: rejectReason,
+    });
     setActionSuccessMessage(
       `Pengajuan ${item.ign} telah ditolak secara resmi. Alasan dicatat pada audit log append-only.`
     );

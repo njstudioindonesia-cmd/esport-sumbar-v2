@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { signInAction } from "@/app/actions/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
@@ -34,19 +35,48 @@ export default function LoginPage() {
     }
 
     setIsLoading(true);
-    // Simulated authentication for demo flow
-    setTimeout(() => {
-      setIsLoading(false);
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+
+    const result = await signInAction(formData);
+    setIsLoading(false);
+
+    if (!result.success) {
+      setErrorMsg(result.error || "Gagal masuk ke akun.");
+      return;
+    }
+
+    // Set cookie role untuk proteksi rute proxy
+    if (result.role) {
+      document.cookie = `esport_sumbar_role=${result.role}; path=/; max-age=86400; SameSite=Lax`;
+    }
+
+    // Arahkan ke dashboard sesuai wewenang peran
+    if (result.role === "region_admin") {
+      router.push("/admin/region");
+    } else if (result.role === "prov_admin") {
+      router.push("/admin/province");
+    } else if (result.role === "platform_operator") {
+      router.push("/admin/platform");
+    } else {
       router.push("/dashboard");
-    }, 800);
+    }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/dashboard");
-    }, 800);
+    // Simulasi OAuth Login
+    const formData = new FormData();
+    formData.append("email", "player.padang@esportsumbar.id");
+    formData.append("password", "google-oauth-token");
+    const result = await signInAction(formData);
+    setIsLoading(false);
+
+    if (result.role) {
+      document.cookie = `esport_sumbar_role=${result.role}; path=/; max-age=86400; SameSite=Lax`;
+    }
+    router.push("/dashboard");
   };
 
   return (

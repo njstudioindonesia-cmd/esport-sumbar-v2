@@ -28,6 +28,7 @@ import { ShareCardModal } from "@/components/card/ShareCardModal";
 import { OFFICIAL_GAMES } from "@/data/games";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { CardEntityType, UnifiedCardData } from "@/types/card";
+import { createProfileAction } from "@/app/actions/profile";
 
 export default function NewProfileWizardPage() {
   const router = useRouter();
@@ -141,7 +142,36 @@ export default function NewProfileWizardPage() {
     }
   };
 
-  const handleFinishCreation = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const handleFinishCreation = async () => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const result = await createProfileAction({
+      entityType: roleType,
+      displayName: displayName,
+      ign: ign,
+      regionId: currentRegion.id,
+      regionCode: selectedRegionCode,
+      mainGameId: OFFICIAL_GAMES.find((g) => g.name === selectedGame)?.id,
+      roleName: gameRole,
+      avatarUrl: avatarUrl,
+      birthDate: birthDate,
+      guardianConsent: isUnder18 ? {
+        guardianName,
+        guardianContact,
+        guardianRelationship: "Orang Tua / Wali Sah",
+      } : undefined,
+      visibility: privacyToggles,
+    });
+
+    setIsSubmitting(false);
+    if (!result.success) {
+      setSubmitError(result.error || "Gagal menerbitkan profil.");
+      return;
+    }
     setStep(7); // Show success celebration
   };
 
@@ -693,14 +723,20 @@ export default function NewProfileWizardPage() {
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={handleFinishCreation}
-                    className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E5C358] text-black text-xs font-heading font-extrabold uppercase tracking-wider shadow-lg hover:brightness-110"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>Terbitkan Kartu Sekarang</span>
-                  </button>
+                  <div className="flex flex-col items-end gap-2">
+                    {submitError && (
+                      <span className="text-[11px] text-[#EF4444] font-medium">{submitError}</span>
+                    )}
+                    <button
+                      type="button"
+                      disabled={isSubmitting}
+                      onClick={handleFinishCreation}
+                      className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E5C358] text-black text-xs font-heading font-extrabold uppercase tracking-wider shadow-lg hover:brightness-110 disabled:opacity-50"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>{isSubmitting ? "Menerbitkan Kartu..." : "Terbitkan Kartu Sekarang"}</span>
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

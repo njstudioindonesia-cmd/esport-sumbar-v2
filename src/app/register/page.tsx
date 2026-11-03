@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { signUpAction } from "@/app/actions/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function RegisterPage() {
     return { score: 3, label: "Sangat Kuat", color: "bg-[#22C55E]" };
   }, [password]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
@@ -63,19 +64,35 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true);
-    // Simulated registration -> redirects to Onboarding Wizard
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/me/profile/new");
-    }, 700);
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("role", "user");
+
+    const result = await signUpAction(formData);
+    setIsLoading(false);
+
+    if (!result.success) {
+      setErrorMsg(result.error || "Pendaftaran gagal.");
+      return;
+    }
+
+    // Set cookie default user dan alihkan ke Wizard penerbitan kartu perdana
+    document.cookie = "esport_sumbar_role=user; path=/; max-age=86400; SameSite=Lax";
+    router.push("/me/profile/new");
   };
 
-  const handleGoogleRegister = () => {
+  const handleGoogleRegister = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      router.push("/me/profile/new");
-    }, 700);
+    const formData = new FormData();
+    formData.append("email", "newplayer@esportsumbar.id");
+    formData.append("password", "google-oauth-token");
+    formData.append("role", "user");
+    await signUpAction(formData);
+    setIsLoading(false);
+
+    document.cookie = "esport_sumbar_role=user; path=/; max-age=86400; SameSite=Lax";
+    router.push("/me/profile/new");
   };
 
   return (
