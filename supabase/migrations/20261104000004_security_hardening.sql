@@ -77,3 +77,66 @@ CREATE TRIGGER trg_protect_account_role
 BEFORE UPDATE ON public.accounts
 FOR EACH ROW
 EXECUTE FUNCTION public.protect_account_role_escalation();
+
+-- ------------------------------------------------------------------------------
+-- 3. POLICY INSERT MANDIRI AKUN & TRIGGER AUTO-PROVISION DARI AUTH.USERS
+-- ------------------------------------------------------------------------------
+DROP POLICY IF EXISTS "Users can insert their own account" ON public.accounts;
+
+CREATE POLICY "Users can insert their own account"
+ON public.accounts FOR INSERT
+WITH CHECK (
+    id = auth.uid()
+    AND role = 'user'
+);
+
+-- Trigger auto-sync saat user mendaftar via Supabase Auth (Email / OAuth)
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+    INSERT INTO public.accounts (id, email, role, is_active)
+    VALUES (NEW.id, NEW.email, 'user', true)
+    ON CONFLICT (id) DO UPDATE
+    SET email = EXCLUDED.email;
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW
+EXECUTE FUNCTION public.handle_new_user();
+
+-- ------------------------------------------------------------------------------
+-- 4. SETUP STORAGE BUCKET & POLICIES (VERIFICATION PROOFS)
+-- ------------------------------------------------------------------------------
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'verification-proofs',
+    'verification-proofs',
+    false,
+    5242880,
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'application/pdf']::text[]
+)
+ON CONFLICT (id) DO UPDATE SET
+    public = false,
+    file_size_limit = 5242880,
+    allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/webp', 'application/pdf']::text[];
+
+DROP POLICY IF EXISTS "Authenticated users can upload verification proofs" ON storage.objects;
+CREATE POLICY "Authenticated users can upload verification proofs"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'verification-proofs');
+
+DROP POLICY IF EXISTS "Authenticated users can view verification proofs" ON storage.objects;
+CREATE POLICY "Authenticated users can view verification proofs"
+ON storage.objects FOR SELECT
+TO authenticated
+USING (bucket_id = 'verification-proofs');
