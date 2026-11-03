@@ -1,3 +1,5 @@
+export type CardEntityType = "player" | "coach" | "team";
+
 export type CardRarity = "rookie" | "contender" | "elite" | "legend";
 
 export type CardVerification =
@@ -11,7 +13,7 @@ export type CardSize = "sm" | "md" | "lg";
 
 export interface CardAchievement {
   title: string;
-  level: "kota" | "provinsi" | "nasional" | "lainnya";
+  level: "kota" | "provinsi" | "nasional" | "internasional" | "lainnya";
   placement: string;
   year: string;
   isValidated?: boolean;
@@ -23,32 +25,71 @@ export interface CardTeamHistory {
   role: string;
 }
 
-export interface PlayerCardData {
+export interface TeamRosterMember {
   ign: string;
-  displayName: string;
-  avatarUrl: string;
-  game: string;
-  gameIcon?: string;
   role: string;
+  avatarUrl?: string;
+}
+
+export interface UnifiedCardData {
+  // Identifiers
+  esportId: string; // e.g. ESB-PDG-PL-000124 or ESB-BKT-CO-000012 or ESB-PDG-TM-000005
+  badgeNumber?: string;
+  region: {
+    name: string;
+    code: string;
+  };
+  game: string; // Main game / Division game / Specialization game
+
+  // Player / Coach specific
+  ign?: string;
+  displayName: string;
+  avatarUrl?: string;
+  role?: string; // Player role (e.g. Roamer) or Coach role (e.g. Head Coach / Tactical Analyst)
+
+  // Team relationship
   team?: {
     name: string;
     logoUrl?: string;
   };
-  region: {
+
+  // Coach specific
+  certification?: {
+    isCertified: boolean;
     name: string;
-    code: string; // e.g. "PDG", "PDP", "BKT", "SLK"
+    issuer: string;
+    year?: string;
   };
-  esportId: string; // e.g. "ESB-PDG-PL-000124"
-  badgeNumber?: string; // e.g. "ESI-SB-2026-0042"
+
+  // Team specific
+  teamName?: string;
+  teamTag?: string;
+  logoUrl?: string;
+  homebase?: string;
+  captainOrManager?: {
+    name: string;
+    role: "Kapten" | "Manajer";
+  };
+  rosterCount?: {
+    current: number;
+    max: number;
+  };
+  rosterMembers?: TeamRosterMember[];
+  coachName?: string;
+
+  // Track record & Backside
   achievements?: CardAchievement[];
-  history?: CardTeamHistory[];
+  history?: CardTeamHistory[]; // Teams played in OR teams coached
+  certificationsList?: string[]; // Coach certifications
   joinedAt?: string;
+  foundedAt?: string;
 }
 
 export interface EsportCardProps {
+  type?: CardEntityType;
   rarity: CardRarity;
   verification: CardVerification;
-  data: PlayerCardData;
+  data: UnifiedCardData;
   size?: CardSize;
   interactive?: boolean;
   className?: string;

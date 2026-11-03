@@ -12,11 +12,19 @@ import {
   Users,
   MapPin,
   CheckCircle2,
-  ExternalLink,
   Sparkles,
   Shield,
+  GraduationCap,
+  Crown,
+  UserCheck,
+  Briefcase,
+  Layers,
 } from "lucide-react";
-import { EsportCardProps, CardRarity } from "@/types/card";
+import {
+  EsportCardProps,
+  CardRarity,
+  CardEntityType,
+} from "@/types/card";
 import { VerificationBadge } from "./VerificationBadge";
 
 // Helper color and styling mapping for Rarity Tiers
@@ -84,6 +92,7 @@ const SIZE_CLASSES = {
 };
 
 export function EsportCard({
+  type = "player",
   rarity = "rookie",
   verification = "unverified",
   data,
@@ -146,7 +155,10 @@ export function EsportCard({
   };
 
   const config = RARITY_CONFIG[rarity];
-  const publicUrl = `https://esportsumbar.id/player/${data.ign.toLowerCase()}`;
+  const slug = (data.ign || data.teamName || data.displayName)
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+  const publicUrl = `https://esportsumbar.id/${type}/${slug}`;
 
   return (
     <div
@@ -173,9 +185,9 @@ export function EsportCard({
               : `border ${config.frameBorder}`
           }`}
         >
-          {/* Inner Card Container */}
+          {/* Inner Card Frame */}
           <div className="relative w-full h-full rounded-[14px] overflow-hidden bg-[#0D1017] flex flex-col justify-between">
-            {/* Holographic / Shimmer Texture for Elite & Legend */}
+            {/* Shimmer Overlays */}
             {rarity === "elite" && (
               <div className="absolute inset-0 opacity-15 pointer-events-none bg-gradient-to-tr from-transparent via-[#D4AF37]/40 to-transparent animate-shimmer" />
             )}
@@ -183,7 +195,7 @@ export function EsportCard({
               <div className="absolute inset-0 opacity-20 pointer-events-none bg-gradient-to-tr from-[#7C3AED]/30 via-[#3B82F6]/30 to-[#34D399]/30 animate-shimmer" />
             )}
 
-            {/* Dynamic Glare Overlay */}
+            {/* Glare */}
             {!reducedMotion && interactive && !isFlipped && (
               <motion.div
                 className="absolute inset-0 pointer-events-none z-30 opacity-25"
@@ -195,19 +207,25 @@ export function EsportCard({
 
             {/* TOP BAR: Rarity Tier (Left) & Verification Badge (Right) */}
             <div className="relative z-20 flex items-center justify-between p-2.5 pb-0">
-              {/* Rarity Label Badge */}
-              <div
-                className={`flex items-center gap-1 px-2 py-0.5 rounded-full ${config.badgeBg} shadow-sm`}
-              >
-                {rarity === "legend" ? (
-                  <Sparkles className="w-2.5 h-2.5 text-white animate-spin" />
-                ) : (
-                  <Shield className="w-2.5 h-2.5 text-white/90" />
-                )}
-                <span
-                  className={`font-heading uppercase tracking-wider text-[9px] ${config.badgeText}`}
+              <div className="flex items-center gap-1.5">
+                <div
+                  className={`flex items-center gap-1 px-2 py-0.5 rounded-full ${config.badgeBg} shadow-sm`}
                 >
-                  {config.name}
+                  {rarity === "legend" ? (
+                    <Sparkles className="w-2.5 h-2.5 text-white animate-spin" />
+                  ) : (
+                    <Shield className="w-2.5 h-2.5 text-white/90" />
+                  )}
+                  <span
+                    className={`font-heading uppercase tracking-wider text-[9px] ${config.badgeText}`}
+                  >
+                    {config.name}
+                  </span>
+                </div>
+
+                {/* Entity Type Tag */}
+                <span className="text-[8px] font-heading uppercase px-1.5 py-0.5 rounded bg-[#1A1E28] border border-[#262B38] text-gray-400 font-bold tracking-wider">
+                  {type === "player" ? "Player" : type === "coach" ? "Coach" : "Team"}
                 </span>
               </div>
 
@@ -222,76 +240,167 @@ export function EsportCard({
               </div>
             </div>
 
-            {/* PLAYER AVATAR & VISUAL HERO */}
+            {/* HERO VISUAL AREA */}
             <div className="relative w-full flex-1 overflow-hidden mt-1 mx-auto px-2">
-              <div className="relative w-full h-full rounded-t-[10px] overflow-hidden bg-[#161922] border border-[#262B38]/60 flex items-center justify-center">
-                {/* Subtle Minang Motif Behind Portrait */}
-                <div className="absolute inset-0 bg-minang-subtle opacity-40 pointer-events-none" />
+              {type === "team" ? (
+                /* TEAM HERO: Large Logo Pedestal */
+                <div className="relative w-full h-full rounded-t-[10px] overflow-hidden bg-gradient-to-b from-[#181C26] to-[#0D1017] border border-[#262B38]/60 flex flex-col items-center justify-center p-4">
+                  <div className="absolute inset-0 bg-minang-subtle opacity-30 pointer-events-none" />
 
-                {/* Avatar Image */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={data.avatarUrl}
-                  alt={data.ign}
-                  className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
-                  onError={(e) => {
-                    // Fallback avatar placeholder
-                    (e.target as HTMLImageElement).src =
-                      "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop";
-                  }}
-                />
+                  {/* Logo Centerpiece */}
+                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-[0_0_30px_rgba(0,0,0,0.8)] flex items-center justify-center p-3 group overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-[#C8102E]/20 via-[#D4AF37]/10 to-transparent opacity-80" />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={data.logoUrl || data.avatarUrl}
+                      alt={data.teamName || data.displayName}
+                      className="w-full h-full object-contain relative z-10 drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=200&auto=format&fit=crop";
+                      }}
+                    />
+                  </div>
 
-                {/* Dramatic Gradient Overlay at Bottom of Image */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1017] via-[#0D1017]/40 to-transparent" />
-
-                {/* Role Pill Overlay */}
-                <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
-                  <Gamepad2 className="w-3 h-3 text-[#3B82F6]" />
-                  <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
-                    {data.game} • <span className="text-[#3B82F6]">{data.role}</span>
-                  </span>
+                  {/* Active Roster Counter Pill */}
+                  <div className="mt-3 flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0B0D12]/90 border border-[#262B38] z-10 shadow-sm">
+                    <Users className="w-3 h-3 text-[#22C55E]" />
+                    <span className="text-[10px] font-mono text-gray-200">
+                      Roster:{" "}
+                      <strong className="text-white">
+                        {data.rosterCount?.current || 5}/{data.rosterCount?.max || 7}
+                      </strong>{" "}
+                      Aktif
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* PLAYER / COACH HERO: Portrait */
+                <div className="relative w-full h-full rounded-t-[10px] overflow-hidden bg-[#161922] border border-[#262B38]/60 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-minang-subtle opacity-40 pointer-events-none" />
+
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={data.avatarUrl}
+                    alt={data.ign || data.displayName}
+                    className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop";
+                    }}
+                  />
+
+                  {/* Bottom Image Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D1017] via-[#0D1017]/40 to-transparent" />
+
+                  {/* Overlay Pill */}
+                  {type === "coach" ? (
+                    <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
+                      <GraduationCap className="w-3 h-3 text-[#D4AF37]" />
+                      <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
+                        {data.certification?.isCertified
+                          ? data.certification.name
+                          : "Pelatih Esport"}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
+                      <Gamepad2 className="w-3 h-3 text-[#3B82F6]" />
+                      <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
+                        {data.game} •{" "}
+                        <span className="text-[#3B82F6]">{data.role}</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* PLAYER IDENTIFIERS & META INFO */}
+            {/* IDENTITY METADATA AREA */}
             <div className="relative z-20 px-3 pt-2 pb-2.5 flex flex-col gap-1.5 bg-[#0D1017]">
-              {/* IGN & Display Name */}
+              {/* Heading: IGN/Name */}
               <div className="flex flex-col">
                 <div className="flex items-center justify-between">
                   <h3
-                    className={`font-heading font-extrabold uppercase tracking-tight leading-none text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] ${
-                      size === "sm" ? "text-base" : size === "md" ? "text-xl" : "text-2xl"
+                    className={`font-heading font-extrabold uppercase tracking-tight leading-none text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] truncate ${
+                      size === "sm"
+                        ? "text-base"
+                        : size === "md"
+                        ? "text-xl"
+                        : "text-2xl"
                     }`}
                   >
-                    {data.ign}
+                    {type === "team"
+                      ? data.teamName || data.displayName
+                      : data.ign || data.displayName}
                   </h3>
-                  {/* Subtle Marawa Ribbon Indicator */}
-                  <div className="flex h-2 w-5 rounded-sm overflow-hidden" title="Minang Heritage Accent">
+                  {/* Subtle Marawa Accent */}
+                  <div
+                    className="flex h-2 w-5 rounded-sm overflow-hidden shrink-0 ml-2"
+                    title="Aksen Minang Marawa"
+                  >
                     <span className="w-1/3 bg-[#C8102E]" />
                     <span className="w-1/3 bg-[#D4AF37]" />
                     <span className="w-1/3 bg-black" />
                   </div>
                 </div>
+
                 <span className="text-[11px] text-[#9AA3B2] font-sans truncate font-medium">
-                  {data.displayName}
+                  {type === "team"
+                    ? `Divisi: ${data.game}`
+                    : data.displayName}
                 </span>
               </div>
 
-              {/* Team & Region Info Pill */}
+              {/* Sub-info Bar */}
               <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-[#262B38]/60">
-                <div className="flex items-center gap-1.5 overflow-hidden">
-                  <Users className="w-3 h-3 text-[#9AA3B2] shrink-0" />
-                  <span className="text-[10px] text-gray-300 truncate font-medium">
-                    {data.team?.name || "Free Agent"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 overflow-hidden justify-end">
-                  <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
-                  <span className="text-[10px] text-gray-300 truncate font-medium">
-                    {data.region.name}
-                  </span>
-                </div>
+                {type === "team" ? (
+                  <>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <Crown className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.captainOrManager?.role || "Kapten"}:{" "}
+                        {data.captainOrManager?.name || "-"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 overflow-hidden justify-end">
+                      <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.homebase || data.region.name}
+                      </span>
+                    </div>
+                  </>
+                ) : type === "coach" ? (
+                  <>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <Briefcase className="w-3 h-3 text-[#3B82F6] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.team?.name || "Free Agent"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 overflow-hidden justify-end">
+                      <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.region.name}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <Users className="w-3 h-3 text-[#9AA3B2] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.team?.name || "Free Agent"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 overflow-hidden justify-end">
+                      <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.region.name}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* CARD FOOTER: ESPORT ID + MINI QR */}
@@ -310,7 +419,7 @@ export function EsportCard({
                     type="button"
                     onClick={handleFlip}
                     className="p-1 rounded bg-[#1A1E28] hover:bg-[#262B38] text-gray-400 hover:text-white transition-colors"
-                    title="Balik kartu (Rekam Jejak)"
+                    title="Balik kartu (Rekam Jejak / Roster)"
                   >
                     <RotateCw className="w-3 h-3" />
                   </button>
@@ -340,9 +449,19 @@ export function EsportCard({
             <div>
               <div className="flex items-center justify-between border-b border-[#262B38] pb-1.5">
                 <div className="flex items-center gap-1.5">
-                  <Trophy className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  {type === "team" ? (
+                    <Users className="w-3.5 h-3.5 text-[#3B82F6]" />
+                  ) : type === "coach" ? (
+                    <GraduationCap className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  ) : (
+                    <Trophy className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  )}
                   <span className="font-heading uppercase tracking-wider text-xs font-bold text-white">
-                    Rekam Jejak Atlet
+                    {type === "team"
+                      ? "Struktur Tim & Roster"
+                      : type === "coach"
+                      ? "Rekam Jejak Kepelatihan"
+                      : "Rekam Jejak Atlet"}
                   </span>
                 </div>
                 <button
@@ -355,71 +474,186 @@ export function EsportCard({
                 </button>
               </div>
 
-              {/* Prestasi Pilihan (Max 3) */}
-              <div className="mt-2.5">
-                <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
-                  Prestasi Pilihan
-                </span>
-                {data.achievements && data.achievements.length > 0 ? (
-                  <div className="flex flex-col gap-1.5">
-                    {data.achievements.slice(0, 3).map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="p-1.5 rounded-md bg-[#161922] border border-[#262B38]/80 flex items-start justify-between gap-1"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[11px] font-semibold text-gray-200 truncate">
-                            {item.title}
+              {/* BODY SECTION BASED ON ENTITY TYPE */}
+              {type === "team" ? (
+                /* TEAM BACK: Roster Members & Coach */
+                <div className="mt-2.5 flex flex-col gap-2">
+                  <div>
+                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                      Roster Aktif Terdaftar
+                    </span>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {data.rosterMembers && data.rosterMembers.length > 0 ? (
+                        data.rosterMembers.slice(0, 6).map((m, idx) => (
+                          <div
+                            key={idx}
+                            className="p-1 rounded bg-[#161922] border border-[#262B38]/70 flex items-center gap-1.5 overflow-hidden"
+                          >
+                            <div className="w-5 h-5 rounded-full bg-[#1A1E28] flex items-center justify-center text-[9px] font-bold text-white shrink-0 overflow-hidden">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={
+                                  m.avatarUrl ||
+                                  `https://api.dicebear.com/7.x/bottts/svg?seed=${m.ign}`
+                                }
+                                alt={m.ign}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-[10px] font-bold text-gray-200 truncate leading-none">
+                                {m.ign}
+                              </p>
+                              <p className="text-[8px] text-[#9AA3B2] truncate leading-tight">
+                                {m.role}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-[10px] text-gray-400 italic col-span-2">
+                          Belum ada anggota roster terhubung.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {data.coachName && (
+                    <div className="flex items-center justify-between text-[10px] px-2 py-1 rounded bg-[#161922] border border-[#262B38]/60">
+                      <span className="text-[#9AA3B2]">Pelatih:</span>
+                      <span className="font-bold text-white">{data.coachName}</span>
+                    </div>
+                  )}
+
+                  {/* Team Achievements */}
+                  {data.achievements && data.achievements.length > 0 && (
+                    <div>
+                      <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-0.5">
+                        Prestasi Terkini
+                      </span>
+                      <p className="text-[10px] text-[#D4AF37] font-semibold truncate">
+                        ★ {data.achievements[0].placement} - {data.achievements[0].title} (
+                        {data.achievements[0].year})
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : type === "coach" ? (
+                /* COACH BACK: Certifications & Coaching History */
+                <div className="mt-2.5 flex flex-col gap-2">
+                  <div>
+                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                      Sertifikasi & Lisensi
+                    </span>
+                    {data.certification?.isCertified ? (
+                      <div className="p-1.5 rounded-md bg-[#161922] border border-[#D4AF37]/40 flex items-start justify-between">
+                        <div>
+                          <p className="text-[11px] font-bold text-[#D4AF37]">
+                            {data.certification.name}
                           </p>
-                          <p className="text-[9px] text-[#9AA3B2]">
-                            {item.placement} • Tk. {item.level} ({item.year})
+                          <p className="text-[9px] text-gray-300">
+                            {data.certification.issuer} ({data.certification.year || "2024"})
                           </p>
                         </div>
-                        {item.isValidated && (
-                          <div
-                            className="shrink-0 flex items-center gap-0.5 text-[#22C55E]"
-                            title="Prestasi Terverifikasi ESI"
-                          >
-                            <CheckCircle2 className="w-3 h-3" />
-                          </div>
-                        )}
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E] shrink-0" />
                       </div>
-                    ))}
+                    ) : (
+                      <p className="text-[10px] text-[#9AA3B2] italic">
+                        Belum tersertifikasi resmi ESI.
+                      </p>
+                    )}
                   </div>
-                ) : (
-                  <p className="text-[10px] text-[#9AA3B2] italic p-1.5 bg-[#161922] rounded border border-[#262B38]/50">
-                    Belum ada prestasi resmi tercatat.
-                  </p>
-                )}
-              </div>
 
-              {/* Riwayat Tim (Max 3) */}
-              <div className="mt-2.5">
-                <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1 flex items-center gap-1">
-                  <History className="w-2.5 h-2.5" /> Riwayat Tim
-                </span>
-                {data.history && data.history.length > 0 ? (
-                  <div className="flex flex-col gap-1">
-                    {data.history.slice(0, 3).map((hist, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between text-[10px] px-1.5 py-0.5 rounded bg-[#161922]/70"
-                      >
-                        <span className="font-medium text-gray-300 truncate">
-                          {hist.teamName}
-                        </span>
-                        <span className="text-[9px] text-[#9AA3B2] shrink-0">
-                          {hist.period}
-                        </span>
+                  <div>
+                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                      Riwayat Tim Dilatih
+                    </span>
+                    {data.history && data.history.length > 0 ? (
+                      <div className="flex flex-col gap-1">
+                        {data.history.slice(0, 3).map((hist, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between text-[10px] px-1.5 py-0.5 rounded bg-[#161922]/70"
+                          >
+                            <span className="font-medium text-gray-300 truncate">
+                              {hist.teamName}
+                            </span>
+                            <span className="text-[9px] text-[#9AA3B2] shrink-0">
+                              {hist.period}
+                            </span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      <p className="text-[10px] text-[#9AA3B2] italic">
+                        Belum ada riwayat tim sebelumnya.
+                      </p>
+                    )}
                   </div>
-                ) : (
-                  <p className="text-[10px] text-[#9AA3B2] italic">
-                    Belum ada riwayat tim sebelumnya.
-                  </p>
-                )}
-              </div>
+                </div>
+              ) : (
+                /* PLAYER BACK: Achievements & History */
+                <div className="mt-2.5 flex flex-col gap-2">
+                  <div>
+                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                      Prestasi Pilihan
+                    </span>
+                    {data.achievements && data.achievements.length > 0 ? (
+                      <div className="flex flex-col gap-1">
+                        {data.achievements.slice(0, 3).map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="p-1.5 rounded-md bg-[#161922] border border-[#262B38]/80 flex items-start justify-between gap-1"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[10px] font-semibold text-gray-200 truncate">
+                                {item.title}
+                              </p>
+                              <p className="text-[8px] text-[#9AA3B2]">
+                                {item.placement} • Tk. {item.level} ({item.year})
+                              </p>
+                            </div>
+                            {item.isValidated && (
+                              <CheckCircle2 className="w-3 h-3 text-[#22C55E] shrink-0" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[10px] text-[#9AA3B2] italic">
+                        Belum ada prestasi resmi tercatat.
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                      Riwayat Tim
+                    </span>
+                    {data.history && data.history.length > 0 ? (
+                      <div className="flex flex-col gap-1">
+                        {data.history.slice(0, 2).map((hist, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between text-[10px] px-1.5 py-0.5 rounded bg-[#161922]/70"
+                          >
+                            <span className="font-medium text-gray-300 truncate">
+                              {hist.teamName}
+                            </span>
+                            <span className="text-[9px] text-[#9AA3B2] shrink-0">
+                              {hist.period}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[10px] text-[#9AA3B2] italic">
+                        Belum ada riwayat tim sebelumnya.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Bottom Authenticity & Large QR */}
@@ -439,10 +673,13 @@ export function EsportCard({
                 <span>•</span>
                 <span>ESI SUMBAR</span>
               </div>
-              {data.joinedAt && (
+              {(data.joinedAt || data.foundedAt) && (
                 <div className="flex items-center gap-1 text-[8px] text-[#9AA3B2] mt-1">
                   <Calendar className="w-2.5 h-2.5" />
-                  <span>Terdaftar sejak {data.joinedAt}</span>
+                  <span>
+                    {type === "team" ? "Didirikan" : "Terdaftar"} sejak{" "}
+                    {data.foundedAt || data.joinedAt}
+                  </span>
                 </div>
               )}
             </div>
