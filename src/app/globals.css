@@ -1,26 +1,112 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b0d12;
+  --surface: #12151c;
+  --surface-elevated: #1a1e28;
+  --border: #262b38;
+  --foreground: #f3f4f6;
+  --text-muted: #9aa3b2;
+
+  --accent-gold: #d4af37;
+  --accent-gold-glow: rgba(212, 175, 55, 0.35);
+  --accent-marawa: #c8102e;
+  --accent-blue: #3b82f6;
+  --accent-violet: #7c3aed;
+
+  --status-regional: #22c55e;
+  --status-verified: #d4af37;
+  --status-pending: #f59e0b;
+  --status-rejected: #ef4444;
+  --status-suspended: #6b7280;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-border: var(--border);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-text-muted: var(--text-muted);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-gold: var(--accent-gold);
+  --color-marawa: var(--accent-marawa);
+  --color-electric: var(--accent-blue);
+  --color-violet: var(--accent-violet);
+
+  --color-status-regional: var(--status-regional);
+  --color-status-verified: var(--status-verified);
+  --color-status-pending: var(--status-pending);
+  --color-status-rejected: var(--status-rejected);
+  --color-status-suspended: var(--status-suspended);
+
+  --font-heading: var(--font-heading), "Chakra Petch", sans-serif;
+  --font-sans: var(--font-sans), "Inter", sans-serif;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 3D Card Perspective and Transform Helpers */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Custom Holographic & Shimmer Keyframes */
+@keyframes holoShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes crystalGlow {
+  0%, 100% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 12px rgba(124, 58, 237, 0.45));
+  }
+  50% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 24px rgba(59, 130, 246, 0.65));
+  }
+}
+
+.animate-shimmer {
+  background-size: 200% 200%;
+  animation: holoShimmer 6s ease infinite;
+}
+
+.animate-crystal {
+  animation: crystalGlow 4s ease-in-out infinite;
+}
+
+/* Subtle Minang Motif Background Pattern */
+.bg-minang-subtle {
+  background-image: radial-gradient(rgba(200, 16, 46, 0.05) 1px, transparent 0),
+                    radial-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 0);
+  background-position: 0 0, 16px 16px;
+  background-size: 32px 32px;
 }
