@@ -541,3 +541,143 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
     logHash: "sha256:556677889900aabbccddeeff11223344556677889900aabbccddeeff11223344",
   },
 ];
+
+
+// ==================== PLATFORM OPERATOR DATA (PROMPT 4.3) ====================
+
+export interface AdminAccount {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin_region" | "admin_province";
+  assignedRegionCode: string;
+  assignedRegionName: string;
+  status: "active" | "inactive";
+  lastLogin: string;
+  createdAt: string;
+}
+
+export interface ProfileReportItem {
+  id: string;
+  reportedProfileId: string;
+  reportedProfileName: string;
+  reportedEsportId: string;
+  reportedType: "Player" | "Coach" | "Team";
+  regionCode: string;
+  regionName: string;
+  reporterName: string;
+  reasonCategory: "fake_identity" | "smurf_jockey" | "abusive_behavior" | "illegal_team";
+  description: string;
+  evidenceUrl?: string;
+  reportedAt: string;
+  status: "pending" | "reviewed_clean" | "forwarded_to_province";
+}
+
+export const MOCK_ADMIN_ACCOUNTS: AdminAccount[] = [
+  {
+    id: "adm-001",
+    name: "Rizki Mahendra, S.Kom",
+    email: "admin.padang@esi-sumbar.id",
+    role: "admin_region",
+    assignedRegionCode: "PDG",
+    assignedRegionName: "Kota Padang",
+    status: "active",
+    lastLogin: "Hari ini, 09:12 WIB",
+    createdAt: "10 Jan 2025",
+  },
+  {
+    id: "adm-002",
+    name: "Ahmad Fauzi, M.Pd",
+    email: "admin.bukittinggi@esi-sumbar.id",
+    role: "admin_region",
+    assignedRegionCode: "BKT",
+    assignedRegionName: "Kota Bukittinggi",
+    status: "active",
+    lastLogin: "Kemarin, 16:40 WIB",
+    createdAt: "15 Jan 2025",
+  },
+  {
+    id: "adm-003",
+    name: "Drs. Hendri Chaniago",
+    email: "sekum@esi-sumbar.id",
+    role: "admin_province",
+    assignedRegionCode: "SUMBAR",
+    assignedRegionName: "Seluruh Sumatera Barat (Pengprov)",
+    status: "active",
+    lastLogin: "Hari ini, 11:30 WIB",
+    createdAt: "01 Jan 2025",
+  },
+  {
+    id: "adm-004",
+    name: "Budi Santoso",
+    email: "admin.payakumbuh@esi-sumbar.id",
+    role: "admin_region",
+    assignedRegionCode: "PYK",
+    assignedRegionName: "Kota Payakumbuh",
+    status: "active",
+    lastLogin: "3 hari lalu",
+    createdAt: "20 Jan 2025",
+  },
+  {
+    id: "adm-005",
+    name: "Rahmat Hidayat",
+    email: "admin.solok@esi-sumbar.id",
+    role: "admin_region",
+    assignedRegionCode: "SLK",
+    assignedRegionName: "Kota Solok",
+    status: "inactive",
+    lastLogin: "2 minggu lalu",
+    createdAt: "02 Feb 2025",
+  },
+];
+
+export const MOCK_REPORTS: ProfileReportItem[] = [
+  {
+    id: "rep-001",
+    reportedProfileId: "pl-contender",
+    reportedProfileName: "Doni Putra (DONI_PRO)",
+    reportedEsportId: "ESB-SLK-PL-000077",
+    reportedType: "Player",
+    regionCode: "SLK",
+    regionName: "Kota Solok",
+    reporterName: "Kapten Singkarak Esports",
+    reasonCategory: "smurf_jockey",
+    description: "Akun digunakan oleh joki dari luar Sumatera Barat pada pertandingan babak kualifikasi piala daerah.",
+    evidenceUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600&auto=format&fit=crop",
+    reportedAt: "03 Mar 2026, 10:20 WIB",
+    status: "pending",
+  },
+  {
+    id: "rep-002",
+    reportedProfileId: "pl-rookie-fake",
+    reportedProfileName: "Anonim Gamer (FAKE_CLONE)",
+    reportedEsportId: "ESB-PDG-PL-000999",
+    reportedType: "Player",
+    regionCode: "PDG",
+    regionName: "Kota Padang",
+    reporterName: "Raka Pratama",
+    reasonCategory: "fake_identity",
+    description: "Mengunggah tangkapan layar akun game milik orang lain dari server luar negeri.",
+    evidenceUrl: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
+    reportedAt: "02 Mar 2026, 14:15 WIB",
+    status: "forwarded_to_province",
+  },
+];
+
+export const MOCK_GLOBAL_AUDIT_LOGS = [
+  ...MOCK_PROVINCE_LOGS,
+  ...MOCK_REGIONAL_LOGS,
+  {
+    id: "log-sys-001",
+    timestamp: "2026-03-04 08:00:00 WIB",
+    actorRole: "Operator Platform (Sistem)",
+    actorName: "Operator ESPORT SUMBAR",
+    regionCode: "ALL",
+    action: "Verifikasi Emas" as any,
+    targetId: "SYS-CRON-SLA",
+    targetName: "Sistem Pemantauan SLA Otomatis",
+    targetType: "Player" as any,
+    reason: "Pemeriksaan SLA harian: 3 berkas diberi status peringatan kuning dan 1 berkas merah.",
+    logHash: "sha256:77889900aabbccddeeff11223344556677889900aabbccddeeff112233445566",
+  },
+];
