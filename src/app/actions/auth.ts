@@ -13,7 +13,7 @@ import {
 // SKEMA VALIDASI ZOD (SERVER-SIDE INPUT VALIDATION)
 // ==============================================================================
 
-export const signUpSchema = z.object({
+const signUpSchema = z.object({
   email: z
     .string()
     .trim()
@@ -27,7 +27,7 @@ export const signUpSchema = z.object({
   birthDate: z.string().optional(),
 });
 
-export const signInSchema = z.object({
+const signInSchema = z.object({
   email: z
     .string()
     .trim()
@@ -38,7 +38,7 @@ export const signInSchema = z.object({
     .min(1, { message: "Kata sandi wajib diisi." }),
 });
 
-export const resetPasswordSchema = z.object({
+const resetPasswordSchema = z.object({
   email: z
     .string()
     .trim()
@@ -114,17 +114,21 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
     }
 
     // 3. Pastikan baris accounts tersinkronisasi jika trigger belum aktif
-    await supabase.from("accounts").upsert(
-      {
-        id: user.id,
-        email: user.email || email,
-        role: "user",
-        assigned_region_id: null,
-        birth_date: birthDate || null,
-        is_active: true,
-      },
-      { onConflict: "id" }
-    );
+    try {
+      await supabase.from("accounts").upsert(
+        {
+          id: user.id,
+          email: user.email || email,
+          role: "user",
+          assigned_region_id: null,
+          birth_date: birthDate || null,
+          is_active: true,
+        },
+        { onConflict: "id" }
+      );
+    } catch {
+      // Trigger on_auth_user_created di PostgreSQL menangani sinkronisasi ini secara otomatis
+    }
 
     // Jika konfirmasi email wajib dan session belum terbit
     const needsConfirmation = !authData.session;

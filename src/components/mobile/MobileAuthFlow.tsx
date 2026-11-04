@@ -41,8 +41,27 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
   const [authError, setAuthError] = useState<string | null>(null);
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
 
-  // Auto redirect if already signed in
+  // Auto redirect if already signed in & URL error detection
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash.startsWith("#") ? window.location.hash.substring(1) : "";
+      const hashParams = new URLSearchParams(hash);
+      const errorDesc = hashParams.get("error_description");
+      const searchParams = new URLSearchParams(window.location.search);
+      const queryError = searchParams.get("error");
+
+      if (errorDesc) {
+        const decoded = decodeURIComponent(errorDesc.replace(/\+/g, " "));
+        if (decoded.includes("Unable to exchange external code")) {
+          setAuthError("Gagal otentikasi Google: Kredensial Client Secret di Supabase tidak cocok atau belum diisi. Pastikan Client Secret dari Google Cloud telah disalin ke Supabase Dashboard -> Authentication -> Providers -> Google.");
+        } else {
+          setAuthError(decoded);
+        }
+      } else if (queryError === "auth_callback_failed") {
+        setAuthError("Gagal menyelesaikan otentikasi. Silakan periksa kredensial atau coba lagi.");
+      }
+    }
+
     const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
