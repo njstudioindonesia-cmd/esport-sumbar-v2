@@ -308,12 +308,195 @@ export async function deleteGalleryPhotoAction(photoId: string): Promise<{ succe
       return { success: false, error: "Akses ditolak: Anda tidak memiliki wewenang untuk menghapus foto ini." };
     }
 
+    // Hapus berkas fisik dari Supabase Storage (Bucket 'gallery') untuk mencegah berkas yatim
+    try {
+      if (assetRecord.path) {
+        // Ambil path relatif dalam bucket
+        const urlParts = assetRecord.path.split("/gallery/");
+        const relativePath = urlParts[1] ? decodeURIComponent(urlParts[1].split("?")[0]) : assetRecord.path;
+        await supabase.storage.from("gallery").remove([relativePath]);
+      }
+    } catch {
+      // Log kegagalan storage tanpa membatalkan penghapusan baris DB
+    }
+
     // Hapus dari tabel media_assets
     await supabase.from("media_assets").delete().eq("id", photoId);
 
+    revalidatePath(`/profile/${assetRecord.profile_id}`);
     return { success: true };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : "Gagal menghapus foto galeri.";
     return { success: false, error: errorMsg };
+  }
+}
+
+/**
+ * Server Action: Unggah Dokumen Bukti Verifikasi ke Bucket Privat 'evidence'
+ * Sesuai SPEC 2.6:
+ * - Bucket privat (non-public)
+ * - Tipe: PDF, JPG, PNG, WebP (Maks 10 MB)
+ * - Path: evidence/{account_id}/{profile_id}/{uuid}.{ext}
+ * - Menghasilkan signed URL berumur pendek (1 jam) untuk ditinjau admin
+ */
+export async function uploadEvidenceAction(formData: FormData): Promise<{
+  success: boolean;
+  path?: string;
+  signedUrl?: string;
+  name?: string;
+  size?: string;
+  error?: string;
+}> {
+  try {
+    const file = formData.get("file") as File | null;
+    const profileId = (formData.get("profileId") as string) || "draft";
+
+    if (!file) {
+      return { success: false, error: "Tidak ada berkas bukti yang dikirim." };
+    }
+
+    // 1. Validasi Batas Ukuran (10 MB)
+    const MAX_EVIDENCE_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_EVIDENCE_SIZE) {
+      return {
+        success: false,
+        error: `Ukuran berkas bukti (${(file.size / (1024 * 1024)).toFixed(2)} MB) melebihi batas 10 MB.`,
+      };
+    }
+
+    // 2. Validasi Ekstensi & MIME
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+    const ext = file.name.slice(((file.name.lastIndexOf(".") - 1) >>> 0) + 1).toLowerCase();
+    const allowedExts = ["jpg", "jpeg", "png", "webp", "pdf"];
+
+    if (!allowedExts.includes(ext) && !allowedTypes.includes(file.type)) {
+      return {
+        success: false,
+        error: "Format berkas tidak diizinkan. Harap unggah berkas PDF, JPG, PNG, atau WebP.",
+      };
+    }
+
+    // 3. Verifikasi Autentikasi
+    const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+    const accountId = authData?.user?.id;
+
+    if (!accountId) {
+      return { success: false, error: "Akses ditolak: Anda harus masuk ke akun Anda." };
+    }
+
+    // 4. Susun Path Penyimpanan Privat: {account_id}/{profile_id}/{uuid}.{ext}
+    const fileUuid = crypto.randomUUID();
+    const storagePath = `${accountId}/${profileId}/${fileUuid}.${ext}`;
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
+
+    // 5. Unggah ke Bucket Privat 'evidence'
+    const { error: uploadError } = await supabase.storage
+      .from("evidence")
+      .upload(storagePath, buffer, {
+        contentType: file.type || (ext === "pdf" ? "application/pdf" : "image/webp"),
+        upsert: false,
+      });
+
+    if (uploadError) {
+      return { success: false, error: uploadError.message };
+    }
+
+    // 6. Terbitkan Signed URL berumur pendek (3600 detik / 1 jam)
+    const { data: signedData, error: signedError } = await supabase.storage
+      .from("evidence")
+      .createSignedUrl(storagePath, 3600);
+
+    const sizeString = `${(file.size / 1024).toFixed(0)} KB`;
+
+    return {
+      success: true,
+      path: storagePath,
+      signedUrl: signedData?.signedUrl || undefined,
+      name: file.name,
+      size: sizeString,
+      error: signedError ? signedError.message : undefined,
+    };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Terjadi kesalahan saat mengunggah berkas bukti.";
+    return { success: false, error: errorMsg };
+  }
+}
+
+/**
+ * Server Action: Dapatkan Signed URL Berumur Pendek untuk Berkas Bukti Privat
+ */
+export async function getEvidenceSignedUrlAction(storagePath: string): Promise<{
+  success: boolean;
+  signedUrl?: string;
+  error?: string;
+}> {
+  try {
+    const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+
+    if (!authData?.user?.id) {
+      return { success: false, error: "Akses ditolak." };
+    }
+
+    const { data, error } = await supabase.storage
+      .from("evidence")
+      .createSignedUrl(storagePath, 3600);
+
+    if (error || !data?.signedUrl) {
+      return { success: false, error: error?.message || "Gagal menghasilkan tautan aman berkas." };
+    }
+
+    return { success: true, signedUrl: data.signedUrl };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Gagal memuat berkas.";
+    return { success: false, error: errorMsg };
+  }
+}
+
+/**
+ * Server Action: Pembersihan Seluruh File Terkait Profil Saat Profil Dihapus
+ */
+export async function deleteProfileMediaAction(profileId: string): Promise<{ success: boolean }> {
+  try {
+    const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+
+    if (!authData?.user?.id || !profileId) {
+      return { success: false };
+    }
+
+    const accountId = authData.user.id;
+    const folderPrefix = `${accountId}/${profileId}`;
+
+    // 1. Hapus dari bucket avatars
+    const { data: avatarFiles } = await supabase.storage.from("avatars").list(folderPrefix);
+    if (avatarFiles && avatarFiles.length > 0) {
+      await supabase.storage
+        .from("avatars")
+        .remove(avatarFiles.map((f) => `${folderPrefix}/${f.name}`));
+    }
+
+    // 2. Hapus dari bucket gallery
+    const { data: galleryFiles } = await supabase.storage.from("gallery").list(folderPrefix);
+    if (galleryFiles && galleryFiles.length > 0) {
+      await supabase.storage
+        .from("gallery")
+        .remove(galleryFiles.map((f) => `${folderPrefix}/${f.name}`));
+    }
+
+    // 3. Hapus dari bucket evidence
+    const { data: evidenceFiles } = await supabase.storage.from("evidence").list(folderPrefix);
+    if (evidenceFiles && evidenceFiles.length > 0) {
+      await supabase.storage
+        .from("evidence")
+        .remove(evidenceFiles.map((f) => `${folderPrefix}/${f.name}`));
+    }
+
+    return { success: true };
+  } catch {
+    return { success: false };
   }
 }

@@ -121,26 +121,6 @@ export async function transitionVerificationAction(
     });
 
     if (error) {
-      // Jika error adalah offline dev placeholder, simulasikan hanya saat dev offline
-      const isPlaceholder = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
-      if (isPlaceholder && (error.message.includes("fetch failed") || error.message.includes("Invalid API key"))) {
-        const badgeNo = input.newStatus === "verified" 
-          ? (input.badgeNo || `ESI-SB-VER-2026-${Math.floor(100000 + Math.random() * 900000)}`) 
-          : undefined;
-
-        revalidatePath("/admin/region/queue");
-        revalidatePath("/admin/province/queue");
-        revalidatePath("/me/verification");
-
-        return {
-          success: true,
-          message: `Status berhasil dialihkan ke "${input.newStatus}" (Mode Simulasi Pengembang).`,
-          newStatus: input.newStatus,
-          badgeNo,
-        };
-      }
-
-      // Di lingkungan nyata/produksi: Laporkan penolakan otorisasi secara tegas!
       return {
         success: false,
         error: `Otorisasi ditolak oleh database: ${error.message}`,
