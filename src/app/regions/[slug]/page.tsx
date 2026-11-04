@@ -21,9 +21,12 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { EsportCard } from "@/components/card/EsportCard";
 import { REGIONS_DETAIL } from "@/data/regions";
-import { GALLERY_CARDS } from "@/data/mockCards";
-import { MOCK_NEWS } from "@/data/mockNews";
 import { StatNumber } from "@/components/shared/StatNumber";
+import { mapVerificationToCard } from "@/types/card";
+import { getPublicProfilesList } from "@/lib/services/public-profiles";
+import { getLatestArticles } from "@/lib/services/news";
+
+export const instant = false;
 
 export function generateStaticParams() {
   return REGIONS_DETAIL.map((r) => ({
@@ -43,15 +46,16 @@ export default async function RegionDetailPage({
     notFound();
   }
 
-  // Profiles in this region
-  const regionProfiles = GALLERY_CARDS.filter(
-    (c) => c.data.region.code === region.code
-  );
+  // Query profil publik nyata dari database
+  const profilesResult = await getPublicProfilesList({ regionCode: region.code, limit: 24 });
+  const regionProfiles = profilesResult.profiles;
 
-  // Local news
-  const localNews = MOCK_NEWS.filter(
-    (n) => n.region.toLowerCase().includes(region.name.toLowerCase()) || n.region === "Sumatera Barat"
-  );
+  // Query artikel berita lokal nyata
+  const localNews = await getLatestArticles({ regionId: region.id, limit: 3 });
+
+  const playerCount = regionProfiles.filter((p) => p.entityType === "player").length;
+  const teamCount = regionProfiles.filter((p) => p.entityType === "team").length;
+  const coachCount = regionProfiles.filter((p) => p.entityType === "coach").length;
 
   const isAktif = region.adminMode === "active";
 
@@ -230,22 +234,39 @@ export default async function RegionDetailPage({
 
           {regionProfiles.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {regionProfiles.map((card) => (
-                <div key={card.id} className="flex justify-center">
+              {regionProfiles.map((p) => (
+                <Link key={p.id} href={`/${p.entityType}/${p.slug}`} className="flex justify-center group">
                   <EsportCard
-                    type={card.type}
-                    rarity={card.rarity}
-                    verification={card.verification}
-                    data={card.data}
+                    type={p.entityType}
+                    rarity={p.rarityTier}
+                    verification={mapVerificationToCard(p.verificationStatus)}
+                    data={{
+                      displayName: p.displayName,
+                      ign: p.ign || undefined,
+                      role: p.roleName || "Athlete",
+                      game: p.mainGameName || "Esport",
+                      team: (p.attributes as any)?.team_name ? { name: (p.attributes as any).team_name } : undefined,
+                      region: { name: p.regionName, code: p.regionCode },
+                      esportId: p.esportId,
+                      avatarUrl: p.avatarUrl || undefined,
+                    }}
                     size="sm"
                     interactive={true}
                   />
-                </div>
+                </Link>
               ))}
             </div>
           ) : (
-            <div className="py-12 text-center text-xs font-mono text-white/40 bg-[#0F1118]/50 rounded-2xl border border-white/[0.06]">
-              Belum ada kartu atlet terbit di wilayah ini. Jadilah yang pertama!
+            <div className="py-16 text-center text-xs font-mono bg-[#0F1118]/50 rounded-2xl border border-white/[0.06] p-8 flex flex-col items-center">
+              <ShieldCheck className="w-8 h-8 text-white/20 mb-3" />
+              <p className="text-white/60 mb-2 font-medium">Belum ada atlet atau klub resmi terdaftar di Pengcab {region.name}.</p>
+              <p className="text-white/40 mb-6 max-w-sm">Jadilah pionir esport resmi di daerah ini dan dapatkan paspor atlet PBESI Anda.</p>
+              <Link
+                href="/register"
+                className="px-4 py-2 rounded-xl bg-[#D4AF37] text-black font-heading font-black text-xs uppercase hover:bg-[#E5C158] transition-colors"
+              >
+                Daftar Sekarang
+              </Link>
             </div>
           )}
         </section>
@@ -263,28 +284,34 @@ export default async function RegionDetailPage({
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {localNews.slice(0, 3).map((news) => (
-              <Link
-                key={news.id}
-                href={`/news/${news.slug}`}
-                className="group p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-[#D4AF37]/50 flex flex-col justify-between transition-all"
-              >
-                <div>
-                  <span className="px-2 py-0.5 rounded text-[9px] font-mono text-[#D4AF37] bg-[#D4AF37]/10 uppercase mb-2 inline-block">
-                    {news.category}
-                  </span>
-                  <h3 className="text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2">
-                    {news.title}
-                  </h3>
-                </div>
-                <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-white/40 flex items-center justify-between">
-                  <span>{news.date}</span>
-                  <span className="text-white/60">{news.readTime}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
+          {localNews.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {localNews.map((news) => (
+                <Link
+                  key={news.id}
+                  href={`/news/${news.slug}`}
+                  className="group p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-[#D4AF37]/50 flex flex-col justify-between transition-all"
+                >
+                  <div>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-mono text-[#D4AF37] bg-[#D4AF37]/10 uppercase mb-2 inline-block">
+                      {news.category}
+                    </span>
+                    <h3 className="text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2">
+                      {news.title}
+                    </h3>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-white/40 flex items-center justify-between">
+                    <span>{new Date(news.publishedAt).toLocaleDateString("id-ID")}</span>
+                    <span className="text-white/60">Resmi PBESI</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="py-8 text-center text-xs font-mono text-white/40 bg-[#0F1118]/50 rounded-2xl border border-white/[0.06]">
+              Belum ada siaran berita khusus untuk wilayah ini.
+            </div>
+          )}
         </section>
       </main>
 

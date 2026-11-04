@@ -20,6 +20,41 @@ export default function NewsIndexPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [apiArticles, setApiArticles] = useState<Article[] | null>(null);
+
+  React.useEffect(() => {
+    async function loadNews() {
+      try {
+        const res = await fetch("/api/news?limit=30");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.articles && json.articles.length > 0) {
+            setApiArticles(
+              json.articles.map((a: any, idx: number) => ({
+                id: a.id,
+                title: a.title,
+                slug: a.slug,
+                excerpt: a.summary || a.content.slice(0, 150) + "...",
+                content: a.content,
+                category: a.category,
+                region: a.regionName || "Sumatera Barat",
+                author: a.authorName || "Humas ESI",
+                date: new Date(a.publishedAt).toLocaleDateString("id-ID"),
+                readTime: "3 min baca",
+                coverImage: a.coverImageUrl || undefined,
+                isHeadline: idx === 0,
+              }))
+            );
+          }
+        }
+      } catch {
+        // Fallback to MOCK_NEWS
+      }
+    }
+    loadNews();
+  }, []);
+
+  const activeCatalog = apiArticles || MOCK_NEWS;
 
   const categories = [
     { id: "all", label: "Semua Kategori" },
@@ -38,7 +73,7 @@ export default function NewsIndexPage() {
   ];
 
   const filteredNews = useMemo(() => {
-    return MOCK_NEWS.filter((item) => {
+    return activeCatalog.filter((item) => {
       const matchCat =
         selectedCategory === "all" || item.category === selectedCategory;
       const matchReg =

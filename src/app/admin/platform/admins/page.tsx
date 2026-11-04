@@ -24,6 +24,7 @@ import { AdminPlatformNavbar } from "@/components/admin/AdminPlatformNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { MOCK_ADMIN_ACCOUNTS, AdminAccount } from "@/data/mockAdminData";
+import { inviteAdminAccountAction } from "@/app/actions/admin-management";
 
 export default function AdminPlatformAdminsPage() {
   const [admins, setAdmins] = useState<AdminAccount[]>(MOCK_ADMIN_ACCOUNTS);
@@ -48,7 +49,7 @@ export default function AdminPlatformAdminsPage() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  const handleCreateAdmin = (e: React.FormEvent) => {
+  const handleCreateAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newName || !newEmail || !assignmentReason) return;
 
@@ -56,6 +57,14 @@ export default function AdminPlatformAdminsPage() {
       newRole === "admin_province"
         ? { code: "SUMBAR", name: "Seluruh Sumatera Barat (Pengprov)" }
         : REGIONS_DETAIL.find((r) => r.code === newRegionCode) || REGIONS_DETAIL[0];
+
+    await inviteAdminAccountAction({
+      name: newName,
+      email: newEmail,
+      role: newRole,
+      regionCode: assignedRegion.code,
+      reason: assignmentReason,
+    });
 
     const newAdmin: AdminAccount = {
       id: `adm-${Date.now()}`,
@@ -70,7 +79,7 @@ export default function AdminPlatformAdminsPage() {
     };
 
     setAdmins((prev) => [newAdmin, ...prev]);
-    showToast(`Akun admin ESI ${newName} (${assignedRegion.name}) berhasil dibuat dan dicatat di audit log.`);
+    showToast(`Akun admin ESI ${newName} (${assignedRegion.name}) berhasil diundang dan dicatat di audit log.`);
     setIsCreateModalOpen(false);
     setNewName("");
     setNewEmail("");

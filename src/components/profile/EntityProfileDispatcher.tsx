@@ -13,6 +13,7 @@ import { CommunityProfileTemplate } from "./templates/CommunityProfileTemplate";
 import { VenueProfileTemplate } from "./templates/VenueProfileTemplate";
 import { CampusProfileTemplate } from "./templates/CampusProfileTemplate";
 import { SchoolProfileTemplate } from "./templates/SchoolProfileTemplate";
+import { DemoBanner } from "@/components/ui/DemoBanner";
 
 interface EntityProfileDispatcherProps {
   profile: UnifiedProfileDetail;
@@ -80,6 +81,9 @@ export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProp
           <ChevronRight className="w-3.5 h-3.5" />
           <span className="text-[#D4AF37] font-bold">{profile.displayName}</span>
         </nav>
+
+        {/* Demo Data Banner jika data berstatus demo */}
+        {profile.isDemo && <DemoBanner className="mb-6" />}
 
         {/* Dynamic Entity Template Content */}
         {renderTemplate()}

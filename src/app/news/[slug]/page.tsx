@@ -15,6 +15,9 @@ import {
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MOCK_NEWS, Article } from "@/data/mockNews";
+import { getArticleBySlug, getLatestArticles } from "@/lib/services/news";
+
+export const instant = false;
 
 export function generateStaticParams() {
   return MOCK_NEWS.map((n) => ({
@@ -28,14 +31,50 @@ export default async function NewsDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = MOCK_NEWS.find((n) => n.slug === slug);
+  const dbArticle = await getArticleBySlug(slug);
+  const mockArticle = MOCK_NEWS.find((n) => n.slug === slug);
 
-  if (!article) {
+  if (!dbArticle && !mockArticle) {
     notFound();
   }
 
+  const article = dbArticle
+    ? {
+        id: dbArticle.id,
+        title: dbArticle.title,
+        slug: dbArticle.slug,
+        excerpt: dbArticle.summary || "",
+        content: dbArticle.content,
+        category: dbArticle.category,
+        region: dbArticle.regionName || "Sumatera Barat",
+        author: dbArticle.authorName || "Humas ESI Sumbar",
+        date: new Date(dbArticle.publishedAt).toLocaleDateString("id-ID"),
+        readTime: "3 min baca",
+        imageUrl: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
+        coverImage: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
+      }
+    : mockArticle!;
+
   // Related articles
-  const relatedArticles = MOCK_NEWS.filter((n) => n.id !== article.id).slice(0, 3);
+  const dbRelated = await getLatestArticles({ limit: 4 });
+  const relatedArticles = dbRelated.length > 0
+    ? dbRelated
+        .filter((n) => n.slug !== article.slug)
+        .slice(0, 3)
+        .map((r) => ({
+          id: r.id,
+          title: r.title,
+          slug: r.slug,
+          excerpt: r.summary || "",
+          content: r.content,
+          category: r.category,
+          region: r.regionName || "Sumatera Barat",
+          author: "Humas ESI",
+          date: new Date(r.publishedAt).toLocaleDateString("id-ID"),
+          readTime: "3 min",
+          imageUrl: r.coverImageUrl || "/images/news-placeholder.jpg",
+        }))
+    : MOCK_NEWS.filter((n) => n.slug !== article.slug).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#07080C] text-white flex flex-col select-none">

@@ -20,6 +20,24 @@ import { REGIONS_DETAIL } from "@/data/regions";
 
 export default function EsportsMapPage() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [dbVenues, setDbVenues] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    async function loadVenues() {
+      try {
+        const res = await fetch("/api/profiles?entity_type=venue&limit=50");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.profiles && json.profiles.length > 0) {
+            setDbVenues(json.profiles);
+          }
+        }
+      } catch {
+        // Fallback to MOCK_VENUES
+      }
+    }
+    loadVenues();
+  }, []);
   const [selectedPin, setSelectedPin] = useState<{
     id: string;
     title: string;
@@ -38,9 +56,25 @@ export default function EsportsMapPage() {
     coords: { lat: -0.9471, lng: 100.3543 },
   });
 
-  // Map markers from venues + ESI secretariats
+  // Map markers from registered database venues (or fallback to ecosystem mock) + ESI secretariats
+  const venueSource = dbVenues.length > 0
+    ? dbVenues.map((v) => ({
+        id: v.id,
+        name: v.displayName,
+        category: (v.attributes as any)?.venue_type || "Esports Arena",
+        internetSpeedMbps: (v.attributes as any)?.internet_speed_mbps || 100,
+        address: (v.attributes as any)?.address || `${v.regionName}, Sumatera Barat`,
+        contactPhone: (v.attributes as any)?.contact_phone || "+62 812-0000-0000",
+        coordinates: {
+          lat: (v.attributes as any)?.latitude || -0.9471,
+          lng: (v.attributes as any)?.longitude || 100.3543,
+        },
+        regionId: v.regionCode.toLowerCase(),
+      }))
+    : MOCK_VENUES;
+
   const markers = [
-    ...MOCK_VENUES.map((v) => ({
+    ...venueSource.map((v) => ({
       id: v.id,
       title: v.name,
       subtitle: `${v.category} • ${v.internetSpeedMbps} Mbps`,
@@ -49,8 +83,8 @@ export default function EsportsMapPage() {
       phone: v.contactPhone,
       coords: v.coordinates,
       // Screen positioning coordinates for interactive SVG map representation (normalized %)
-      svgX: v.regionId === "reg-pdg" ? 220 : v.regionId === "reg-bkt" ? 310 : 390,
-      svgY: v.regionId === "reg-pdg" ? 350 : v.regionId === "reg-bkt" ? 240 : 200,
+      svgX: v.regionId === "pdg" || v.regionId === "reg-pdg" ? 220 : v.regionId === "bkt" || v.regionId === "reg-bkt" ? 310 : 390,
+      svgY: v.regionId === "pdg" || v.regionId === "reg-pdg" ? 350 : v.regionId === "bkt" || v.regionId === "reg-bkt" ? 240 : 200,
     })),
     // Sekretariat Pengcab Utama
     {

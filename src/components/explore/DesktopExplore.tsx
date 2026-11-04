@@ -56,6 +56,44 @@ export function DesktopExplore() {
 
   // Region filter search within sidebar
   const [regionFilterSearch, setRegionFilterSearch] = useState("");
+  const [dbCards, setDbCards] = useState<MockCardVariant[] | null>(null);
+
+  // Fetch live profiles from Supabase API
+  useEffect(() => {
+    async function fetchLiveProfiles() {
+      try {
+        const res = await fetch("/api/profiles?limit=100");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.profiles && json.profiles.length > 0) {
+            setDbCards(
+              json.profiles.map((p: any) => ({
+                id: p.id,
+                type: p.entityType,
+                rarity: p.rarityTier,
+                verification: p.verificationStatus,
+                data: {
+                  displayName: p.displayName,
+                  ign: p.ign || undefined,
+                  role: p.roleName || "Member",
+                  game: p.mainGameName || "Esport",
+                  team: (p.attributes as any)?.team_name
+                    ? { name: (p.attributes as any).team_name }
+                    : undefined,
+                  region: { name: p.regionName, code: p.regionCode },
+                  esportId: p.esportId,
+                  avatarUrl: p.avatarUrl || undefined,
+                },
+              }))
+            );
+          }
+        }
+      } catch {
+        // Fallback to GALLERY_CARDS
+      }
+    }
+    fetchLiveProfiles();
+  }, []);
 
   // Sync initialTab if url changes
   useEffect(() => {
@@ -86,7 +124,7 @@ export function DesktopExplore() {
 
   // Filtered Cards calculation
   const filteredCards = useMemo(() => {
-    const list = GALLERY_CARDS.filter((card) => {
+    const list = (dbCards || GALLERY_CARDS).filter((card) => {
       // Entity filter
       if (selectedEntity !== "all" && card.type !== selectedEntity) return false;
       // Game filter

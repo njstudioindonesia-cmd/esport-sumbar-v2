@@ -17,6 +17,14 @@ export type CardVerification =
   | "suspended"
   | "reverify";
 
+export function mapVerificationToCard(status?: string | null): CardVerification {
+  if (status === "verified") return "verified";
+  if (status === "regional" || status === "regional_checked") return "regional";
+  if (status === "suspended") return "suspended";
+  if (status === "reverify") return "reverify";
+  return "unverified";
+}
+
 export type CardSize = "sm" | "md" | "lg";
 
 export interface CardAchievement {

@@ -37,6 +37,43 @@ export function MobileExplore() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [filterRegionSearch, setFilterRegionSearch] = useState("");
+  const [dbCards, setDbCards] = useState<MockCardVariant[] | null>(null);
+
+  React.useEffect(() => {
+    async function loadLiveCards() {
+      try {
+        const res = await fetch("/api/profiles?limit=60");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.profiles && json.profiles.length > 0) {
+            setDbCards(
+              json.profiles.map((p: any) => ({
+                id: p.id,
+                type: p.entityType,
+                rarity: p.rarityTier,
+                verification: p.verificationStatus,
+                data: {
+                  displayName: p.displayName,
+                  ign: p.ign || undefined,
+                  role: p.roleName || "Member",
+                  game: p.mainGameName || "Esport",
+                  team: (p.attributes as any)?.team_name
+                    ? { name: (p.attributes as any).team_name }
+                    : undefined,
+                  region: { name: p.regionName, code: p.regionCode },
+                  esportId: p.esportId,
+                  avatarUrl: p.avatarUrl || undefined,
+                },
+              }))
+            );
+          }
+        }
+      } catch {
+        // Fallback to GALLERY_CARDS
+      }
+    }
+    loadLiveCards();
+  }, []);
 
   const triggerHaptic = (ms = 10) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
@@ -60,7 +97,7 @@ export function MobileExplore() {
 
   // Filtered Cards
   const filteredCards = useMemo(() => {
-    return GALLERY_CARDS.filter((card) => {
+    return (dbCards || GALLERY_CARDS).filter((card) => {
       // Entity match
       if (selectedEntity !== "all" && card.type !== selectedEntity) return false;
       // Region match

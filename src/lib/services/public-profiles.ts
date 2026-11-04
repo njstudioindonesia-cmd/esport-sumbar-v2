@@ -1,6 +1,7 @@
 import { createPublicServerClient } from "@/lib/supabase/server";
 import type { EntityType, RarityTier, VerificationStatus } from "@/lib/supabase/database.types";
 import { GALLERY_CARDS } from "@/data/mockCards";
+import { FLAGS } from "@/lib/config/flags";
 
 export interface UnifiedProfileDetail {
   id: string;
@@ -246,41 +247,92 @@ export async function getPublicProfileBySlug(
   };
 }
 
+export interface PublicProfilesQueryOptions {
+  entityType?: EntityType;
+  regionCode?: string;
+  gameId?: string;
+  verificationStatus?: VerificationStatus;
+  rarityTier?: RarityTier;
+  search?: string;
+  sortBy?: "newest" | "completeness" | "name";
+  page?: number;
+  limit?: number;
+}
+
+export interface PublicProfilesListResult {
+  profiles: UnifiedProfileDetail[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 /**
- * Mengambil daftar profil publik berdasarkan jenis entitas untuk halaman direktori
+ * Mengambil daftar profil publik dengan paginasi, filter lengkap, dan kepatuhan SHOW_DEMO_DATA
  */
-export async function getPublicProfilesByEntity(
-  entityType: EntityType,
-  options?: {
-    regionCode?: string;
-    search?: string;
-    limit?: number;
-  }
-): Promise<UnifiedProfileDetail[]> {
+export async function getPublicProfilesList(
+  options?: PublicProfilesQueryOptions
+): Promise<PublicProfilesListResult> {
+  const page = Math.max(1, options?.page || 1);
+  const limit = Math.min(100, Math.max(1, options?.limit || 20));
+  const offset = (page - 1) * limit;
+
   try {
     const supabase = createPublicServerClient();
     let query = supabase
       .from("public_profiles")
-      .select("*")
-      .eq("entity_type", entityType)
-      .order("created_at", { ascending: false });
+      .select("*", { count: "exact" });
+
+    // Filter flag SHOW_DEMO_DATA
+    if (!FLAGS.SHOW_DEMO_DATA) {
+      query = query.eq("is_demo", false);
+    }
+
+    if (options?.entityType) {
+      query = query.eq("entity_type", options.entityType);
+    }
 
     if (options?.regionCode) {
       query = query.eq("region_code", options.regionCode);
     }
 
+    if (options?.gameId) {
+      query = query.eq("main_game_id", options.gameId);
+    }
+
+    if (options?.verificationStatus) {
+      query = query.eq("verification_status", options.verificationStatus);
+    }
+
+    if (options?.rarityTier) {
+      query = query.eq("rarity_tier", options.rarityTier);
+    }
+
     if (options?.search) {
-      query = query.ilike("display_name", `%${options.search}%`);
+      const s = options.search.trim();
+      query = query.or(`display_name.ilike.%${s}%,ign.ilike.%${s}%,esport_id.ilike.%${s}%`);
     }
 
-    if (options?.limit) {
-      query = query.limit(options.limit);
+    // Sorting
+    switch (options?.sortBy) {
+      case "completeness":
+        query = query.order("completeness_score", { ascending: false });
+        break;
+      case "name":
+        query = query.order("display_name", { ascending: true });
+        break;
+      case "newest":
+      default:
+        query = query.order("created_at", { ascending: false });
+        break;
     }
 
-    const { data, error } = await query;
+    query = query.range(offset, offset + limit - 1);
 
-    if (data && data.length > 0) {
-      return data.map((p: any) => ({
+    const { data, count, error } = await query;
+
+    if (!error && data && data.length > 0) {
+      const mapped = data.map((p: any) => ({
         id: p.id,
         accountId: p.account_id,
         entityType: p.entity_type as EntityType,
@@ -311,13 +363,39 @@ export async function getPublicProfilesByEntity(
         createdAt: p.created_at,
         updatedAt: p.updated_at,
       }));
+
+      const totalCount = count || mapped.length;
+      return {
+        profiles: mapped,
+        total: totalCount,
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit),
+      };
     }
   } catch (err) {
-    console.warn("Query error, using fallback catalog:", err);
+    console.warn("Public profiles query error, falling back to mock catalog:", err);
   }
 
-  // Fallback: data mockCards yang sesuai entitas
-  return GALLERY_CARDS.filter((c) => c.type === entityType).map((c) => ({
+  // Fallback ke mock cards jika DB belum siap
+  let fallback = GALLERY_CARDS;
+  if (options?.entityType) {
+    fallback = fallback.filter((c) => c.type === options.entityType);
+  }
+  if (options?.regionCode) {
+    fallback = fallback.filter((c) => c.data.region.code === options.regionCode);
+  }
+  if (options?.search) {
+    const s = options.search.toLowerCase();
+    fallback = fallback.filter(
+      (c) =>
+        c.data.displayName.toLowerCase().includes(s) ||
+        (c.data.ign && c.data.ign.toLowerCase().includes(s)) ||
+        c.data.esportId.toLowerCase().includes(s)
+    );
+  }
+
+  const mappedFallback = fallback.map((c) => ({
     id: c.id,
     accountId: "00000000-0000-0000-0000-000000000001",
     entityType: c.type as EntityType,
@@ -347,4 +425,35 @@ export async function getPublicProfilesByEntity(
     isDemo: true,
     createdAt: "2026-01-01T00:00:00Z",
   }));
+
+  const paged = mappedFallback.slice(offset, offset + limit);
+
+  return {
+    profiles: paged,
+    total: mappedFallback.length,
+    page,
+    limit,
+    totalPages: Math.ceil(mappedFallback.length / limit),
+  };
+}
+
+/**
+ * Mengambil daftar profil publik berdasarkan jenis entitas untuk halaman direktori
+ */
+export async function getPublicProfilesByEntity(
+  entityType: EntityType,
+  options?: {
+    regionCode?: string;
+    search?: string;
+    limit?: number;
+  }
+): Promise<UnifiedProfileDetail[]> {
+  const result = await getPublicProfilesList({
+    entityType,
+    regionCode: options?.regionCode,
+    search: options?.search,
+    limit: options?.limit || 24,
+  });
+
+  return result.profiles;
 }

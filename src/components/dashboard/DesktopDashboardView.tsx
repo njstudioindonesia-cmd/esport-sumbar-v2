@@ -23,9 +23,11 @@ import {
 import { EsportCard } from "@/components/card/EsportCard";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
+import { mapVerificationToCard } from "@/types/card";
 
 export function DesktopDashboardView() {
   const [showShareModal, setShowShareModal] = useState(false);
+  const [liveProfiles, setLiveProfiles] = useState<any[] | null>(null);
   const [invitations, setInvitations] = useState([
     {
       id: "inv-1",
@@ -43,11 +45,49 @@ export function DesktopDashboardView() {
     },
   ]);
 
+  React.useEffect(() => {
+    async function loadMyProfile() {
+      try {
+        const res = await fetch("/api/me/profiles");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.profiles) {
+            setLiveProfiles(json.profiles);
+          }
+        }
+      } catch {
+        // Fallback to mock
+      }
+    }
+    loadMyProfile();
+  }, []);
+
   const handleAction = (id: string, action: "accept" | "decline") => {
     setInvitations((prev) => prev.filter((i) => i.id !== id));
   };
 
-  const userCard = GALLERY_CARDS[2] || GALLERY_CARDS[0];
+  const activeProfile = liveProfiles && liveProfiles.length > 0 ? liveProfiles[0] : null;
+
+  const userCard = activeProfile
+    ? {
+        id: activeProfile.id,
+        type: activeProfile.entityType,
+        rarity: activeProfile.rarityTier,
+        verification: mapVerificationToCard(activeProfile.verificationStatus),
+        data: {
+          displayName: activeProfile.displayName,
+          ign: activeProfile.ign || undefined,
+          role: activeProfile.roleName || "Athlete",
+          game: activeProfile.mainGameName || "Esport",
+          region: { name: activeProfile.regionName, code: activeProfile.regionCode },
+          esportId: activeProfile.esportId,
+          avatarUrl: activeProfile.avatarUrl || undefined,
+        },
+      }
+    : (GALLERY_CARDS[2] || GALLERY_CARDS[0]);
+
+  const completeness = activeProfile ? (activeProfile.completenessScore || 60) : 85;
+  const isVerified = (activeProfile?.verificationStatus === "verified") || (!activeProfile && userCard.verification === "verified");
 
   return (
     <div className="w-full flex flex-col gap-8">
@@ -157,13 +197,13 @@ export function DesktopDashboardView() {
                     stroke="#D4AF37"
                     strokeWidth="6"
                     strokeDasharray={2 * Math.PI * 34}
-                    strokeDashoffset={2 * Math.PI * 34 * (1 - 0.85)}
+                    strokeDashoffset={2 * Math.PI * 34 * (1 - completeness / 100)}
                     strokeLinecap="round"
                     fill="none"
                   />
                 </svg>
                 <span className="absolute font-mono font-black text-lg text-white">
-                  85%
+                  {completeness}%
                 </span>
               </div>
 
@@ -189,26 +229,26 @@ export function DesktopDashboardView() {
                 <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
                   STATUS RESMI
                 </span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className={`w-2 h-2 rounded-full ${isVerified ? "bg-emerald-400 animate-pulse" : "bg-amber-400"}`} />
               </div>
 
               <div className="my-2 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isVerified ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400" : "bg-amber-500/10 border border-amber-500/30 text-amber-400"}`}>
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="text-base font-heading font-black text-white">
-                    Terverifikasi
+                    {isVerified ? "Terverifikasi" : activeProfile?.verificationStatus === "submitted" ? "Diajukan" : activeProfile?.verificationStatus === "in_review_regional" ? "Review Cabang" : "Belum Verifikasi"}
                   </div>
                   <div className="text-[10px] font-mono text-white/40">
-                    ESI-SB-2025-0042
+                    {activeProfile?.esportId || "ESB-SB-2026-0001"}
                   </div>
                 </div>
               </div>
 
-              <div className="text-[11px] font-mono text-emerald-400/80 pt-2 border-t border-white/[0.06] flex items-center justify-between">
-                <span>Pengprov ESI Sumbar</span>
-                <Link href="/me/verification" className="text-white/40 hover:text-white">
+              <div className="text-[11px] font-mono text-white/60 pt-2 border-t border-white/[0.06] flex items-center justify-between">
+                <span>{activeProfile?.regionName || "Pengcab Daerah"}</span>
+                <Link href="/me/verification" className="text-[#D4AF37] hover:underline">
                   Detail &rarr;
                 </Link>
               </div>

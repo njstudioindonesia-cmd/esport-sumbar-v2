@@ -15,23 +15,84 @@ import {
   ChevronRight,
   ExternalLink,
 } from "lucide-react";
+import { mapVerificationToCard } from "@/types/card";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { MOCK_NEWS } from "@/data/mockNews";
 import { MobileBottomBar } from "./MobileBottomBar";
+import type { PlatformStats } from "@/lib/services/stats";
+import type { PublicArticle } from "@/lib/services/news";
+import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 
-export function MobileHome() {
+interface MobileHomeProps {
+  stats?: PlatformStats;
+  articles?: PublicArticle[];
+  profiles?: UnifiedProfileDetail[];
+}
+
+export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
   const router = useRouter();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // User's Active Hero Card (Contender Tier / Regional Checked)
-  const heroCard = GALLERY_CARDS.find((c) => c.id === "pl-contender") || GALLERY_CARDS[0];
+  // User's Active Hero Card
+  const dbHeroCard = profiles && profiles.length > 0
+    ? {
+        id: profiles[0].id,
+        type: profiles[0].entityType,
+        rarity: profiles[0].rarityTier,
+        verification: mapVerificationToCard(profiles[0].verificationStatus),
+        data: {
+          displayName: profiles[0].displayName,
+          ign: profiles[0].ign || undefined,
+          role: profiles[0].roleName || "Athlete",
+          game: profiles[0].mainGameName || "Esport",
+          team: (profiles[0].attributes as any)?.team_name
+            ? { name: (profiles[0].attributes as any).team_name }
+            : undefined,
+          region: { name: profiles[0].regionName, code: profiles[0].regionCode },
+          esportId: profiles[0].esportId,
+          avatarUrl: profiles[0].avatarUrl || undefined,
+        },
+      }
+    : null;
+
+  const heroCard = dbHeroCard || GALLERY_CARDS.find((c) => c.id === "pl-contender") || GALLERY_CARDS[0];
 
   // Featured Athletes for the mini card carousel
-  const featuredCards = GALLERY_CARDS.filter((c) => c.id !== heroCard.id).slice(0, 5);
+  const featuredCards = profiles && profiles.length > 1
+    ? profiles.slice(1, 6).map((p) => ({
+        id: p.id,
+        type: p.entityType,
+        rarity: p.rarityTier,
+        verification: mapVerificationToCard(p.verificationStatus),
+        data: {
+          displayName: p.displayName,
+          ign: p.ign || undefined,
+          role: p.roleName || "Athlete",
+          game: p.mainGameName || "Esport",
+          team: (p.attributes as any)?.team_name
+            ? { name: (p.attributes as any).team_name }
+            : undefined,
+          region: { name: p.regionName, code: p.regionCode },
+          esportId: p.esportId,
+          avatarUrl: p.avatarUrl || undefined,
+        },
+      }))
+    : GALLERY_CARDS.filter((c) => c.id !== heroCard.id).slice(0, 5);
 
   // Recent 3 News items
-  const recentNews = MOCK_NEWS.slice(0, 3);
+  const recentNews = articles && articles.length > 0
+    ? articles.slice(0, 3).map((a) => ({
+        id: a.id,
+        title: a.title,
+        slug: a.slug,
+        category: a.category,
+        region: a.regionName || "Sumatera Barat",
+        date: new Date(a.publishedAt).toLocaleDateString("id-ID"),
+        readTime: "3 min baca",
+        imageUrl: a.coverImageUrl || "/images/news-placeholder.jpg",
+      }))
+    : MOCK_NEWS.slice(0, 3);
 
   const triggerHaptic = (ms = 10) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
