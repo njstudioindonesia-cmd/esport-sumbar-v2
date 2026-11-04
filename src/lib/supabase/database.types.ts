@@ -81,6 +81,8 @@ export type Database = {
           role: AccountRole;
           assigned_region_id: string | null;
           birth_date: string | null;
+          guardian_consent_id: string | null;
+          is_demo: boolean;
           is_active: boolean;
           created_at: string;
           updated_at: string;
@@ -91,6 +93,8 @@ export type Database = {
           role?: AccountRole;
           assigned_region_id?: string | null;
           birth_date?: string | null;
+          guardian_consent_id?: string | null;
+          is_demo?: boolean;
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -101,6 +105,8 @@ export type Database = {
           role?: AccountRole;
           assigned_region_id?: string | null;
           birth_date?: string | null;
+          guardian_consent_id?: string | null;
+          is_demo?: boolean;
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -192,7 +198,10 @@ export type Database = {
           main_game_id: string | null;
           role_name: string | null;
           avatar_url: string | null;
+          avatar_path: string | null;
+          cover_path: string | null;
           bio: string | null;
+          attributes: Json;
           metadata_jsonb: Json;
           visibility_jsonb: Json;
           verification_status: VerificationStatus;
@@ -201,6 +210,7 @@ export type Database = {
           verified_badge_no: string | null;
           rarity_tier: RarityTier;
           completeness_score: number;
+          is_demo: boolean;
           is_published: boolean;
           created_at: string;
           updated_at: string;
@@ -209,7 +219,7 @@ export type Database = {
           id?: string;
           account_id: string;
           entity_type: EntityType;
-          esport_id: string;
+          esport_id?: string;
           slug: string;
           display_name: string;
           ign?: string | null;
@@ -217,7 +227,10 @@ export type Database = {
           main_game_id?: string | null;
           role_name?: string | null;
           avatar_url?: string | null;
+          avatar_path?: string | null;
+          cover_path?: string | null;
           bio?: string | null;
+          attributes?: Json;
           metadata_jsonb?: Json;
           visibility_jsonb?: Json;
           verification_status?: VerificationStatus;
@@ -226,6 +239,7 @@ export type Database = {
           verified_badge_no?: string | null;
           rarity_tier?: RarityTier;
           completeness_score?: number;
+          is_demo?: boolean;
           is_published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -242,7 +256,10 @@ export type Database = {
           main_game_id?: string | null;
           role_name?: string | null;
           avatar_url?: string | null;
+          avatar_path?: string | null;
+          cover_path?: string | null;
           bio?: string | null;
+          attributes?: Json;
           metadata_jsonb?: Json;
           visibility_jsonb?: Json;
           verification_status?: VerificationStatus;
@@ -251,6 +268,7 @@ export type Database = {
           verified_badge_no?: string | null;
           rarity_tier?: RarityTier;
           completeness_score?: number;
+          is_demo?: boolean;
           is_published?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -540,8 +558,80 @@ export type Database = {
         };
         Relationships: [];
       };
+      media_assets: {
+        Row: {
+          id: string;
+          profile_id: string;
+          kind: "avatar" | "cover" | "gallery";
+          path: string;
+          width: number | null;
+          height: number | null;
+          sort_order: number;
+          caption: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          profile_id: string;
+          kind: "avatar" | "cover" | "gallery";
+          path: string;
+          width?: number | null;
+          height?: number | null;
+          sort_order?: number;
+          caption?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          profile_id?: string;
+          kind?: "avatar" | "cover" | "gallery";
+          path?: string;
+          width?: number | null;
+          height?: number | null;
+          sort_order?: number;
+          caption?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
     };
-    Views: Record<string, never>;
+    Views: {
+      public_profiles: {
+        Row: {
+          id: string;
+          account_id: string;
+          entity_type: EntityType;
+          esport_id: string;
+          slug: string;
+          display_name: string;
+          ign: string | null;
+          region_id: string;
+          region_name: string | null;
+          region_code: string | null;
+          region_type: string | null;
+          main_game_id: string | null;
+          main_game_name: string | null;
+          main_game_short: string | null;
+          role_name: string | null;
+          avatar_url: string | null;
+          avatar_path: string | null;
+          cover_path: string | null;
+          bio: string | null;
+          attributes: Json;
+          visibility_jsonb: Json;
+          verification_status: VerificationStatus;
+          verified_at: string | null;
+          verification_expires_at: string | null;
+          verified_badge_no: string | null;
+          rarity_tier: RarityTier;
+          completeness_score: number;
+          is_demo: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Relationships: [];
+      };
+    };
     Functions: {
       transition_verification: {
         Args: {
@@ -553,6 +643,13 @@ export type Database = {
           p_badge_no: string | null;
         };
         Returns: Json;
+      };
+      generate_esport_id: {
+        Args: {
+          p_region_id: string;
+          p_entity_type: string;
+        };
+        Returns: string;
       };
       get_auth_role: {
         Args: Record<PropertyKey, never>;
