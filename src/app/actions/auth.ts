@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import {
@@ -85,47 +85,75 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
 
   try {
     const supabase = await createClient();
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    // 2. Daftarkan akun di Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${siteUrl}/auth/callback?next=/me/profile/new`,
-        data: {
+    let userId: string;
+
+    if (serviceKey) {
+      // 2. Gunakan Admin API agar email_confirm langsung true dan TIDAK PERNAH terblokir SMTP rate limit
+      const adminClient = createAdminClient();
+      const { data: adminData, error: adminError } = await adminClient.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: {
           birth_date: birthDate || null,
         },
-      },
-    });
+      });
 
-    if (authError) {
-      const msg = authError.message.toLowerCase();
-      if (msg.includes("already registered")) {
-        return {
-          success: false,
-          error: "Alamat email ini sudah terdaftar. Silakan masuk atau gunakan fitur lupa kata sandi.",
-        };
+      if (adminError) {
+        const msg = adminError.message.toLowerCase();
+        if (msg.includes("already registered") || msg.includes("already been registered")) {
+          return {
+            success: false,
+            error: "Alamat email ini sudah terdaftar. Silakan masuk dengan email dan kata sandi Anda.",
+          };
+        }
+        return { success: false, error: adminError.message };
       }
-      if (msg.includes("rate limit")) {
-        return {
-          success: false,
-          error: "Batas pengiriman email sistem tercapai (email rate limit). Harap matikan 'Confirm email' di Supabase Dashboard agar registrasi langsung aktif tanpa kirim email.",
-        };
-      }
-      return { success: false, error: authError.message };
-    }
 
-    const user = authData.user;
-    if (!user) {
-      return { success: false, error: "Gagal membuat sesi pendaftaran." };
+      if (!adminData.user) {
+        return { success: false, error: "Gagal membuat akun." };
+      }
+
+      userId = adminData.user.id;
+    } else {
+      // Fallback jika SERVICE_ROLE_KEY tidak ada
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${siteUrl}/auth/callback?next=/me/profile/new`,
+          data: {
+            birth_date: birthDate || null,
+          },
+        },
+      });
+
+      if (authError) {
+        const msg = authError.message.toLowerCase();
+        if (msg.includes("already registered")) {
+          return {
+            success: false,
+            error: "Alamat email ini sudah terdaftar. Silakan masuk atau gunakan fitur lupa kata sandi.",
+          };
+        }
+        return { success: false, error: authError.message };
+      }
+
+      if (!authData.user) {
+        return { success: false, error: "Gagal membuat sesi pendaftaran." };
+      }
+
+      userId = authData.user.id;
     }
 
     // 3. Pastikan baris accounts tersinkronisasi jika trigger belum aktif
     try {
       await supabase.from("accounts").upsert(
         {
-          id: user.id,
-          email: user.email || email,
+          id: userId,
+          email: email.toLowerCase(),
           role: "user",
           assigned_region_id: null,
           birth_date: birthDate || null,
@@ -137,20 +165,28 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
       // Trigger on_auth_user_created di PostgreSQL menangani sinkronisasi ini secara otomatis
     }
 
-    // Jika konfirmasi email wajib dan session belum terbit
-    const needsConfirmation = !authData.session;
+    // 4. Masuk otomatis (Sign in) agar cookie sesi tersimpan langsung di browser pengguna
+    try {
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+    } catch (e) {
+      console.warn("Auto sign-in warning:", e);
+    }
 
+    revalidatePath("/dashboard");
+    revalidatePath("/me/cards");
     revalidatePath("/login");
+
     return {
       success: true,
-      needsConfirmation,
-      message: needsConfirmation
-        ? "Pendaftaran berhasil! Tautan aktivasi telah dikirim ke email Anda. Silakan periksa kotak masuk atau spam Anda."
-        : "Pendaftaran berhasil! Akun Anda telah aktif.",
+      needsConfirmation: false,
+      message: "Pendaftaran berhasil! Mengalihkan ke pembuatan kartu...",
       role: "user",
       user: {
-        id: user.id,
-        email: user.email || email,
+        id: userId,
+        email,
         role: "user",
         assignedRegionId: null,
       },
