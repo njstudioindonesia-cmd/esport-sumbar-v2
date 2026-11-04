@@ -19,11 +19,19 @@ import {
 } from "lucide-react";
 import { AdminPlatformNavbar } from "@/components/admin/AdminPlatformNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { MobileAdminPortal } from "@/components/mobile/MobileAdminPortal";
 
 export default function AdminPlatformDashboardPage() {
   return (
-    <div className="min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex flex-col font-sans">
-      <AdminPlatformNavbar />
+    <>
+      {/* Mobile Admin Experience */}
+      <div className="block lg:hidden">
+        <MobileAdminPortal initialRole="platform" />
+      </div>
+
+      {/* Desktop Admin View */}
+      <div className="hidden lg:flex min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex-col font-sans">
+        <AdminPlatformNavbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
         {/* OPERATOR GOVERNANCE NOTICE */}
@@ -319,6 +327,7 @@ export default function AdminPlatformDashboardPage() {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 }

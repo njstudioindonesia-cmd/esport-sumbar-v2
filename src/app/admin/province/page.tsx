@@ -20,6 +20,7 @@ import { AdminProvinceNavbar } from "@/components/admin/AdminProvinceNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { MOCK_PROVINCE_QUEUE } from "@/data/mockAdminData";
+import { MobileAdminPortal } from "@/components/mobile/MobileAdminPortal";
 
 export default function AdminProvinceDashboardPage() {
   const pendingGoldVerification = MOCK_PROVINCE_QUEUE.filter(
@@ -63,8 +64,15 @@ export default function AdminProvinceDashboardPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex flex-col font-sans">
-      <AdminProvinceNavbar />
+    <>
+      {/* Mobile Admin Experience */}
+      <div className="block lg:hidden">
+        <MobileAdminPortal initialRole="province" />
+      </div>
+
+      {/* Desktop Admin View */}
+      <div className="hidden lg:flex min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex-col font-sans">
+        <AdminProvinceNavbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
         {/* HEADER */}
@@ -304,6 +312,7 @@ export default function AdminProvinceDashboardPage() {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 }
