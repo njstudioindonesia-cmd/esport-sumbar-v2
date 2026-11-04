@@ -90,10 +90,11 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
     try {
       const supabase = createClient();
       const origin = window.location.origin;
+      const targetNext = mode === "register" ? "/me/profile/new" : "/dashboard";
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${origin}/auth/callback?next=/me/profile/new`,
+          redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(targetNext)}`,
         },
       });
       if (error) {

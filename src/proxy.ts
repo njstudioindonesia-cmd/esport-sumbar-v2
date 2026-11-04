@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import type { Database } from "@/lib/supabase/database.types";
 
 export async function proxy(request: NextRequest) {
@@ -9,6 +9,7 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
+    pathname.startsWith("/auth") ||
     pathname.startsWith("/favicon.ico") ||
     pathname.includes(".")
   ) {
@@ -26,22 +27,17 @@ export async function proxy(request: NextRequest) {
 
   const supabase = createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {
-      get(name: string) {
-        return request.cookies.get(name)?.value;
+      getAll() {
+        return request.cookies.getAll();
       },
-      set(name: string, value: string, options: CookieOptions) {
-        request.cookies.set({ name, value, ...options });
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({
           request: { headers: request.headers },
         });
-        response.cookies.set({ name, value, ...options });
-      },
-      remove(name: string, options: CookieOptions) {
-        request.cookies.set({ name, value: "", ...options });
-        response = NextResponse.next({
-          request: { headers: request.headers },
-        });
-        response.cookies.set({ name, value: "", ...options });
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options)
+        );
       },
     },
   });
@@ -58,7 +54,11 @@ export async function proxy(request: NextRequest) {
   // 1. Jika sudah masuk dan mengakses /login atau /register, arahkan ke dashboard
   if (user && (pathname === "/login" || pathname === "/register")) {
     const redirectUrl = request.nextUrl.searchParams.get("redirect") || "/dashboard";
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
+    const redirectRes = NextResponse.redirect(new URL(redirectUrl, request.url));
+    response.cookies.getAll().forEach((c) => {
+      redirectRes.cookies.set(c.name, c.value, c);
+    });
+    return redirectRes;
   }
 
   // 2. Proteksi Rute Pengguna Terdaftar (/dashboard dan /me/*)
@@ -66,7 +66,11 @@ export async function proxy(request: NextRequest) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+      const loginRes = NextResponse.redirect(loginUrl);
+      response.cookies.getAll().forEach((c) => {
+        loginRes.cookies.set(c.name, c.value, c);
+      });
+      return loginRes;
     }
   }
 
@@ -75,7 +79,11 @@ export async function proxy(request: NextRequest) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
-      return NextResponse.redirect(loginUrl);
+      const loginRes = NextResponse.redirect(loginUrl);
+      response.cookies.getAll().forEach((c) => {
+        loginRes.cookies.set(c.name, c.value, c);
+      });
+      return loginRes;
     }
 
     // Ambil peran resmi pengguna dari tabel accounts di database PostgreSQL
@@ -89,17 +97,29 @@ export async function proxy(request: NextRequest) {
 
     // Operator Platform Eksklusif
     if (pathname.startsWith("/admin/platform") && role !== "platform_operator") {
-      return NextResponse.redirect(new URL("/dashboard?error=unauthorized_operator", request.url));
+      const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_operator", request.url));
+      response.cookies.getAll().forEach((c) => {
+        unauthRes.cookies.set(c.name, c.value, c);
+      });
+      return unauthRes;
     }
 
     // Pengprov ESI Sumbar Eksklusif
     if (pathname.startsWith("/admin/province") && role !== "prov_admin") {
-      return NextResponse.redirect(new URL("/dashboard?error=unauthorized_province", request.url));
+      const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_province", request.url));
+      response.cookies.getAll().forEach((c) => {
+        unauthRes.cookies.set(c.name, c.value, c);
+      });
+      return unauthRes;
     }
 
     // Pengcab ESI Daerah (Admin Daerah atau Pengprov)
     if (pathname.startsWith("/admin/region") && !["region_admin", "prov_admin"].includes(role)) {
-      return NextResponse.redirect(new URL("/dashboard?error=unauthorized_region", request.url));
+      const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_region", request.url));
+      response.cookies.getAll().forEach((c) => {
+        unauthRes.cookies.set(c.name, c.value, c);
+      });
+      return unauthRes;
     }
   }
 
