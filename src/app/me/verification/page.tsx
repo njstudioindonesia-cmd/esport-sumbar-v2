@@ -2,13 +2,22 @@
 
 import React from "react";
 import { MobileVerificationTracker } from "@/components/mobile/MobileVerificationTracker";
+import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
+import { DesktopVerificationView } from "@/components/dashboard/DesktopVerificationView";
 
 export default function VerificationPage() {
   return (
-    <main className="min-h-[100dvh] w-full bg-[#07080C] flex items-center justify-center p-0 md:p-6 overflow-x-hidden">
-      {/* Mobile Shell Frame (iPhone 14 / Mobile Viewport) */}
-      <div className="relative w-full max-w-[420px] min-h-[100dvh] md:min-h-[844px] bg-[#07080C] md:rounded-[36px] md:border md:border-white/10 md:shadow-[0_24px_80px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
+    <main className="min-h-screen w-full bg-[#07080C]">
+      {/* Mobile Flow (< 1024px): PWA Stepper */}
+      <div className="block lg:hidden min-h-[100dvh] w-full">
         <MobileVerificationTracker />
+      </div>
+
+      {/* Desktop Flow (>= 1024px): Horizontal Package Tracker & Evidence Upload */}
+      <div className="hidden lg:block w-full min-h-screen">
+        <DesktopUserShell breadcrumb="Status Verifikasi">
+          <DesktopVerificationView />
+        </DesktopUserShell>
       </div>
     </main>
   );
