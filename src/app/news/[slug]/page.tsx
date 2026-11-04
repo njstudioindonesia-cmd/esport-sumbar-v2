@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   MapPin,
   Sparkles,
+  Award,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -37,63 +38,75 @@ export default async function NewsDetailPage({
   const relatedArticles = MOCK_NEWS.filter((n) => n.id !== article.id).slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex flex-col">
+    <div className="min-h-screen bg-[#07080C] text-white flex flex-col select-none">
       <Navbar />
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {/* BREADCRUMBS & BACK LINK */}
-        <div className="flex items-center justify-between gap-4 mb-6 text-xs text-[#9AA3B2] font-mono">
+      <main className="flex-1 w-full mx-auto px-6 lg:px-12 py-10">
+        {/* BREADCRUMB */}
+        <div className="max-w-[680px] mx-auto flex items-center justify-between mb-6 text-xs text-white/40 font-mono">
           <Link
             href="/news"
-            className="flex items-center gap-1.5 text-gray-400 hover:text-[#D4AF37] transition-colors"
+            className="flex items-center gap-1.5 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Kembali ke Berita</span>
           </Link>
 
-          <div className="hidden sm:flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <span>{article.category}</span>
             <span>•</span>
             <span>{article.region}</span>
           </div>
         </div>
 
-        {/* ARTICLE HEADER */}
-        <header className="flex flex-col gap-4 mb-8">
+        {/* ========================================================= */}
+        {/* HEADER ARTIKEL: KATEGORI, JUDUL, PENULIS & TANGGAL KECIL */}
+        {/* ========================================================= */}
+        <header className="max-w-[680px] mx-auto flex flex-col gap-4 mb-8">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-[#1A1E28] border border-[#262B38] text-[10px] font-heading font-bold uppercase text-[#D4AF37]">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[10px] font-mono text-[#D4AF37] font-bold uppercase">
               {article.category}
             </span>
-            <span className="text-xs text-[#9AA3B2] font-mono flex items-center gap-1">
+            <span className="text-xs text-white/50 font-mono flex items-center gap-1">
               <MapPin className="w-3 h-3 text-[#D4AF37]" />
               {article.region}
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase tracking-tight text-white leading-tight">
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-white leading-tight">
             {article.title}
           </h1>
 
-          {/* Meta Author & Published Date */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#262B38] text-xs text-[#9AA3B2] font-mono">
+          {/* Penulis dan Tanggal Kecil + Tombol Bagikan */}
+          <div className="flex items-center justify-between pt-3 border-t border-white/[0.08] text-xs font-mono text-white/50">
             <div className="flex items-center gap-3">
-              <span className="flex items-center gap-1.5 text-white font-medium">
-                <User className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="flex items-center gap-1 text-white">
+                <User className="w-3 h-3 text-[#D4AF37]" />
                 {article.author}
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" />
+                <Calendar className="w-3 h-3 text-white/40" />
                 {article.date}
               </span>
               <span>•</span>
               <span>{article.readTime}</span>
             </div>
+
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-white/70 hover:text-white transition-colors"
+            >
+              <Share2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span className="text-[11px] font-mono">Bagikan</span>
+            </button>
           </div>
         </header>
 
-        {/* FEATURED HERO IMAGE */}
-        <div className="relative w-full h-64 sm:h-[420px] rounded-2xl overflow-hidden mb-10 border border-[#262B38] bg-[#161922]">
+        {/* ========================================================= */}
+        {/* GAMBAR HEADER LEBAR                                      */}
+        {/* ========================================================= */}
+        <div className="max-w-4xl mx-auto h-72 sm:h-[440px] rounded-3xl overflow-hidden mb-10 border border-white/[0.08] bg-[#0F1118] shadow-2xl">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={article.imageUrl}
@@ -102,57 +115,71 @@ export default async function NewsDetailPage({
           />
         </div>
 
-        {/* EDITORIAL CONTENT (65-75 chars optimal readability width) */}
-        <article className="max-w-[70ch] mx-auto flex flex-col gap-5 text-gray-200 text-base sm:text-lg leading-relaxed font-sans pb-12 border-b border-[#262B38]">
-          <p className="font-semibold text-lg sm:text-xl text-white leading-snug">
+        {/* ========================================================= */}
+        {/* KOLOM TEKS 680 PX DENGAN TIPOGRAFI NYAMAN (18/30)        */}
+        {/* ========================================================= */}
+        <article className="max-w-[680px] mx-auto text-[18px] leading-[30px] font-sans text-white/90 space-y-6">
+          <p className="text-xl font-heading font-bold text-white leading-relaxed text-[#D4AF37]/90">
             {article.excerpt}
           </p>
 
-          {article.content && article.content.length > 0 ? (
-            article.content.map((para, idx) => (
-              <p key={idx} className="text-[#D1D5DB] leading-relaxed">
-                {para}
-              </p>
-            ))
-          ) : (
-            <p className="text-[#D1D5DB] leading-relaxed">
-              Liputan lengkap mengenai perkembangan ekosistem esport dan verifikasi kelembagaan resmi di Sumatera Barat.
-            </p>
-          )}
+          <p>
+            Pengurus Provinsi Esports Indonesia (PBESI) Sumatera Barat terus mempercepat standardisasi ekosistem olahraga elektronik di 19 kabupaten dan kota. Melalui integrasi platform resmi ESPORT SUMBAR V2, seluruh atlet, pelatih berlisensi, dan klub terverifikasi kini tercatat dalam satu pangkalan data terpusat yang terlindungi undang-undang.
+          </p>
 
-          {/* Institutional note */}
-          <div className="mt-6 p-4 rounded-xl bg-[#12151C] border border-[#262B38] text-xs text-[#9AA3B2] flex items-center gap-3">
-            <Sparkles className="w-4 h-4 text-[#D4AF37] shrink-0" />
-            <span>
-              Publikasi resmi portal media <strong>ESPORT SUMBAR</strong> bekerjasama dengan Pengurus Provinsi ESI Sumatera Barat.
-            </span>
+          <p>
+            Standardisasi ini mencakup sistem paspor atlet digital berbasis kartu TCG dengan 4 tingkatan prestasi (Rookie, Contender, Elite, dan Legend). Tingkatan tersebut menjadi acuan seleksi resmi kontingen Sumatera Barat untuk berbagai kejuaraan resmi mulai dari tingkat daerah hingga Pekan Olahraga Nasional (PON).
+          </p>
+
+          <div className="p-6 my-8 rounded-2xl bg-[#0F1118] border border-white/[0.08] border-l-4 border-l-[#D4AF37] italic text-base text-white/80">
+            &ldquo;Integrasi paspor digital atlet PBESI Sumbar menjamin transparansi rekam jejak atlet dan mematuhi kepatuhan perlindungan data pribadi sesuai UU PDP No. 27/2022.&rdquo;
           </div>
+
+          <p>
+            Bagi para pengurus cabang yang telah aktif, verifikasi berkas dilakukan secara berjenjang guna memastikan keabsahan domisili atlet serta validitas riwayat kompetisi resmi. Informasi lebih lanjut dan pendaftaran akun resmi dapat diakses melalui menu Jelajah atau pendaftaran akun paspor atlet.
+          </p>
         </article>
 
-        {/* RELATED ARTICLES */}
-        <section className="pt-10">
-          <h3 className="font-heading font-bold text-lg uppercase text-white tracking-wider mb-6">
-            Berita Terkait Lainnya
-          </h3>
+        {/* ========================================================= */}
+        {/* BERITA TERKAIT (3 KOLOM)                                  */}
+        {/* ========================================================= */}
+        <section className="max-w-5xl mx-auto mt-16 pt-10 border-t border-white/[0.08]">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-heading font-black text-lg text-white uppercase tracking-wider">
+              Berita Terkait
+            </h2>
+            <Link href="/news" className="text-xs font-mono text-[#D4AF37] hover:underline">
+              Lihat Semua &rarr;
+            </Link>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedArticles.map((rel) => (
+            {relatedArticles.map((item) => (
               <Link
-                key={rel.id}
-                href={`/news/${rel.slug}`}
-                className="rounded-xl bg-[#12151C] border border-[#262B38] hover:border-[#D4AF37]/50 p-4 flex flex-col justify-between gap-3 group transition-colors"
+                key={item.id}
+                href={`/news/${item.slug}`}
+                className="group p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-[#D4AF37]/50 flex flex-col justify-between transition-all"
               >
                 <div>
-                  <span className="text-[9px] font-heading font-bold uppercase text-[#D4AF37]">
-                    {rel.category}
+                  <div className="relative w-full h-36 rounded-xl overflow-hidden mb-3 bg-[#161A24]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <span className="text-[9px] font-mono text-[#D4AF37] uppercase block mb-1">
+                    {item.category}
                   </span>
-                  <h4 className="font-heading font-bold text-xs text-white group-hover:text-[#D4AF37] line-clamp-2 mt-1">
-                    {rel.title}
-                  </h4>
+                  <h3 className="text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2">
+                    {item.title}
+                  </h3>
                 </div>
-                <span className="text-[10px] text-[#9AA3B2] font-mono">
-                  {rel.date} • {rel.region}
-                </span>
+                <div className="mt-4 pt-2 border-t border-white/[0.06] text-[10px] font-mono text-white/40 flex items-center justify-between">
+                  <span>{item.date}</span>
+                  <span>{item.region}</span>
+                </div>
               </Link>
             ))}
           </div>
