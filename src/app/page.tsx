@@ -1,546 +1,551 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   Sparkles,
+  Compass,
+  ChevronRight,
+  ChevronDown,
+  Share2,
   ShieldCheck,
   Award,
-  ArrowRight,
-  ChevronRight,
-  Compass,
-  Users,
-  Gamepad2,
-  GraduationCap,
-  MapPin,
-  Newspaper,
-  Calendar,
-  CheckCircle2,
-  Building2,
-  Coffee,
-  HelpCircle,
-  Clock,
   Layers,
-  ChevronLeft,
-  Info,
+  ArrowRight,
+  Calendar,
+  RotateCw,
+  MapPin,
+  HelpCircle,
+  Trophy,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { EsportCard } from "@/components/card/EsportCard";
+import { StatNumber } from "@/components/shared/StatNumber";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { MOCK_NEWS } from "@/data/mockNews";
+import { REGIONS_DETAIL } from "@/data/regions";
 import { MobileHome } from "@/components/mobile/MobileHome";
 
 export default function HomePage() {
-  // Stat counters with animated count-up simulation
-  const [stats, setStats] = useState({
-    players: 0,
-    teams: 0,
-    coaches: 0,
-    regions: 0,
-  });
+  // Center Card Flip State for "Kartu Adalah Produknya" Section
+  const [productCardFlipped, setProductCardFlipped] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setStats({
-        players: 1420,
-        teams: 185,
-        coaches: 48,
-        regions: 19,
-      });
-    }, 200);
-    return () => clearTimeout(timer);
-  }, []);
+  // Active Region Tooltip for Quick Map Section
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
 
-  // Three representative cards for the Hero Stack
+  // Featured verified profiles
+  const featuredCards = GALLERY_CARDS.filter(
+    (c) => c.verification === "verified" || c.verification === "regional"
+  );
+
+  // Hero cards
   const heroCards = [
     GALLERY_CARDS.find((c) => c.id === "pl-contender") || GALLERY_CARDS[1],
     GALLERY_CARDS.find((c) => c.id === "pl-elite") || GALLERY_CARDS[2],
     GALLERY_CARDS.find((c) => c.id === "tm-elite") || GALLERY_CARDS[10],
   ];
 
-  // Featured verified profiles for the Carousel
-  const featuredCards = GALLERY_CARDS.filter(
-    (c) => c.verification === "verified" || c.verification === "regional"
-  );
-
+  // News bento articles (1 big headline + 3 sub articles)
   const headlineArticle = MOCK_NEWS.find((n) => n.isHeadline) || MOCK_NEWS[0];
-  const subArticles = MOCK_NEWS.filter((n) => !n.isHeadline);
+  const subArticles = MOCK_NEWS.filter((n) => n.id !== headlineArticle.id).slice(0, 3);
 
   return (
     <>
-      {/* Mobile Experience (Phone & PWA Viewport) */}
+      {/* MOBILE EXPERIENCE (< 1024px Viewport) */}
       <div className="block lg:hidden min-h-screen bg-[#07080C]">
         <MobileHome />
       </div>
 
-      {/* Desktop Landing Page (Large Screen Viewport) */}
-      <div className="hidden lg:flex min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex-col selection:bg-[#D4AF37]/20 selection:text-[#D4AF37]">
+      {/* DESKTOP EXPERIENCE (≥ 1024px Cinematic Viewport) */}
+      <div className="hidden lg:flex min-h-screen bg-[#07080C] text-[#F3F4F6] flex-col selection:bg-[#D4AF37]/20 selection:text-[#D4AF37]">
         <Navbar />
 
-      <main className="flex-1 flex flex-col items-center overflow-x-hidden">
-        {/* ==================== 1. HERO SECTION ==================== */}
-        <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 md:pt-20 md:pb-24 flex flex-col lg:flex-row items-center justify-between gap-12">
-          {/* Ambient Lighting Gradients */}
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#C8102E]/10 blur-3xl pointer-events-none rounded-full" />
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-[#D4AF37]/10 blur-3xl pointer-events-none rounded-full" />
+        <main className="flex-1 flex flex-col items-center overflow-x-hidden">
+          {/* ==================== 1. HERO SECTION (FULL HEIGHT) ==================== */}
+          <section className="relative w-full max-w-7xl mx-auto px-6 lg:px-8 min-h-[calc(100vh-64px)] flex items-center justify-between gap-12 py-16">
+            {/* Subtle Ambient Radial Lighting */}
+            <div className="absolute top-1/4 left-1/4 w-[480px] h-[480px] bg-[#C8102E]/[0.06] blur-[120px] pointer-events-none rounded-full" />
+            <div className="absolute top-1/3 right-1/4 w-[480px] h-[480px] bg-[#D4AF37]/[0.08] blur-[120px] pointer-events-none rounded-full" />
 
-          {/* Left Column: Headlines & Call to Actions */}
-          <div className="relative z-10 flex-1 flex flex-col items-start text-left max-w-2xl">
-            {/* Regional Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#12151C] border border-[#262B38] mb-6 shadow-sm">
-              <div className="flex h-2.5 w-6 rounded-sm overflow-hidden">
-                <span className="w-1/3 bg-[#C8102E]" />
-                <span className="w-1/3 bg-[#D4AF37]" />
-                <span className="w-1/3 bg-black" />
+            {/* Left Column: Headlines & Actions */}
+            <div className="relative z-10 flex-1 flex flex-col items-start text-left max-w-2xl">
+              {/* Regional Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0F1118] border border-white/[0.08] mb-6 shadow-sm">
+                <div className="flex h-2.5 w-6 rounded-sm overflow-hidden">
+                  <span className="w-1/3 bg-[#C8102E]" />
+                  <span className="w-1/3 bg-[#D4AF37]" />
+                  <span className="w-1/3 bg-black" />
+                </div>
+                <span className="text-xs font-heading font-bold uppercase tracking-wider text-gray-300">
+                  Resmi PBESI Sumatera Barat
+                </span>
               </div>
-              <span className="text-xs font-heading font-bold uppercase tracking-wider text-gray-300">
-                Inisiatif Digital Resmi ESI Sumatera Barat
-              </span>
+
+              {/* Main Headline (Max 6 words) */}
+              <h1 className="text-5xl xl:text-6xl font-heading font-black uppercase tracking-tight text-white leading-[1.08] mb-5">
+                Identitas Digital <span className="text-[#D4AF37]">Esport Sumbar</span>
+              </h1>
+
+              {/* Subtitle (1 Short Sentence) */}
+              <p className="text-base xl:text-lg text-[#9AA3B2] leading-relaxed mb-8 max-w-xl">
+                Pusat data resmi rekam jejak atlet dan kartu TCG kebanggaan Ranah Minang.
+              </p>
+
+              {/* Action Buttons (Max 2 words each) */}
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/me/profile/new"
+                  className="flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] hover:brightness-110 text-black text-sm font-heading font-black uppercase tracking-wider shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all active:scale-[0.98]"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Buat Kartu</span>
+                </Link>
+
+                <Link
+                  href="/explore"
+                  className="flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-[#0F1118] hover:bg-[#161A24] border border-white/[0.08] hover:border-white/20 text-white text-sm font-heading font-bold uppercase tracking-wider transition-all"
+                >
+                  <Compass className="w-4 h-4 text-[#4C7DFF]" />
+                  <span>Jelajahi</span>
+                </Link>
+              </div>
+
+              {/* Governance Trust Indicators */}
+              <div className="mt-10 pt-6 border-t border-white/[0.06] flex items-center gap-6 text-xs text-[#9AA3B2]">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-[#22C55E]" />
+                  <span>Verifikasi 19 Wilayah</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Award className="w-4 h-4 text-[#D4AF37]" />
+                  <span>Privasi UU PDP</span>
+                </div>
+              </div>
             </div>
 
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-tight text-white leading-[1.08] mb-5">
-              Pusat Data & <span className="text-[#D4AF37]">Identitas Digital</span> Esport Sumatera Barat
-            </h1>
+            {/* Right Column: Hero Visual - Stacked Interactive TCG Cards */}
+            <div className="relative z-10 flex-1 w-full flex items-center justify-end py-6">
+              <div className="relative w-[340px] h-[480px] flex items-center justify-center">
+                {/* Card 1 (Back left, tilted -12deg) */}
+                <div className="absolute top-2 -left-12 rotate-[-12deg] opacity-70 hover:opacity-100 hover:scale-105 hover:z-30 transition-all duration-300 pointer-events-auto">
+                  <EsportCard
+                    type={heroCards[0].type}
+                    rarity={heroCards[0].rarity}
+                    verification={heroCards[0].verification}
+                    data={heroCards[0].data}
+                    size="sm"
+                    interactive={false}
+                  />
+                </div>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-[#9AA3B2] leading-relaxed mb-8 max-w-xl">
-              Pangkalan data resmi rekam jejak atlet, pelatih, dan klub kompetitif Ranah Minang yang terintegrasi dengan kartu digital TCG serta verifikasi berjenjang ESI 19 Kota & Kabupaten.
-            </p>
+                {/* Card 3 (Back right, tilted +12deg) */}
+                <div className="absolute top-4 -right-12 rotate-[12deg] opacity-75 hover:opacity-100 hover:scale-105 hover:z-30 transition-all duration-300 pointer-events-auto">
+                  <EsportCard
+                    type={heroCards[2].type}
+                    rarity={heroCards[2].rarity}
+                    verification={heroCards[2].verification}
+                    data={heroCards[2].data}
+                    size="sm"
+                    interactive={false}
+                  />
+                </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 w-full sm:w-auto">
-              <Link
-                href="/register"
-                className="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E6CA65] hover:brightness-110 text-[#0B0D12] text-sm font-heading font-extrabold uppercase tracking-wider shadow-[0_0_25px_rgba(212,175,55,0.4)] transition-all"
+                {/* Card 2 (Center Hero, 3D Interactive Tilt) */}
+                <div className="relative z-20 shadow-[0_20px_60px_rgba(0,0,0,0.85)]">
+                  <EsportCard
+                    type={heroCards[1].type}
+                    rarity={heroCards[1].rarity}
+                    verification={heroCards[1].verification}
+                    data={heroCards[1].data}
+                    size="md"
+                    interactive={true}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Scroll Down Indicator */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-500 animate-bounce pointer-events-none">
+              <span className="text-[10px] font-mono tracking-widest uppercase">Scroll</span>
+              <ChevronDown className="w-3.5 h-3.5 text-[#D4AF37]" />
+            </div>
+          </section>
+
+          {/* ==================== 2. STATISTIK SECTION (COUNT-UP) ==================== */}
+          <section className="w-full bg-[#0F1118]/80 border-y border-white/[0.08] py-14">
+            <div className="max-w-7xl mx-auto px-6 lg:px-8">
+              <div className="grid grid-cols-4 gap-8">
+                <StatNumber value={1420} label="Pemain" />
+                <StatNumber value={185} label="Tim" />
+                <StatNumber value={48} label="Pelatih" />
+                <StatNumber value={19} label="Wilayah" suffix=" / 19" />
+              </div>
+            </div>
+          </section>
+
+          {/* ==================== 3. KARTU ADALAH PRODUKNYA SECTION ==================== */}
+          <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-28 lg:py-32 flex flex-col md:flex-row items-center justify-between gap-16">
+            {/* Left: 1 Large Interactive Card with 3D Flip */}
+            <div className="flex-1 flex flex-col items-center">
+              <div
+                onClick={() => setProductCardFlipped(!productCardFlipped)}
+                className="cursor-pointer group relative"
               >
-                <Sparkles className="w-4 h-4" />
-                <span>Buat Kartu ESPORT ID-mu</span>
-              </Link>
+                <div className="shadow-[0_24px_80px_rgba(212,175,55,0.2)] rounded-2xl transition-transform group-hover:scale-[1.02]">
+                  <EsportCard
+                    type="player"
+                    rarity="elite"
+                    verification="verified"
+                    data={{
+                      esportId: "ESB-PDG-PL-000124",
+                      displayName: "Raka Pratama",
+                      ign: "SUTAN_AIM",
+                      game: "Mobile Legends",
+                      role: "Mid Laner",
+                      region: { name: "Kota Padang", code: "PDG" },
+                      achievements: [
+                        {
+                          title: "Juara 1 Porprov Sumbar",
+                          level: "provinsi",
+                          placement: "1st Place",
+                          year: "2025",
+                          isValidated: true,
+                        },
+                      ],
+                    }}
+                    size="lg"
+                    interactive={true}
+                  />
+                </div>
 
-              <Link
-                href="/explore"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#161922] hover:bg-[#1A1E28] border border-[#262B38] text-gray-200 hover:text-white text-sm font-heading font-bold uppercase tracking-wider transition-colors"
-              >
-                <Compass className="w-4 h-4 text-[#3B82F6]" />
-                <span>Jelajahi Ekosistem</span>
-              </Link>
+                <div className="mt-4 flex items-center justify-center gap-1.5 text-xs font-mono text-gray-400 group-hover:text-[#D4AF37] transition-colors">
+                  <RotateCw className="w-3.5 h-3.5" />
+                  <span>Klik untuk balik kartu</span>
+                </div>
+              </div>
             </div>
 
-            {/* Governance Trust Indicators */}
-            <div className="mt-8 pt-6 border-t border-[#262B38]/80 flex flex-wrap items-center gap-4 text-xs text-[#9AA3B2]">
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-[#22C55E]" />
-                <span>Verifikasi ESI Berjenjang</span>
+            {/* Right: 3 Key Value Props (Max 4 words each) */}
+            <div className="flex-1 flex flex-col gap-8 max-w-lg">
+              <div>
+                <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37]">
+                  Produk Utama
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase text-white mt-2 leading-tight">
+                  Kartu Digital Atlet
+                </h2>
               </div>
-              <div className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#D4AF37]" />
-                <span>Tanpa NIK/KTP (Privasi UU PDP)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Award className="w-4 h-4 text-[#3B82F6]" />
-                <span>Rarity Otomatis Berbasis Prestasi</span>
+
+              <div className="space-y-6">
+                {/* Point 1: Bagikan */}
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-[#0F1118] border border-white/[0.08] hover:border-white/20 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#4C7DFF] shrink-0">
+                    <Share2 className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-bold text-white uppercase text-sm tracking-wide">
+                      Bagikan ke Publik
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Pamerkan kartu identitas kompetisi ke seluruh platform.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Point 2: Verifikasi */}
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-[#0F1118] border border-white/[0.08] hover:border-white/20 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37] shrink-0">
+                    <Award className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-bold text-white uppercase text-sm tracking-wide">
+                      Divalidasi Resmi Pengprov
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Lencana Emas resmi diterbitkan langsung oleh ESI Sumbar.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Point 3: Koleksi */}
+                <div className="flex items-start gap-4 p-4 rounded-2xl bg-[#0F1118] border border-white/[0.08] hover:border-white/20 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
+                    <Trophy className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-bold text-white uppercase text-sm tracking-wide">
+                      Tingkatkan Hingga Legend
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-0.5">
+                      Naikkan tier kartu dengan rekam jejak prestasi turnamen.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Right Column: Hero Visual - Stacked Interactive TCG Cards */}
-          <div className="relative z-10 flex-1 w-full flex items-center justify-center lg:justify-end py-6">
-            <div className="relative w-[310px] sm:w-[340px] h-[440px] flex items-center justify-center">
-              {/* Card 1 (Back left, tilted -12deg) */}
-              <div className="absolute top-2 -left-6 sm:-left-12 rotate-[-10deg] opacity-70 hover:opacity-100 hover:scale-105 hover:z-30 transition-all duration-300 pointer-events-auto">
-                <EsportCard
-                  type={heroCards[0].type}
-                  rarity={heroCards[0].rarity}
-                  verification={heroCards[0].verification}
-                  data={heroCards[0].data}
-                  size="sm"
-                  interactive={false}
-                />
-              </div>
-
-              {/* Card 3 (Back right, tilted +12deg) */}
-              <div className="absolute top-4 -right-6 sm:-right-12 rotate-[12deg] opacity-75 hover:opacity-100 hover:scale-105 hover:z-30 transition-all duration-300 pointer-events-auto">
-                <EsportCard
-                  type={heroCards[2].type}
-                  rarity={heroCards[2].rarity}
-                  verification={heroCards[2].verification}
-                  data={heroCards[2].data}
-                  size="sm"
-                  interactive={false}
-                />
-              </div>
-
-              {/* Card 2 (Center Hero, 3D Interactive) */}
-              <div className="relative z-20 shadow-[0_10px_40px_rgba(0,0,0,0.9)]">
-                <EsportCard
-                  type={heroCards[1].type}
-                  rarity={heroCards[1].rarity}
-                  verification={heroCards[1].verification}
-                  data={heroCards[1].data}
-                  size="md"
-                  interactive={true}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ==================== 2. STATS BAR ==================== */}
-        <section className="w-full bg-[#12151C] border-y border-[#262B38] py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              {/* Stat 1 */}
-              <div className="flex flex-col items-center">
-                <div className="flex items-center gap-1.5 text-2xl sm:text-4xl font-heading font-black text-white">
-                  <span>{stats.players > 0 ? stats.players.toLocaleString("id-ID") : "1,420"}</span>
-                  <span className="text-[#D4AF37]">+</span>
-                </div>
-                <span className="text-xs sm:text-sm font-heading font-medium text-[#9AA3B2] uppercase tracking-wider mt-1">
-                  Pemain Terdaftar
-                </span>
-              </div>
-
-              {/* Stat 2 */}
-              <div className="flex flex-col items-center">
-                <div className="flex items-center gap-1.5 text-2xl sm:text-4xl font-heading font-black text-white">
-                  <span>{stats.teams > 0 ? stats.teams.toLocaleString("id-ID") : "185"}</span>
-                  <span className="text-[#3B82F6]">+</span>
-                </div>
-                <span className="text-xs sm:text-sm font-heading font-medium text-[#9AA3B2] uppercase tracking-wider mt-1">
-                  Klub / Tim Aktif
-                </span>
-              </div>
-
-              {/* Stat 3 */}
-              <div className="flex flex-col items-center">
-                <div className="flex items-center gap-1.5 text-2xl sm:text-4xl font-heading font-black text-white">
-                  <span>{stats.coaches > 0 ? stats.coaches.toLocaleString("id-ID") : "48"}</span>
-                  <span className="text-[#22C55E]">+</span>
-                </div>
-                <span className="text-xs sm:text-sm font-heading font-medium text-[#9AA3B2] uppercase tracking-wider mt-1">
-                  Pelatih Berlisensi
-                </span>
-              </div>
-
-              {/* Stat 4 */}
-              <div className="flex flex-col items-center">
-                <div className="flex items-center gap-1.5 text-2xl sm:text-4xl font-heading font-black text-[#D4AF37]">
-                  <span>{stats.regions > 0 ? stats.regions : "19"}</span>
-                  <span className="text-xs text-white uppercase font-sans font-normal ml-1">/ 19</span>
-                </div>
-                <span className="text-xs sm:text-sm font-heading font-medium text-[#9AA3B2] uppercase tracking-wider mt-1">
-                  Kota & Kab Terdata
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ==================== 3. BERITA TERBARU ==================== */}
-        <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex flex-col">
+          {/* ==================== 4. CARA KERJA SECTION (3 LANGKAH) ==================== */}
+          <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-24 bg-[#0B0D12] border-t border-white/[0.08]">
+            <div className="text-center max-w-2xl mx-auto mb-16">
               <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37]">
-                Kilas Berita & Agenda
+                Alur Sistem
               </span>
-              <h2 className="text-2xl sm:text-3xl font-heading font-bold uppercase tracking-tight text-white mt-1">
-                Kabar Esport Ranah Minang
+              <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase text-white mt-2">
+                Tiga Langkah Verifikasi
               </h2>
             </div>
-            <Link
-              href="/news"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-[#D4AF37] hover:underline"
-            >
-              <span>Lihat Semua Berita</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Large Headline Article */}
-            <div className="lg:col-span-7 flex flex-col rounded-2xl bg-[#12151C] border border-[#262B38] overflow-hidden group hover:border-[#D4AF37]/50 transition-colors">
-              <div className="relative w-full h-64 sm:h-80 overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={headlineArticle.imageUrl}
-                  alt={headlineArticle.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#12151C] via-transparent to-transparent" />
-                <div className="absolute top-4 left-4 flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-full bg-[#0B0D12]/90 border border-[#262B38] text-[10px] font-heading font-bold uppercase text-[#D4AF37] backdrop-blur-md">
-                    {headlineArticle.category}
-                  </span>
-                  <span className="px-2.5 py-1 rounded-full bg-[#0B0D12]/90 border border-[#262B38] text-[10px] font-mono text-gray-300 backdrop-blur-md">
-                    {headlineArticle.region}
-                  </span>
+            {/* 3 Horizontal Steps with Glowing Connector */}
+            <div className="relative grid grid-cols-3 gap-8">
+              {/* Glowing Line */}
+              <div className="absolute top-1/2 left-1/6 right-1/6 -translate-y-1/2 h-0.5 bg-gradient-to-r from-[#D4AF37]/20 via-[#D4AF37] to-[#D4AF37]/20 pointer-events-none hidden md:block" />
+
+              {/* Step 1 */}
+              <div className="relative z-10 flex flex-col items-center text-center p-6 rounded-2xl bg-[#0F1118] border border-white/[0.08]">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1E2330] to-[#12151D] border border-white/10 flex items-center justify-center font-heading font-black text-xl text-[#D4AF37] mb-4 shadow-lg">
+                  1
                 </div>
+                <h3 className="font-heading font-bold text-white uppercase text-base">
+                  Daftar Akun
+                </h3>
+                <p className="text-xs text-gray-400 mt-1">Buat akun 20 detik</p>
               </div>
-              <div className="p-6 flex flex-col justify-between flex-1">
-                <div>
-                  <div className="flex items-center gap-3 text-xs text-[#9AA3B2] mb-2 font-mono">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5" />
-                      {headlineArticle.date}
-                    </span>
-                    <span>•</span>
-                    <span>{headlineArticle.readTime}</span>
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors leading-snug">
-                    {headlineArticle.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#9AA3B2] leading-relaxed mt-2.5 line-clamp-3">
-                    {headlineArticle.excerpt}
-                  </p>
+
+              {/* Step 2 */}
+              <div className="relative z-10 flex flex-col items-center text-center p-6 rounded-2xl bg-[#0F1118] border border-white/[0.08]">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1E2330] to-[#12151D] border border-white/10 flex items-center justify-center font-heading font-black text-xl text-blue-400 mb-4 shadow-lg">
+                  2
                 </div>
-                <Link
-                  href={`/news/${headlineArticle.slug}`}
-                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-[#D4AF37] hover:underline"
-                >
-                  <span>Baca Selengkapnya</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                <h3 className="font-heading font-bold text-white uppercase text-base">
+                  Diperiksa
+                </h3>
+                <p className="text-xs text-gray-400 mt-1">Verifikasi berkas Pengcab daerah</p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="relative z-10 flex flex-col items-center text-center p-6 rounded-2xl bg-[#0F1118] border border-white/[0.08]">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B38F24] text-black flex items-center justify-center font-heading font-black text-xl mb-4 shadow-lg shadow-amber-950/30">
+                  3
+                </div>
+                <h3 className="font-heading font-bold text-white uppercase text-base">
+                  Terverifikasi
+                </h3>
+                <p className="text-xs text-gray-400 mt-1">Lencana Emas resmi terbit</p>
               </div>
             </div>
 
-            {/* Sub Articles Column */}
-            <div className="lg:col-span-5 flex flex-col gap-4">
-              {subArticles.map((article) => (
-                <Link
-                  key={article.id}
-                  href={`/news/${article.slug}`}
-                  className="p-4 rounded-xl bg-[#12151C] border border-[#262B38] hover:border-[#D4AF37]/50 flex gap-4 transition-all group"
-                >
-                  <div className="relative w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-[#161922]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={article.imageUrl}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between flex-1 min-w-0">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[9px] font-heading font-bold uppercase text-[#D4AF37] truncate">
-                          {article.category}
-                        </span>
-                        <span className="text-[9px] text-[#9AA3B2] font-mono shrink-0">
-                          {article.region}
-                        </span>
-                      </div>
-                      <h4 className="text-xs sm:text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2 leading-tight">
-                        {article.title}
-                      </h4>
-                    </div>
-                    <span className="text-[10px] text-[#9AA3B2] font-mono mt-1">
-                      {article.date} • {article.readTime}
-                    </span>
-                  </div>
-                </Link>
-              ))}
+            {/* Disciplinary Distinction Chips */}
+            <div className="mt-12 flex items-center justify-center gap-4 flex-wrap">
+              <div className="px-4 py-2 rounded-full bg-[#0F1118] border border-white/[0.08] flex items-center gap-2 text-xs text-gray-300">
+                <span className="w-2 h-2 rounded-full bg-purple-400" />
+                <span className="font-heading font-bold text-white">Frame:</span>
+                <span>Prestasi Gamifikasi</span>
+              </div>
+              <div className="px-4 py-2 rounded-full bg-[#0F1118] border border-[#D4AF37]/30 flex items-center gap-2 text-xs text-[#D4AF37]">
+                <span className="w-2 h-2 rounded-full bg-[#D4AF37]" />
+                <span className="font-heading font-bold text-white">Lencana:</span>
+                <span>Verifikasi Lembaga ESI</span>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* ==================== 4. PROFIL UNGGULAN (CAROUSEL) ==================== */}
-        <section className="w-full bg-[#0E1117] border-y border-[#262B38] py-16 md:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex flex-col">
+          {/* ==================== 5. BERITA BENTO GRID (1 + 3) ==================== */}
+          <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-28 lg:py-32">
+            <div className="flex items-center justify-between mb-10">
+              <div>
                 <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37]">
-                  Katalog Terverifikasi ESI
+                  Warta Terkini
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-heading font-bold uppercase tracking-tight text-white mt-1">
-                  Profil & Tim Unggulan
+                <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase text-white mt-2">
+                  Kabar Esport Sumbar
                 </h2>
               </div>
               <Link
-                href="/gallery"
+                href="/news"
                 className="flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-[#D4AF37] hover:underline"
               >
-                <span>Buka Galeri 12 Kartu</span>
+                <span>Lihat Semua</span>
                 <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
 
-            {/* Horizontal Scrollable Carousel */}
-            <div className="flex items-center gap-6 overflow-x-auto pb-6 pt-2 scrollbar-thin scrollbar-thumb-[#262B38] scrollbar-track-transparent">
-              {featuredCards.map((card) => (
-                <div key={card.id} className="shrink-0">
+            {/* Bento Grid: 1 Big Left, 3 Small Right */}
+            <div className="grid grid-cols-12 gap-6">
+              {/* Big Article (Col 7) */}
+              <Link
+                href={`/news/${headlineArticle.slug}`}
+                className="col-span-7 rounded-2xl bg-[#0F1118] border border-white/[0.08] hover:border-[#D4AF37]/50 transition-all overflow-hidden group flex flex-col justify-between"
+              >
+                <div className="relative w-full h-80 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={headlineArticle.imageUrl}
+                    alt={headlineArticle.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F1118] via-transparent to-transparent" />
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <span className="px-2.5 py-1 rounded-full bg-black/80 border border-white/10 text-[10px] font-mono text-[#D4AF37] uppercase">
+                      {headlineArticle.category}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <span className="text-[11px] font-mono text-gray-400 block mb-2">
+                    {headlineArticle.date} · {headlineArticle.readTime}
+                  </span>
+                  <h3 className="text-2xl font-heading font-black text-white group-hover:text-[#D4AF37] transition-colors leading-tight line-clamp-2">
+                    {headlineArticle.title}
+                  </h3>
+                </div>
+              </Link>
+
+              {/* 3 Small Articles (Col 5) */}
+              <div className="col-span-5 flex flex-col gap-4">
+                {subArticles.map((article) => (
+                  <Link
+                    key={article.id}
+                    href={`/news/${article.slug}`}
+                    className="flex items-center gap-4 p-3.5 rounded-2xl bg-[#0F1118] border border-white/[0.08] hover:border-white/20 transition-all group"
+                  >
+                    <div className="w-24 h-24 rounded-xl overflow-hidden bg-black/40 shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={article.imageUrl}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <span className="text-[10px] font-mono text-[#D4AF37] uppercase block mb-1">
+                        {article.category} · {article.date}
+                      </span>
+                      <h4 className="text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2 leading-snug">
+                        {article.title}
+                      </h4>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ==================== 6. PROFIL UNGGULAN (VERIFIED CAROUSEL) ==================== */}
+          <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-20 border-t border-white/[0.08]">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37]">
+                  Talenta Terverifikasi
+                </span>
+                <h2 className="text-3xl font-heading font-black uppercase text-white mt-1">
+                  Atlet Unggulan Sumbar
+                </h2>
+              </div>
+              <Link
+                href="/explore"
+                className="flex items-center gap-1.5 text-xs font-heading font-bold uppercase tracking-wider text-[#D4AF37] hover:underline"
+              >
+                <span>Lihat Direktori</span>
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {/* Horizontal Rail of Verified Cards */}
+            <div className="flex gap-6 overflow-x-auto no-scrollbar pb-6 pt-2">
+              {featuredCards.slice(0, 6).map((card) => (
+                <div
+                  key={card.id}
+                  className="shrink-0 hover:-translate-y-2 transition-transform duration-300 shadow-xl"
+                >
                   <EsportCard
                     type={card.type}
                     rarity={card.rarity}
                     verification={card.verification}
                     data={card.data}
-                    size="md"
+                    size="sm"
                     interactive={true}
                   />
                 </div>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* ==================== 5. CARA KERJA SISTEM ==================== */}
-        <section id="how-it-works" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37]">
-              Mekanisme Tata Kelola
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase tracking-tight text-white mt-1 mb-3">
-              Bagaimana Verifikasi Bekerja?
-            </h2>
-            <p className="text-sm text-[#9AA3B2] leading-relaxed">
-              Tiga langkah transparan untuk memperoleh identitas digital resmi atlet dan klub esport Sumatera Barat.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Step 1 */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] flex flex-col gap-4 relative">
-              <div className="w-10 h-10 rounded-xl bg-[#1A1E28] border border-[#262B38] flex items-center justify-center font-heading font-black text-lg text-white">
-                01
-              </div>
-              <h3 className="text-lg font-heading font-bold text-white uppercase tracking-wider">
-                Daftar & Terbitkan ESPORT ID
-              </h3>
-              <p className="text-xs text-[#9AA3B2] leading-relaxed">
-                Buat akun, pilih peran (Player/Pelatih/Tim), isi data profil dan unggah bukti akun game. Kartu otomatis terbit dengan frame <strong>Rookie</strong>.
-              </p>
-              <div className="mt-auto pt-3 border-t border-[#262B38]/60 text-[11px] text-gray-400 font-mono">
-                Status: <span className="text-gray-300">Submitted</span>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#22C55E]/40 flex flex-col gap-4 relative">
-              <div className="w-10 h-10 rounded-xl bg-[#22C55E]/15 border border-[#22C55E]/40 flex items-center justify-center font-heading font-black text-lg text-[#22C55E]">
-                02
-              </div>
-              <h3 className="text-lg font-heading font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <span>Validasi ESI Kab/Kota</span>
-              </h3>
-              <p className="text-xs text-[#9AA3B2] leading-relaxed">
-                Pengurus Cabang ESI di daerah domisili Anda memeriksa kesesuaian data. Setelah lolos, kartu Anda disematkan perisai hijau <strong>Regional Checked</strong>.
-              </p>
-              <div className="mt-auto pt-3 border-t border-[#262B38]/60 text-[11px] text-[#22C55E] font-mono">
-                Status: <span>District Approved</span>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#D4AF37]/40 flex flex-col gap-4 relative">
-              <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center font-heading font-black text-lg text-[#D4AF37]">
-                03
-              </div>
-              <h3 className="text-lg font-heading font-bold text-white uppercase tracking-wider">
-                Verifikasi Resmi ESI Sumbar
-              </h3>
-              <p className="text-xs text-[#9AA3B2] leading-relaxed">
-                Pengurus Provinsi ESI Sumbar memberikan pengesahan resmi tingkat provinsi, nomor register lencana digital, dan status <strong>Verified</strong> resmi (berlaku 12 bulan).
-              </p>
-              <div className="mt-auto pt-3 border-t border-[#262B38]/60 text-[11px] text-[#D4AF37] font-mono">
-                Status: <span>Verified (Resmi)</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Reminder Notice */}
-          <div className="mt-8 p-4 rounded-xl bg-[#1A1E28]/70 border border-[#262B38] flex items-center gap-3 text-xs text-[#9AA3B2] max-w-3xl mx-auto">
-            <Info className="w-5 h-5 text-[#D4AF37] shrink-0" />
-            <p>
-              <strong>Prinsip P1 PRD:</strong> Frame kartu (Rookie/Contender/Elite/Legend) menunjukkan tingkatan prestasi, sedangkan Lencana perisai menunjukkan status legalitas kelembagaan ESI. Keduanya independen.
-            </p>
-          </div>
-        </section>
-
-        {/* ==================== 6. AJAKAN KOLABORASI EKOSISTEM ==================== */}
-        <section className="w-full bg-[#12151C] border-t border-[#262B38] py-16 md:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-10">
-              <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37]">
-                Kolaborasi Ekosistem
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-heading font-bold uppercase tracking-tight text-white mt-1">
-                Bersama Membangun Esport Sumatera Barat
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Box 1: ESI Daerah */}
-              <div className="p-6 rounded-2xl bg-[#0B0D12] border border-[#262B38] flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-[#1A1E28] flex items-center justify-center text-[#22C55E] mb-4">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-heading font-bold text-base text-white uppercase tracking-wider mb-2">
-                    Pengurus ESI Kab / Kota
-                  </h3>
-                  <p className="text-xs text-[#9AA3B2] leading-relaxed mb-4">
-                    Akses antrean pemeriksaan wilayah Anda, kelola data pengurus, dan validasi atlet potensial daerah menuju kejuaraan resmi.
-                  </p>
-                </div>
+          {/* ==================== 7. PETA SINGKAT 19 WILAYAH ==================== */}
+          <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-24 border-t border-white/[0.08]">
+            <div className="p-8 rounded-3xl bg-[#0F1118] border border-white/[0.08] flex flex-col md:flex-row items-center justify-between gap-10">
+              <div className="max-w-md">
+                <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37]">
+                  Cakupan Wilayah
+                </span>
+                <h2 className="text-3xl font-heading font-black uppercase text-white mt-2">
+                  19 Kota & Kabupaten
+                </h2>
+                <p className="text-xs text-gray-400 mt-2 leading-relaxed">
+                  Struktur kepengurusan cabang terhubung langsung dengan sistem verifikasi resmi Pengprov ESI Sumatera Barat.
+                </p>
                 <Link
-                  href="/login"
-                  className="inline-flex items-center gap-1.5 text-xs font-heading font-bold text-[#D4AF37] hover:underline uppercase"
+                  href="/regions"
+                  className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.05] hover:bg-white/10 border border-white/10 text-xs font-heading font-bold uppercase tracking-wider text-white transition-all"
                 >
-                  <span>Portal Admin Daerah</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <MapPin className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Jelajahi Peta Wilayah</span>
                 </Link>
               </div>
 
-              {/* Box 2: Komunitas & Sekolah */}
-              <div className="p-6 rounded-2xl bg-[#0B0D12] border border-[#262B38] flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-[#1A1E28] flex items-center justify-center text-[#3B82F6] mb-4">
-                    <Building2 className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-heading font-bold text-base text-white uppercase tracking-wider mb-2">
-                    Ekskul & UKM Kampus
-                  </h3>
-                  <p className="text-xs text-[#9AA3B2] leading-relaxed mb-4">
-                    Daftarkan wadah esports sekolah dan kampus Anda untuk mendapatkan pembinaan terarah serta akses turnamen resmi antar-pelajar.
-                  </p>
-                </div>
-                <Link
-                  href="/register"
-                  className="inline-flex items-center gap-1.5 text-xs font-heading font-bold text-[#3B82F6] hover:underline uppercase"
-                >
-                  <span>Daftarkan Organisasi</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
+              {/* 19 Glowing Region Badges Grid */}
+              <div className="flex-1 grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+                {REGIONS_DETAIL.slice(0, 12).map((r) => (
+                  <Link
+                    key={r.id}
+                    href={`/regions/${r.slug}`}
+                    className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-[#D4AF37]/40 hover:bg-[#D4AF37]/5 transition-all text-center group"
+                  >
+                    <span className="text-xs font-heading font-bold text-white group-hover:text-[#D4AF37] block truncate">
+                      {r.name}
+                    </span>
+                    <span className="text-[10px] font-mono text-gray-500">
+                      {r.code} · {r.verifiedCount} atlet
+                    </span>
+                  </Link>
+                ))}
               </div>
+            </div>
+          </section>
 
-              {/* Box 3: Venue & iCafe */}
-              <div className="p-6 rounded-2xl bg-[#0B0D12] border border-[#262B38] flex flex-col justify-between">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-[#1A1E28] flex items-center justify-center text-[#D4AF37] mb-4">
-                    <Coffee className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-heading font-bold text-base text-white uppercase tracking-wider mb-2">
-                    Venue, iCafe & Arena
-                  </h3>
-                  <p className="text-xs text-[#9AA3B2] leading-relaxed mb-4">
-                    Registrasikan venue Anda ke dalam direktori resmi agar dikenal oleh penyelenggara kompetisi dan komunitas turnamen lokal.
-                  </p>
-                </div>
+          {/* ==================== 8. CTA PENUTUP ==================== */}
+          <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-28 text-center">
+            <div className="relative p-12 lg:p-16 rounded-3xl bg-gradient-to-b from-[#121622] to-[#0A0D14] border border-white/[0.08] shadow-2xl overflow-hidden">
+              {/* Gold glow in center */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#D4AF37]/10 blur-[100px] pointer-events-none rounded-full" />
+
+              <div className="relative z-10 max-w-xl mx-auto flex flex-col items-center">
+                <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#D4AF37] mb-2">
+                  Daftar Sekarang
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight">
+                  Terbitkan Kartu Atletmu
+                </h2>
+                <p className="text-xs text-gray-400 mt-2 mb-8">
+                  Dapatkan ESPORT ID resmi kebanggaan atlet Ranah Minang.
+                </p>
+
                 <Link
-                  href="/register"
-                  className="inline-flex items-center gap-1.5 text-xs font-heading font-bold text-[#D4AF37] hover:underline uppercase"
+                  href="/me/profile/new"
+                  className="flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] hover:brightness-110 text-black text-sm font-heading font-black uppercase tracking-wider shadow-[0_0_35px_rgba(212,175,55,0.4)] transition-all active:scale-[0.98]"
                 >
-                  <span>Daftarkan Venue</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <Sparkles className="w-4 h-4" />
+                  <span>Buat Kartu</span>
                 </Link>
               </div>
             </div>
-          </div>
-        </section>
-      </main>
+          </section>
+        </main>
 
-      <Footer />
+        <Footer />
       </div>
     </>
   );
