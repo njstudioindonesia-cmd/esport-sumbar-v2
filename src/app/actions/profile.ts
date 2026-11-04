@@ -100,20 +100,43 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       }
     }
 
-    // 2. Generator ESPORT ID Unik Resmi: ESB-{KODE_WILAYAH}-{KODE_TIPE}-{RANDOM_DIGITS}
-    const typeCodeMap: Record<string, string> = {
-      player: "PL",
-      coach: "CO",
-      team: "TM",
-      community: "CM",
-      venue: "VN",
-      campus: "CP",
-      school: "SC",
-      organizer: "EO",
-    };
-    const typeCode = typeCodeMap[input.entityType] || "ID";
-    const randomDigits = Math.floor(100000 + Math.random() * 900000);
-    const esportId = `ESB-${input.regionCode.toUpperCase()}-${typeCode}-${randomDigits}`;
+    // 2. Generator ESPORT ID Unik Resmi via RPC Database atau Standar Formula
+    let esportId: string;
+    try {
+      const { data: rpcId } = await supabase.rpc("generate_esport_id" as any, {
+        p_region_id: cleanRegionId,
+        p_entity_type: input.entityType,
+      });
+      if (rpcId && typeof rpcId === "string") {
+        esportId = rpcId;
+      } else {
+        const typeCodeMap: Record<string, string> = {
+          player: "PL",
+          coach: "CO",
+          team: "TM",
+          community: "CM",
+          venue: "VN",
+          campus: "CP",
+          school: "SC",
+        };
+        const typeCode = typeCodeMap[input.entityType] || "ID";
+        const randomDigits = Math.floor(100000 + Math.random() * 900000);
+        esportId = `ESB-${(input.regionCode || "SB").toUpperCase()}-${typeCode}-${randomDigits}`;
+      }
+    } catch {
+      const typeCodeMap: Record<string, string> = {
+        player: "PL",
+        coach: "CO",
+        team: "TM",
+        community: "CM",
+        venue: "VN",
+        campus: "CP",
+        school: "SC",
+      };
+      const typeCode = typeCodeMap[input.entityType] || "ID";
+      const randomDigits = Math.floor(100000 + Math.random() * 900000);
+      esportId = `ESB-${(input.regionCode || "SB").toUpperCase()}-${typeCode}-${randomDigits}`;
+    }
 
     // 3. Generator Slug Ramah URL
     const cleanName = (input.ign || cleanDisplayName)
@@ -244,3 +267,67 @@ export async function updatePrivacySettingsAction(
     return { success: false, error: errorMsg };
   }
 }
+
+/**
+ * Menyimpan draf profil sementara ke basis data
+ */
+export async function saveProfileDraftAction(
+  input: Partial<CreateProfileInput>
+): Promise<{ success: boolean; draftId?: string; error?: string }> {
+  try {
+    const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+
+    let accountId = authData?.user?.id;
+    const isPlaceholder = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
+
+    if (!accountId) {
+      if (isPlaceholder) {
+        accountId = "00000000-0000-0000-0000-000000000001";
+      } else {
+        return { success: false, error: "Akses ditolak: Masuk untuk menyimpan draf." };
+      }
+    }
+
+    const cleanDisplayName = input.displayName?.trim() || "Draf Profil Baru";
+    const cleanRegionId = input.regionId || "reg-pdg-01";
+    const entityType = input.entityType || "player";
+    const draftSlug = `draft-${accountId?.slice(0, 8) || "user"}-${Date.now()}`;
+
+    const { data: draftRecord, error } = await supabase
+      .from("profiles")
+      .upsert(
+        {
+          account_id: accountId,
+          entity_type: entityType,
+          slug: draftSlug,
+          display_name: cleanDisplayName,
+          region_id: cleanRegionId,
+          ign: input.ign?.trim() || null,
+          main_game_id: input.mainGameId || null,
+          role_name: input.roleName || null,
+          avatar_url: input.avatarUrl || null,
+          bio: input.bio?.trim() || null,
+          attributes: (input.metadata || {}) as any,
+          metadata_jsonb: (input.metadata || {}) as any,
+          visibility_jsonb: (input.visibility || {}) as any,
+          verification_status: "draft",
+          is_published: false,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "id" }
+      )
+      .select("id")
+      .single();
+
+    if (error && !isPlaceholder) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, draftId: draftRecord?.id };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Gagal menyimpan draf";
+    return { success: false, error: errorMsg };
+  }
+}
+

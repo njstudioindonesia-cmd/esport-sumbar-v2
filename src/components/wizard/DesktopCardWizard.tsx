@@ -22,71 +22,176 @@ import {
   Trophy,
   Award,
   ChevronRight,
-  CornerDownLeft,
+  Share2,
+  PlusCircle,
+  Building,
+  MapPin,
+  Landmark,
+  RotateCcw,
 } from "lucide-react";
 import { OFFICIAL_GAMES } from "@/data/games";
 import { REGIONS_DETAIL } from "@/data/regions";
-import { createProfileAction } from "@/app/actions/profile";
+import { createProfileAction, saveProfileDraftAction } from "@/app/actions/profile";
+import {
+  ENTITY_REGISTRY,
+  isEntityTypeEnabled,
+  calculateCompletenessScore,
+  calculateRarityTier,
+} from "@/lib/entities";
+import type { EntityType, RarityTier } from "@/lib/supabase/database.types";
+import { ImageCropperModal } from "./ImageCropperModal";
+import { DynamicEntityFields } from "./DynamicEntityFields";
+import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { saveWizardDraft, loadWizardDraft, clearWizardDraft } from "@/lib/entities/draft";
 
 export function DesktopCardWizard() {
   const router = useRouter();
 
-  // Wizard Steps (1 - 7), progress is a thin gold line at the top (no "1 dari 7" text)
-  const [step, setStep] = useState(1);
+  // Wizard Steps (1 - 6): Progress bar tipis emas di paling atas
+  const [step, setStep] = useState<number>(1);
 
   // Form State
-  const [role, setRole] = useState<"player" | "coach" | "team">("player");
-  const [birthDate, setBirthDate] = useState("2007-06-15");
-  const [guardianName, setGuardianName] = useState("");
-  const [guardianContact, setGuardianContact] = useState("");
-  const [guardianConsent, setGuardianConsent] = useState(false);
+  const [entityType, setEntityType] = useState<EntityType>("player");
+  const [birthDate, setBirthDate] = useState<string>("2007-06-15");
+  const [guardianName, setGuardianName] = useState<string>("");
+  const [guardianContact, setGuardianContact] = useState<string>("");
+  const [guardianRelationship, setGuardianRelationship] = useState<string>("Orang Tua Kandung");
+  const [guardianConsent, setGuardianConsent] = useState<boolean>(false);
 
-  const [displayName, setDisplayName] = useState("Sutan Harimau");
-  const [ign, setIgn] = useState("HARIMAU_AIM");
+  const [displayName, setDisplayName] = useState<string>("Sutan Harimau");
+  const [regionCode, setRegionCode] = useState<string>("PDG");
+  const [regionSearch, setRegionSearch] = useState<string>("");
 
-  const [selectedGame, setSelectedGame] = useState("Mobile Legends: Bang Bang");
-  const [selectedGameRole, setSelectedGameRole] = useState("Roamer");
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [coverUrl, setCoverUrl] = useState<string>("");
+  const [bio, setBio] = useState<string>("Atlet esport kompetitif asal Sumatera Barat.");
 
-  const [regionCode, setRegionCode] = useState("PDG");
-  const [regionSearch, setRegionSearch] = useState("");
-
-  const [avatarUrl, setAvatarUrl] = useState(
-    "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop"
-  );
-
-  const [privacy, setPrivacy] = useState({
-    kontak: false, // privat
-    tglLahir: false, // privat
-    statistik: true, // publik
+  // Atribut dinamis sesuai 7 bidang
+  const [attributes, setAttributes] = useState<Record<string, any>>({
+    ign: "HARIMAU_AIM",
+    game_id: "mlbb",
+    role: "Roamer",
+    rank: "Mythic Glory 120★",
+    year_started: 2022,
+    is_looking_for_team: true,
   });
 
-  const [isFinishing, setIsFinishing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // Pengaturan Privasi per Field (Default Aman sesuai UU PDP No. 27/2022)
+  const [privacy, setPrivacy] = useState<{
+    kontak: boolean;
+    tglLahir: boolean;
+    statistik: boolean;
+    fotoPublik: boolean;
+  }>({
+    kontak: false, // privat default
+    tglLahir: false, // privat default
+    statistik: true, // publik default
+    fotoPublik: true, // publik default untuk dewasa
+  });
 
-  // Under 18 detection via useEffect
-  const [isUnder18, setIsUnder18] = useState(false);
+  // Toggle Mode Pratinjau Kartu: Publik vs Pemilik
+  const [previewMode, setPreviewMode] = useState<"owner" | "public">("owner");
+
+  // Modal Cropper State
+  const [cropperOpen, setCropperOpen] = useState<boolean>(false);
+  const [cropperType, setCropperType] = useState<"avatar" | "logo" | "cover">("avatar");
+
+  // Loading, Finishing, dan Hasil Penerbitan
+  const [isFinishing, setIsFinishing] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [issuedResult, setIssuedResult] = useState<{
+    profileId: string;
+    esportId: string;
+    slug: string;
+  } | null>(null);
+
+  // Auto-Save Draft Banner
+  const [hasDraftRestored, setHasDraftRestored] = useState<boolean>(false);
+
+  // Under-18 detection via useEffect
+  const [isUnder18, setIsUnder18] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!birthDate) {
+    if (!birthDate || (entityType !== "player" && entityType !== "coach")) {
       setIsUnder18(false);
       return;
     }
     const birthYear = new Date(birthDate).getFullYear();
     const currentYear = new Date().getFullYear();
-    setIsUnder18(currentYear - birthYear < 18);
-  }, [birthDate]);
+    const under = currentYear - birthYear < 18;
+    setIsUnder18(under);
+
+    // Jika di bawah 18 tahun, set foto privat secara default demi perlindungan anak
+    if (under) {
+      setPrivacy((prev) => ({ ...prev, fotoPublik: false }));
+    }
+  }, [birthDate, entityType]);
+
+  // Load existing draft pada saat pertama kali komponen dimuat
+  useEffect(() => {
+    const draft = loadWizardDraft();
+    if (draft && draft.displayName) {
+      setEntityType((draft.entityType as EntityType) || "player");
+      if (draft.birthDate) setBirthDate(draft.birthDate);
+      if (draft.guardianName) setGuardianName(draft.guardianName);
+      if (draft.guardianContact) setGuardianContact(draft.guardianContact);
+      if (draft.guardianConsent !== undefined) setGuardianConsent(draft.guardianConsent);
+      if (draft.displayName) setDisplayName(draft.displayName);
+      if (draft.regionCode) setRegionCode(draft.regionCode);
+      if (draft.avatarUrl) setAvatarUrl(draft.avatarUrl);
+      if (draft.coverUrl) setCoverUrl(draft.coverUrl);
+      if (draft.bio) setBio(draft.bio);
+      if (draft.attributes) setAttributes(draft.attributes);
+      if (draft.privacy) setPrivacy(draft.privacy);
+      if (draft.step) setStep(Math.min(draft.step, 6));
+      setHasDraftRestored(true);
+    }
+  }, []);
+
+  // Simpan draf ke localStorage setiap kali ada perubahan data
+  useEffect(() => {
+    if (step < 6 && !issuedResult) {
+      saveWizardDraft({
+        step,
+        entityType,
+        birthDate,
+        guardianName,
+        guardianContact,
+        guardianRelationship,
+        guardianConsent,
+        displayName,
+        regionCode,
+        avatarUrl,
+        coverUrl,
+        bio,
+        attributes,
+        privacy,
+      });
+    }
+  }, [
+    step,
+    entityType,
+    birthDate,
+    guardianName,
+    guardianContact,
+    guardianRelationship,
+    guardianConsent,
+    displayName,
+    regionCode,
+    avatarUrl,
+    coverUrl,
+    bio,
+    attributes,
+    privacy,
+    issuedResult,
+  ]);
 
   // Selected region details
   const selectedRegion = useMemo(() => {
     return REGIONS_DETAIL.find((r) => r.code === regionCode) || REGIONS_DETAIL[0];
   }, [regionCode]);
 
-  // Active game details
-  const activeGame = useMemo(() => {
-    return OFFICIAL_GAMES.find((g) => g.name === selectedGame) || OFFICIAL_GAMES[0];
-  }, [selectedGame]);
-
-  // Filtered 19 regions for Step 5
+  // Filtered 19 regions for search
   const filteredRegions = useMemo(() => {
     if (!regionSearch.trim()) return REGIONS_DETAIL;
     return REGIONS_DETAIL.filter(
@@ -96,16 +201,45 @@ export function DesktopCardWizard() {
     );
   }, [regionSearch]);
 
-  // 3D Tilt Card Motion Values for Right Column Sticky Card
+  // Active game details
+  const activeGame = useMemo(() => {
+    const gameId = attributes.game_id || attributes.main_game_id || "mlbb";
+    return OFFICIAL_GAMES.find((g) => g.id === gameId) || OFFICIAL_GAMES[0];
+  }, [attributes.game_id, attributes.main_game_id]);
+
+  // Kalkulasi Skor Kelengkapan & Rarity Tier Real-Time
+  const completenessScore = useMemo(() => {
+    return calculateCompletenessScore(
+      entityType,
+      {
+        display_name: displayName,
+        region_id: selectedRegion.id,
+        avatar_url: avatarUrl || undefined,
+        bio: bio || undefined,
+        main_game_id: activeGame.id,
+      },
+      attributes
+    );
+  }, [entityType, displayName, selectedRegion.id, avatarUrl, bio, activeGame.id, attributes]);
+
+  const rarityTier: RarityTier = useMemo(() => {
+    return calculateRarityTier({
+      completenessScore,
+      confirmedRelationsCount: 0,
+      validatedAchievementsCount: 0,
+    });
+  }, [completenessScore]);
+
+  // 3D Tilt Card Motion Values
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const rotateX = useSpring(useTransform(mouseY, [-200, 200], [14, -14]), {
+  const rotateX = useSpring(useTransform(mouseY, [-200, 200], [12, -12]), {
     stiffness: 180,
     damping: 24,
   });
-  const rotateY = useSpring(useTransform(mouseX, [-200, 200], [-14, 14]), {
+  const rotateY = useSpring(useTransform(mouseX, [-200, 200], [-12, 12]), {
     stiffness: 180,
     damping: 24,
   });
@@ -124,22 +258,37 @@ export function DesktopCardWizard() {
     mouseY.set(0);
   };
 
-  // Step Navigation
+  // Navigasi Langkah Wizard
   const handleNext = () => {
     setErrorMessage(null);
 
-    // Step-specific validations
-    if (step === 2 && isUnder18 && !guardianConsent) {
-      setErrorMessage("Persetujuan wali wajib dicentang untuk atlet di bawah 18 tahun.");
+    // Validasi Langkah 1: Entitas harus aktif
+    if (step === 1 && !isEntityTypeEnabled(entityType)) {
+      setErrorMessage("Bidang ini belum dibuka untuk pendaftaran publik (Segera hadir).");
       return;
     }
 
+    // Validasi Langkah 2: Perlindungan Anak
+    if (step === 2 && (entityType === "player" || entityType === "coach")) {
+      if (isUnder18) {
+        if (!guardianName.trim() || !guardianContact.trim()) {
+          setErrorMessage("Nama dan kontak wali sah wajib diisi untuk pendaftar di bawah 18 tahun.");
+          return;
+        }
+        if (!guardianConsent) {
+          setErrorMessage("Persetujuan tertulis orang tua/wali wajib dicentang sesuai UU PDP.");
+          return;
+        }
+      }
+    }
+
+    // Validasi Langkah 3: Identitas Dasar
     if (step === 3 && !displayName.trim()) {
-      setErrorMessage("Nama lengkap wajib diisi.");
+      setErrorMessage("Nama resmi / tampilan wajib diisi.");
       return;
     }
 
-    if (step < 7) {
+    if (step < 6) {
       setStep((prev) => prev + 1);
     } else {
       handleFinalSubmit();
@@ -153,14 +302,14 @@ export function DesktopCardWizard() {
     }
   };
 
-  // Keyboard navigation listener (Full keyboard navigation)
+  // Navigasi Keyboard
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if typing in a text input (except for Enter to proceed)
-      if (e.key === "Enter") {
+      if (cropperOpen) return;
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         handleNext();
-      } else if (e.key === "Escape" && step > 1) {
+      } else if (e.key === "Escape" && step > 1 && !issuedResult) {
         e.preventDefault();
         handleBack();
       }
@@ -168,65 +317,92 @@ export function DesktopCardWizard() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [step, isUnder18, guardianConsent, displayName]);
+  }, [step, cropperOpen, issuedResult, entityType, isUnder18, guardianConsent, displayName]);
 
-  // Final Profile & Card Creation
+  // Final Profile & ESPORT ID Creation
   const handleFinalSubmit = async () => {
     setIsFinishing(true);
+    setErrorMessage(null);
 
     try {
-      await createProfileAction({
-        entityType: role,
+      const result = await createProfileAction({
+        entityType,
         displayName: displayName.trim(),
-        ign: ign.trim() || undefined,
+        ign: attributes.ign?.trim() || undefined,
         regionId: selectedRegion.id,
         regionCode: selectedRegion.code,
         mainGameId: activeGame.id,
-        roleName: selectedGameRole,
-        avatarUrl: avatarUrl,
-        birthDate: birthDate,
-        bio: `${role === "player" ? "Atlet" : role === "coach" ? "Pelatih" : "Tim"} ${selectedGame} domisili ${selectedRegion.name}.`,
+        roleName: attributes.role || undefined,
+        avatarUrl: avatarUrl || undefined,
+        birthDate: entityType === "player" || entityType === "coach" ? birthDate : undefined,
+        bio: bio.trim() || undefined,
         guardianConsent:
           isUnder18 && guardianConsent
             ? {
                 guardianName: guardianName.trim(),
                 guardianContact: guardianContact.trim(),
+                guardianRelationship,
               }
             : undefined,
+        metadata: {
+          ...attributes,
+          cover_url: coverUrl || undefined,
+        },
         visibility: {
           contact: privacy.kontak,
           birthDate: privacy.tglLahir,
           stats: privacy.statistik,
+          photo: privacy.fotoPublik,
         },
       });
-    } catch {
-      // Fallback continuation
-    }
 
-    // Delay for shining card animation
-    setTimeout(() => {
-      router.push("/me/cards");
-    }, 1400);
+      if (!result.success || !result.profileId) {
+        throw new Error(result.error || "Gagal menerbitkan profil.");
+      }
+
+      // Bersihkan draf lokal setelah berhasil terbit
+      clearWizardDraft();
+
+      setIssuedResult({
+        profileId: result.profileId,
+        esportId: result.esportId || "ESB-PDG-PL-100234",
+        slug: result.slug || "profil-baru",
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Terjadi kesalahan sistem saat membuat profil.";
+      setErrorMessage(msg);
+      setIsFinishing(false);
+    }
   };
+
+  // Tentukan Aspek Rasio Crop Sesuai Entitas
+  const getEntityCropperType = (): "avatar" | "logo" | "cover" => {
+    if (entityType === "player" || entityType === "coach") return "avatar";
+    if (entityType === "venue") return "cover";
+    return "logo";
+  };
+
+  // Entity Details
+  const entityDef = ENTITY_REGISTRY[entityType];
 
   return (
     <div className="w-full min-h-screen bg-[#07080C] text-white flex flex-col select-none">
       {/* ========================================================= */}
-      {/* 1. PROGRESS BAR TIPIS EMAS DI PALING ATAS (TANPA "1 DARI 7") */}
+      {/* 1. PROGRESS BAR TIPIS EMAS DI PALING ATAS (TANPA "1 DARI 6") */}
       {/* ========================================================= */}
       <div className="sticky top-0 w-full h-1 bg-white/[0.06] z-50">
         <motion.div
           className="h-full bg-gradient-to-r from-[#AA7C11] via-[#D4AF37] to-[#F3E5AB]"
-          initial={{ width: "14%" }}
-          animate={{ width: `${(step / 7) * 100}%` }}
+          initial={{ width: "16%" }}
+          animate={{ width: `${(step / 6) * 100}%` }}
           transition={{ ease: "easeInOut", duration: 0.35 }}
         />
       </div>
 
-      {/* TOP BAR / BACK NAVIGATION */}
+      {/* TOP BAR / NAVIGATION */}
       <header className="w-full border-b border-white/[0.06] bg-[#07080C]/90 backdrop-blur-md px-8 py-3.5 flex items-center justify-between z-40">
         <div className="flex items-center gap-4">
-          {step > 1 ? (
+          {step > 1 && !issuedResult ? (
             <button
               onClick={handleBack}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-white/20 text-xs font-mono text-white/70 hover:text-white transition-all group"
@@ -239,142 +415,174 @@ export function DesktopCardWizard() {
             </button>
           ) : (
             <Link
-              href="/"
+              href="/me/cards"
               className="inline-flex items-center gap-2 text-xs font-mono text-white/50 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Batal</span>
+              <span>Daftar Kartu</span>
             </Link>
           )}
 
           <div className="h-4 w-px bg-white/10" />
 
-          {/* Marawa Accent & Mode */}
+          {/* Stepper Indicator */}
           <div className="flex items-center gap-2">
-            <div className="flex h-3 w-1.5 rounded-sm overflow-hidden">
-              <span className="h-1/3 w-full bg-[#C8102E]" />
-              <span className="h-1/3 w-full bg-[#D4AF37]" />
-              <span className="h-1/3 w-full bg-black" />
-            </div>
-            <span className="text-xs font-mono uppercase tracking-widest text-white/40">
-              {step === 1 && "Pilih Peran"}
-              {step === 2 && "Tanggal Lahir"}
-              {step === 3 && "Nama & IGN"}
-              {step === 4 && "Game & Role"}
-              {step === 5 && "Wilayah PBESI"}
-              {step === 6 && "Foto Profil"}
-              {step === 7 && "Privasi & Tinjau"}
-            </span>
+            {[1, 2, 3, 4, 5, 6].map((s) => (
+              <div
+                key={s}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  s === step
+                    ? "bg-[#D4AF37] scale-125 shadow-[0_0_8px_rgba(212,175,55,0.8)]"
+                    : s < step
+                    ? "bg-emerald-400/80"
+                    : "bg-white/10"
+                }`}
+              />
+            ))}
           </div>
+
+          <span className="text-xs font-mono text-white/60 ml-2">
+            Langkah {step} • {
+              step === 1 ? "Pilih Bidang" :
+              step === 2 ? "Tanggal Lahir / Tahun" :
+              step === 3 ? "Identitas & Atribut" :
+              step === 4 ? "Foto / Logo" :
+              step === 5 ? "Pengaturan Privasi" : "Tinjau & Terbitkan"
+            }
+          </span>
         </div>
 
-        {/* Keyboard Shortcut Hint */}
-        <div className="hidden md:flex items-center gap-2 text-[11px] font-mono text-white/40">
-          <span>Lanjut</span>
-          <kbd className="px-1.5 py-0.5 bg-white/[0.06] border border-white/10 rounded text-[10px] text-[#D4AF37] flex items-center gap-1">
-            <CornerDownLeft className="w-3 h-3" /> Enter
-          </kbd>
+        {/* Draft Notification Badge */}
+        <div className="flex items-center gap-3">
+          {hasDraftRestored && (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[10px] font-mono text-[#D4AF37]">
+              <span>Draf Tersimpan</span>
+              <button
+                type="button"
+                onClick={() => {
+                  clearWizardDraft();
+                  setHasDraftRestored(false);
+                  window.location.reload();
+                }}
+                className="hover:underline text-white/60 ml-1"
+                title="Hapus draf dan mulai dari awal"
+              >
+                Reset
+              </button>
+            </div>
+          )}
+
+          <span className="text-[11px] font-mono text-white/40">
+            ESPORT SUMBAR V2 • PBESI
+          </span>
         </div>
       </header>
 
       {/* ========================================================= */}
-      {/* TWO COLUMNS LAYOUT: KIRI FORMULIR, KANAN KARTU PRATINJAU */}
+      {/* 2. BODY DUA KOLOM: FORM KIRI (7/12) & KARTU KANAN (5/12) */}
       {/* ========================================================= */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-12 py-8 lg:py-12">
-        <div className="grid grid-cols-12 gap-8 lg:gap-14 items-start">
+      <main className="w-full flex-1 max-w-7xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-12 gap-8 items-start">
           {/* ======================================================= */}
-          {/* KOLOM KIRI (7/12): FORMULIR SATU LANGKAH PER LAYAR     */}
+          {/* KOLOM KIRI (7/12): LANGKAH INPUT WIZARD                */}
           {/* ======================================================= */}
           <div className="col-span-12 lg:col-span-7 flex flex-col">
-            <div className="bg-[#0F1118]/80 border border-white/[0.08] rounded-3xl p-7 lg:p-10 shadow-2xl backdrop-blur-xl flex flex-col justify-between min-h-[520px]">
-              <div>
-                {/* Alert error */}
-                {errorMessage && (
-                  <div className="mb-6 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2.5">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
+            <div className="p-8 rounded-3xl bg-[#0D1017] border border-white/[0.08] shadow-2xl relative overflow-hidden">
+              {/* Marawa subtle border gradient top */}
+              <div className="absolute top-0 inset-x-0 h-1 flex">
+                <div className="w-1/3 bg-[#C8102E]" />
+                <div className="w-1/3 bg-[#D4AF37]" />
+                <div className="w-1/3 bg-black" />
+              </div>
 
-                {/* ANIMATED STEP CONTENT */}
+              {/* Error Message Alert */}
+              {errorMessage && (
+                <div className="mb-6 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center gap-3 text-xs text-red-400">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              {/* Dynamic Step Content */}
+              <div className="min-h-[420px]">
                 <AnimatePresence mode="wait">
-                  {/* LANGKAH 1: PERAN (3 KARTU PILIHAN BESAR) */}
+                  {/* =================================================== */}
+                  {/* LANGKAH 1: PILIH BIDANG (7 PILIHAN RESMI)           */}
+                  {/* =================================================== */}
                   {step === 1 && (
                     <motion.div
                       key="step-1"
-                      initial={{ opacity: 0, y: 15 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.2 }}
+                      exit={{ opacity: 0, y: -12 }}
                       className="flex flex-col"
                     >
                       <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
-                        Pilih Peran
+                        Pilih Bidang
                       </h2>
                       <p className="text-xs text-white/50 mb-6">
-                        Pilih status identitas resmi paspor esport kamu.
+                        Pilih kategori identitas digital Anda dalam ekosistem resmi PBESI Sumatera Barat.
                       </p>
 
-                      <div className="grid grid-cols-3 gap-4">
-                        {[
-                          {
-                            id: "player",
-                            label: "Player",
-                            desc: "Atlet kompetitif individu atau bagian tim",
-                            icon: Gamepad2,
-                          },
-                          {
-                            id: "coach",
-                            label: "Pelatih",
-                            desc: "Pelatih berlisensi atau analisis taktis",
-                            icon: GraduationCap,
-                          },
-                          {
-                            id: "team",
-                            label: "Tim",
-                            desc: "Organisasi atau klub esport resmi",
-                            icon: Users,
-                          },
-                        ].map((p, idx) => {
-                          const Icon = p.icon;
-                          const isActive = role === p.id;
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {Object.values(ENTITY_REGISTRY).map((entity) => {
+                          const isEnabled = isEntityTypeEnabled(entity.type);
+                          const isSelected = entityType === entity.type;
+
                           return (
                             <button
-                              key={p.id}
+                              key={entity.type}
                               type="button"
-                              onClick={() => setRole(p.id as "player" | "coach" | "team")}
-                              className={`p-5 rounded-2xl flex flex-col items-start justify-between min-h-[170px] transition-all border text-left relative overflow-hidden group ${
-                                isActive
-                                  ? "bg-[#D4AF37]/10 border-[#D4AF37] shadow-[0_0_24px_rgba(212,175,55,0.2)]"
-                                  : "bg-[#161A24] border-white/[0.08] hover:border-white/20 hover:bg-[#1A1F2C]"
+                              onClick={() => {
+                                if (isEnabled) {
+                                  setEntityType(entity.type);
+                                  // Update preset label
+                                  if (entity.type === "team") {
+                                    setDisplayName("Minang Pride Esports");
+                                  } else if (entity.type === "coach") {
+                                    setDisplayName("Coach Rizal");
+                                  } else if (entity.type === "community") {
+                                    setDisplayName("Komunitas MLBB Ranah Minang");
+                                  } else if (entity.type === "venue") {
+                                    setDisplayName("Cyber Minang iCafe");
+                                  } else if (entity.type === "campus") {
+                                    setDisplayName("UKM Esport UNAND");
+                                  } else if (entity.type === "school") {
+                                    setDisplayName("Ekskul Esport SMAN 1 Padang");
+                                  }
+                                }
+                              }}
+                              disabled={!isEnabled}
+                              className={`p-4 rounded-2xl border text-left transition-all relative flex flex-col justify-between ${
+                                !isEnabled
+                                  ? "bg-white/[0.02] border-white/[0.05] opacity-50 cursor-not-allowed"
+                                  : isSelected
+                                  ? "bg-[#D4AF37]/10 border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.2)]"
+                                  : "bg-[#161A24] border-white/[0.06] hover:border-white/20 hover:bg-[#1A1F2C]"
                               }`}
                             >
-                              <div className="w-full flex items-center justify-between">
-                                <div
-                                  className={`w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
-                                    isActive
-                                      ? "bg-[#D4AF37] text-[#07080C]"
-                                      : "bg-white/[0.06] text-white/60 group-hover:text-white"
-                                  }`}
-                                >
-                                  <Icon className="w-5 h-5" />
-                                </div>
-                                <span className="text-[10px] font-mono text-white/30">
-                                  0{idx + 1}
+                              <div className="flex items-center justify-between mb-2">
+                                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${entity.badgeColor}`}>
+                                  {entity.code}
                                 </span>
+                                {!isEnabled ? (
+                                  <span className="text-[9px] font-mono text-white/40 bg-white/5 px-2 py-0.5 rounded">
+                                    Segera Hadir
+                                  </span>
+                                ) : isSelected ? (
+                                  <div className="w-5 h-5 rounded-full bg-[#D4AF37] flex items-center justify-center text-[#07080C]">
+                                    <Check className="w-3 h-3 stroke-[3]" />
+                                  </div>
+                                ) : null}
                               </div>
 
                               <div>
-                                <div
-                                  className={`text-base font-heading font-black tracking-wide ${
-                                    isActive ? "text-[#D4AF37]" : "text-white"
-                                  }`}
-                                >
-                                  {p.label}
+                                <div className="text-sm font-heading font-black text-white">
+                                  {entity.label}
                                 </div>
-                                <p className="text-[11px] text-white/50 leading-relaxed mt-1">
-                                  {p.desc}
-                                </p>
+                                <div className="text-[11px] text-white/50 mt-1 line-clamp-2">
+                                  {entity.description}
+                                </div>
                               </div>
                             </button>
                           );
@@ -383,370 +591,357 @@ export function DesktopCardWizard() {
                     </motion.div>
                   )}
 
-                  {/* LANGKAH 2: TANGGAL LAHIR (PANEL WALI <18 DENGAN PERISAI) */}
+                  {/* =================================================== */}
+                  {/* LANGKAH 2: TANGGAL LAHIR & PERLINDUNGAN ANAK        */}
+                  {/* =================================================== */}
                   {step === 2 && (
                     <motion.div
                       key="step-2"
-                      initial={{ opacity: 0, y: 15 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.2 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      className="flex flex-col"
+                    >
+                      {entityType === "player" || entityType === "coach" ? (
+                        <>
+                          <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
+                            Tanggal Lahir
+                          </h2>
+                          <p className="text-xs text-white/50 mb-6">
+                            Diperlukan untuk pembagian divisi usia kompetisi resmi PBESI (Senior / Junior) dan kepatuhan UU PDP.
+                          </p>
+
+                          <div className="p-5 rounded-2xl bg-[#161A24] border border-white/[0.08] mb-5">
+                            <label className="block text-[11px] font-mono uppercase tracking-wider text-white/60 mb-2">
+                              Pilih Tanggal Lahir Atlet
+                            </label>
+                            <input
+                              type="date"
+                              value={birthDate}
+                              onChange={(e) => setBirthDate(e.target.value)}
+                              className="w-full h-12 bg-[#0A0C13] border border-white/10 rounded-xl px-4 text-sm font-mono text-white outline-none focus:border-[#D4AF37] cursor-pointer"
+                            />
+                          </div>
+
+                          {/* Under 18 Guardian Consent Flow */}
+                          {isUnder18 && (
+                            <motion.div
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col gap-3"
+                            >
+                              <div className="flex items-center gap-2 text-xs font-heading font-black text-amber-300">
+                                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                                <span>Persetujuan Orang Tua / Wali Sah (Usia &lt; 18 Tahun)</span>
+                              </div>
+                              <p className="text-[11px] text-white/70 leading-relaxed">
+                                Sesuai UU No. 27 Tahun 2022 tentang Perlindungan Data Pribadi, pendaftaran atlet anak wajib menyertakan izin tertulis wali. Foto profil akan disembunyikan secara default.
+                              </p>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
+                                <div>
+                                  <label className="block text-[10px] font-mono text-white/60 mb-1">
+                                    Nama Orang Tua / Wali <span className="text-red-400">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={guardianName}
+                                    onChange={(e) => setGuardianName(e.target.value)}
+                                    placeholder="Nama lengkap wali"
+                                    className="w-full h-10 bg-[#0A0C13] border border-white/10 rounded-xl px-3 text-xs text-white outline-none focus:border-amber-400"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-[10px] font-mono text-white/60 mb-1">
+                                    Nomor Telepon / WhatsApp <span className="text-red-400">*</span>
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={guardianContact}
+                                    onChange={(e) => setGuardianContact(e.target.value)}
+                                    placeholder="0812xxxxxxxx"
+                                    className="w-full h-10 bg-[#0A0C13] border border-white/10 rounded-xl px-3 text-xs text-white outline-none focus:border-amber-400"
+                                  />
+                                </div>
+                              </div>
+
+                              <label className="flex items-start gap-3 mt-2 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={guardianConsent}
+                                  onChange={(e) => setGuardianConsent(e.target.checked)}
+                                  className="w-4 h-4 mt-0.5 rounded border-white/20 accent-[#D4AF37]"
+                                />
+                                <span className="text-[11px] text-white/80 leading-normal">
+                                  Saya menyatakan bahwa orang tua/wali telah memberikan persetujuan tertulis resmi untuk pendaftaran profil identitas atlet digital ini (Syarat &amp; Ketentuan v1.0-2026).
+                                </span>
+                              </label>
+                            </motion.div>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
+                            Tahun Berdiri &amp; Wilayah
+                          </h2>
+                          <p className="text-xs text-white/50 mb-6">
+                            Lembaga, komunitas, dan venue memerlukan verifikasi tahun beroperasi dan wilayah domisili.
+                          </p>
+
+                          <div className="p-5 rounded-2xl bg-[#161A24] border border-white/[0.08] flex flex-col gap-4">
+                            <div>
+                              <label className="block text-[11px] font-mono uppercase tracking-wider text-white/60 mb-2">
+                                Tahun Berdiri / Mulai Beroperasi
+                              </label>
+                              <input
+                                type="number"
+                                min={1990}
+                                max={new Date().getFullYear()}
+                                value={attributes.founded_year || 2022}
+                                onChange={(e) =>
+                                  setAttributes((prev) => ({
+                                    ...prev,
+                                    founded_year: parseInt(e.target.value, 10),
+                                  }))
+                                }
+                                className="w-full h-12 bg-[#0A0C13] border border-white/10 rounded-xl px-4 text-sm font-mono text-white outline-none focus:border-[#D4AF37]"
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {/* =================================================== */}
+                  {/* LANGKAH 3: IDENTITAS & ATRIBUT KHUSUS BIDANG        */}
+                  {/* =================================================== */}
+                  {step === 3 && (
+                    <motion.div
+                      key="step-3"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
                       className="flex flex-col"
                     >
                       <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
-                        Tanggal Lahir
+                        Identitas &amp; Atribut
                       </h2>
-                      <p className="text-xs text-white/50 mb-6">
-                        Verifikasi usia resmi untuk turnamen PBESI dan regulasi perlindungan anak.
+                      <p className="text-xs text-white/50 mb-5">
+                        Isi data resmi {entityDef.singularLabel.toLowerCase()} Anda untuk pembuatan kartu digital.
                       </p>
 
-                      <div className="flex flex-col gap-2">
-                        <label className="text-[11px] font-mono uppercase tracking-wider text-white/60">
-                          Tanggal Lahir Atlet
-                        </label>
-                        <div className="relative">
+                      {/* Nama Tampil & Wilayah */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                        <div>
+                          <label className="block text-[11px] font-mono uppercase tracking-wider text-white/60 mb-1.5">
+                            Nama Lengkap / Resmi <span className="text-red-400">*</span>
+                          </label>
                           <input
-                            type="date"
-                            value={birthDate}
-                            onChange={(e) => setBirthDate(e.target.value)}
-                            className="w-full h-14 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] rounded-2xl px-4 text-base font-mono text-white outline-none transition-all"
+                            type="text"
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            placeholder="Nama resmi"
+                            maxLength={100}
+                            className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none"
                           />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-mono uppercase tracking-wider text-white/60 mb-1.5">
+                            Domisili Wilayah (Sumatera Barat) <span className="text-red-400">*</span>
+                          </label>
+                          <select
+                            value={regionCode}
+                            onChange={(e) => setRegionCode(e.target.value)}
+                            className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
+                          >
+                            {REGIONS_DETAIL.map((r) => (
+                              <option key={r.code} value={r.code} className="bg-[#161A24]">
+                                {r.name} ({r.code})
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
 
-                      {/* PANEL PERSETUJUAN WALI JIKA < 18 TAHUN */}
+                      {/* Formulir Dinamis Berdasarkan Entitas */}
+                      <DynamicEntityFields
+                        entityType={entityType}
+                        attributes={attributes}
+                        onChange={(key, val) =>
+                          setAttributes((prev) => ({ ...prev, [key]: val }))
+                        }
+                        bio={bio}
+                        onBioChange={setBio}
+                      />
+                    </motion.div>
+                  )}
+
+                  {/* =================================================== */}
+                  {/* LANGKAH 4: FOTO / LOGO (UNGGAH DENGAN CROP REAL)    */}
+                  {/* =================================================== */}
+                  {step === 4 && (
+                    <motion.div
+                      key="step-4"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      className="flex flex-col"
+                    >
+                      <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
+                        {entityType === "team" || entityType === "community" || entityType === "campus" || entityType === "school"
+                          ? "Unggah Logo Resmi"
+                          : entityType === "venue"
+                          ? "Unggah Foto Sampul & Logo"
+                          : "Foto Profil Atlet"}
+                      </h2>
+                      <p className="text-xs text-white/50 mb-5">
+                        Potong dan sesuaikan foto dengan rasio paspor resmi. Gambar akan dikonversi ke WebP otomatis tanpa metadata lokasi.
+                      </p>
+
+                      {/* Area Unggah & Tampilan Foto Saat Ini */}
+                      <div className="p-6 rounded-2xl bg-[#161A24] border border-white/[0.08] flex flex-col items-center justify-center gap-4 mb-4">
+                        <div className="relative">
+                          {avatarUrl ? (
+                            <div className="w-32 h-40 rounded-2xl overflow-hidden border-2 border-[#D4AF37] shadow-xl relative group">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={avatarUrl} alt="Foto Profil" className="w-full h-full object-cover" />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setCropperType(getEntityCropperType());
+                                    setCropperOpen(true);
+                                  }}
+                                  className="px-3 py-1.5 rounded-lg bg-[#D4AF37] text-[#07080C] text-[11px] font-bold"
+                                >
+                                  Ganti
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <InitialsAvatar
+                              name={displayName}
+                              entityType={entityType}
+                              size="xl"
+                              isMinorProtected={isUnder18 && !privacy.fotoPublik}
+                            />
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCropperType(getEntityCropperType());
+                              setCropperOpen(true);
+                            }}
+                            className="px-5 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C] text-xs font-heading font-black uppercase tracking-wider flex items-center gap-2 shadow-lg transition-all"
+                          >
+                            <Upload className="w-4 h-4" />
+                            <span>{avatarUrl ? "Ganti Foto" : "Unggah & Potong Foto"}</span>
+                          </button>
+
+                          {avatarUrl && (
+                            <button
+                              type="button"
+                              onClick={() => setAvatarUrl("")}
+                              className="px-3 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-xs font-mono text-white/60 hover:text-white transition-all"
+                            >
+                              Gunakan Avatar Inisial
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Catatan Privasi Foto untuk Atlet <18 */}
                       {isUnder18 && (
-                        <div className="mt-6 p-5 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex flex-col gap-3">
-                          <div className="flex items-center gap-2">
-                            <Shield className="w-5 h-5 text-[#D4AF37]" />
-                            <span className="text-sm font-heading font-bold text-[#D4AF37]">
-                              Persetujuan Wali Terdaftar (&lt; 18 Tahun)
-                            </span>
-                          </div>
-                          <p className="text-xs text-white/70 leading-relaxed">
-                            Berdasarkan regulasi PBESI &amp; UU PDP, atlet di bawah 18 tahun membutuhkan persetujuan orang tua/wali resmi.
-                          </p>
-
-                          <div className="grid grid-cols-2 gap-3 mt-1">
-                            <input
-                              type="text"
-                              value={guardianName}
-                              onChange={(e) => setGuardianName(e.target.value)}
-                              placeholder="Nama Lengkap Orang Tua / Wali"
-                              className="h-11 bg-[#0F1118] border border-white/10 rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none focus:border-[#D4AF37]"
-                            />
-                            <input
-                              type="text"
-                              value={guardianContact}
-                              onChange={(e) => setGuardianContact(e.target.value)}
-                              placeholder="Nomor WhatsApp / Kontak Wali"
-                              className="h-11 bg-[#0F1118] border border-white/10 rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none focus:border-[#D4AF37]"
-                            />
-                          </div>
-
-                          <label className="flex items-center gap-2.5 cursor-pointer mt-1 select-none">
-                            <input
-                              type="checkbox"
-                              checked={guardianConsent}
-                              onChange={(e) => setGuardianConsent(e.target.checked)}
-                              className="w-4 h-4 rounded bg-black/40 border-white/20 text-[#D4AF37] focus:ring-0 cursor-pointer"
-                            />
-                            <span className="text-xs text-white/80 leading-tight">
-                              Saya menyatakan wali menyetujui penerbitan kartu paspor atlet resmi.
-                            </span>
-                          </label>
+                        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-xs text-amber-300">
+                          <Lock className="w-4 h-4 shrink-0 text-amber-400" />
+                          <span>
+                            <strong>Perlindungan Anak:</strong> Karena atlet berusia di bawah 18 tahun, foto tidak akan ditampilkan secara publik kecuali jika Anda mengaktifkannya pada langkah Privasi.
+                          </span>
                         </div>
                       )}
                     </motion.div>
                   )}
 
-                  {/* LANGKAH 3: NAMA LENGKAP & IGN */}
-                  {step === 3 && (
-                    <motion.div
-                      key="step-3"
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex flex-col gap-5"
-                    >
-                      <div>
-                        <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
-                          Nama &amp; In-Game Name
-                        </h2>
-                        <p className="text-xs text-white/50">
-                          Nama lengkap sesuai KTP/KIA dan identitas panggung turnamen.
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        <label className="text-[11px] font-mono uppercase tracking-wider text-white/60">
-                          Nama Lengkap
-                        </label>
-                        <input
-                          type="text"
-                          value={displayName}
-                          onChange={(e) => setDisplayName(e.target.value)}
-                          placeholder="Nama lengkap atlet"
-                          required
-                          className="w-full h-13 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] rounded-2xl px-4 text-base font-semibold text-white outline-none transition-all"
-                        />
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center justify-between">
-                          <label className="text-[11px] font-mono uppercase tracking-wider text-white/60">
-                            In-Game Name (IGN)
-                          </label>
-                          <span className="text-[10px] font-mono text-[#D4AF37]">
-                            Format: HURUF_KAPITAL
-                          </span>
-                        </div>
-                        <div className="relative">
-                          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-mono text-[#D4AF37] font-bold">
-                            @
-                          </span>
-                          <input
-                            type="text"
-                            value={ign}
-                            onChange={(e) => setIgn(e.target.value.toUpperCase())}
-                            placeholder="HARIMAU_AIM"
-                            className="w-full h-13 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] rounded-2xl pl-9 pr-4 text-base font-mono font-bold text-[#D4AF37] outline-none transition-all"
-                          />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* LANGKAH 4: GAME (GRID LOGO) + ROLE (CHIP) */}
-                  {step === 4 && (
-                    <motion.div
-                      key="step-4"
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex flex-col"
-                    >
-                      <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
-                        Pilih Game &amp; Role
-                      </h2>
-                      <p className="text-xs text-white/50 mb-5">
-                        Divisi game utama dan spesialisasi posisi kamu di dalam tim.
-                      </p>
-
-                      {/* Grid Game */}
-                      <label className="text-[11px] font-mono uppercase tracking-wider text-white/60 mb-2">
-                        Game Utama
-                      </label>
-                      <div className="grid grid-cols-3 gap-2.5 mb-5">
-                        {OFFICIAL_GAMES.map((g) => {
-                          const isSelected = selectedGame === g.name;
-                          return (
-                            <button
-                              key={g.id}
-                              type="button"
-                              onClick={() => {
-                                setSelectedGame(g.name);
-                                if (g.roles[0]) setSelectedGameRole(g.roles[0]);
-                              }}
-                              className={`h-12 px-3.5 rounded-xl border text-xs font-heading font-bold text-left flex items-center justify-between transition-all ${
-                                isSelected
-                                  ? "bg-[#4C7DFF]/20 border-[#4C7DFF] text-white shadow-[0_0_15px_rgba(76,125,255,0.25)]"
-                                  : "bg-[#161A24] border-white/[0.08] text-white/60 hover:text-white hover:border-white/20"
-                              }`}
-                            >
-                              <span className="truncate">{g.shortName}</span>
-                              {isSelected && <Check className="w-3.5 h-3.5 text-[#4C7DFF]" />}
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Role sebagai Chip */}
-                      <label className="text-[11px] font-mono uppercase tracking-wider text-white/60 mb-2">
-                        Spesialisasi Posisi / Role
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {activeGame.roles.map((r) => {
-                          const isSelected = selectedGameRole === r;
-                          return (
-                            <button
-                              key={r}
-                              type="button"
-                              onClick={() => setSelectedGameRole(r)}
-                              className={`px-4 py-2 rounded-xl text-xs font-mono transition-all border ${
-                                isSelected
-                                  ? "bg-[#D4AF37] text-[#07080C] font-bold border-[#D4AF37] shadow-sm"
-                                  : "bg-[#161A24] text-white/70 border-white/[0.08] hover:text-white hover:border-white/20"
-                              }`}
-                            >
-                              {r}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* LANGKAH 5: WILAYAH (19 PENGCAB SUMBAR) */}
+                  {/* =================================================== */}
+                  {/* LANGKAH 5: PRIVASI DATA (TOGGLE DENGAN DEFAULT AMAN)*/}
+                  {/* =================================================== */}
                   {step === 5 && (
                     <motion.div
                       key="step-5"
-                      initial={{ opacity: 0, y: 15 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.2 }}
+                      exit={{ opacity: 0, y: -12 }}
                       className="flex flex-col"
                     >
-                      <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
-                        Pilih Wilayah
-                      </h2>
-                      <p className="text-xs text-white/50 mb-4">
-                        Pilih Kota atau Kabupaten domisili untuk delegasi verifikasi Pengcab ESI.
-                      </p>
-
-                      {/* Search Bar */}
-                      <div className="relative w-full mb-3">
-                        <input
-                          type="text"
-                          value={regionSearch}
-                          onChange={(e) => setRegionSearch(e.target.value)}
-                          placeholder="Ketik nama Kota atau Kabupaten..."
-                          className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl pl-9 pr-4 text-xs text-white placeholder-white/30 outline-none"
-                        />
-                        <Search className="w-4 h-4 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
-                      </div>
-
-                      {/* 19 Regions Grid */}
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-56 overflow-y-auto no-scrollbar pr-1">
-                        {filteredRegions.map((reg) => {
-                          const isSelected = regionCode === reg.code;
-                          return (
-                            <button
-                              key={reg.id}
-                              type="button"
-                              onClick={() => setRegionCode(reg.code)}
-                              className={`h-11 px-3 rounded-xl border text-xs font-medium text-left flex items-center justify-between transition-all ${
-                                isSelected
-                                  ? "bg-[#D4AF37]/15 border-[#D4AF37] text-white font-bold"
-                                  : "bg-[#161A24] border-white/[0.06] text-white/60 hover:text-white hover:border-white/20"
-                              }`}
-                            >
-                              <span className="truncate">{reg.name}</span>
-                              <span className="text-[9px] font-mono text-[#D4AF37] ml-1 shrink-0">
-                                {reg.code}
-                              </span>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* LANGKAH 6: FOTO / LOGO (UNGGAH + PRESET) */}
-                  {step === 6 && (
-                    <motion.div
-                      key="step-6"
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex flex-col"
-                    >
-                      <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
-                        Foto Profil Kartu
-                      </h2>
-                      <p className="text-xs text-white/50 mb-5">
-                        Pilih foto resmi atlet atau gunakan salah satu avatar preset esport.
-                      </p>
-
-                      {/* Drag & Drop Simulation Zone */}
-                      <div className="w-full p-6 border-2 border-dashed border-white/15 hover:border-[#D4AF37]/50 rounded-2xl bg-[#161A24]/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer mb-5 text-center">
-                        <Upload className="w-6 h-6 text-[#D4AF37]" />
-                        <span className="text-xs font-heading font-bold text-white">
-                          Tarik &amp; lepas foto atlet ke sini
-                        </span>
-                        <span className="text-[10px] font-mono text-white/40">
-                          Format PNG, JPG atau WEBP (Maks 2MB)
-                        </span>
-                      </div>
-
-                      {/* Quick Avatar Presets */}
-                      <label className="text-[11px] font-mono uppercase tracking-wider text-white/60 mb-2">
-                        Atau Pilih Avatar Preset Esport
-                      </label>
-                      <div className="grid grid-cols-4 gap-3 mb-4">
-                        {[
-                          "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop",
-                          "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=300&auto=format&fit=crop",
-                          "https://api.dicebear.com/7.x/bottts/svg?seed=MARAWA_KING",
-                          "https://api.dicebear.com/7.x/bottts/svg?seed=BukitSlayer",
-                        ].map((url, idx) => (
+                      <div className="flex items-center justify-between mb-1">
+                        <h2 className="text-2xl font-heading font-black text-white tracking-tight">
+                          Privasi Data
+                        </h2>
+                        {/* Toggle Mode Pratinjau Kartu */}
+                        <div className="flex items-center gap-1 p-1 rounded-xl bg-[#161A24] border border-white/[0.08]">
                           <button
-                            key={idx}
                             type="button"
-                            onClick={() => setAvatarUrl(url)}
-                            className={`h-20 rounded-xl overflow-hidden border-2 transition-all ${
-                              avatarUrl === url
-                                ? "border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] scale-[1.03]"
-                                : "border-white/10 opacity-60 hover:opacity-100"
+                            onClick={() => setPreviewMode("owner")}
+                            className={`px-2.5 py-1 rounded-lg text-[10px] font-mono transition-all ${
+                              previewMode === "owner"
+                                ? "bg-[#D4AF37] text-[#07080C] font-bold"
+                                : "text-white/60 hover:text-white"
                             }`}
                           >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={url} alt="Preset" className="w-full h-full object-cover" />
+                            Tampilan Anda
                           </button>
-                        ))}
+                          <button
+                            type="button"
+                            onClick={() => setPreviewMode("public")}
+                            className={`px-2.5 py-1 rounded-lg text-[10px] font-mono transition-all ${
+                              previewMode === "public"
+                                ? "bg-emerald-500 text-white font-bold"
+                                : "text-white/60 hover:text-white"
+                            }`}
+                          >
+                            Tampilan Publik
+                          </button>
+                        </div>
                       </div>
-
-                      {/* URL Langsung */}
-                      <div className="relative w-full">
-                        <input
-                          type="text"
-                          value={avatarUrl}
-                          onChange={(e) => setAvatarUrl(e.target.value)}
-                          placeholder="Tautan Foto / Logo Atlet (https://...)"
-                          className="w-full h-11 bg-[#161A24] border border-white/[0.08] rounded-xl px-3 text-xs text-white placeholder-white/30 outline-none"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* LANGKAH 7: PRIVASI & TINJAU RINGKASAN */}
-                  {step === 7 && (
-                    <motion.div
-                      key="step-7"
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -15 }}
-                      transition={{ duration: 0.2 }}
-                      className="flex flex-col"
-                    >
-                      <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
-                        Privasi &amp; Tinjau
-                      </h2>
                       <p className="text-xs text-white/50 mb-5">
-                        Kontrol visibilitas data pribadi kamu sesuai UU PDP No. 27/2022.
+                        Kontrol data mana yang dapat dilihat oleh publik dan pengunjung direktori PBESI.
                       </p>
 
-                      {/* Field Privacy Toggles */}
-                      <div className="flex flex-col gap-2.5 mb-6">
+                      <div className="flex flex-col gap-2.5 mb-4">
                         {[
                           {
                             key: "kontak",
-                            label: "Nomor Kontak / WhatsApp",
+                            label: "Nomor Kontak & WhatsApp",
+                            desc: "Hanya terlihat oleh Admin Verifikator Pengcab jika privat.",
                             isPublic: privacy.kontak,
                           },
                           {
                             key: "tglLahir",
-                            label: "Tanggal Lahir & Usia",
+                            label: "Tanggal Lahir & Usia Spesifik",
+                            desc: "Publik hanya melihat kategori divisi (Junior / Senior).",
                             isPublic: privacy.tglLahir,
                           },
                           {
                             key: "statistik",
-                            label: "Statistik Pertandingan & Gelar",
+                            label: "Statistik Pertandingan & Riwayat",
+                            desc: "Menampilkan prestasi dan rekam jejak turnamen.",
                             isPublic: privacy.statistik,
                           },
+                          ...(isUnder18
+                            ? [
+                                {
+                                  key: "fotoPublik",
+                                  label: "Tampilkan Foto di Profil Publik",
+                                  desc: "Memerlukan persetujuan wali untuk tampil di direktori.",
+                                  isPublic: privacy.fotoPublik,
+                                },
+                              ]
+                            : []),
                         ].map((item) => (
                           <div
                             key={item.key}
@@ -754,17 +949,13 @@ export function DesktopCardWizard() {
                           >
                             <div className="flex items-center gap-3">
                               {item.isPublic ? (
-                                <Eye className="w-4 h-4 text-emerald-400" />
+                                <Eye className="w-4 h-4 text-emerald-400 shrink-0" />
                               ) : (
-                                <Lock className="w-4 h-4 text-amber-400" />
+                                <Lock className="w-4 h-4 text-amber-400 shrink-0" />
                               )}
                               <div>
-                                <div className="text-xs font-semibold text-white">
-                                  {item.label}
-                                </div>
-                                <div className="text-[10px] font-mono text-white/40">
-                                  {item.isPublic ? "Terlihat oleh Publik" : "Terkunci (Hanya Admin PBESI)"}
-                                </div>
+                                <div className="text-xs font-semibold text-white">{item.label}</div>
+                                <div className="text-[10px] font-mono text-white/40">{item.desc}</div>
                               </div>
                             </div>
 
@@ -787,68 +978,179 @@ export function DesktopCardWizard() {
                           </div>
                         ))}
                       </div>
+                    </motion.div>
+                  )}
 
-                      {/* Summary Box */}
-                      <div className="p-4 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-between text-xs">
-                        <div className="flex items-center gap-3">
-                          <Trophy className="w-5 h-5 text-[#D4AF37]" />
-                          <div>
-                            <span className="font-heading font-black text-white">
-                              Kartu Terbit Otomatis: Tier 1 Rookie
+                  {/* =================================================== */}
+                  {/* LANGKAH 6: TINJAU & TERBITKAN PROFIL                */}
+                  {/* =================================================== */}
+                  {step === 6 && (
+                    <motion.div
+                      key="step-6"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      className="flex flex-col"
+                    >
+                      <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
+                        Tinjau &amp; Terbitkan
+                      </h2>
+                      <p className="text-xs text-white/50 mb-5">
+                        Pastikan seluruh identitas sudah benar. ESPORT ID resmi akan diterbitkan seketika ke database.
+                      </p>
+
+                      {/* Skor Kelengkapan & Rarity Tier Live */}
+                      <div className="p-4 rounded-2xl bg-gradient-to-r from-[#D4AF37]/15 via-white/[0.02] to-transparent border border-[#D4AF37]/30 mb-5 flex items-center justify-between">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Trophy className="w-4 h-4 text-[#D4AF37]" />
+                            <span className="text-xs font-heading font-black text-white uppercase">
+                              Tier Terbitan: {rarityTier.toUpperCase()}
                             </span>
-                            <p className="text-[11px] text-white/60">
-                              Verifikasi resmi PBESI diajukan kemudian ke Pengcab ESI {selectedRegion.name}.
-                            </p>
                           </div>
+                          <p className="text-[11px] text-white/60 mt-0.5">
+                            Skor kelengkapan data: {completenessScore}%
+                          </p>
                         </div>
-                        <span className="px-2.5 py-1 rounded bg-[#D4AF37] text-[#07080C] text-[10px] font-mono font-black uppercase">
-                          SIAP TERBIT
-                        </span>
+                        <div className="w-24 h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-[#AA7C11] to-[#D4AF37]"
+                            style={{ width: `${completenessScore}%` }}
+                          />
+                        </div>
                       </div>
+
+                      {/* Summary Data Box */}
+                      <div className="grid grid-cols-2 gap-3 text-xs mb-5">
+                        <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
+                          <span className="text-[10px] font-mono text-white/40 block">Nama Resmi</span>
+                          <span className="font-semibold text-white truncate block">{displayName}</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
+                          <span className="text-[10px] font-mono text-white/40 block">Wilayah Pengcab</span>
+                          <span className="font-semibold text-[#D4AF37] truncate block">{selectedRegion.name}</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
+                          <span className="text-[10px] font-mono text-white/40 block">Game Utama</span>
+                          <span className="font-semibold text-white truncate block">{activeGame.name}</span>
+                        </div>
+                        <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
+                          <span className="text-[10px] font-mono text-white/40 block">Status Verifikasi</span>
+                          <span className="font-semibold text-white/60 truncate block">Unverified (Siap Diajukan)</span>
+                        </div>
+                      </div>
+
+                      {/* Hasil Sukses Terbit */}
+                      {issuedResult && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 text-center flex flex-col items-center gap-3 mb-4"
+                        >
+                          <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-emerald-400">
+                            <Sparkles className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <span className="text-base font-heading font-black text-white block">
+                              ESPORT ID Resmi Berhasil Diterbitkan!
+                            </span>
+                            <span className="text-sm font-mono font-bold text-[#D4AF37] block mt-1">
+                              {issuedResult.esportId}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2 mt-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (navigator.share) {
+                                  navigator.share({
+                                    title: displayName,
+                                    text: `Kartu Atlet Esport Sumbar resmi: ${displayName}`,
+                                    url: `${window.location.origin}/profile/${issuedResult.slug}`,
+                                  }).catch(() => {});
+                                } else {
+                                  navigator.clipboard.writeText(`${window.location.origin}/profile/${issuedResult.slug}`);
+                                  alert("Tautan kartu berhasil disalin ke clipboard!");
+                                }
+                              }}
+                              className="px-4 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-mono text-white flex items-center gap-1.5"
+                            >
+                              <Share2 className="w-3.5 h-3.5" />
+                              <span>Bagikan</span>
+                            </button>
+
+                            <Link
+                              href="/me/verification"
+                              className="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C] text-xs font-heading font-black uppercase flex items-center gap-1.5"
+                            >
+                              <ShieldCheck className="w-3.5 h-3.5" />
+                              <span>Ajukan Verifikasi</span>
+                            </Link>
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIssuedResult(null);
+                                setStep(1);
+                                setAvatarUrl("");
+                                setDisplayName("Profil Baru");
+                              }}
+                              className="px-4 py-2 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-xs font-mono text-white/60 hover:text-white flex items-center gap-1.5"
+                            >
+                              <PlusCircle className="w-3.5 h-3.5" />
+                              <span>Tambah Profil</span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
               {/* ACTION BUTTON BAR (SATU TOMBOL UTAMA PER LAYAR) */}
-              <div className="pt-6 mt-6 border-t border-white/[0.08] flex items-center justify-between">
-                <div>
-                  {step > 1 && (
-                    <button
-                      type="button"
-                      onClick={handleBack}
-                      className="px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/30 text-xs font-mono text-white/70 hover:text-white transition-colors"
-                    >
-                      Sebelumnya
-                    </button>
-                  )}
-                </div>
+              {!issuedResult && (
+                <div className="pt-6 mt-6 border-t border-white/[0.08] flex items-center justify-between">
+                  <div>
+                    {step > 1 && (
+                      <button
+                        type="button"
+                        onClick={handleBack}
+                        disabled={isFinishing}
+                        className="px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/30 text-xs font-mono text-white/70 hover:text-white transition-colors"
+                      >
+                        Sebelumnya
+                      </button>
+                    )}
+                  </div>
 
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  disabled={isFinishing}
-                  className={`px-8 py-3 rounded-xl font-heading font-black text-xs tracking-wider uppercase transition-all flex items-center gap-2 shadow-lg active:scale-[0.99] disabled:opacity-50 ${
-                    step === 7
-                      ? "bg-gradient-to-r from-[#D4AF37] via-[#F5D77F] to-[#AA7C11] text-[#07080C] shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:brightness-110"
-                      : "bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C]"
-                  }`}
-                >
-                  {isFinishing ? (
-                    <span>Menerbitkan Kartu...</span>
-                  ) : step === 7 ? (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      <span>Buat Kartu</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Lanjut</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={isFinishing}
+                    className={`px-8 py-3 rounded-xl font-heading font-black text-xs tracking-wider uppercase transition-all flex items-center gap-2 shadow-lg active:scale-[0.99] disabled:opacity-50 ${
+                      step === 6
+                        ? "bg-gradient-to-r from-[#D4AF37] via-[#F5D77F] to-[#AA7C11] text-[#07080C] shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:brightness-110"
+                        : "bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C]"
+                    }`}
+                  >
+                    {isFinishing ? (
+                      <span>Menerbitkan Kartu...</span>
+                    ) : step === 6 ? (
+                      <>
+                        <Sparkles className="w-4 h-4" />
+                        <span>Buat Profil &amp; Terbitkan Kartu</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Lanjut</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -858,8 +1160,8 @@ export function DesktopCardWizard() {
           <div className="col-span-12 lg:col-span-5 sticky top-20 flex flex-col items-center">
             {/* Top pill badge */}
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-[10px] font-mono text-white/60 mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>PRATINJAU REAL-TIME</span>
+              <span className={`w-1.5 h-1.5 rounded-full ${previewMode === "public" ? "bg-emerald-400" : "bg-[#D4AF37]"} animate-pulse`} />
+              <span>{previewMode === "public" ? "PRATINJAU PUBLIK" : "PRATINJAU REAL-TIME"}</span>
             </div>
 
             {/* 3D TILT TCG CARD CONTAINER */}
@@ -871,8 +1173,8 @@ export function DesktopCardWizard() {
             >
               {/* Card Ambient Glow Behind */}
               <div
-                className={`absolute inset-0 w-80 h-110 rounded-3xl blur-3xl pointer-events-none transition-all duration-500 ${
-                  isFinishing
+                className={`absolute inset-0 w-80 h-115 rounded-3xl blur-3xl pointer-events-none transition-all duration-500 ${
+                  isFinishing || issuedResult
                     ? "bg-[#D4AF37]/50 scale-125"
                     : "bg-gradient-to-tr from-[#8C5A3C]/20 via-[#D4AF37]/15 to-transparent"
                 }`}
@@ -885,26 +1187,26 @@ export function DesktopCardWizard() {
                   rotateY,
                   transformStyle: "preserve-3d",
                 }}
-                className={`relative w-[320px] h-[460px] rounded-[24px] bg-gradient-to-b from-[#1C1F2B] via-[#12151E] to-[#0A0C13] border-2 border-[#8C5A3C] shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(140,90,60,0.25)] p-4 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
-                  isFinishing
+                className={`relative w-[320px] h-[470px] rounded-[24px] bg-gradient-to-b from-[#1C1F2B] via-[#12151E] to-[#0A0C13] border-2 border-[#8C5A3C] shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_20px_rgba(140,90,60,0.25)] p-4 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
+                  isFinishing || issuedResult
                     ? "ring-4 ring-[#D4AF37] shadow-[0_0_60px_rgba(212,175,55,0.7)] scale-[1.03]"
                     : ""
                 }`}
               >
-                {/* Shiny Card Light Sweep on Submit */}
-                {isFinishing && (
+                {/* Shining Light Sweep */}
+                {(isFinishing || issuedResult) && (
                   <motion.div
                     initial={{ x: "-150%" }}
                     animate={{ x: "200%" }}
-                    transition={{ duration: 0.9, ease: "easeInOut" }}
+                    transition={{ duration: 1.1, ease: "easeInOut" }}
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-[#D4AF37]/50 to-transparent skew-x-12 z-40 pointer-events-none"
                   />
                 )}
 
-                {/* Top Card Row: Rookie Badge + Unverified Status */}
+                {/* Top Card Row: Rarity Tier Badge + Unverified Status */}
                 <div className="w-full flex items-center justify-between z-10">
                   <span className="px-2.5 py-0.5 rounded-full bg-[#8C5A3C]/30 border border-[#8C5A3C]/70 text-[9px] font-mono font-bold text-[#E6B89C] uppercase tracking-wider">
-                    TIER 1 • ROOKIE
+                    {rarityTier.toUpperCase()}
                   </span>
                   <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-[9px] font-mono text-white/50">
                     <Shield className="w-3 h-3 text-white/40" />
@@ -912,16 +1214,30 @@ export function DesktopCardWizard() {
                   </div>
                 </div>
 
-                {/* Avatar / Photo Real-Time */}
+                {/* Avatar / Photo Real-Time dengan Fallback Inisial */}
                 <div className="relative w-full flex-1 my-3 flex flex-col items-center justify-center">
-                  <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-white/10 shadow-xl bg-[#0F1118]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={avatarUrl}
-                      alt={displayName}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="relative w-28 h-36 rounded-2xl overflow-hidden border border-white/10 shadow-xl bg-[#0F1118]">
+                    {/* Jika atlet di bawah 18 tahun dan foto tidak diizinkan publik, tampilkan inisial pada mode pratinjau publik */}
+                    {avatarUrl && (previewMode === "owner" || !isUnder18 || privacy.fotoPublik) ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={avatarUrl}
+                          alt={displayName}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      </>
+                    ) : (
+                      <InitialsAvatar
+                        name={displayName}
+                        entityType={entityType}
+                        size="full"
+                        isMinorProtected={isUnder18 && !privacy.fotoPublik}
+                      />
+                    )}
+
+                    {/* Marawa Micro Badge */}
                     <div className="absolute bottom-1 right-1.5 flex h-3 w-1 rounded-sm overflow-hidden opacity-80">
                       <span className="h-1/3 w-full bg-[#C8102E]" />
                       <span className="h-1/3 w-full bg-[#D4AF37]" />
@@ -931,11 +1247,11 @@ export function DesktopCardWizard() {
 
                   {/* Live Display Name & IGN */}
                   <div className="text-center mt-2.5">
-                    <div className="text-base font-heading font-black tracking-wide text-white truncate max-w-[200px]">
-                      {displayName || "Nama Atlet"}
+                    <div className="text-base font-heading font-black tracking-wide text-white truncate max-w-[220px]">
+                      {displayName || entityDef.label}
                     </div>
                     <div className="text-xs font-mono font-bold text-[#D4AF37]">
-                      {ign ? `@${ign}` : "@IGN"}
+                      {attributes.ign ? `@${attributes.ign}` : `@${entityDef.code}`}
                     </div>
                   </div>
                 </div>
@@ -943,7 +1259,7 @@ export function DesktopCardWizard() {
                 {/* Bottom Card Strip: Game + Role + Region */}
                 <div className="w-full pt-2.5 border-t border-white/[0.08] flex items-center justify-between text-[10px] font-mono text-white/70 z-10">
                   <div className="truncate max-w-[140px] text-[#4C7DFF] font-semibold">
-                    {activeGame.shortName} • {selectedGameRole}
+                    {activeGame.shortName} • {attributes.role || entityDef.singularLabel}
                   </div>
                   <div className="px-2 py-0.5 rounded bg-white/[0.06] text-[#D4AF37] font-bold">
                     {selectedRegion.code}
@@ -953,11 +1269,26 @@ export function DesktopCardWizard() {
             </div>
 
             <span className="mt-4 text-[11px] font-mono text-white/40 tracking-wider">
-              Paspor atlet resmi PBESI Sumatera Barat
+              Identitas digital resmi PBESI Sumatera Barat
             </span>
           </div>
         </div>
       </main>
+
+      {/* MODAL CROPPER FOTO */}
+      <ImageCropperModal
+        isOpen={cropperOpen}
+        onClose={() => setCropperOpen(false)}
+        aspectRatioType={cropperType}
+        entityName={displayName}
+        onUploadSuccess={(url) => {
+          if (cropperType === "cover") {
+            setCoverUrl(url);
+          } else {
+            setAvatarUrl(url);
+          }
+        }}
+      />
     </div>
   );
 }
