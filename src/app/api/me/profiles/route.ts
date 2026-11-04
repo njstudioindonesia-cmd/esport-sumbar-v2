@@ -41,12 +41,21 @@ export async function GET() {
       createdAt: p.created_at,
     }));
 
+    // Ambil data akun untuk mengetahui peran (role) pengguna
+    const { data: account } = await supabase
+      .from("accounts")
+      .select("role, assigned_region_id")
+      .eq("id", authData.user.id)
+      .maybeSingle();
+
     return NextResponse.json({
       profiles: mappedProfiles,
       user: {
         id: authData.user.id,
         email: authData.user.email,
         fullName: authData.user.user_metadata?.full_name || authData.user.email?.split("@")[0],
+        role: account?.role || "user",
+        assignedRegionId: account?.assigned_region_id || null,
       },
     });
   } catch (error: any) {

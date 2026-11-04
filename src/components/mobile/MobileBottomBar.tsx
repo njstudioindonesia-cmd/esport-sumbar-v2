@@ -23,7 +23,7 @@ export function MobileBottomBar() {
     { label: "Beranda", href: "/", icon: Home, match: (p: string) => p === "/" || p === "/dashboard" },
     { label: "Jelajah", href: "/explore", icon: Compass, match: (p: string) => p.startsWith("/explore") || p.startsWith("/map") || p.startsWith("/tournaments") },
     { label: "Kartu", href: "/me/cards", icon: Layers, isCenter: true, match: (p: string) => p.startsWith("/me/cards") || p.startsWith("/me/profile/new") },
-    { label: "Profil", href: "/me/settings", icon: User, match: (p: string) => p.startsWith("/me/settings") || p.startsWith("/me/privacy") || p.startsWith("/me/verification") },
+    { label: "Profil", href: "/me/profile", icon: User, match: (p: string) => p.startsWith("/me/profile") || p.startsWith("/me/settings") || p.startsWith("/me/privacy") || p.startsWith("/me/verification") },
   ];
 
   return (

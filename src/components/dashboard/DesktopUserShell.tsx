@@ -10,6 +10,7 @@ import {
   Users,
   Lock,
   Settings,
+  User,
   Bell,
   Search,
   ChevronLeft,
@@ -29,10 +30,11 @@ interface DesktopUserShellProps {
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Beranda", icon: LayoutDashboard },
-  { href: "/me/cards", label: "Kartu", icon: CreditCard },
+  { href: "/me/profile", label: "Profil Saya", icon: User },
+  { href: "/me/cards", label: "Kartu Paspor", icon: CreditCard },
   { href: "/me/verification", label: "Verifikasi", icon: ShieldCheck },
-  { href: "/me/memberships", label: "Tim", icon: Users },
-  { href: "/me/privacy", label: "Privasi", icon: Lock },
+  { href: "/me/memberships", label: "Relasi Tim", icon: Users },
+  { href: "/me/privacy", label: "Privasi Data", icon: Lock },
   { href: "/me/settings", label: "Pengaturan", icon: Settings },
 ];
 

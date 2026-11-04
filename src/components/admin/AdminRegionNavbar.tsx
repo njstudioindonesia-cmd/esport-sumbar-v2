@@ -42,6 +42,11 @@ export function AdminRegionNavbar() {
       badgeColor: "bg-[#D4AF37] text-black",
     },
     {
+      href: "/admin/region/entities",
+      label: "Entitas Terdaftar",
+      icon: Building2,
+    },
+    {
       href: "/admin/region/logs",
       label: "Log Aktivitas Append-Only",
       icon: History,

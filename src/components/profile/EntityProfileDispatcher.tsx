@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, UserCheck, Edit3 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { createClient } from "@/lib/supabase/client";
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { PlayerProfileTemplate } from "./templates/PlayerProfileTemplate";
 import { CoachProfileTemplate } from "./templates/CoachProfileTemplate";
@@ -20,6 +21,18 @@ interface EntityProfileDispatcherProps {
 }
 
 export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProps) {
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        setCurrentUserId(data.user.id);
+      }
+    });
+  }, []);
+
+  const isOwner = Boolean(currentUserId && currentUserId === profile.accountId);
   const renderTemplate = () => {
     switch (profile.entityType) {
       case "player":
@@ -84,6 +97,31 @@ export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProp
 
         {/* Demo Data Banner jika data berstatus demo */}
         {profile.isDemo && <DemoBanner className="mb-6" />}
+
+        {/* Banner Penanda Pemilik Kartu (SPEC 2.4) */}
+        {isOwner && (
+          <div className="mb-6 p-4 rounded-2xl bg-[#0A0D15] border border-[#FF1752]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 backdrop-blur-md shadow-lg shadow-[#FF1752]/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#FF1752]/15 border border-[#FF1752] flex items-center justify-center text-[#FF1752] shrink-0">
+                <UserCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-heading font-black text-white uppercase tracking-wider">Ini Profil Resmi Anda</p>
+                  <span className="px-1.5 py-0.5 rounded bg-[#FF1752]/20 text-[9px] font-mono text-[#FF4D77] font-bold">PEMILIK KARTU</span>
+                </div>
+                <p className="text-[11px] text-white/60 mt-0.5">Anda sedang melihat tampilan publik kartu paspor digital Anda.</p>
+              </div>
+            </div>
+            <Link
+              href={`/me/profile/${profile.id}/edit`}
+              className="btn-brand-primary text-xs py-2 px-4 flex items-center justify-center gap-1.5 shrink-0"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Edit Profil</span>
+            </Link>
+          </div>
+        )}
 
         {/* Dynamic Entity Template Content */}
         {renderTemplate()}
