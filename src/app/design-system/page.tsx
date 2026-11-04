@@ -26,6 +26,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { NotificationBanner } from "@/components/shared/NotificationBanner";
 import { ConfirmationDialog } from "@/components/shared/ConfirmationDialog";
+import { StatNumber } from "@/components/shared/StatNumber";
 
 export default function ComponentCatalogPage() {
   const [dialogState, setDialogState] = useState<{
@@ -372,6 +373,22 @@ export default function ComponentCatalogPage() {
                 title="Profil Tidak Ada"
                 description="Atlet atau tim yang Anda cari belum memiliki kartu TCG atau tidak aktif."
               />
+            </div>
+          </section>
+
+          {/* SECTION 7: STAT NUMBER (COUNT-UP) */}
+          <section className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 border-b border-white/[0.08] pb-2">
+              <h2 className="font-heading font-bold text-lg uppercase text-white tracking-wide">
+                7. StatNumber (Angka Tabular Menghitung Naik)
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 rounded-2xl bg-[#0F1118] border border-white/[0.08]">
+              <StatNumber value={1420} label="Pemain" />
+              <StatNumber value={185} label="Tim" />
+              <StatNumber value={48} label="Pelatih" />
+              <StatNumber value={19} label="Wilayah" />
             </div>
           </section>
         </div>

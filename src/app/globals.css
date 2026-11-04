@@ -1,24 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0d12;
-  --surface: #12151c;
-  --surface-elevated: #1a1e28;
-  --border: #262b38;
+  --background: #07080c;
+  --surface: #0f1118;
+  --surface-elevated: #161a24;
+  --border: rgba(255, 255, 255, 0.08);
   --foreground: #f3f4f6;
   --text-muted: #9aa3b2;
 
   --accent-gold: #d4af37;
   --accent-gold-glow: rgba(212, 175, 55, 0.35);
   --accent-marawa: #c8102e;
-  --accent-blue: #3b82f6;
-  --accent-violet: #7c3aed;
+  --accent-blue: #4c7dff;
+  --accent-blue-glow: rgba(76, 125, 255, 0.35);
 
   --status-regional: #22c55e;
   --status-verified: #d4af37;
-  --status-pending: #f59e0b;
+  --status-pending: #f5a524;
   --status-rejected: #ef4444;
   --status-suspended: #6b7280;
+
+  --radius-card: 20px;
+  --radius-panel: 28px;
+  --radius-pill: 9999px;
+  --radius-tcg: 18px;
 }
 
 @theme {
