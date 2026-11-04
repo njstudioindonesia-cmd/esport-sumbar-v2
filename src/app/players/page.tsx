@@ -1,5 +1,24 @@
-import { redirect } from "next/navigation";
+import React from "react";
+import type { Metadata } from "next";
+import { getPublicProfilesByEntity } from "@/lib/services/public-profiles";
+import { EntityDirectoryView } from "@/components/directory/EntityDirectoryView";
 
-export default function PlayersRedirect() {
-  redirect("/explore?tab=player");
+export const instant = false;
+
+export const metadata: Metadata = {
+  title: "Direktori Atlet Esport Sumatera Barat | PBESI",
+  description: "Pangkalan data atlet esport kompetitif resmi dari 19 Kota dan Kabupaten di Sumatera Barat.",
+};
+
+export default async function PlayersDirectoryPage() {
+  const profiles = await getPublicProfilesByEntity("player");
+
+  return (
+    <EntityDirectoryView
+      entityType="player"
+      title="Direktori Atlet Esport Sumbar"
+      subtitle="Pangkalan data atlet kompetitif terdaftar resmi Pengcab ESI di 19 Kota dan Kabupaten Sumatera Barat."
+      initialProfiles={profiles}
+    />
+  );
 }
