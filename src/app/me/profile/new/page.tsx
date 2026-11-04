@@ -2,13 +2,19 @@
 
 import React from "react";
 import { MobileCardWizard } from "@/components/mobile/MobileCardWizard";
+import { DesktopCardWizard } from "@/components/wizard/DesktopCardWizard";
 
 export default function NewProfileWizardPage() {
   return (
-    <main className="min-h-[100dvh] w-full bg-[#07080C] flex items-center justify-center p-0 md:p-6 overflow-hidden">
-      {/* Mobile Shell Frame (iPhone 14 / Mobile standard viewport) */}
-      <div className="relative w-full max-w-[420px] h-[100dvh] md:h-[844px] bg-[#07080C] md:rounded-[36px] md:border md:border-white/10 md:shadow-[0_24px_80px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
+    <main className="min-h-screen w-full bg-[#07080C]">
+      {/* Mobile Flow (< 1024px): PWA Card Wizard (Live preview on top + Bottom Sheet) */}
+      <div className="block lg:hidden min-h-[100dvh] w-full">
         <MobileCardWizard />
+      </div>
+
+      {/* Desktop Flow (>= 1024px): 2-Column Split Layout with Sticky 3D Tilt Card */}
+      <div className="hidden lg:block w-full min-h-screen">
+        <DesktopCardWizard />
       </div>
     </main>
   );
