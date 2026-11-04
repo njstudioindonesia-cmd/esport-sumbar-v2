@@ -99,10 +99,17 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
     });
 
     if (authError) {
-      if (authError.message.toLowerCase().includes("already registered")) {
+      const msg = authError.message.toLowerCase();
+      if (msg.includes("already registered")) {
         return {
           success: false,
           error: "Alamat email ini sudah terdaftar. Silakan masuk atau gunakan fitur lupa kata sandi.",
+        };
+      }
+      if (msg.includes("rate limit")) {
+        return {
+          success: false,
+          error: "Batas pengiriman email sistem tercapai (email rate limit). Harap matikan 'Confirm email' di Supabase Dashboard agar registrasi langsung aktif tanpa kirim email.",
         };
       }
       return { success: false, error: authError.message };
