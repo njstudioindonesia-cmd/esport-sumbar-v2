@@ -5,11 +5,12 @@ import type { Database } from "@/lib/supabase/database.types";
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Lewati static assets, internal next, dan api
+  // Lewati static assets, internal next, api, dan callback auth
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/auth") ||
+    pathname.startsWith("/brand") ||
     pathname.startsWith("/favicon.ico") ||
     pathname.includes(".")
   ) {
@@ -55,8 +56,8 @@ export async function proxy(request: NextRequest) {
   if (user && (pathname === "/login" || pathname === "/register")) {
     const redirectUrl = request.nextUrl.searchParams.get("redirect") || "/dashboard";
     const redirectRes = NextResponse.redirect(new URL(redirectUrl, request.url));
-    response.cookies.getAll().forEach((c) => {
-      redirectRes.cookies.set(c.name, c.value, c);
+    response.headers.getSetCookie().forEach((c) => {
+      redirectRes.headers.append("set-cookie", c);
     });
     return redirectRes;
   }
@@ -67,8 +68,8 @@ export async function proxy(request: NextRequest) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       const loginRes = NextResponse.redirect(loginUrl);
-      response.cookies.getAll().forEach((c) => {
-        loginRes.cookies.set(c.name, c.value, c);
+      response.headers.getSetCookie().forEach((c) => {
+        loginRes.headers.append("set-cookie", c);
       });
       return loginRes;
     }
@@ -80,8 +81,8 @@ export async function proxy(request: NextRequest) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", pathname);
       const loginRes = NextResponse.redirect(loginUrl);
-      response.cookies.getAll().forEach((c) => {
-        loginRes.cookies.set(c.name, c.value, c);
+      response.headers.getSetCookie().forEach((c) => {
+        loginRes.headers.append("set-cookie", c);
       });
       return loginRes;
     }
@@ -98,8 +99,8 @@ export async function proxy(request: NextRequest) {
     // Operator Platform Eksklusif
     if (pathname.startsWith("/admin/platform") && role !== "platform_operator") {
       const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_operator", request.url));
-      response.cookies.getAll().forEach((c) => {
-        unauthRes.cookies.set(c.name, c.value, c);
+      response.headers.getSetCookie().forEach((c) => {
+        unauthRes.headers.append("set-cookie", c);
       });
       return unauthRes;
     }
@@ -107,8 +108,8 @@ export async function proxy(request: NextRequest) {
     // Pengprov ESI Sumbar Eksklusif
     if (pathname.startsWith("/admin/province") && role !== "prov_admin") {
       const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_province", request.url));
-      response.cookies.getAll().forEach((c) => {
-        unauthRes.cookies.set(c.name, c.value, c);
+      response.headers.getSetCookie().forEach((c) => {
+        unauthRes.headers.append("set-cookie", c);
       });
       return unauthRes;
     }
@@ -116,8 +117,8 @@ export async function proxy(request: NextRequest) {
     // Pengcab ESI Daerah (Admin Daerah atau Pengprov)
     if (pathname.startsWith("/admin/region") && !["region_admin", "prov_admin"].includes(role)) {
       const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_region", request.url));
-      response.cookies.getAll().forEach((c) => {
-        unauthRes.cookies.set(c.name, c.value, c);
+      response.headers.getSetCookie().forEach((c) => {
+        unauthRes.headers.append("set-cookie", c);
       });
       return unauthRes;
     }

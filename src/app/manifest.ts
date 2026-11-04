@@ -3,18 +3,31 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "ESPORT SUMBAR",
-    short_name: "EsportSumbar",
-    description: "Identitas Digital & Ekosistem Esport Sumatera Barat",
+    short_name: "ES Sumbar",
+    description: "Pusat Data & Identitas Digital Esport Sumatera Barat",
     start_url: "/",
     display: "standalone",
-    background_color: "#07080C",
-    theme_color: "#07080C",
+    background_color: "#03031A",
+    theme_color: "#03031A",
     orientation: "portrait",
     icons: [
       {
-        src: "/favicon.ico",
-        sizes: "any",
-        type: "image/x-icon",
+        src: "/brand/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/brand/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+      {
+        src: "/brand/android-chrome-maskable-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
       },
     ],
   };

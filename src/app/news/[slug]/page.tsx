@@ -163,15 +163,15 @@ export default async function NewsDetailPage({
           </p>
 
           <p>
-            Pengurus Provinsi Esports Indonesia (PBESI) Sumatera Barat terus mempercepat standardisasi ekosistem olahraga elektronik di 19 kabupaten dan kota. Melalui integrasi platform resmi ESPORT SUMBAR V2, seluruh atlet, pelatih berlisensi, dan klub terverifikasi kini tercatat dalam satu pangkalan data terpusat yang terlindungi undang-undang.
+            Pengurus Provinsi Esports Indonesia (ESI) Sumatera Barat terus mempercepat standardisasi ekosistem olahraga elektronik di 19 kabupaten dan kota. Melalui platform ESPORT SUMBAR™, seluruh atlet, pelatih berlisensi, dan klub terverifikasi kini tercatat dalam satu pangkalan data terpusat yang terlindungi undang-undang.
           </p>
 
           <p>
-            Standardisasi ini mencakup sistem paspor atlet digital berbasis kartu TCG dengan 4 tingkatan prestasi (Rookie, Contender, Elite, dan Legend). Tingkatan tersebut menjadi acuan seleksi resmi kontingen Sumatera Barat untuk berbagai kejuaraan resmi mulai dari tingkat daerah hingga Pekan Olahraga Nasional (PON).
+            Standardisasi ini mencakup sistem paspor atlet digital berbasis kartu TCG dengan 4 tingkatan prestasi (Rookie, Contender, Elite, dan Legend). Tingkatan tersebut menjadi acuan seleksi mitra kelembagaan untuk berbagai kejuaraan resmi mulai dari tingkat daerah hingga Pekan Olahraga Nasional (PON).
           </p>
 
-          <div className="p-6 my-8 rounded-2xl bg-[#0F1118] border border-white/[0.08] border-l-4 border-l-[#D4AF37] italic text-base text-white/80">
-            &ldquo;Integrasi paspor digital atlet PBESI Sumbar menjamin transparansi rekam jejak atlet dan mematuhi kepatuhan perlindungan data pribadi sesuai UU PDP No. 27/2022.&rdquo;
+          <div className="p-6 my-8 rounded-2xl bg-[#0F1118] border border-white/[0.08] border-l-4 border-l-brand-pink italic text-base text-white/80">
+            &ldquo;Integrasi kartu digital atlet di platform ESPORT SUMBAR™ menjamin transparansi rekam jejak atlet dan mematuhi kepatuhan perlindungan data pribadi sesuai UU PDP No. 27/2022.&rdquo;
           </div>
 
           <p>

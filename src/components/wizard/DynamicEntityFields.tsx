@@ -529,7 +529,7 @@ export function DynamicEntityFields({
             <div>
               <div className="text-xs font-semibold text-white">Status Siap Turnamen (Tournament Ready)</div>
               <div className="text-[10px] font-mono text-white/40">
-                Fasilitas siap dijadikan lokasi kualifikasi resmi turnamen PBESI
+                Fasilitas siap dijadikan lokasi kualifikasi turnamen kompetitif daerah
               </div>
             </div>
             <button

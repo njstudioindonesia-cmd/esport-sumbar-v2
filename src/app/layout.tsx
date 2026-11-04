@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Chakra_Petch, Inter } from "next/font/google";
+import { Saira_Condensed, Inter } from "next/font/google";
 import "./globals.css";
 
-const chakraPetch = Chakra_Petch({
-  weight: ["400", "500", "600", "700"],
+const sairaCondensed = Saira_Condensed({
+  weight: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-heading",
   display: "swap",
@@ -17,7 +17,7 @@ const inter = Inter({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#07080C",
+  themeColor: "#03031A",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -26,15 +26,83 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "ESPORT SUMBAR | Pusat Data & Identitas Digital Esport Sumatera Barat",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://esport-sumbar-v2.vercel.app"),
+  title: {
+    default: "ESPORT SUMBAR | Pusat Data Esport Sumatera Barat",
+    template: "%s | ESPORT SUMBAR",
+  },
   description:
-    "Pangkalan data resmi dan ekosistem esport Sumatera Barat terintegrasi dengan ESPORT ID, kartu TCG atlet, dan verifikasi berjenjang ESI.",
+    "Platform data, identitas digital, dan ekosistem esport Sumatera Barat oleh ESPORT SUMBAR™. Daftar, dapatkan kartu ESPORT ID, dan jelajahi ekosistem.",
+  keywords: [
+    "Esport Sumbar",
+    "ESPORT SUMBAR",
+    "Paspor Atlet Esport",
+    "Kartu TCG Atlet",
+    "Esports Sumatera Barat",
+    "ESI Sumbar",
+    "Mitra ESI Sumatera Barat",
+    "Mobile Legends Sumbar",
+    "PUBG Mobile Padang",
+    "Free Fire Sumbar",
+  ],
+  authors: [{ name: "ESPORT SUMBAR™", url: "https://esport-sumbar-v2.vercel.app" }],
+  creator: "ESPORT SUMBAR™",
+  publisher: "ESPORT SUMBAR™",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/brand/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/brand/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [
+      { url: "/brand/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    url: "https://esport-sumbar-v2.vercel.app",
+    siteName: "ESPORT SUMBAR",
+    title: "ESPORT SUMBAR | Pusat Data Esport Sumatera Barat",
+    description:
+      "Platform data, identitas digital, dan ekosistem esport Sumatera Barat oleh ESPORT SUMBAR™. Daftar, dapatkan kartu ESPORT ID, dan jelajahi ekosistem.",
+    images: [
+      {
+        url: "/brand/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ESPORT SUMBAR - Pusat Data Esport Sumatera Barat",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ESPORT SUMBAR | Pusat Data Esport Sumatera Barat",
+    description:
+      "Platform data, identitas digital, dan ekosistem esport Sumatera Barat oleh ESPORT SUMBAR™. Daftar dan dapatkan kartu ESPORT ID.",
+    images: ["/brand/og-image.png"],
+    creator: "@esportsumbar",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "ESPORT SUMBAR",
   },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "ESPORT SUMBAR™",
+  url: "https://esport-sumbar-v2.vercel.app",
+  logo: "https://esport-sumbar-v2.vercel.app/brand/logo-lockup-navy.png",
+  description:
+    "Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem esport Sumatera Barat oleh ESPORT SUMBAR™.",
+  sameAs: [
+    "https://instagram.com/esportsumbar",
+    "https://youtube.com/@esportsumbar",
+  ],
 };
 
 export default function RootLayout({
@@ -45,9 +113,15 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${chakraPetch.variable} ${inter.variable} dark`}
+      className={`${sairaCondensed.variable} ${inter.variable} dark`}
     >
-      <body className="min-h-screen bg-[#0B0D12] text-[#F3F4F6] font-sans antialiased selection:bg-[#D4AF37]/20 selection:text-[#D4AF37]">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
+      <body className="min-h-screen bg-[var(--bg-base)] text-[#FFFFFF] font-sans antialiased selection:bg-[#FF1752]/30 selection:text-white">
         {children}
       </body>
     </html>

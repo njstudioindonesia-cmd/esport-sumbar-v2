@@ -128,7 +128,7 @@ export default function AdminRegionLogsPage() {
               Sistem Audit Append-Only (Hanya-Tambah)
             </span>
             <span>
-              Sesuai dengan Master Concept Integritas Keolahragaan PBESI dan Regulasi Pelindungan Data Pribadi: Catatan log aktivitas ini bersifat permanen, hanya-tambah (append-only), dan tidak memiliki fungsi ubah maupun hapus bagi akun admin level mana pun.
+              Sesuai dengan Master Concept Integritas Keolahragaan dan Regulasi Pelindungan Data Pribadi: Catatan log aktivitas ini bersifat permanen, hanya-tambah (append-only), dan tidak memiliki fungsi ubah maupun hapus bagi akun admin level mana pun.
             </span>
           </div>
         </div>

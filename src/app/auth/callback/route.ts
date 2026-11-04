@@ -15,12 +15,10 @@ export async function GET(request: NextRequest) {
   if (code) {
     const forwardedHost = request.headers.get("x-forwarded-host");
     const isLocalEnv = process.env.NODE_ENV === "development";
-    let redirectUrl = `${origin}${next}`;
-    if (!isLocalEnv && forwardedHost) {
-      redirectUrl = `https://${forwardedHost}${next}`;
-    }
+    const host = !isLocalEnv && forwardedHost ? `https://${forwardedHost}` : origin;
 
-    const response = NextResponse.redirect(redirectUrl);
+    // Simpan semua cookie perubahan dari Supabase Auth
+    const cookiesToSetList: { name: string; value: string; options: any }[] = [];
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-esport-sumbar.supabase.co";
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
@@ -31,9 +29,7 @@ export async function GET(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            response.cookies.set(name, value, options);
-          });
+          cookiesToSet.forEach((item) => cookiesToSetList.push(item));
         },
       },
     });
@@ -58,6 +54,7 @@ export async function GET(request: NextRequest) {
       }
 
       // 2. Cek apakah user baru pertama kali masuk (belum punya profil)
+      let targetPath = next;
       try {
         const { count } = await supabase
           .from("profiles")
@@ -65,18 +62,24 @@ export async function GET(request: NextRequest) {
           .eq("account_id", data.user.id);
 
         if ((!count || count === 0) && next === "/dashboard") {
-          const wizardUrl = !isLocalEnv && forwardedHost
-            ? `https://${forwardedHost}/me/profile/new`
-            : `${origin}/me/profile/new`;
-          const wizardResponse = NextResponse.redirect(wizardUrl);
-          response.cookies.getAll().forEach((c) => {
-            wizardResponse.cookies.set(c.name, c.value, c);
-          });
-          return wizardResponse;
+          targetPath = "/me/profile/new";
         }
       } catch (e) {
         console.warn("Profile count check in callback:", e);
       }
+
+      const finalUrl = `${host}${targetPath}`;
+      const response = NextResponse.redirect(finalUrl);
+
+      // Terapkan semua cookies dengan path: '/' dan parameter lengkap agar terbaca di seluruh rute
+      cookiesToSetList.forEach(({ name, value, options }) => {
+        response.cookies.set(name, value, {
+          ...options,
+          path: options?.path ?? "/",
+          sameSite: options?.sameSite ?? "lax",
+          secure: process.env.NODE_ENV === "production",
+        });
+      });
 
       return response;
     }

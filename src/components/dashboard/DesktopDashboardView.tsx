@@ -247,8 +247,8 @@ export function DesktopDashboardView() {
               </div>
 
               <div className="text-[11px] font-mono text-white/60 pt-2 border-t border-white/[0.06] flex items-center justify-between">
-                <span>{activeProfile?.regionName || "Pengcab Daerah"}</span>
-                <Link href="/me/verification" className="text-[#D4AF37] hover:underline">
+                <span>{activeProfile?.regionName || "Wilayah Sumbar"}</span>
+                <Link href="/me/verification" className="text-brand-pink hover:underline">
                   Detail &rarr;
                 </Link>
               </div>

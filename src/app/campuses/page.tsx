@@ -6,8 +6,8 @@ import { EntityDirectoryView } from "@/components/directory/EntityDirectoryView"
 export const instant = false;
 
 export const metadata: Metadata = {
-  title: "Direktori UKM Esport Kampus Sumatera Barat | PBESI",
-  description: "Daftar UKM dan komunitas esport perguruan tinggi resmi di Sumatera Barat.",
+  title: "Direktori UKM Esport Kampus Sumatera Barat | ESPORT SUMBAR™",
+  description: "Daftar UKM dan komunitas esport perguruan tinggi di Sumatera Barat.",
 };
 
 export default async function CampusesDirectoryPage() {

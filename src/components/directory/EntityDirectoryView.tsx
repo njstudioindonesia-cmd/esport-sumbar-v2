@@ -80,15 +80,15 @@ export function EntityDirectoryView({
   };
 
   return (
-    <div className="min-h-screen bg-[#07080C] text-[#F3F4F6] flex flex-col font-sans selection:bg-[#D4AF37]/20 selection:text-[#D4AF37]">
+    <div className="min-h-screen bg-[var(--bg-base)] text-[#FFFFFF] flex flex-col font-sans selection:bg-[#FF1752]/30 selection:text-white">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* HEADER DIREKTORI */}
         <div className="flex flex-col gap-2 mb-8">
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-heading font-black uppercase tracking-wider">
-              DIREKTORI RESMI PBESI SUMBAR
+            <span className="px-3 py-1 rounded-full bg-[#FF1752]/15 border border-[#FF1752]/30 text-[#FF4D77] text-xs font-heading font-black uppercase tracking-wider">
+              DIREKTORI ESPORT SUMBAR™
             </span>
             <span className="text-xs font-mono text-white/40">
               {filteredProfiles.length} Terdaftar

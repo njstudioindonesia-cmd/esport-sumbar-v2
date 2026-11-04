@@ -6,7 +6,7 @@ import { EntityDirectoryView } from "@/components/directory/EntityDirectoryView"
 export const instant = false;
 
 export const metadata: Metadata = {
-  title: "Direktori Komunitas Esport Sumatera Barat | PBESI",
+  title: "Direktori Komunitas Esport Sumatera Barat | ESPORT SUMBAR™",
   description: "Wadah perkumpulan, mabar, dan kegiatan komunitas esport di Sumatera Barat.",
 };
 

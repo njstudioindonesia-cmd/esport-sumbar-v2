@@ -473,7 +473,7 @@ export function DesktopCardWizard() {
           )}
 
           <span className="text-[11px] font-mono text-white/40">
-            ESPORT SUMBAR V2 • PBESI
+            ESPORT SUMBAR™
           </span>
         </div>
       </header>
@@ -488,12 +488,8 @@ export function DesktopCardWizard() {
           {/* ======================================================= */}
           <div className="col-span-12 lg:col-span-7 flex flex-col">
             <div className="p-8 rounded-3xl bg-[#0D1017] border border-white/[0.08] shadow-2xl relative overflow-hidden">
-              {/* Marawa subtle border gradient top */}
-              <div className="absolute top-0 inset-x-0 h-1 flex">
-                <div className="w-1/3 bg-[#C8102E]" />
-                <div className="w-1/3 bg-[#D4AF37]" />
-                <div className="w-1/3 bg-black" />
-              </div>
+              {/* Brand top accent bar */}
+              <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-brand-pink to-transparent opacity-80" />
 
               {/* Error Message Alert */}
               {errorMessage && (
@@ -521,7 +517,7 @@ export function DesktopCardWizard() {
                         Pilih Bidang
                       </h2>
                       <p className="text-xs text-white/50 mb-6">
-                        Pilih kategori identitas digital Anda dalam ekosistem resmi PBESI Sumatera Barat.
+                        Pilih kategori identitas digital Anda dalam ekosistem ESPORT SUMBAR™.
                       </p>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -608,7 +604,7 @@ export function DesktopCardWizard() {
                             Tanggal Lahir
                           </h2>
                           <p className="text-xs text-white/50 mb-6">
-                            Diperlukan untuk pembagian divisi usia kompetisi resmi PBESI (Senior / Junior) dan kepatuhan UU PDP.
+                            Diperlukan untuk pembagian divisi usia kompetisi resmi (Senior / Junior) dan kepatuhan UU PDP.
                           </p>
 
                           <div className="p-5 rounded-2xl bg-[#161A24] border border-white/[0.08] mb-5">
@@ -909,7 +905,7 @@ export function DesktopCardWizard() {
                         </div>
                       </div>
                       <p className="text-xs text-white/50 mb-5">
-                        Kontrol data mana yang dapat dilihat oleh publik dan pengunjung direktori PBESI.
+                        Kontrol data mana yang dapat dilihat oleh publik dan pengunjung direktori ESPORT SUMBAR™.
                       </p>
 
                       <div className="flex flex-col gap-2.5 mb-4">
@@ -1237,12 +1233,8 @@ export function DesktopCardWizard() {
                       />
                     )}
 
-                    {/* Marawa Micro Badge */}
-                    <div className="absolute bottom-1 right-1.5 flex h-3 w-1 rounded-sm overflow-hidden opacity-80">
-                      <span className="h-1/3 w-full bg-[#C8102E]" />
-                      <span className="h-1/3 w-full bg-[#D4AF37]" />
-                      <span className="h-1/3 w-full bg-black" />
-                    </div>
+                    {/* Brand Micro Mark */}
+                    <div className="absolute bottom-1 right-1.5 w-1.5 h-1.5 rounded-full bg-brand-pink shadow-[0_0_6px_#FF1752]" />
                   </div>
 
                   {/* Live Display Name & IGN */}
@@ -1258,7 +1250,7 @@ export function DesktopCardWizard() {
 
                 {/* Bottom Card Strip: Game + Role + Region */}
                 <div className="w-full pt-2.5 border-t border-white/[0.08] flex items-center justify-between text-[10px] font-mono text-white/70 z-10">
-                  <div className="truncate max-w-[140px] text-[#4C7DFF] font-semibold">
+                  <div className="truncate max-w-[140px] text-brand-pink font-semibold">
                     {activeGame.shortName} • {attributes.role || entityDef.singularLabel}
                   </div>
                   <div className="px-2 py-0.5 rounded bg-white/[0.06] text-[#D4AF37] font-bold">
@@ -1269,7 +1261,7 @@ export function DesktopCardWizard() {
             </div>
 
             <span className="mt-4 text-[11px] font-mono text-white/40 tracking-wider">
-              Identitas digital resmi PBESI Sumatera Barat
+              Identitas digital atlet ESPORT SUMBAR™
             </span>
           </div>
         </div>

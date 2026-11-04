@@ -6,8 +6,8 @@ import { EntityDirectoryView } from "@/components/directory/EntityDirectoryView"
 export const instant = false;
 
 export const metadata: Metadata = {
-  title: "Direktori Tim Esport Sumatera Barat | PBESI",
-  description: "Daftar tim dan klub esport kompetitif resmi binaan Pengcab ESI di Sumatera Barat.",
+  title: "Direktori Tim Esport Sumatera Barat | ESPORT SUMBAR™",
+  description: "Daftar tim dan klub esport kompetitif binaan Pengcab ESI di Sumatera Barat.",
 };
 
 export default async function TeamsDirectoryPage() {

@@ -16,8 +16,8 @@ export async function generateMetadata({
 
   if (!profile) {
     return {
-      title: "Venue Tidak Ditemukan | ESPORT SUMBAR",
-      description: "Venue gaming tidak ditemukan di basis data resmi PBESI Sumatera Barat.",
+      title: "Venue Tidak Ditemukan | ESPORT SUMBAR™",
+      description: "Venue gaming tidak ditemukan di pangkalan data ESPORT SUMBAR™.",
     };
   }
 

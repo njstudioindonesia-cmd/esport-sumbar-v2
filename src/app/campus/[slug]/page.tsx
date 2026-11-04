@@ -16,13 +16,13 @@ export async function generateMetadata({
 
   if (!profile) {
     return {
-      title: "Kampus Tidak Ditemukan | ESPORT SUMBAR",
-      description: "UKM esport kampus tidak ditemukan di basis data resmi PBESI Sumatera Barat.",
+      title: "Kampus Tidak Ditemukan | ESPORT SUMBAR™",
+      description: "UKM esport kampus tidak ditemukan di pangkalan data ESPORT SUMBAR™.",
     };
   }
 
   const title = `${profile.displayName} | UKM Esport Kampus Sumbar`;
-  const description = profile.bio || `Komunitas dan UKM esport resmi ${profile.displayName} binaan Pengcab ${profile.regionName}.`;
+  const description = profile.bio || `Komunitas dan UKM esport ${profile.displayName} wilayah ${profile.regionName}.`;
 
   return {
     title,

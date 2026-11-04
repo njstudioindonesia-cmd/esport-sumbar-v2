@@ -36,11 +36,11 @@ export default function HowItWorksPage() {
     },
     {
       q: "Apa perbedaan Frame Rarity dengan Lencana Verifikasi?",
-      a: "Frame Rarity menunjukkan tingkatan prestasi kompetitif atlet. Sedangkan Lencana merupakan status pengesahan kelembagaan resmi dari PBESI.",
+      a: "Frame Rarity menunjukkan tingkatan prestasi kompetitif atlet di platform ESPORT SUMBAR™. Sedangkan Lencana merupakan status pengesahan dari mitra kelembagaan ESI.",
     },
     {
       q: "Siapa yang berhak memberikan verifikasi lencana resmi?",
-      a: "Verifikasi resmi PBESI Sumbar hanya dapat disetujui oleh Pengprov ESI Sumatera Barat. Pengurus cabang daerah bertindak sebagai pemeriksa tahap pertama.",
+      a: "Verifikasi lencana kartu disetujui berjenjang oleh mitra kelembagaan: Pengcab ESI Kota/Kabupaten sebagai pemeriksa wilayah, dan Pengprov ESI Sumatera Barat sebagai verifikator provinsi. Platform dikelola independen oleh ESPORT SUMBAR™.",
     },
     {
       q: "Berapa lama masa berlaku lencana verifikasi?",
@@ -183,7 +183,7 @@ export default function HowItWorksPage() {
                     </span>
                   </td>
                   <td className="py-4 text-[#D4AF37]">Gold Mirror &amp; Hologram</td>
-                  <td className="py-4 text-white/90">Juara 1-3 Kejurda atau turnamen resmi PBESI Sumbar.</td>
+                  <td className="py-4 text-white/90">Juara 1-3 Kejurda atau turnamen terverifikasi Pengprov ESI Sumbar.</td>
                   <td className="py-4 text-right pr-2 text-[#D4AF37] font-bold">Pengprov</td>
                 </tr>
 

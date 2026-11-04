@@ -27,7 +27,7 @@ export function VerificationBadge({
     return (
       <div
         className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#12151C]/90 border border-[#22C55E]/50 shadow-[0_0_12px_rgba(34,197,94,0.35)] backdrop-blur-md"
-        title={`Regional Checked - ESI ${regionCode}`}
+        title={`Diperiksa oleh ESI ${regionCode}`}
       >
         <ShieldCheck className={isSmall ? "w-3 h-3 text-[#22C55E]" : "w-3.5 h-3.5 text-[#22C55E]"} />
         <span className={`font-heading uppercase tracking-wider font-bold text-[#22C55E] ${isSmall ? "text-[9px]" : "text-[10px]"}`}>
@@ -41,7 +41,7 @@ export function VerificationBadge({
     return (
       <div
         className="relative group flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-[#1A1810]/95 via-[#231F10]/95 to-[#1A1810]/95 border border-[#D4AF37]/80 shadow-[0_0_15px_rgba(212,175,55,0.4)] backdrop-blur-md"
-        title="Terverifikasi Resmi ESI Sumatera Barat"
+        title="Diverifikasi oleh Pengprov ESI Sumbar"
       >
         <Award className={isSmall ? "w-3 h-3 text-[#D4AF37]" : "w-3.5 h-3.5 text-[#D4AF37]"} />
         <div className="flex flex-col leading-none">

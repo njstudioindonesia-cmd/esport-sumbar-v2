@@ -8,9 +8,9 @@ import { HomePageClient } from "@/components/home/HomePageClient";
 export const instant = false;
 
 export const metadata: Metadata = {
-  title: "ESPORT SUMBAR | Pusat Data & Paspor Digital Atlet Ranah Minang",
+  title: "ESPORT SUMBAR™ | Pusat Data & Paspor Digital Atlet Ranah Minang",
   description:
-    "Portal resmi PBESI Sumatera Barat: Paspor atlet digital, kartu TCG atlet, verifikasi 19 wilayah, dan direktori ekosistem esport se-Sumatera Barat.",
+    "Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem turnamen esport Sumatera Barat oleh ESPORT SUMBAR™. Diverifikasi mitra kelembagaan ESI.",
 };
 
 export default async function HomePage() {

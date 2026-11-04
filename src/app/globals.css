@@ -1,24 +1,41 @@
 @import "tailwindcss";
 
 :root {
-  --background: #07080c;
-  --surface: #0f1118;
-  --surface-elevated: #161a24;
-  --border: rgba(255, 255, 255, 0.08);
-  --foreground: #f3f4f6;
-  --text-muted: #9aa3b2;
+  /* Brand Core Tokens (ESPORT SUMBAR) */
+  --bg-base: #03031A;
+  --surface-1: #0A0A2E;
+  --surface-2: #12123F;
+  --brand-navy: #00004F;
+  --brand-navy-dark: #000251;
+  --brand-pink: #FF1752;
+  --brand-pink-400: #FF4D77;
+  --brand-pink-600: #D90F43;
+  --brand-pink-glow: rgba(255, 23, 82, 0.35);
 
-  --accent-gold: #d4af37;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+
+  /* Text 3-Tier Hierarchy */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.62);
+  --text-muted: rgba(255, 255, 255, 0.40);
+
+  /* Functional Status Colors (Never used as mere decoration) */
+  --status-regional: #22C55E; /* Regional Checked */
+  --status-verified: #D4AF37; /* Emas ONLY for Verified status & Elite tier */
+  --status-pending: #F5A524;
+  --status-error: #F04438;   /* Functional error, never brand pink */
+  --status-suspended: #6B7280;
+
+  /* Compatibility mappings */
+  --background: var(--bg-base);
+  --surface: var(--surface-1);
+  --surface-elevated: var(--surface-2);
+  --border: var(--border-subtle);
+  --foreground: var(--text-primary);
+
+  --status-rejected: var(--status-error);
+  --accent-gold: var(--status-verified);
   --accent-gold-glow: rgba(212, 175, 55, 0.35);
-  --accent-marawa: #c8102e;
-  --accent-blue: #4c7dff;
-  --accent-blue-glow: rgba(76, 125, 255, 0.35);
-
-  --status-regional: #22c55e;
-  --status-verified: #d4af37;
-  --status-pending: #f5a524;
-  --status-rejected: #ef4444;
-  --status-suspended: #6b7280;
 
   --radius-card: 20px;
   --radius-panel: 28px;
@@ -30,22 +47,29 @@
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-pink: var(--brand-pink);
+  --color-brand-pink-400: var(--brand-pink-400);
+  --color-brand-pink-600: var(--brand-pink-600);
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-foreground: var(--foreground);
   --color-text-muted: var(--text-muted);
-
-  --color-gold: var(--accent-gold);
-  --color-marawa: var(--accent-marawa);
-  --color-electric: var(--accent-blue);
-  --color-violet: var(--accent-violet);
+  --color-text-secondary: var(--text-secondary);
 
   --color-status-regional: var(--status-regional);
   --color-status-verified: var(--status-verified);
   --color-status-pending: var(--status-pending);
-  --color-status-rejected: var(--status-rejected);
+  --color-status-rejected: var(--status-error);
+  --color-status-error: var(--status-error);
   --color-status-suspended: var(--status-suspended);
 
-  --font-heading: var(--font-heading), "Chakra Petch", sans-serif;
+  /* Gold strictly for verified / elite */
+  --color-gold: var(--status-verified);
+
+  --font-heading: var(--font-heading), "Saira Condensed", sans-serif;
   --font-sans: var(--font-sans), "Inter", sans-serif;
 }
 
@@ -61,7 +85,7 @@ body {
 
 /* Accessible focus visible outlines for keyboard navigation (WCAG AA) */
 :focus-visible {
-  outline: 2px solid #d4af37;
+  outline: 2px solid var(--brand-pink);
   outline-offset: 2px;
 }
 
@@ -107,6 +131,26 @@ body {
   }
 }
 
+@keyframes brandPulse {
+  0%, 100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 10px rgba(255, 23, 82, 0.4));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 22px rgba(255, 23, 82, 0.7));
+  }
+}
+
+@keyframes brandBarSlide {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .animate-shimmer {
   background-size: 200% 200%;
   animation: holoShimmer 6s ease infinite;
@@ -116,12 +160,113 @@ body {
   animation: crystalGlow 4s ease-in-out infinite;
 }
 
-/* Subtle Minang Motif Background Pattern */
-.bg-minang-subtle {
-  background-image: radial-gradient(rgba(200, 16, 46, 0.05) 1px, transparent 0),
-                    radial-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 0);
-  background-position: 0 0, 16px 16px;
-  background-size: 32px 32px;
+.animate-brand-pulse {
+  animation: brandPulse 3s ease-in-out infinite;
+}
+
+.animate-brand-bar {
+  background-size: 200% 100%;
+  animation: brandBarSlide 4s linear infinite;
+}
+
+/* Diagonal Pattern for Cards and Brand Panels */
+.bg-brand-diagonal {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.02) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+}
+
+/* Subtle Brand Glow Utilities */
+.pink-glow {
+  box-shadow: 0 0 24px rgba(255, 23, 82, 0.35);
+}
+
+.pink-glow-sm {
+  box-shadow: 0 0 12px rgba(255, 23, 82, 0.25);
+}
+
+.gold-glow {
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
+}
+
+/* Display Skew Utility for Large Hero Headings */
+.display-skew {
+  transform: skewX(-8deg);
+  display: inline-block;
+}
+
+/* Primary Brand Button (Pink with Slanted Right Edge) */
+.btn-brand-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--brand-pink);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.625rem 1.25rem;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-brand-primary:hover {
+  background-color: var(--brand-pink-400);
+  box-shadow: 0 0 20px rgba(255, 23, 82, 0.45);
+}
+
+.btn-brand-primary:active {
+  background-color: var(--brand-pink-600);
+  transform: translateY(1px);
+}
+
+.btn-brand-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Secondary Glass Brand Button */
+.btn-brand-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(10, 10, 46, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.625rem 1.25rem;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.btn-brand-secondary:hover {
+  border-color: rgba(255, 23, 82, 0.35);
+  background: rgba(18, 18, 63, 0.85);
+}
+
+.btn-brand-secondary:active {
+  transform: translateY(1px);
+}
+
+/* Luxury Dark Gradient Background Utility */
+.bg-brand-dark {
+  background-color: var(--bg-base);
+  background-image: radial-gradient(circle at 50% -10%, rgba(255, 23, 82, 0.07) 0%, rgba(3, 3, 26, 1) 60%);
 }
 
 /* Accessibility: prefers-reduced-motion overrides */
@@ -137,6 +282,8 @@ body {
   
   .animate-shimmer,
   .animate-crystal,
+  .animate-brand-pulse,
+  .animate-brand-bar,
   .animate-pulse {
     animation: none !important;
   }
@@ -168,18 +315,4 @@ body {
 }
 .pt-safe {
   padding-top: max(env(safe-area-inset-top, 16px), 16px);
-}
-
-/* Luxury Dark Gradient and Soft Glow Utilities */
-.bg-luxury-dark {
-  background-color: #07080C;
-  background-image: radial-gradient(circle at 50% -10%, rgba(76, 125, 255, 0.08) 0%, rgba(7, 8, 12, 1) 60%);
-}
-
-.gold-glow {
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
-}
-
-.blue-glow {
-  box-shadow: 0 0 24px rgba(76, 125, 255, 0.25);
 }

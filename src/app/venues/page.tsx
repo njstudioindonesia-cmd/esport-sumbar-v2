@@ -6,8 +6,8 @@ import { EntityDirectoryView } from "@/components/directory/EntityDirectoryView"
 export const instant = false;
 
 export const metadata: Metadata = {
-  title: "Direktori Gaming Venue & iCafe Sumatera Barat | PBESI",
-  description: "Daftar warnet, iCafe, warkop gaming, dan arena esport terverifikasi di Sumatera Barat.",
+  title: "Direktori Gaming Venue & iCafe Sumatera Barat | ESPORT SUMBAR™",
+  description: "Daftar warnet, iCafe, warkop gaming, dan arena esport di Sumatera Barat.",
 };
 
 export default async function VenuesDirectoryPage() {

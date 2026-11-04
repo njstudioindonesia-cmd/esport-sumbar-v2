@@ -259,11 +259,11 @@ export default async function RegionDetailPage({
           ) : (
             <div className="py-16 text-center text-xs font-mono bg-[#0F1118]/50 rounded-2xl border border-white/[0.06] p-8 flex flex-col items-center">
               <ShieldCheck className="w-8 h-8 text-white/20 mb-3" />
-              <p className="text-white/60 mb-2 font-medium">Belum ada atlet atau klub resmi terdaftar di Pengcab {region.name}.</p>
-              <p className="text-white/40 mb-6 max-w-sm">Jadilah pionir esport resmi di daerah ini dan dapatkan paspor atlet PBESI Anda.</p>
+              <p className="text-white/60 mb-2 font-medium">Belum ada atlet atau klub terdaftar di wilayah {region.name}.</p>
+              <p className="text-white/40 mb-6 max-w-sm">Jadilah pionir esport di daerah ini dan buat kartu atlet digital ESPORT SUMBAR™ Anda.</p>
               <Link
                 href="/register"
-                className="px-4 py-2 rounded-xl bg-[#D4AF37] text-black font-heading font-black text-xs uppercase hover:bg-[#E5C158] transition-colors"
+                className="px-4 py-2 rounded-xl btn-brand-primary text-white font-heading font-black text-xs uppercase"
               >
                 Daftar Sekarang
               </Link>
@@ -279,7 +279,7 @@ export default async function RegionDetailPage({
             <h2 className="font-heading font-black text-lg text-white uppercase tracking-wider">
               Berita &amp; Agenda Lokal
             </h2>
-            <Link href="/news" className="text-xs font-mono text-[#D4AF37] hover:underline">
+            <Link href="/news" className="text-xs font-mono text-brand-pink hover:underline">
               Semua Berita &rarr;
             </Link>
           </div>
@@ -290,19 +290,19 @@ export default async function RegionDetailPage({
                 <Link
                   key={news.id}
                   href={`/news/${news.slug}`}
-                  className="group p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-[#D4AF37]/50 flex flex-col justify-between transition-all"
+                  className="group p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-brand-pink/50 flex flex-col justify-between transition-all"
                 >
                   <div>
-                    <span className="px-2 py-0.5 rounded text-[9px] font-mono text-[#D4AF37] bg-[#D4AF37]/10 uppercase mb-2 inline-block">
+                    <span className="px-2 py-0.5 rounded text-[9px] font-mono text-brand-pink bg-brand-pink/10 uppercase mb-2 inline-block">
                       {news.category}
                     </span>
-                    <h3 className="text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2">
+                    <h3 className="text-sm font-heading font-bold text-white group-hover:text-brand-pink transition-colors line-clamp-2">
                       {news.title}
                     </h3>
                   </div>
                   <div className="mt-4 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-white/40 flex items-center justify-between">
                     <span>{new Date(news.publishedAt).toLocaleDateString("id-ID")}</span>
-                    <span className="text-white/60">Resmi PBESI</span>
+                    <span className="text-white/60">Warta Daerah</span>
                   </div>
                 </Link>
               ))}

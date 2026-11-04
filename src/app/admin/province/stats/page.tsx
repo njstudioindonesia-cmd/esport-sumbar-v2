@@ -100,14 +100,14 @@ export default function AdminProvinceStatsPage() {
               />
             </div>
             <span className="text-[10px] text-gray-400">
-              Target PBESI Sumbar 2026: 100% dari 19 wilayah memiliki atlet terverifikasi.
+              Target Provinsi Sumbar 2026: 100% dari 19 wilayah memiliki atlet terverifikasi.
             </span>
           </div>
 
           {/* 2. TOTAL EMAS RESMI */}
           <div className="p-5 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col justify-between gap-3">
             <span className="text-xs font-heading font-bold uppercase text-gray-400">
-              Total Lencana Emas PBESI Aktif
+              Total Verifikasi Emas Pengprov Aktif
             </span>
             <div className="flex items-baseline gap-2">
               <span className="text-4xl font-heading font-black text-[#22C55E]">

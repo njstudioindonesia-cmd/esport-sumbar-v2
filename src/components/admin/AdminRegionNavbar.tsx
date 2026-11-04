@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { REGIONS_DETAIL } from "@/data/regions";
+import { BrandBar, BrandLogo } from "@/components/brand";
 
 export function AdminRegionNavbar() {
   const pathname = usePathname();
@@ -48,18 +49,26 @@ export function AdminRegionNavbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#0B0D12]/95 backdrop-blur-md border-b border-[#262B38]">
+    <header className="sticky top-0 z-40 w-full bg-[#03031A]/95 backdrop-blur-md border-b border-white/10 select-none">
+      <BrandBar glow={true} />
+
       {/* TOP BAR: REGION IDENTITY & DATA ISOLATION */}
-      <div className="bg-[#12151C] border-b border-[#262B38]/70 px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between text-xs">
+      <div className="bg-[#0A0A2E] border-b border-white/10 px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between text-xs">
         <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
+            <span
+              className="px-2 py-0.5 rounded-full bg-[#22C55E]/15 border border-[#22C55E]/30 text-[#22C55E] text-[10px] font-mono font-bold uppercase cursor-help"
+              title="Mitra berwenang memverifikasi; platform dikelola ESPORT SUMBAR"
+            >
+              Mitra ESI Kota/Kab
+            </span>
             <span className="font-heading font-black tracking-wider text-white uppercase text-[11px]">
-              PANEL ADMIN DAERAH (PENGCAB ESI)
+              PANEL ESPORT SUMBAR • VERIFIKASI DAERAH
             </span>
           </div>
 
-          <span className="text-gray-600 hidden sm:inline">•</span>
+          <span className="text-white/20 hidden sm:inline">•</span>
 
           {/* Region Switcher Mockup with RLS Indicator */}
           <div className="relative">
@@ -126,19 +135,18 @@ export function AdminRegionNavbar() {
       {/* LOWER NAVIGATION MENU */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/admin/region" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#161922] border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] font-heading font-black text-xs shadow-sm">
-              ESI
-            </div>
-            <div className="flex flex-col">
-              <span className="font-heading font-black tracking-wider text-sm text-white uppercase leading-none">
+          <div className="flex items-center gap-3">
+            <BrandLogo variant="lockup" size="sm" withLink={true} />
+            <span className="text-white/20 hidden md:inline">|</span>
+            <div className="hidden md:flex flex-col">
+              <span className="font-heading font-black tracking-wider text-xs text-white uppercase leading-none">
                 PENGCAB {activeRegion.name.toUpperCase()}
               </span>
-              <span className="text-[9px] font-mono tracking-widest text-[#9AA3B2] uppercase leading-none mt-0.5">
-                Otoritas Verifikasi Tahap 1
+              <span className="text-[8px] font-mono tracking-widest text-[#22C55E] uppercase leading-none mt-0.5">
+                Verifikasi Wilayah Tahap 1
               </span>
             </div>
-          </Link>
+          </div>
 
           <nav className="hidden sm:flex items-center gap-1">
             {navLinks.map((link) => {

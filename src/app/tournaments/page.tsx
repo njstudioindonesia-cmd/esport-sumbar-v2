@@ -105,16 +105,16 @@ export default function TournamentsPage() {
                   {t.isOfficialEsi && (
                     <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#22C55E]/20 border border-[#22C55E]/40 text-[#22C55E] text-[10px] font-heading font-extrabold">
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      Akreditasi PBESI
+                      Rekomendasi ESI
                     </span>
                   )}
 
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-mono uppercase font-bold ${
                       t.status === "berlangsung"
-                        ? "bg-[#C8102E]/20 border border-[#C8102E]/40 text-red-400 animate-pulse"
+                        ? "bg-[#F04438]/20 border border-[#F04438]/40 text-[#F04438] animate-pulse"
                         : t.status === "pendaftaran"
-                        ? "bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37]"
+                        ? "bg-brand-pink/20 border border-brand-pink/40 text-brand-pink"
                         : "bg-gray-800 text-gray-400"
                     }`}
                   >

@@ -34,16 +34,16 @@ export default function LeaderboardPage() {
         {/* HEADER */}
         <div className="flex flex-col gap-3 mb-8">
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-heading font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+            <span className="px-3 py-1 rounded-full bg-brand-pink/15 border border-brand-pink/30 text-brand-pink text-xs font-heading font-extrabold uppercase tracking-wider flex items-center gap-1.5">
               <Trophy className="w-3.5 h-3.5" />
-              Sirkuit Resmi PBESI Sumbar
+              Sirkuit Kompetisi Sumatera Barat
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight">
-            Official <span className="text-[#D4AF37]">Circuit Leaderboard</span> 2026
+            Klasemen <span className="text-brand-pink">Sirkuit Tim</span> 2026
           </h1>
           <p className="text-sm text-[#9AA3B2] max-w-2xl leading-relaxed">
-            Peringkat akumulasi poin resmi klub dan tim esport se-Sumatera Barat untuk penentuan wakil Kejurda, Porprov, dan Pelatda PON.
+            Peringkat akumulasi poin tim esport se-Sumatera Barat dari turnamen dan kompetisi terverifikasi di platform ESPORT SUMBAR™.
           </p>
         </div>
 
@@ -129,7 +129,7 @@ export default function LeaderboardPage() {
                 <tr className="border-b border-[#262B38] bg-[#161B24] text-[10px] font-mono text-[#9AA3B2] uppercase tracking-wider">
                   <th className="py-3 px-4 text-center w-16">Rank</th>
                   <th className="py-3 px-4">Nama Tim / Klub</th>
-                  <th className="py-3 px-4">Domisili ESI</th>
+                  <th className="py-3 px-4">Wilayah ESI</th>
                   <th className="py-3 px-4">Divisi Utama</th>
                   <th className="py-3 px-4 text-center">Medali (E / P / P)</th>
                   <th className="py-3 px-4 text-right">Poin Resmi</th>

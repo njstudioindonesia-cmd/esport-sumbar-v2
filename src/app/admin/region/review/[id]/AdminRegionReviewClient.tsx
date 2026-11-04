@@ -450,6 +450,12 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                 <span className="text-white font-bold">{item.daysWaiting} Hari</span>
               </div>
 
+              {/* Baris Kemitraan Verifikasi Resmi ESI */}
+              <div className="px-3 py-2 rounded-lg bg-[#22C55E]/10 border border-[#22C55E]/30 text-[11px] text-[#22C55E] flex items-center gap-2 font-mono">
+                <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                <span>Verifikasi atas nama ESI {item.regionName}. Platform dikelola ESPORT SUMBAR™.</span>
+              </div>
+
               {/* APPROVE (SETUJUI - UTAMA) */}
               <button
                 type="button"

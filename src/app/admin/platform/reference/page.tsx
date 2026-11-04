@@ -110,7 +110,7 @@ export default function AdminPlatformReferencePage() {
                 <span>Pengelolaan Data Master Referensi</span>
               </h1>
               <p className="text-xs sm:text-sm text-[#9AA3B2] mt-1 max-w-2xl leading-relaxed">
-                Kelola daftar nomor game resmi PBESI, role divisi, kategori artikel, dan aktivasi status pengcab daerah aktif vs jalur fallback.
+                Kelola daftar nomor cabang game resmi, role divisi, kategori artikel, dan aktivasi status pengcab daerah aktif vs jalur fallback.
               </p>
             </div>
           </div>

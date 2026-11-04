@@ -326,6 +326,12 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
                 <span className="text-[10px] font-mono text-emerald-400">PENGPROV</span>
               </div>
 
+              {/* Baris Kemitraan Verifikasi Resmi Pengprov ESI */}
+              <div className="px-3 py-2 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[11px] text-[#D4AF37] flex items-center gap-2 font-mono">
+                <Award className="w-3.5 h-3.5 shrink-0" />
+                <span>Verifikasi atas nama Pengprov ESI Sumbar. Platform dikelola ESPORT SUMBAR™.</span>
+              </div>
+
               {/* ACTION 1: VERIFIKASI RESMI EMAS (PRIMARY ACTION) */}
               <button
                 type="button"
@@ -437,7 +443,7 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
                 <strong className="text-white font-heading text-sm">{item.ign} ({item.name})</strong>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-400">Nomor Registrasi PBESI:</span>
+                <span className="text-gray-400">Nomor Registrasi ESI Sumbar:</span>
                 <span className="font-mono text-[#D4AF37] font-bold">{officialBadgeNumber}</span>
               </div>
               <div className="flex items-center justify-between">

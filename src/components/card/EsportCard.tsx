@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -26,6 +27,7 @@ import {
   CardEntityType,
 } from "@/types/card";
 import { VerificationBadge } from "./VerificationBadge";
+import { BrandWatermark, BrandPattern, IssuedBy } from "@/components/brand";
 
 // Helper color and styling mapping for Rarity Tiers
 const RARITY_CONFIG: Record<
@@ -334,15 +336,6 @@ export function EsportCard({
                       ? data.teamName || data.displayName
                       : data.ign || data.displayName}
                   </h3>
-                  {/* Subtle Marawa Accent */}
-                  <div
-                    className="flex h-2 w-5 rounded-sm overflow-hidden shrink-0 ml-2"
-                    title="Aksen Minang Marawa"
-                  >
-                    <span className="w-1/3 bg-[#C8102E]" />
-                    <span className="w-1/3 bg-[#D4AF37]" />
-                    <span className="w-1/3 bg-black" />
-                  </div>
                 </div>
 
                 <span className="text-[11px] text-[#9AA3B2] font-sans truncate font-medium">
@@ -403,22 +396,33 @@ export function EsportCard({
                 )}
               </div>
 
-              {/* CARD FOOTER: ESPORT ID + MINI QR */}
-              <div className="mt-1 pt-1.5 border-t border-[#262B38]/80 flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="text-[7px] uppercase font-mono tracking-widest text-[#9AA3B2]">
-                    ESPORT ID
-                  </span>
-                  <span className="text-[9px] font-mono font-bold tracking-tight text-[#D4AF37]">
-                    {data.esportId}
-                  </span>
+              {/* CARD FOOTER: MARK + ESPORT ID + MINI QR */}
+              <div className="mt-1 pt-1.5 border-t border-[#FF1752]/20 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="relative w-5 h-3 shrink-0">
+                    <Image
+                      src="/brand/logo-mark-pink.png"
+                      alt="ESPORT SUMBAR"
+                      fill
+                      sizes="20px"
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[7px] uppercase font-mono tracking-widest text-white/50">
+                      ESPORT ID
+                    </span>
+                    <span className="text-[9px] font-mono font-bold tracking-tight text-white/90">
+                      {data.esportId}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={handleFlip}
-                    className="p-1 rounded bg-[#1A1E28] hover:bg-[#262B38] text-gray-400 hover:text-white transition-colors"
+                    className="p-1 rounded bg-[#1A1E28] hover:bg-[#262B38] text-gray-400 hover:text-[#FF4D77] transition-colors"
                     title="Balik kartu (Rekam Jejak / Roster)"
                   >
                     <RotateCw className="w-3 h-3" />
@@ -445,8 +449,12 @@ export function EsportCard({
           }`}
         >
           <div className="relative w-full h-full rounded-[14px] overflow-hidden bg-[#0D1017] p-3 flex flex-col justify-between">
+            {/* Brand Pattern and Large Centered Watermark */}
+            <BrandPattern variant="diagonal" opacity={0.04} />
+            <BrandWatermark variant="pink" opacity={0.08} size={260} position="center" />
+
             {/* Header Rekam Jejak */}
-            <div>
+            <div className="relative z-10">
               <div className="flex items-center justify-between border-b border-[#262B38] pb-1.5">
                 <div className="flex items-center gap-1.5">
                   {type === "team" ? (
@@ -668,10 +676,8 @@ export function EsportCard({
               <span className="text-[9px] text-gray-300 font-mono font-medium">
                 Pindai untuk memeriksa keaslian data
               </span>
-              <div className="flex items-center gap-1.5 text-[8px] text-[#D4AF37] mt-0.5">
-                <span>ESPORT SUMBAR</span>
-                <span>•</span>
-                <span>ESI SUMBAR</span>
+              <div className="mt-1">
+                <IssuedBy variant="badge" />
               </div>
               {(data.joinedAt || data.foundedAt) && (
                 <div className="flex items-center gap-1 text-[8px] text-[#9AA3B2] mt-1">

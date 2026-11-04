@@ -320,7 +320,7 @@ export default function AdminRegionDashboardPage() {
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#161922] border border-[#262B38] text-[11px] text-gray-300 leading-relaxed">
-                <strong>Ketentuan Verifikasi PBESI:</strong> Pengurus Cabang ESI Kota/Kabupaten bertindak sebagai verifikator tahap pertama untuk memastikan keaslian domisili, profil atlet, dan surat pengantar klub.
+                <strong>Ketentuan Verifikasi ESI:</strong> Pengurus Cabang ESI Kota/Kabupaten bertindak sebagai mitra verifikator tahap pertama untuk memastikan keaslian domisili, profil atlet, dan surat pengantar klub.
               </div>
             </div>
 

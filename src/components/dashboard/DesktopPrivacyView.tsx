@@ -314,16 +314,16 @@ export function DesktopPrivacyView() {
           </h3>
         </div>
         <p className="text-xs text-white/60 leading-relaxed max-w-2xl">
-          Tindakan di bawah ini bersifat permanen. Menghapus kartu atau menonaktifkan akun akan mencabut nomor lencana resmi PBESI Sumbar dan menghapus riwayat kejuaraan Anda dari direktori publik.
+          Tindakan di bawah ini bersifat permanen. Menghapus kartu atau menonaktifkan akun akan mencabut nomor verifikasi dan menghapus riwayat kartu Anda dari direktori publik ESPORT SUMBAR™.
         </p>
 
         <div className="flex items-center justify-between pt-4 border-t border-red-500/20">
           <div>
             <span className="text-xs font-heading font-bold text-white block">
-              Hapus Kartu Paspor Atlet
+              Hapus Kartu Atlet
             </span>
             <span className="text-[11px] text-white/40">
-              Mencabut registrasi atlet dari database PBESI Sumbar.
+              Mencabut kartu atlet dari database ESPORT SUMBAR™.
             </span>
           </div>
 

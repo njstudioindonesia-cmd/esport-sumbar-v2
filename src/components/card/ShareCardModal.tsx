@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+import Image from "next/image";
+import { QRCodeSVG } from "qrcode.react";
 import { toPng } from "html-to-image";
 import {
   Download,
@@ -16,6 +18,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { EsportCard } from "./EsportCard";
+import { BrandWatermark } from "@/components/brand";
 import {
   UnifiedCardData,
   CardRarity,
@@ -139,7 +142,7 @@ export function ShareCardModal({
               onClick={() => setFormat("story")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all ${
                 format === "story"
-                  ? "bg-[#D4AF37] text-black shadow-md"
+                  ? "bg-[#FF1752] text-white shadow-md pink-glow-sm"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -152,7 +155,7 @@ export function ShareCardModal({
               onClick={() => setFormat("feed")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all ${
                 format === "feed"
-                  ? "bg-[#D4AF37] text-black shadow-md"
+                  ? "bg-[#FF1752] text-white shadow-md pink-glow-sm"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -165,7 +168,7 @@ export function ShareCardModal({
               onClick={() => setFormat("card")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all ${
                 format === "card"
-                  ? "bg-[#D4AF37] text-black shadow-md"
+                  ? "bg-[#FF1752] text-white shadow-md pink-glow-sm"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -188,33 +191,36 @@ export function ShareCardModal({
               ref={exportContainerRef}
               className={`relative overflow-hidden flex flex-col items-center justify-between transition-all duration-300 ${
                 format === "story"
-                  ? "w-[340px] sm:w-[360px] h-[600px] sm:h-[640px] p-5 rounded-2xl bg-gradient-to-b from-[#141822] via-[#0B0D12] to-[#12151C] border border-[#262B38]"
+                  ? "w-[340px] sm:w-[360px] h-[600px] sm:h-[640px] p-5 rounded-2xl bg-gradient-to-b from-[#0A0A2E] via-[#03031A] to-[#0A0A2E] border border-white/10"
                   : format === "feed"
-                  ? "w-[340px] sm:w-[440px] h-[340px] sm:h-[440px] p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#141822] via-[#0B0D12] to-[#12151C] border border-[#262B38]"
-                  : "p-2 rounded-2xl bg-[#0B0D12]"
+                  ? "w-[340px] sm:w-[440px] h-[340px] sm:h-[440px] p-4 sm:p-5 rounded-2xl bg-gradient-to-b from-[#0A0A2E] via-[#03031A] to-[#0A0A2E] border border-white/10"
+                  : "p-2 rounded-2xl bg-[#03031A]"
               }`}
             >
-              {/* Subtle Minang Motif Background on Canvas */}
+              {/* Brand Watermark & Ambient Pink Glow on Canvas */}
               {format !== "card" && (
                 <>
-                  <div className="absolute inset-0 bg-minang-subtle opacity-35 pointer-events-none" />
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-[#C8102E]/10 blur-2xl pointer-events-none" />
-                  <div className="absolute bottom-0 right-0 w-48 h-32 bg-[#D4AF37]/10 blur-2xl pointer-events-none" />
+                  <BrandWatermark opacity={0.06} size={420} position="center" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-[#FF1752]/15 blur-3xl pointer-events-none" />
 
-                  {/* Header Watermark on Export Canvas */}
-                  <div className="relative z-10 w-full flex items-center justify-between pb-2 border-b border-[#262B38]/50">
+                  {/* Header on Export Canvas */}
+                  <div className="relative z-10 w-full flex items-center justify-between pb-2 border-b border-white/10">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-2.5 w-6 rounded-sm overflow-hidden shrink-0">
-                        <span className="w-1/3 bg-[#C8102E]" />
-                        <span className="w-1/3 bg-[#D4AF37]" />
-                        <span className="w-1/3 bg-black" />
+                      <div className="relative w-5 h-3 shrink-0">
+                        <Image
+                          src="/brand/logo-mark-pink.png"
+                          alt=""
+                          fill
+                          sizes="20px"
+                          className="object-contain"
+                        />
                       </div>
-                      <span className="text-[10px] font-heading font-extrabold uppercase tracking-widest text-white">
-                        ESPORT SUMBAR
+                      <span className="text-[11px] font-heading font-black uppercase tracking-widest text-white">
+                        ESPORT SUMBAR™
                       </span>
                     </div>
-                    <span className="text-[8px] font-mono font-bold text-[#D4AF37] uppercase tracking-wider">
-                      x ESI SUMBAR
+                    <span className="text-[8px] font-mono font-bold text-[#FF4D77] uppercase tracking-wider">
+                      PASPOR ATLET RESMI
                     </span>
                   </div>
                 </>
@@ -232,11 +238,14 @@ export function ShareCardModal({
                 />
               </div>
 
-              {/* Footer Watermark on Export Canvas */}
+              {/* Footer on Export Canvas */}
               {format !== "card" && (
-                <div className="relative z-10 w-full pt-2 border-t border-[#262B38]/50 flex items-center justify-between text-[8px] text-[#9AA3B2] font-mono">
-                  <span>Pangkalan Data Resmi Esport Sumbar</span>
-                  <span className="text-[#D4AF37]">esportsumbar.id</span>
+                <div className="relative z-10 w-full pt-2 border-t border-white/10 flex items-center justify-between text-[8px] text-white/50 font-mono">
+                  <div className="flex items-center gap-1.5">
+                    <span>ESPORT ID:</span>
+                    <span className="text-white font-bold">{data.esportId}</span>
+                  </div>
+                  <span className="text-[#FF4D77]">esportsumbar.com</span>
                 </div>
               )}
             </div>
@@ -272,7 +281,7 @@ export function ShareCardModal({
               type="button"
               onClick={handleDownload}
               disabled={isExporting}
-              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E6CA65] hover:brightness-110 text-[#0B0D12] text-xs font-heading font-extrabold uppercase tracking-wider shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all disabled:opacity-50"
+              className="btn-brand-primary text-xs py-2 px-5"
             >
               <Download className="w-4 h-4" />
               <span>{isExporting ? "Memproses..." : "Unduh PNG (2x HD)"}</span>

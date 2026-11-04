@@ -87,7 +87,7 @@ export const MOCK_NEWS: Article[] = [
     content: [
       "PADANG PARIAMAN — Klub kebanggaan masyarakat Padang Pariaman, Ranah Garuda Esports, berhasil mengamankan tiket menuju putaran Grand Final turnamen kualifikasi regional Sumatera divisi PUBG Mobile.",
       "Dipimpin oleh kapten dan sniper handal Aidil 'SINGA_SINGKARAK' Syahputra, skuad Ranah Garuda menunjukkan konsistensi permainan rotasi dan penguasaan zona yang sangat matang sepanjang lima ronde pertandingan fase grup.",
-      "Prestasi gemilang ini semakin mengukuhkan reputasi Ranah Garuda sebagai pemegang status kartu Tier 4 (Legend) terverifikasi resmi ESI Sumbar.",
+      "Prestasi gemilang ini semakin mengukuhkan reputasi Ranah Garuda sebagai pemegang status kartu Tier 4 (Legend) dengan status terverifikasi dari Pengprov ESI Sumbar.",
     ],
     category: "Prestasi Klub",
     region: "Kab. Padang Pariaman",

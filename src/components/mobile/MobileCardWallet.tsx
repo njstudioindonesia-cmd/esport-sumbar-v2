@@ -303,7 +303,7 @@ export function MobileCardWallet() {
             {/* Footer Belakang: QR Hint */}
             <div className="w-full text-center pt-2 border-t border-white/[0.08]">
               <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest">
-                Identitas Resmi PBESI Sumbar
+                Paspor Digital ESPORT SUMBAR™
               </span>
             </div>
           </div>

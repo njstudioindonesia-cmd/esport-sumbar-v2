@@ -16,13 +16,13 @@ export async function generateMetadata({
 
   if (!profile) {
     return {
-      title: "Pelatih Tidak Ditemukan | ESPORT SUMBAR",
-      description: "Profil pelatih tidak ditemukan di basis data resmi PBESI Sumatera Barat.",
+      title: "Pelatih Tidak Ditemukan | ESPORT SUMBAR™",
+      description: "Profil pelatih tidak ditemukan di pangkalan data ESPORT SUMBAR™.",
     };
   }
 
-  const title = `${profile.displayName} | Pelatih PBESI Sumbar`;
-  const description = profile.bio || `Profil pelatih esport resmi ${profile.displayName} Pengcab ${profile.regionName}.`;
+  const title = `${profile.displayName} | Pelatih ESPORT SUMBAR™`;
+  const description = profile.bio || `Profil pelatih esport ${profile.displayName} wilayah ${profile.regionName}.`;
 
   return {
     title,

@@ -16,13 +16,13 @@ export async function generateMetadata({
 
   if (!profile) {
     return {
-      title: "Sekolah Tidak Ditemukan | ESPORT SUMBAR",
-      description: "Ekskul esport sekolah tidak ditemukan di basis data resmi PBESI Sumatera Barat.",
+      title: "Sekolah Tidak Ditemukan | ESPORT SUMBAR™",
+      description: "Ekskul esport sekolah tidak ditemukan di pangkalan data ESPORT SUMBAR™.",
     };
   }
 
   const title = `${profile.displayName} | Ekskul Esport Sekolah Sumbar`;
-  const description = profile.bio || `Ekskul pembinaan esport sekolah resmi ${profile.displayName} Pengcab ${profile.regionName}.`;
+  const description = profile.bio || `Ekskul pembinaan esport sekolah ${profile.displayName} wilayah ${profile.regionName}.`;
 
   return {
     title,

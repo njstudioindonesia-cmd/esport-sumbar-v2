@@ -6,8 +6,8 @@ import { EntityDirectoryView } from "@/components/directory/EntityDirectoryView"
 export const instant = false;
 
 export const metadata: Metadata = {
-  title: "Direktori Pelatih Esport Sumatera Barat | PBESI",
-  description: "Pangkalan data pelatih berlisensi dan juru taktik resmi binaan ESI Sumatera Barat.",
+  title: "Direktori Pelatih Esport Sumatera Barat | ESPORT SUMBAR™",
+  description: "Pangkalan data pelatih berlisensi dan juru taktik binaan ESI di Sumatera Barat.",
 };
 
 export default async function CoachesDirectoryPage() {

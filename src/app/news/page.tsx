@@ -58,7 +58,7 @@ export default function NewsIndexPage() {
 
   const categories = [
     { id: "all", label: "Semua Kategori" },
-    { id: "Agenda Resmi ESI", label: "Agenda PBESI" },
+    { id: "Agenda Resmi ESI", label: "Agenda Mitra ESI" },
     { id: "Turnamen Daerah", label: "Turnamen" },
     { id: "Tata Kelola", label: "Tata Kelola" },
     { id: "Prestasi Klub", label: "Prestasi" },
@@ -96,9 +96,9 @@ export default function NewsIndexPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-12 py-10">
         {/* Header bar */}
         <div className="flex flex-col gap-1.5 mb-8">
-          <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#D4AF37] uppercase">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-            <span>Warta Resmi PBESI Sumatera Barat</span>
+          <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-brand-pink uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-pink" />
+            <span>Kabar &amp; Warta Esport Sumatera Barat</span>
           </div>
           <h1 className="text-3xl lg:text-5xl font-heading font-black text-white tracking-tight uppercase">
             Berita &amp; Agenda

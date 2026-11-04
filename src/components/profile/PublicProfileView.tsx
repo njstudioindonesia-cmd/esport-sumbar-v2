@@ -28,6 +28,7 @@ import { EsportCard } from "@/components/card/EsportCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { RarityTag } from "@/components/shared/RarityTag";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
+import { IssuedBy } from "@/components/brand";
 import { MockCardVariant, GALLERY_CARDS } from "@/data/mockCards";
 
 interface PublicProfileViewProps {
@@ -63,7 +64,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
   const displayNameOrTeam = type === "team" ? data.displayName : data.ign || data.displayName;
 
   return (
-    <div className="min-h-screen bg-[#07080C] text-[#F3F4F6] flex flex-col font-sans selection:bg-[#D4AF37]/20 selection:text-[#D4AF37]">
+    <div className="min-h-screen bg-[var(--bg-base)] text-[#FFFFFF] flex flex-col font-sans selection:bg-[#FF1752]/30 selection:text-white">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 lg:px-8 py-10">
@@ -84,7 +85,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
             {type === "player" ? "Pemain" : type === "coach" ? "Pelatih" : "Tim"}
           </Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[#D4AF37] font-bold">{displayNameOrTeam}</span>
+          <span className="text-[#FF4D77] font-bold">{displayNameOrTeam}</span>
         </nav>
 
         {/* 2-COLUMN LAYOUT: LEFT STICKY TCG CARD (5/12) + RIGHT DETAILS (7/12) */}
@@ -99,7 +100,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                   : rarity === "elite"
                   ? "bg-[#D4AF37]"
                   : rarity === "contender"
-                  ? "bg-blue-500"
+                  ? "bg-[#22C55E]"
                   : "bg-amber-800"
               }`}
             />
@@ -116,12 +117,17 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
               />
             </div>
 
+            {/* IssuedBy Chip directly under card */}
+            <div className="mt-4">
+              <IssuedBy variant="badge" />
+            </div>
+
             {/* Action Buttons Row (Bagikan, QR, Laporkan) */}
-            <div className="flex items-center justify-center gap-2.5 mt-6 w-full max-w-[340px]">
+            <div className="flex items-center justify-center gap-2.5 mt-5 w-full max-w-[340px]">
               <button
                 type="button"
                 onClick={() => setShareModalOpen(true)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] hover:brightness-110 text-black text-xs font-heading font-black uppercase tracking-wider shadow-lg shadow-amber-950/20 active:scale-[0.98] transition-all"
+                className="btn-brand-primary flex-1 py-3 text-xs"
               >
                 <Share2 className="w-3.5 h-3.5" />
                 <span>Bagikan</span>

@@ -6,8 +6,8 @@ import { EntityDirectoryView } from "@/components/directory/EntityDirectoryView"
 export const instant = false;
 
 export const metadata: Metadata = {
-  title: "Direktori Atlet Esport Sumatera Barat | PBESI",
-  description: "Pangkalan data atlet esport kompetitif resmi dari 19 Kota dan Kabupaten di Sumatera Barat.",
+  title: "Direktori Atlet Esport Sumatera Barat | ESPORT SUMBAR™",
+  description: "Pangkalan data atlet esport kompetitif dari 19 Kota dan Kabupaten di Sumatera Barat.",
 };
 
 export default async function PlayersDirectoryPage() {

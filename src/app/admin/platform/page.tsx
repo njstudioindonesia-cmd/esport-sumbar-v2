@@ -42,7 +42,7 @@ export default function AdminPlatformDashboardPage() {
               Prinsip Tata Kelola Platform & Independensi ESI (P1 Master Concept)
             </span>
             <span>
-              Operator Platform bertanggung jawab atas ketersediaan server, basis data, pemeliharaan CMS, dan triase laporan masyarakat. Sesuai regulasi PBESI, <strong>Operator Platform dilarang keras memiliki tombol maupun kewenangan verifikasi resmi atlet</strong>. Kewenangan verifikasi adalah otoritas kelembagaan ESI Daerah dan ESI Provinsi.
+              Operator Platform bertanggung jawab atas ketersediaan server, basis data, pemeliharaan CMS, dan triase laporan masyarakat. Sesuai prinsip tata kelola, <strong>Operator Platform dilarang keras memiliki tombol maupun kewenangan verifikasi atlet</strong>. Kewenangan verifikasi adalah otoritas kelembagaan mitra ESI Daerah dan Pengprov ESI Sumbar.
             </span>
           </div>
         </div>

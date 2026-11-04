@@ -170,7 +170,7 @@ export default function AdminProvinceDashboardPage() {
             <div>
               <div className="text-3xl font-heading font-black text-[#22C55E]">142</div>
               <p className="text-[11px] text-[#9AA3B2] mt-1">
-                Profil dengan nomor registrasi PBESI Sumbar aktif.
+                Profil dengan verifikasi Pengprov ESI Sumbar aktif.
               </p>
             </div>
             <Link

@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Home, Compass, Layers, User } from "lucide-react";
 
@@ -26,12 +27,15 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <nav className="fixed bottom-5 left-1/2 -translate-x-1/2 w-[calc(100%-36px)] max-w-[390px] h-16 rounded-full bg-[#0F1118]/85 border border-white/[0.08] backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] z-40 px-3 flex items-center justify-between">
+    <nav
+      className="lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-[390px] h-16 rounded-full bg-[#0A0A2E]/90 border border-white/10 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.7)] z-40 px-3 flex items-center justify-between select-none"
+      aria-label="Navigasi Utama Mobile"
+    >
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = item.match(pathname);
 
-        // Tab Tengah Menonjol (Kartu Digital)
+        // Tab Tengah Menonjol: Kartu Digital dengan Pink Glow & Mark Icon
         if (item.isCenter) {
           return (
             <Link
@@ -43,15 +47,27 @@ export function MobileBottomBar() {
               <div
                 className={`w-13 h-13 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
                   isActive
-                    ? "bg-[#D4AF37] text-[#07080C] shadow-[0_4px_20px_rgba(212,175,55,0.4)] scale-105"
-                    : "bg-[#161A24] border border-[#D4AF37]/40 text-[#D4AF37] hover:border-[#D4AF37] hover:scale-105"
+                    ? "bg-[#FF1752] text-white shadow-[0_4px_22px_rgba(255,23,82,0.55)] scale-105"
+                    : "bg-[#12123F] border border-[#FF1752]/40 text-[#FF4D77] hover:border-[#FF1752] hover:scale-105"
                 }`}
               >
-                <Icon className="w-6 h-6 stroke-[1.75]" />
+                {isActive ? (
+                  <div className="relative w-6 h-3.5">
+                    <Image
+                      src="/brand/logo-mark-white.png"
+                      alt="Kartu"
+                      fill
+                      sizes="24px"
+                      className="object-contain"
+                    />
+                  </div>
+                ) : (
+                  <Icon className="w-5 h-5 stroke-[2]" />
+                )}
               </div>
               <span
-                className={`text-[9px] font-heading font-bold uppercase tracking-wider mt-0.5 ${
-                  isActive ? "text-[#D4AF37]" : "text-white/60"
+                className={`text-[9px] font-heading font-black uppercase tracking-wider mt-0.5 ${
+                  isActive ? "text-[#FF4D77]" : "text-white/60"
                 }`}
               >
                 {item.label}
@@ -69,17 +85,17 @@ export function MobileBottomBar() {
           >
             <div className="relative flex flex-col items-center">
               <Icon
-                className={`w-5 h-5 transition-colors stroke-[1.5] ${
-                  isActive ? "text-[#D4AF37] fill-[#D4AF37]/20" : "text-white/50 group-hover:text-white/80"
+                className={`w-5 h-5 transition-colors stroke-[1.75] ${
+                  isActive ? "text-[#FF1752]" : "text-white/45 group-hover:text-white/80"
                 }`}
               />
-              {/* Indikator Titik Emas Kecil Saat Aktif */}
+              {/* Indikator Garis Miring Pink Kecil Saat Aktif */}
               {isActive && (
-                <span className="w-1 h-1 rounded-full bg-[#D4AF37] mt-1 shadow-[0_0_6px_#D4AF37]" />
+                <span className="w-2.5 h-0.5 bg-[#FF1752] rounded-full mt-1 -rotate-12 shadow-[0_0_8px_#FF1752]" />
               )}
             </div>
             <span
-              className={`text-[9px] font-heading font-medium tracking-wider uppercase mt-0.5 ${
+              className={`text-[9px] font-heading font-semibold tracking-wider uppercase mt-0.5 ${
                 isActive ? "text-white font-bold" : "text-white/40 group-hover:text-white/70"
               }`}
             >
