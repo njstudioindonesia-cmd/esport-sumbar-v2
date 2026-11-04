@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { MobilePublicProfile } from "@/components/mobile/MobilePublicProfile";
+import { PublicProfileView } from "@/components/profile/PublicProfileView";
 import { GALLERY_CARDS } from "@/data/mockCards";
 
 export function generateStaticParams() {
@@ -40,10 +40,16 @@ export default async function PlayerProfilePage({
   }
 
   return (
-    <main className="min-h-[100dvh] w-full bg-[#07080C] flex items-center justify-center p-0 md:p-6 overflow-x-hidden">
-      <div className="relative w-full max-w-[420px] min-h-[100dvh] md:min-h-[844px] bg-[#07080C] md:rounded-[36px] md:border md:border-white/10 md:shadow-[0_24px_80px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
+    <>
+      {/* MOBILE EXPERIENCE (< 1024px Viewport) */}
+      <div className="block lg:hidden min-h-[100dvh] w-full bg-[#07080C] overflow-x-hidden">
         <MobilePublicProfile card={card} />
       </div>
-    </main>
+
+      {/* DESKTOP EXPERIENCE (≥ 1024px Cinematic Viewport) */}
+      <div className="hidden lg:block min-h-screen bg-[#07080C]">
+        <PublicProfileView card={card} />
+      </div>
+    </>
   );
 }
