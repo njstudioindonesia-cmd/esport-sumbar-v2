@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import type { EntityType, RarityTier } from "@/lib/supabase/database.types";
+import { calculateCompletenessScore, calculateRarityTier } from "@/lib/entities";
 
 export interface CreateProfileInput {
   entityType: EntityType;
@@ -121,15 +122,24 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       .replace(/^-+|-+$/g, "");
     const slug = `${cleanName}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // 4. Kalkulasi kelengkapan awal & rarity
-    let completeness = 50;
-    if (input.avatarUrl) completeness += 15;
-    if (input.bio) completeness += 15;
-    if (input.mainGameId) completeness += 10;
-    if (input.roleName) completeness += 10;
-    completeness = Math.min(100, completeness);
+    // 4. Kalkulasi kelengkapan & rarity tier resmi
+    const completeness = calculateCompletenessScore(
+      input.entityType,
+      {
+        display_name: cleanDisplayName,
+        region_id: cleanRegionId,
+        avatar_url: input.avatarUrl,
+        bio: input.bio,
+        main_game_id: input.mainGameId,
+      },
+      input.metadata || {}
+    );
 
-    const rarityTier: RarityTier = completeness >= 80 ? "contender" : "rookie";
+    const rarityTier: RarityTier = calculateRarityTier({
+      completenessScore: completeness,
+      confirmedRelationsCount: 0,
+      validatedAchievementsCount: 0,
+    });
 
     // 5. Simpan profil ke tabel profiles
     const { data: profileRecord, error: profileError } = await supabase
@@ -146,6 +156,7 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
         role_name: input.roleName || null,
         avatar_url: input.avatarUrl || null,
         bio: input.bio?.trim() || null,
+        attributes: (input.metadata || {}) as any,
         metadata_jsonb: (input.metadata || {}) as any,
         visibility_jsonb: (input.visibility || {
           email: false,

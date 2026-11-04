@@ -1,4 +1,12 @@
-export type CardEntityType = "player" | "coach" | "team";
+export type CardEntityType =
+  | "player"
+  | "coach"
+  | "team"
+  | "community"
+  | "venue"
+  | "campus"
+  | "school"
+  | "organizer";
 
 export type CardRarity = "rookie" | "contender" | "elite" | "legend";
 
@@ -83,6 +91,38 @@ export interface UnifiedCardData {
   certificationsList?: string[]; // Coach certifications
   joinedAt?: string;
   foundedAt?: string;
+
+  // Community specific
+  community?: {
+    memberCount?: number;
+    activityFrequency?: string;
+    focusGames?: string[];
+  };
+
+  // Venue specific
+  venue?: {
+    venueType?: string;
+    capacityUnits?: number;
+    address?: string;
+    isTournamentReady?: boolean;
+    facilities?: string[];
+  };
+
+  // Campus specific
+  campus?: {
+    campusName?: string;
+    clubName?: string;
+    memberCount?: number;
+    coachedGames?: string[];
+  };
+
+  // School specific
+  school?: {
+    schoolName?: string;
+    educationLevel?: string;
+    studentCount?: number;
+    coachedGames?: string[];
+  };
 }
 
 export interface EsportCardProps {
