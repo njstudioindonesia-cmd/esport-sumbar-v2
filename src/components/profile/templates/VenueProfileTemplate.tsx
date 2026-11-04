@@ -100,7 +100,7 @@ export function VenueProfileTemplate({ profile }: { profile: UnifiedProfileDetai
             className="text-[10px] font-mono text-[#D4AF37] hover:underline flex items-center gap-1 mt-1"
           >
             <MapPin className="w-3 h-3" />
-            <span>Buka di Google Maps</span>
+            <span>Buka Navigasi Lokasi</span>
           </a>
         </div>
       </div>

@@ -262,7 +262,7 @@ export function VerificationStatusBadge({ status, badgeNo }: { status: string; b
     );
   }
 
-  if (status === "district_approved") {
+  if (status === "regional_checked" || status === "regional_approved" || status === "district_approved") {
     return (
       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/50 text-[10px] font-mono font-bold text-emerald-300">
         <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />

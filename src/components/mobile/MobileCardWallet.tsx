@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,17 +24,55 @@ import {
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { GALLERY_CARDS, MockCardVariant } from "@/data/mockCards";
+import { mapVerificationToCard } from "@/types/card";
 import { MobileBottomBar } from "./MobileBottomBar";
 
 export function MobileCardWallet() {
   const router = useRouter();
 
-  // User's Cards (Player, Coach, Team)
-  const myCards = [
-    GALLERY_CARDS.find((c) => c.id === "pl-contender") || GALLERY_CARDS[1],
-    GALLERY_CARDS.find((c) => c.id === "co-contender") || GALLERY_CARDS[5],
-    GALLERY_CARDS.find((c) => c.id === "tm-rookie") || GALLERY_CARDS[8],
-  ];
+  const [dbCards, setDbCards] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Muat kartu nyata pengguna dari Supabase database
+  useEffect(() => {
+    async function loadUserCards() {
+      try {
+        const res = await fetch("/api/me/profiles");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.profiles && json.profiles.length > 0) {
+            const mapped = json.profiles.map((p: any) => ({
+              id: p.id,
+              type: p.entityType || "player",
+              rarity: p.rarityTier || "rookie",
+              verification: mapVerificationToCard(p.verificationStatus),
+              slug: p.slug,
+              data: {
+                esportId: p.esportId,
+                displayName: p.displayName,
+                ign: p.ign || undefined,
+                avatarUrl: p.avatarUrl || undefined,
+                region: {
+                  name: p.regionName || "Sumatera Barat",
+                  code: p.regionCode || "SB",
+                },
+                game: p.mainGameName || "Esport",
+                role: p.roleName || undefined,
+              },
+            }));
+            setDbCards(mapped);
+          }
+        }
+      } catch (e) {
+        console.warn("MobileCardWallet load error:", e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadUserCards();
+  }, []);
+
+  const myCards = dbCards.length > 0 ? dbCards : [];
 
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -46,7 +84,7 @@ export function MobileCardWallet() {
   const [shareFormat, setShareFormat] = useState<"story" | "feed">("story");
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const activeCard = myCards[activeCardIndex] || myCards[0];
+  const activeCard = myCards[activeCardIndex] || myCards[0] || null;
 
   const triggerHaptic = (ms = 12) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
@@ -72,7 +110,7 @@ export function MobileCardWallet() {
   };
 
   // Color theme mapping by rarity
-  const rarityTheme = {
+  const rarityMap = {
     legend: {
       border: "border-[#D4AF37]",
       glow: "rgba(212, 175, 55, 0.35)",
@@ -97,7 +135,9 @@ export function MobileCardWallet() {
       accent: "#8C5A3C",
       label: "ROOKIE",
     },
-  }[activeCard.rarity];
+  };
+  const currentRarityKey = (activeCard?.rarity as keyof typeof rarityMap) || "rookie";
+  const rarityTheme = rarityMap[currentRarityKey] || rarityMap.rookie;
 
   return (
     <div className="relative w-full min-h-[100dvh] max-w-[420px] mx-auto bg-[#07080C] text-white flex flex-col justify-between pb-28 overflow-x-hidden select-none">
@@ -141,7 +181,9 @@ export function MobileCardWallet() {
         </div>
       </div>
 
-      {/* STACK SELECTOR MINI DI ATAS (3 Kartu Pengguna Tersusun Rapi) */}
+      {activeCard ? (
+        <>
+          {/* STACK SELECTOR MINI DI ATAS (3 Kartu Pengguna Tersusun Rapi) */}
       <div className="px-5 pt-1 flex items-center gap-2 z-20">
         {myCards.map((c, idx) => {
           const isActive = idx === activeCardIndex;
@@ -361,6 +403,28 @@ export function MobileCardWallet() {
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
+    </>
+  ) : (
+    <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4 z-20">
+      <div className="w-16 h-16 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30 flex items-center justify-center text-[#FF1752] shadow-lg shadow-[#FF1752]/15">
+        <Sparkles className="w-8 h-8" />
+      </div>
+      <div>
+        <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Paspor</h3>
+        <p className="text-xs text-white/50 max-w-xs mt-1 leading-relaxed">
+          Anda belum memiliki kartu paspor digital resmi PBESI Sumatera Barat. Daftarkan identitas Anda sekarang untuk mendapatkan identitas esport resmi.
+        </p>
+      </div>
+      <Link
+        href="/me/profile/new"
+        onClick={() => triggerHaptic()}
+        className="btn-brand-primary text-xs py-3 px-6 flex items-center gap-2 mt-2"
+      >
+        <Plus className="w-4 h-4" />
+        <span>Buat Kartu Pertama</span>
+      </Link>
+    </div>
+  )}
 
       {/* ==================================================================== */}
       {/* BOTTOM SHEET 1: QR CODE BESAR & SATU BARIS ESPORT ID                 */}

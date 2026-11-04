@@ -71,9 +71,10 @@ export function DesktopDashboardView() {
   const userCard = activeProfile
     ? {
         id: activeProfile.id,
-        type: activeProfile.entityType,
-        rarity: activeProfile.rarityTier,
+        type: activeProfile.entityType || "player",
+        rarity: (activeProfile.rarityTier as any) || "rookie",
         verification: mapVerificationToCard(activeProfile.verificationStatus),
+        slug: activeProfile.slug,
         data: {
           displayName: activeProfile.displayName,
           ign: activeProfile.ign || undefined,
@@ -84,10 +85,10 @@ export function DesktopDashboardView() {
           avatarUrl: activeProfile.avatarUrl || undefined,
         },
       }
-    : (GALLERY_CARDS[2] || GALLERY_CARDS[0]);
+    : null;
 
-  const completeness = activeProfile ? (activeProfile.completenessScore || 60) : 85;
-  const isVerified = (activeProfile?.verificationStatus === "verified") || (!activeProfile && userCard.verification === "verified");
+  const completeness = activeProfile ? (activeProfile.completenessScore || 60) : 0;
+  const isVerified = activeProfile?.verificationStatus === "verified";
 
   return (
     <div className="w-full flex flex-col gap-8">
@@ -104,42 +105,65 @@ export function DesktopDashboardView() {
               <span className="text-xs font-mono uppercase tracking-widest text-white/50">
                 KARTU UTAMA
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[10px] font-mono text-[#D4AF37] font-bold">
-                TIER 3 • ELITE
+              <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[10px] font-mono text-[#D4AF37] font-bold uppercase">
+                {userCard ? `TIER • ${userCard.rarity}` : "BELUM ADA PROFIL"}
               </span>
             </div>
 
             {/* Interactive 3D Card with Tilt */}
-            <div className="py-2">
-              <EsportCard
-                type="player"
-                rarity="elite"
-                verification="verified"
-                data={userCard.data}
-                size="md"
-                interactive={true}
-              />
-            </div>
+            {userCard ? (
+              <>
+                <div className="py-2">
+                  <EsportCard
+                    type={userCard.type}
+                    rarity={userCard.rarity}
+                    verification={userCard.verification}
+                    data={userCard.data}
+                    size="md"
+                    interactive={true}
+                  />
+                </div>
 
-            {/* Quick Card Action Buttons */}
-            <div className="w-full mt-6 pt-4 border-t border-white/[0.08] grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setShowShareModal(true)}
-                className="h-10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-[#D4AF37]/40 text-xs font-heading font-bold text-white flex items-center justify-center gap-2 transition-all"
-              >
-                <Share2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>Bagikan</span>
-              </button>
+                {/* Quick Card Action Buttons */}
+                <div className="w-full mt-6 pt-4 border-t border-white/[0.08] grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowShareModal(true)}
+                    className="h-10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-[#D4AF37]/40 text-xs font-heading font-bold text-white flex items-center justify-center gap-2 transition-all"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Bagikan</span>
+                  </button>
 
-              <Link
-                href={`/player/${userCard.data.ign?.toLowerCase() || "sutan_aim"}`}
-                className="h-10 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-2 transition-all"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Lihat Publik</span>
-              </Link>
-            </div>
+                  <Link
+                    href={`/${userCard.type}/${userCard.slug}`}
+                    target="_blank"
+                    className="h-10 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-2 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Lihat Publik</span>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <div className="py-12 flex flex-col items-center text-center gap-3">
+                <div className="w-14 h-14 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30 flex items-center justify-center text-[#FF1752]">
+                  <ShieldCheck className="w-7 h-7" />
+                </div>
+                <div>
+                  <h4 className="font-heading font-black text-white text-base">Belum Ada Kartu Paspor</h4>
+                  <p className="text-xs text-white/50 max-w-xs mt-1">
+                    Buat paspor digital Anda untuk mendapatkan kartu resmi berstandar PBESI Sumatera Barat.
+                  </p>
+                </div>
+                <Link
+                  href="/me/profile/new"
+                  className="btn-brand-primary text-xs py-2 px-5 mt-2"
+                >
+                  <span>Buat Kartu Baru</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
@@ -320,7 +344,7 @@ export function DesktopDashboardView() {
       </div>
 
       {/* SHARE MODAL DIALOG */}
-      {showShareModal && (
+      {showShareModal && userCard && (
         <ShareCardModal
           cardData={userCard}
           isOpen={showShareModal}

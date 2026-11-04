@@ -316,7 +316,7 @@ export default function EsportsMapPage() {
                   className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E5C358] text-black text-xs font-heading font-extrabold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg"
                 >
                   <Navigation className="w-4 h-4" />
-                  <span>Buka di Google Maps</span>
+                  <span>Buka Navigasi Lokasi</span>
                 </a>
               </div>
             ) : (
