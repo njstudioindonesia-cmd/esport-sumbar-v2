@@ -29,6 +29,7 @@ import { Footer } from "@/components/layout/Footer";
 import { EsportCard } from "@/components/card/EsportCard";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { MOCK_NEWS } from "@/data/mockNews";
+import { MobileHome } from "@/components/mobile/MobileHome";
 
 export default function HomePage() {
   // Stat counters with animated count-up simulation
@@ -67,8 +68,15 @@ export default function HomePage() {
   const subArticles = MOCK_NEWS.filter((n) => !n.isHeadline);
 
   return (
-    <div className="min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex flex-col selection:bg-[#D4AF37]/20 selection:text-[#D4AF37]">
-      <Navbar />
+    <>
+      {/* Mobile Experience (Phone & PWA Viewport) */}
+      <div className="block lg:hidden min-h-screen bg-[#07080C]">
+        <MobileHome />
+      </div>
+
+      {/* Desktop Landing Page (Large Screen Viewport) */}
+      <div className="hidden lg:flex min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex-col selection:bg-[#D4AF37]/20 selection:text-[#D4AF37]">
+        <Navbar />
 
       <main className="flex-1 flex flex-col items-center overflow-x-hidden">
         {/* ==================== 1. HERO SECTION ==================== */}
@@ -533,6 +541,7 @@ export default function HomePage() {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 }

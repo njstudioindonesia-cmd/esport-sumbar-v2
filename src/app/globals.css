@@ -144,6 +144,37 @@ body {
   input[type="submit"],
   input[type="button"],
   select {
-    min-height: 40px;
+    min-height: 44px;
   }
+}
+
+/* Hide scrollbar utility for mobile chips and horizontal rails */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* iOS Safe Area Padding */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
+}
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 16px), 16px);
+}
+
+/* Luxury Dark Gradient and Soft Glow Utilities */
+.bg-luxury-dark {
+  background-color: #07080C;
+  background-image: radial-gradient(circle at 50% -10%, rgba(76, 125, 255, 0.08) 0%, rgba(7, 8, 12, 1) 60%);
+}
+
+.gold-glow {
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
+}
+
+.blue-glow {
+  box-shadow: 0 0 24px rgba(76, 125, 255, 0.25);
 }
