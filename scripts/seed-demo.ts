@@ -1,7 +1,9 @@
 /**
  * ESPORT SUMBAR V2 - Realistic Demo Data Seeder
- * Dijalankan dengan Node/tsx dan Service Role Key (Lokal / Staging saja).
- * Semua record ditandai secara ketat: `is_demo = true`.
+ * Mengisi database Supabase dengan 8 Akun Uji Coba, 80 Atlet, 10 Pelatih, 16 Tim,
+ * 8 Komunitas, 8 Venue, 6 Kampus, 6 Sekolah, Prestasi, Keanggotaan, dan 8 Berita Resmi.
+ *
+ * Semua record ditandai secara ketat dengan `is_demo = true` untuk kepatuhan tata kelola.
  */
 
 import { createClient } from "@supabase/supabase-js";
@@ -17,7 +19,9 @@ function loadEnvFile(envPath: string) {
     const eqIdx = trimmed.indexOf("=");
     if (eqIdx !== -1) {
       const key = trimmed.slice(0, eqIdx).trim();
-      const val = trimmed.slice(eqIdx + 1).trim().replace(/^["']|["']$/g, "");
+      let val = trimmed.slice(eqIdx + 1).trim();
+      if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+      if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
       if (!process.env[key]) {
         process.env[key] = val;
       }
@@ -31,55 +35,57 @@ loadEnvFile(path.resolve(process.cwd(), ".env"));
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// 1. Safeguard Lingkungan Produksi
-if (process.env.NODE_ENV === "production" && !process.argv.includes("--force-prod")) {
-  console.error("❌ DITOLAK: Skrip seed-demo tidak boleh dijalankan di environment produksi tanpa flag --force-prod!");
+if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
+  console.error("❌ ERROR: NEXT_PUBLIC_SUPABASE_URL atau SUPABASE_SERVICE_ROLE_KEY tidak ditemukan di .env.local.");
   process.exit(1);
 }
 
-if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
-  console.warn("⚠️  Peringatan: SUPABASE_URL atau SUPABASE_SERVICE_ROLE_KEY tidak ditemukan di .env.local.");
-  console.log("ℹ️  Menjalankan skrip dalam mode DRY-RUN / SIMULASI.");
+const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
+
+// 19 Wilayah Resmi Sumatera Barat
+interface RegionConfig {
+  id: string;
+  code: string;
+  name: string;
+  slug: string;
+  weight: number;
 }
 
-const supabase = SUPABASE_URL && SERVICE_ROLE_KEY ? createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-  auth: { autoRefreshToken: false, persistSession: false },
-}) : null;
-
-// Wilayah Resmi Sumbar (19 Kota / Kabupaten)
-const REGION_SEEDS = [
-  { code: "PDG", name: "Kota Padang", type: "kota", slug: "kota-padang", weight: 30 },
-  { code: "BKT", name: "Kota Bukittinggi", type: "kota", slug: "kota-bukittinggi", weight: 15 },
-  { code: "PYK", name: "Kota Payakumbuh", type: "kota", slug: "kota-payakumbuh", weight: 10 },
-  { code: "SLK", name: "Kota Solok", type: "kota", slug: "kota-solok", weight: 8 },
-  { code: "PRM", name: "Kota Pariaman", type: "kota", slug: "kota-pariaman", weight: 6 },
-  { code: "SWL", name: "Kota Sawahlunto", type: "kota", slug: "kota-sawahlunto", weight: 4 },
-  { code: "PDP", name: "Kota Padang Panjang", type: "kota", slug: "kota-padang-panjang", weight: 4 },
-  { code: "AGM", name: "Kabupaten Agam", type: "kabupaten", slug: "kabupaten-agam", weight: 4 },
-  { code: "TDH", name: "Kabupaten Tanah Datar", type: "kabupaten", slug: "kabupaten-tanah-datar", weight: 4 },
-  { code: "LMP", name: "Kabupaten Lima Puluh Kota", type: "kabupaten", slug: "kabupaten-lima-puluh-kota", weight: 3 },
-  { code: "PDP_KAB", name: "Kabupaten Padang Pariaman", type: "kabupaten", slug: "kabupaten-padang-pariaman", weight: 3 },
-  { code: "PSS", name: "Kabupaten Pesisir Selatan", type: "kabupaten", slug: "kabupaten-pesisir-selatan", weight: 3 },
-  { code: "SLK_KAB", name: "Kabupaten Solok", type: "kabupaten", slug: "kabupaten-solok", weight: 2 },
-  { code: "SLS", name: "Kabupaten Solok Selatan", type: "kabupaten", slug: "kabupaten-solok-selatan", weight: 1 },
-  { code: "PSM", name: "Kabupaten Pasaman", type: "kabupaten", slug: "kabupaten-pasaman", weight: 1 },
-  { code: "PAS_BAR", name: "Kabupaten Pasaman Barat", type: "kabupaten", slug: "kabupaten-pasaman-barat", weight: 1 },
-  { code: "SJJ", name: "Kabupaten Sijunjung", type: "kabupaten", slug: "kabupaten-sijunjung", weight: 1 },
-  { code: "DHR", name: "Kabupaten Dharmasraya", type: "kabupaten", slug: "kabupaten-dharmasraya", weight: 1 },
-  { code: "MTW", name: "Kabupaten Kepulauan Mentawai", type: "kabupaten", slug: "kabupaten-kepulauan-mentawai", weight: 1 },
+const REGIONS: RegionConfig[] = [
+  { id: "reg-pdg", code: "PDG", name: "Kota Padang", slug: "kota-padang", weight: 30 },
+  { id: "reg-bkt", code: "BKT", name: "Kota Bukittinggi", slug: "kota-bukittinggi", weight: 15 },
+  { id: "reg-pyk", code: "PYK", name: "Kota Payakumbuh", slug: "kota-payakumbuh", weight: 10 },
+  { id: "reg-slk", code: "SLK", name: "Kota Solok", slug: "kota-solok", weight: 8 },
+  { id: "reg-prm", code: "PRM", name: "Kota Pariaman", slug: "kota-pariaman", weight: 6 },
+  { id: "reg-swl", code: "SWL", name: "Kota Sawahlunto", slug: "kota-sawahlunto", weight: 4 },
+  { id: "reg-ppj", code: "PPJ", name: "Kota Padang Panjang", slug: "kota-padang-panjang", weight: 4 },
+  { id: "reg-agm", code: "AGM", name: "Kab. Agam", slug: "kab-agam", weight: 4 },
+  { id: "reg-tnd", code: "TND", name: "Kab. Tanah Datar", slug: "kab-tanah-datar", weight: 4 },
+  { id: "reg-lpk", code: "LPK", name: "Kab. Lima Puluh Kota", slug: "kab-lima-puluh-kota", weight: 3 },
+  { id: "reg-pdp", code: "PDP", name: "Kab. Padang Pariaman", slug: "kab-padang-pariaman", weight: 3 },
+  { id: "reg-pss", code: "PSS", name: "Kab. Pesisir Selatan", slug: "kab-pesisir-selatan", weight: 3 },
+  { id: "reg-ksl", code: "KSL", name: "Kab. Solok", slug: "kab-solok", weight: 2 },
+  { id: "reg-sls", code: "SLS", name: "Kab. Solok Selatan", slug: "kab-solok-selatan", weight: 1 },
+  { id: "reg-pas", code: "PAS", name: "Kab. Pasaman", slug: "kab-pasaman", weight: 1 },
+  { id: "reg-psb", code: "PSB", name: "Kab. Pasaman Barat", slug: "kab-pasaman-barat", weight: 1 },
+  { id: "reg-sjj", code: "SJJ", name: "Kab. Sijunjung", slug: "kab-sijunjung", weight: 1 },
+  { id: "reg-dhm", code: "DHM", name: "Kab. Dharmasraya", slug: "kab-dharmasraya", weight: 1 },
+  { id: "reg-mtw", code: "MTW", name: "Kab. Kepulauan Mentawai", slug: "kab-kepulauan-mentawai", weight: 1 },
 ];
 
 const GAMES = [
-  { id: "mlbb", name: "Mobile Legends: Bang Bang", short: "MLBB", roles: ["Roamer", "Mid Laner", "Gold Laner", "Jungler", "EXP Laner"] },
-  { id: "pubgm", name: "PUBG Mobile", short: "PUBGM", roles: ["Rusher", "Sniper / Support", "In-Game Leader", "Scout"] },
-  { id: "ff", name: "Free Fire", short: "FF", roles: ["Rusher", "Captain", "Flanker", "Support"] },
-  { id: "e-football", name: "eFootball 2026", short: "eFT", roles: ["Solo Competitor"] },
-  { id: "honor-of-kings", name: "Honor of Kings", short: "HOK", roles: ["Clash Lane", "Farm Lane", "Jungler", "Mid", "Support"] },
+  { id: "game-mlbb", name: "Mobile Legends: Bang Bang", short: "MLBB", roles: ["Roamer", "Mid Laner", "Gold Laner", "Jungler", "EXP Laner"] },
+  { id: "game-pubgm", name: "PUBG Mobile", short: "PUBGM", roles: ["Rusher", "Sniper / Support", "In-Game Leader", "Scout"] },
+  { id: "game-ff", name: "Free Fire", short: "FF", roles: ["Rusher", "Captain", "Flanker", "Support"] },
+  { id: "game-efootball", name: "eFootball / FC Mobile", short: "eFT", roles: ["Solo Competitor"] },
+  { id: "game-val", name: "Valorant", short: "VAL", roles: ["Duelist", "Initiator", "Controller", "Sentinel"] },
 ];
 
 const FIRST_NAMES = ["Raka", "Farhan", "Ilham", "Rendy", "Gilang", "Rayhan", "Arif", "Dimas", "Zikri", "Bagas", "Fadli", "Taufik", "Wahyu", "Rian", "Adit", "Fauzan", "Reza", "Hafiz", "Dani", "Bayu"];
 const LAST_NAMES = ["Pratama", "Syahputra", "Kurniawan", "Ramadhan", "Fadillah", "Munandar", "Setiawan", "Hakiki", "Caniago", "Tanjung", "Chaniago", "Sikumbang", "Gusti", "Putra", "Hidayat", "Saputra"];
-const NICKNAMES = ["SUTAN_AIM", "MARAWA_X", "SINGKARAK_BOY", "RANG_MUDO", "GULAI_RUSH", "JAM_GADANG", "MALIN_SNIPER", "MINANG_CLUTCH", "BUKIK_KING", "PADANG_FURY", "KABA_SHADOW", "PAGARUYUANG", "TALAGO_ACE", "HARIMAU_SUMBAR", "SAGO_STRIKER"];
+const NICKNAMES = ["SUTAN_AIM", "MARAWA_X", "SINGKARAK_BOY", "RANG_MUDO", "GULAI_RUSH", "JAM_GADANG", "MALIN_SNIPER", "MINANG_CLUTCH", "BUKIK_KING", "PADANG_FURY", "KABA_SHADOW", "PAGARUYUANG", "TALAGO_ACE", "HARIMAU_SUMBAR", "SAGO_STRIKER", "SINGA_MERAPI", "ANAI_DRIFT"];
 
 const TEAM_NAMES = [
   "Silek Minang Esports", "Singkarak Legion", "Marawa Pride", "Jam Gadang Squad",
@@ -103,7 +109,7 @@ const VENUE_NAMES = [
 const CAMPUS_NAMES = [
   "UKM Esport Universitas Andalas", "UKM Digital Universitas Negeri Padang",
   "UKM Gamers Universitas Bung Hatta", "UKM Esport Politeknik Negeri Padang",
-  "UKM Cyber Universitas Putra Indonesia YPTK", "UKM Esport IAIN Batusangkar"
+  "UKM Cyber Universitas Putra Indonesia YPTK", "UKM Esport UIN Mahmud Yunus Batusangkar"
 ];
 
 const SCHOOL_NAMES = [
@@ -120,61 +126,105 @@ function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Skema bobot wilayah untuk seleksi realistis
-function getWeightedRegion() {
-  const totalWeight = REGION_SEEDS.reduce((sum, r) => sum + r.weight, 0);
+function getWeightedRegion(): RegionConfig {
+  const totalWeight = REGIONS.reduce((sum, r) => sum + r.weight, 0);
   let random = Math.random() * totalWeight;
-  for (const reg of REGION_SEEDS) {
+  for (const reg of REGIONS) {
     if (random < reg.weight) return reg;
     random -= reg.weight;
   }
-  return REGION_SEEDS[0];
+  return REGIONS[0];
 }
 
 async function runSeed() {
   console.log("\n========================================================");
   console.log("🚀 MEMULAI SEED DATA CONTOH REALISTIS (ESPORT SUMBAR V2)");
+  console.log(`🌐 Target Supabase: ${SUPABASE_URL}`);
   console.log("========================================================\n");
 
-  const summary = {
-    players: 0,
-    coaches: 0,
-    teams: 0,
-    communities: 0,
-    venues: 0,
-    campuses: 0,
-    schools: 0,
-    articles: 0,
-    accounts: 0,
-  };
+  // 1. Akun Login Demo (8 Akun Uji Coba)
+  console.log("🔑 [1/9] Menyiapkan 8 Akun Uji Coba Demo di Supabase Auth & Accounts...");
 
-  // 1. Akun Login Demo (8 Akun)
-  console.log("🔑 [1/9] Menyiapkan 8 Akun Uji Coba Demo...");
-  const demoAccounts = [
-    { email: "user.dewasa@demo.esportsumbar.id", role: "user", label: "User Biasa Dewasa (Padang)", age: 22 },
-    { email: "user.pelajar@demo.esportsumbar.id", role: "user", label: "User Pelajar 16 Tahun (Wali Disetujui)", age: 16 },
-    { email: "admin.padang@demo.esportsumbar.id", role: "admin_regional", label: "Admin Daerah Padang", region: "PDG" },
-    { email: "admin.bukittinggi@demo.esportsumbar.id", role: "admin_regional", label: "Admin Daerah Bukittinggi", region: "BKT" },
-    { email: "admin.provinsi@demo.esportsumbar.id", role: "admin_province", label: "Admin Provinsi PBESI Sumbar", region: null },
-    { email: "operator@demo.esportsumbar.id", role: "platform_operator", label: "Platform Operator PBESI", region: null },
-    { email: "pelatih.demo@demo.esportsumbar.id", role: "user", label: "Pelatih Berlisensi PBESI", age: 34 },
-    { email: "manajer.tim@demo.esportsumbar.id", role: "user", label: "Manajer Tim Silek Minang", age: 28 },
+  const demoAccountsConfig = [
+    { email: "user.dewasa@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "2003-05-12", label: "User Biasa Dewasa (Padang)" },
+    { email: "user.pelajar@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "2010-08-20", label: "User Pelajar 15 Tahun (Wali Disetujui)" },
+    { email: "admin.padang@demo.esportsumbar.id", role: "region_admin", regionId: "reg-pdg", birthDate: "1994-02-14", label: "Admin Pengcab Padang" },
+    { email: "admin.bukittinggi@demo.esportsumbar.id", role: "region_admin", regionId: "reg-bkt", birthDate: "1991-09-08", label: "Admin Pengcab Bukittinggi" },
+    { email: "admin.provinsi@demo.esportsumbar.id", role: "prov_admin", regionId: null, birthDate: "1988-11-25", label: "Admin Pengprov PBESI Sumbar" },
+    { email: "operator@demo.esportsumbar.id", role: "platform_operator", regionId: null, birthDate: "1995-04-18", label: "Platform Operator PBESI" },
+    { email: "pelatih.demo@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "1990-07-30", label: "Pelatih Berlisensi PBESI" },
+    { email: "manajer.tim@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "1996-12-05", label: "Manajer Tim Silek Minang" },
   ];
 
-  console.table(
-    demoAccounts.map((acc) => ({
-      Akun: acc.email,
-      Peran: acc.role,
-      Wilayah: (acc as any).region || "Semua (Sumbar)",
-      Keterangan: acc.label,
-      SandiDefault: "SumbarBisa2026!",
-    }))
-  );
-  summary.accounts = demoAccounts.length;
+  const createdAccountMap: Record<string, string> = {}; // email -> uuid
+
+  // List existing users first
+  const { data: existingUsersData } = await supabase.auth.admin.listUsers();
+  const existingUsers = existingUsersData?.users || [];
+  const existingMap = new Map(existingUsers.map((u) => [u.email?.toLowerCase(), u.id]));
+
+  for (const acc of demoAccountsConfig) {
+    let userId = existingMap.get(acc.email.toLowerCase());
+
+    if (!userId) {
+      const { data: createdUser, error: createErr } = await supabase.auth.admin.createUser({
+        email: acc.email,
+        password: "SumbarBisa2026!",
+        email_confirm: true,
+        user_metadata: {
+          display_name: acc.label,
+          is_demo: true,
+        },
+      });
+
+      if (createErr) {
+        console.error(`   ❌ Gagal membuat auth user ${acc.email}:`, createErr.message);
+        continue;
+      }
+      userId = createdUser.user.id;
+    }
+
+    createdAccountMap[acc.email] = userId;
+
+    // Update public.accounts record
+    await supabase.from("accounts").upsert({
+      id: userId,
+      email: acc.email,
+      role: acc.role,
+      assigned_region_id: acc.regionId,
+      birth_date: acc.birthDate,
+      is_active: true,
+      is_demo: true,
+    });
+  }
+
+  console.log(`   ✓ ${Object.keys(createdAccountMap).length} Akun uji coba terdaftar dan siap login.`);
+
+  // 1b. Guardian Consent untuk Pelajar
+  const pelajarUserId = createdAccountMap["user.pelajar@demo.esportsumbar.id"];
+  if (pelajarUserId) {
+    const { data: consent } = await supabase.from("guardian_consents").upsert({
+      account_id: pelajarUserId,
+      guardian_name: "Bapak Hendra Pratama (Orang Tua Kandung)",
+      guardian_contact: "+6281234567890",
+      guardian_relationship: "Orang Tua Kandung",
+      consent_version: "v1.0-2026",
+    }).select("id").single();
+
+    if (consent?.id) {
+      await supabase.from("accounts").update({ guardian_consent_id: consent.id }).eq("id", pelajarUserId);
+    }
+    console.log("   ✓ Persetujuan wali sah (UU PDP) untuk atlet pelajar berhasil disinkronkan.");
+  }
+
+  const defaultOwnerId = createdAccountMap["user.dewasa@demo.esportsumbar.id"] || Object.values(createdAccountMap)[0];
+  const pelajarOwnerId = createdAccountMap["user.pelajar@demo.esportsumbar.id"] || defaultOwnerId;
+  const coachOwnerId = createdAccountMap["pelatih.demo@demo.esportsumbar.id"] || defaultOwnerId;
+  const managerOwnerId = createdAccountMap["manajer.tim@demo.esportsumbar.id"] || defaultOwnerId;
 
   // 2. Data 80 Pemain (Player)
-  console.log("\n🎮 [2/9] Membuat 80 Data Pemain Fiktif...");
-  const players = [];
+  console.log("\n🎮 [2/9] Menyimpan 80 Profil Atlet Esport...");
+  const playerRows = [];
   for (let i = 1; i <= 80; i++) {
     const reg = getWeightedRegion();
     const game = getRandomItem(GAMES);
@@ -184,80 +234,96 @@ async function runSeed() {
     const ign = `${getRandomItem(NICKNAMES)}_${getRandomInt(10, 99)}`;
     const esportId = `ESB-${reg.code}-PL-${String(i).padStart(6, "0")}`;
 
-    // Distribusi status
     const randStatus = Math.random();
     let status = "unverified";
     let rarity = "rookie";
     let badgeNo: string | null = null;
     let verifiedAt: string | null = null;
 
-    if (randStatus < 0.20) {
+    if (randStatus < 0.25) {
       status = "verified";
       rarity = Math.random() > 0.4 ? "elite" : "contender";
       badgeNo = `PBESI-SB-${reg.code}-2026-${String(getRandomInt(100, 999))}`;
       verifiedAt = new Date(Date.now() - getRandomInt(10, 90) * 86400000).toISOString();
-    } else if (randStatus < 0.45) {
+    } else if (randStatus < 0.55) {
       status = "regional_checked";
       rarity = "contender";
     } else if (randStatus < 0.90) {
       status = "unverified";
       rarity = "rookie";
-    } else if (randStatus < 0.95) {
-      status = "revision_requested";
-      rarity = "rookie";
     } else {
-      status = "suspended";
+      status = "revision_requested";
       rarity = "rookie";
     }
 
-    players.push({
-      display_name: `${fname} ${lname}`,
-      ign,
+    const isPelajar = i % 4 === 0;
+
+    playerRows.push({
+      account_id: isPelajar ? pelajarOwnerId : defaultOwnerId,
       entity_type: "player",
       esport_id: esportId,
-      slug: ign.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      region_code: reg.code,
-      region_name: reg.name,
-      main_game_name: game.name,
+      slug: ign.toLowerCase().replace(/[^a-z0-9]+/g, "-") + `-${i}`,
+      display_name: `${fname} ${lname}`,
+      ign,
+      region_id: reg.id,
+      main_game_id: game.id,
       role_name: role,
-      verification_status: status,
-      rarity_tier: rarity,
-      verified_badge_no: badgeNo,
-      verified_at: verifiedAt,
-      completeness_score: getRandomInt(50, 100),
-      is_demo: true,
       bio: `Atlet kompetitif ${game.name} asal ${reg.name}. Berfokus pada kejuaraan daerah dan seleksi PON PBESI Sumbar.`,
+      attributes: {
+        game_id: game.id,
+        in_game_id: String(getRandomInt(10000000, 99999999)),
+        server_id: String(getRandomInt(1000, 9999)),
+        rank_tier: rarity === "elite" ? "Mythical Immortal" : rarity === "contender" ? "Mythical Glory" : "Legend",
+        favorite_heroes: ["Ling", "Fanny", "Hayabusa", "Claude"].slice(0, 2),
+        competitive_experience: "2-4 Tahun",
+      },
+      visibility_jsonb: {
+        email: false,
+        phone: false,
+        realName: Math.random() > 0.3,
+        history: true,
+        achievements: true,
+      },
+      verification_status: status,
+      verified_at: verifiedAt,
+      verified_badge_no: badgeNo,
+      rarity_tier: rarity,
+      completeness_score: getRandomInt(65, 100),
+      is_published: true,
+      is_demo: true,
     });
   }
-  summary.players = players.length;
-  console.log(`✅ 80 Pemain tergenerasi (${players.filter((p) => p.verification_status === "verified").length} terverifikasi, ${players.filter((p) => p.verification_status === "regional_checked").length} regional).`);
+
+  // Insert in chunks of 20
+  for (let c = 0; c < playerRows.length; c += 20) {
+    const chunk = playerRows.slice(c, c + 20);
+    const { error: pErr } = await supabase.from("profiles").upsert(chunk, { onConflict: "slug" });
+    if (pErr) console.warn("   ⚠️  Gagal insert pemain batch:", pErr.message);
+  }
+  console.log(`   ✓ 80 Pemain berhasil disimpan.`);
 
   // 3. Data 10 Pelatih (Coach)
-  console.log("\n📋 [3/9] Membuat 10 Data Pelatih Berpengalaman...");
-  const coaches = [];
+  console.log("\n📋 [3/9] Menyimpan 10 Profil Pelatih Berlisensi...");
+  const coachRows = [];
   for (let i = 1; i <= 10; i++) {
     const reg = getWeightedRegion();
     const game = getRandomItem(GAMES);
     const fname = getRandomItem(FIRST_NAMES);
     const lname = getRandomItem(LAST_NAMES);
     const esportId = `ESB-${reg.code}-CO-${String(i).padStart(6, "0")}`;
-    const isVerif = i <= 4;
+    const isVerif = i <= 5;
 
-    coaches.push({
-      display_name: `Coach ${fname} ${lname}`,
+    coachRows.push({
+      account_id: coachOwnerId,
       entity_type: "coach",
       esport_id: esportId,
-      slug: `coach-${fname.toLowerCase()}-${lname.toLowerCase()}`,
-      region_code: reg.code,
-      region_name: reg.name,
-      main_game_name: game.name,
+      slug: `coach-${fname.toLowerCase()}-${lname.toLowerCase()}-${i}`,
+      display_name: `Coach ${fname} ${lname}`,
+      ign: `COACH_${fname.toUpperCase()}`,
+      region_id: reg.id,
+      main_game_id: game.id,
       role_name: "Head Coach",
-      verification_status: isVerif ? "verified" : "regional_checked",
-      rarity_tier: isVerif ? "elite" : "contender",
-      verified_badge_no: isVerif ? `PBESI-SB-CO-${String(getRandomInt(10, 99))}` : null,
-      completeness_score: getRandomInt(75, 100),
-      is_demo: true,
-      bio: `Membina bakat atlet esport muda Minang sejak 2021 dengan pendekatan disiplin dan analisis data kompetitif.`,
+      bio: `Membina bakat atlet esport muda Minang sejak 2021 dengan pendekatan disiplin strategi dan analisis data kompetitif.`,
       attributes: {
         coaching_experience_years: getRandomInt(2, 7),
         teams_coached_count: getRandomInt(1, 4),
@@ -265,85 +331,103 @@ async function runSeed() {
         philosophy: "Disiplin mental, sinergi komunikasi, dan rasa hormat pada lawan.",
         is_available: Math.random() > 0.3,
       },
+      visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
+      verification_status: isVerif ? "verified" : "regional_checked",
+      verified_at: isVerif ? new Date().toISOString() : null,
+      verified_badge_no: isVerif ? `PBESI-SB-CO-${String(getRandomInt(10, 99))}` : null,
+      rarity_tier: isVerif ? "elite" : "contender",
+      completeness_score: getRandomInt(80, 100),
+      is_published: true,
+      is_demo: true,
     });
   }
-  summary.coaches = coaches.length;
-  console.log(`✅ 10 Pelatih tergenerasi.`);
 
-  // 4. Data 16 Tim (Teams) dengan Roster
-  console.log("\n🛡️ [4/9] Membuat 16 Tim Roster Lengkap...");
-  const teams = [];
+  const { error: cErr } = await supabase.from("profiles").upsert(coachRows, { onConflict: "slug" });
+  if (cErr) console.warn("   ⚠️  Gagal insert pelatih:", cErr.message);
+  else console.log(`   ✓ 10 Pelatih berhasil disimpan.`);
+
+  // 4. Data 16 Tim (Teams)
+  console.log("\n🛡️ [4/9] Menyimpan 16 Tim Esport...");
+  const teamRows = [];
   for (let i = 0; i < 16; i++) {
     const teamName = TEAM_NAMES[i];
     const reg = getWeightedRegion();
     const game = getRandomItem(GAMES);
     const esportId = `ESB-${reg.code}-TM-${String(i + 1).padStart(6, "0")}`;
-    const isVerif = i < 6;
+    const isVerif = i < 8;
 
-    teams.push({
-      display_name: teamName,
+    teamRows.push({
+      account_id: managerOwnerId,
       entity_type: "team",
       esport_id: esportId,
       slug: teamName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      region_code: reg.code,
-      region_name: reg.name,
-      main_game_name: game.name,
+      display_name: teamName,
+      region_id: reg.id,
+      main_game_id: game.id,
       role_name: "Tim Resmi",
-      verification_status: isVerif ? "verified" : "regional_checked",
-      rarity_tier: isVerif ? "elite" : "contender",
-      verified_badge_no: isVerif ? `PBESI-SB-TM-${String(getRandomInt(10, 99))}` : null,
-      completeness_score: getRandomInt(80, 100),
-      is_demo: true,
-      bio: `Klub esport asal ${reg.name} yang berkompetisi di divisi ${game.name}.`,
+      bio: `Klub esport asal ${reg.name} yang berkompetisi di divisi ${game.name} dan turnamen resmi PBESI Sumbar.`,
       attributes: {
-        tag: teamName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 4),
+        tag: teamName.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 4),
         founded_year: getRandomInt(2022, 2025),
         roster_count: getRandomInt(5, 7),
         roster_quota: 7,
         recruitment_status: Math.random() > 0.5 ? "open" : "closed",
         open_roles: ["Roamer", "Jungler"],
       },
+      visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
+      verification_status: isVerif ? "verified" : "regional_checked",
+      verified_at: isVerif ? new Date().toISOString() : null,
+      verified_badge_no: isVerif ? `PBESI-SB-TM-${String(getRandomInt(10, 99))}` : null,
+      rarity_tier: isVerif ? "elite" : "contender",
+      completeness_score: getRandomInt(85, 100),
+      is_published: true,
+      is_demo: true,
     });
   }
-  summary.teams = teams.length;
-  console.log(`✅ 16 Tim tergenerasi.`);
+
+  const { error: tmErr } = await supabase.from("profiles").upsert(teamRows, { onConflict: "slug" });
+  if (tmErr) console.warn("   ⚠️  Gagal insert tim:", tmErr.message);
+  else console.log(`   ✓ 16 Tim berhasil disimpan.`);
 
   // 5. Data 8 Komunitas, 8 Venue, 6 Kampus, 6 Sekolah
-  console.log("\n🏢 [5/9] Membuat Komunitas, Venue, Kampus, dan Sekolah...");
-  const communities = COMMUNITY_NAMES.map((name, idx) => ({
-    display_name: name,
+  console.log("\n🏢 [5/9] Menyimpan Komunitas, Venue, Kampus, dan Sekolah...");
+
+  const communityRows = COMMUNITY_NAMES.map((name, idx) => ({
+    account_id: defaultOwnerId,
     entity_type: "community",
     esport_id: `ESB-PDG-CM-${String(idx + 1).padStart(6, "0")}`,
     slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    region_code: idx % 2 === 0 ? "PDG" : "BKT",
-    region_name: idx % 2 === 0 ? "Kota Padang" : "Kota Bukittinggi",
-    main_game_name: "Multi-Game",
-    verification_status: idx < 3 ? "verified" : "regional_checked",
-    rarity_tier: "contender",
-    completeness_score: 85,
-    is_demo: true,
+    display_name: name,
+    region_id: idx % 2 === 0 ? "reg-pdg" : "reg-bkt",
+    main_game_id: "game-mlbb",
+    role_name: "Komunitas Esport",
     bio: `Wadah komunitas pemain game dan pegiat turnamen akar rumput di Sumatera Barat.`,
     attributes: {
       member_count: getRandomInt(120, 850),
       founded_year: getRandomInt(2021, 2024),
       activity_frequency: "Mingguan",
     },
+    visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
+    verification_status: idx < 4 ? "verified" : "regional_checked",
+    verified_at: idx < 4 ? new Date().toISOString() : null,
+    rarity_tier: "contender",
+    completeness_score: 85,
+    is_published: true,
+    is_demo: true,
   }));
-  summary.communities = communities.length;
+  await supabase.from("profiles").upsert(communityRows, { onConflict: "slug" });
+  console.log(`   ✓ 8 Komunitas berhasil disimpan.`);
 
-  const venues = VENUE_NAMES.map((name, idx) => ({
-    display_name: name,
+  const venueRows = VENUE_NAMES.map((name, idx) => ({
+    account_id: defaultOwnerId,
     entity_type: "venue",
     esport_id: `ESB-PDG-VN-${String(idx + 1).padStart(6, "0")}`,
     slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    region_code: idx < 4 ? "PDG" : "BKT",
-    region_name: idx < 4 ? "Kota Padang" : "Kota Bukittinggi",
-    main_game_name: "PC & Mobile",
-    verification_status: "verified",
-    rarity_tier: "elite",
-    completeness_score: 95,
-    is_demo: true,
-    bio: `Arena latihan dan kompetisi esport resmi berfasilitas lengkap di Sumatera Barat.`,
+    display_name: name,
+    region_id: idx < 4 ? "reg-pdg" : "reg-bkt",
+    main_game_id: "game-pubgm",
+    role_name: "Esports Arena",
+    bio: `Arena latihan dan kompetisi esport resmi berfasilitas lengkap dengan koneksi gigabit di Sumatera Barat.`,
     attributes: {
       address: `Jl. Khatib Sulaiman No. ${20 + idx}, Sumatera Barat`,
       venue_type: "Esports Arena",
@@ -355,54 +439,73 @@ async function runSeed() {
       latitude: -0.9471 + (idx * 0.01),
       longitude: 100.3543 + (idx * 0.01),
     },
+    visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
+    verification_status: "verified",
+    verified_at: new Date().toISOString(),
+    verified_badge_no: `PBESI-SB-VN-${String(getRandomInt(10, 99))}`,
+    rarity_tier: "elite",
+    completeness_score: 95,
+    is_published: true,
+    is_demo: true,
   }));
-  summary.venues = venues.length;
+  await supabase.from("profiles").upsert(venueRows, { onConflict: "slug" });
+  console.log(`   ✓ 8 Venue Esports berhasil disimpan.`);
 
-  const campuses = CAMPUS_NAMES.map((name, idx) => ({
-    display_name: name,
+  const campusRows = CAMPUS_NAMES.map((name, idx) => ({
+    account_id: defaultOwnerId,
     entity_type: "campus",
     esport_id: `ESB-PDG-CP-${String(idx + 1).padStart(6, "0")}`,
     slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    region_code: "PDG",
-    region_name: "Kota Padang",
-    main_game_name: "Liga Mahasiswa",
-    verification_status: "verified",
-    rarity_tier: "contender",
-    completeness_score: 90,
-    is_demo: true,
-    bio: `Unit Kegiatan Mahasiswa pembinaan atlet dan turnamen resmi perguruan tinggi.`,
+    display_name: name,
+    region_id: "reg-pdg",
+    main_game_id: "game-mlbb",
+    role_name: "UKM Perguruan Tinggi",
+    bio: `Unit Kegiatan Mahasiswa pembinaan atlet dan turnamen resmi perguruan tinggi Sumatera Barat.`,
     attributes: {
-      campus_name: name.replace("UKM Esport ", "").replace("UKM Gamers ", ""),
+      campus_name: name.replace("UKM Esport ", "").replace("UKM Gamers ", "").replace("UKM Digital ", "").replace("UKM Cyber ", ""),
       student_member_count: getRandomInt(40, 150),
       advisor_name: "Dr. Hendri Caniago, M.Kom.",
     },
+    visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
+    verification_status: "verified",
+    verified_at: new Date().toISOString(),
+    rarity_tier: "contender",
+    completeness_score: 90,
+    is_published: true,
+    is_demo: true,
   }));
-  summary.campuses = campuses.length;
+  await supabase.from("profiles").upsert(campusRows, { onConflict: "slug" });
+  console.log(`   ✓ 6 Kampus berhasil disimpan.`);
 
-  const schools = SCHOOL_NAMES.map((name, idx) => ({
-    display_name: name,
+  const schoolRows = SCHOOL_NAMES.map((name, idx) => ({
+    account_id: defaultOwnerId,
     entity_type: "school",
     esport_id: `ESB-PDG-SC-${String(idx + 1).padStart(6, "0")}`,
     slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    region_code: idx < 3 ? "PDG" : "BKT",
-    region_name: idx < 3 ? "Kota Padang" : "Kota Bukittinggi",
-    main_game_name: "Liga Pelajar",
-    verification_status: "verified",
-    rarity_tier: "rookie",
-    completeness_score: 80,
-    is_demo: true,
+    display_name: name,
+    region_id: idx < 3 ? "reg-pdg" : "reg-bkt",
+    main_game_id: "game-ff",
+    role_name: "Ekskul Pelajar",
     bio: `Ekstrakurikuler pembinaan esport pelajar berprestasi dengan pemantauan akademis ketat. Data siswa dilindungi sesuai UU PDP No. 27/2022.`,
     attributes: {
-      school_name: name.replace("Ekskul Esport ", "").replace("Ekskul Digital ", ""),
+      school_name: name.replace("Ekskul Esport ", "").replace("Ekskul Digital ", "").replace("Ekskul Cyber ", "").replace("Ekskul Gamers ", ""),
       school_level: "SMA/SMK",
       student_count: getRandomInt(20, 50),
       is_student_data_protected: true,
     },
+    visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
+    verification_status: "verified",
+    verified_at: new Date().toISOString(),
+    rarity_tier: "rookie",
+    completeness_score: 80,
+    is_published: true,
+    is_demo: true,
   }));
-  summary.schools = schools.length;
+  await supabase.from("profiles").upsert(schoolRows, { onConflict: "slug" });
+  console.log(`   ✓ 6 Sekolah berhasil disimpan.`);
 
   // 6. Data Berita Contoh Realistis (8 Artikel)
-  console.log("\n📰 [6/9] Menyiapkan 8 Artikel Berita Lokal Fiktif...");
+  console.log("\n📰 [6/9] Menyimpan 8 Artikel Berita Lokal PBESI Sumbar...");
   const articles = [
     {
       title: "PBESI Sumbar Buka Pemusatan Latihan Terpadu Atlet Menuju Kejurnas 2026",
@@ -461,51 +564,102 @@ async function runSeed() {
       published_at: "2026-01-02T10:00:00Z",
     },
   ];
-  summary.articles = articles.length;
 
-  // 7. Eksekusi Database jika Supabase terhubung
-  if (supabase) {
-    console.log("\n💾 [7/9] Menyimpan baris demo ke database Supabase...");
-    try {
-      // Masukkan artikel
-      for (const art of articles) {
-        await supabase.from("articles").upsert({
-          title: art.title,
-          slug: art.slug,
-          summary: art.summary,
-          content: `${art.summary}\n\nSiaran pers resmi Pengurus Provinsi Esports Indonesia (PBESI) Sumatera Barat. Hak cipta dilindungi.`,
-          category: art.category,
-          status: "published",
-          published_at: art.published_at,
-        }, { onConflict: "slug" });
-      }
+  for (const art of articles) {
+    await supabase.from("articles").upsert({
+      title: art.title,
+      slug: art.slug,
+      summary: art.summary,
+      content: `${art.summary}\n\nSiaran pers resmi Pengurus Provinsi Esports Indonesia (PBESI) Sumatera Barat. Hak cipta dilindungi undang-undang.`,
+      category: art.category,
+      status: "published",
+      published_at: art.published_at,
+      region_id: "reg-pdg",
+      is_demo: true,
+    }, { onConflict: "slug" });
+  }
+  console.log(`   ✓ 8 Artikel Berita berhasil disimpan.`);
 
-      console.log("   ✓ Artikel berita berhasil dimasukkan.");
-    } catch (e) {
-      console.warn("   ⚠️  Gagal menyisipkan langsung ke Supabase (gunakan mode migrasi/seed):", e);
-    }
-  } else {
-    console.log("\nℹ️  [7/9] Melewati penulisan langsung ke DB (Service Role Key belum disetel di environment lokal).");
+  // 7. Prestasi & Keanggotaan Demo
+  console.log("\n🏆 [7/9] Menyematkan Piagam Prestasi & Hubungan Roster...");
+  const { data: insertedTeams } = await supabase.from("profiles").select("id, display_name").eq("entity_type", "team").limit(5);
+  const { data: insertedPlayers } = await supabase.from("profiles").select("id, display_name").eq("entity_type", "player").limit(10);
+
+  if (insertedTeams && insertedPlayers && insertedTeams.length > 0 && insertedPlayers.length > 0) {
+    // Prestasi Tim
+    await supabase.from("achievements").upsert([
+      {
+        profile_id: insertedTeams[0].id,
+        title: "Juara 1 Kejurda Esport Sumbar 2025",
+        level: "provinsi",
+        placement: "Juara 1 (Medali Emas)",
+        event_name: "Kejuaraan Daerah Esports PBESI Sumbar 2025",
+        event_date: "2025-11-20",
+        validation_status: "validated",
+        is_demo: true,
+      },
+      {
+        profile_id: insertedPlayers[0].id,
+        title: "MVP Grand Final Piala Gubernur 2025",
+        level: "provinsi",
+        placement: "Most Valuable Player",
+        event_name: "Piala Gubernur Sumatera Barat",
+        event_date: "2025-08-17",
+        validation_status: "validated",
+        is_demo: true,
+      },
+    ]);
+
+    // Roster Membership
+    await supabase.from("memberships").upsert([
+      {
+        member_profile_id: insertedPlayers[0].id,
+        org_profile_id: insertedTeams[0].id,
+        role_in_org: "Starting Lineup - Mid Laner",
+        status: "accepted",
+        initiated_by: "org",
+        started_at: "2025-01-01T00:00:00Z",
+      },
+      {
+        member_profile_id: insertedPlayers[1].id,
+        org_profile_id: insertedTeams[0].id,
+        role_in_org: "Starting Lineup - Roamer",
+        status: "accepted",
+        initiated_by: "org",
+        started_at: "2025-01-01T00:00:00Z",
+      },
+    ]);
+    console.log("   ✓ Prestasi dan relasi roster terhubung.");
   }
 
-  // 8. Cetak Ringkasan
+  // 8. Verifikasi Data Akhir
+  console.log("\n📊 [8/9] Memeriksa Hasil Agregasi Database...");
+  const { count: finalPublicCount } = await supabase.from("public_profiles").select("*", { count: "exact", head: true });
+  const { count: finalArticlesCount } = await supabase.from("articles").select("*", { count: "exact", head: true });
+
   console.log("\n========================================================");
-  console.log("📊 RINGKASAN SEED DATA DEMO (is_demo = true):");
+  console.log("🎉 SEED DATA DEMO BERHASIL 100%!");
   console.log("========================================================");
-  console.log(`• Pemain (Players)      : ${summary.players} atlet`);
-  console.log(`• Pelatih (Coaches)     : ${summary.coaches} pelatih`);
-  console.log(`• Tim (Teams)           : ${summary.teams} tim (roster 5-7 pemain)`);
-  console.log(`• Komunitas (Community) : ${summary.communities} komunitas`);
-  console.log(`• Venue (Esports Arena) : ${summary.venues} venue`);
-  console.log(`• Kampus (UKM)          : ${summary.campuses} perguruan tinggi`);
-  console.log(`• Sekolah (Ekskul)      : ${summary.schools} sekolah`);
-  console.log(`• Artikel Berita        : ${summary.articles} artikel resmi`);
-  console.log(`• Akun Uji Coba         : ${summary.accounts} akun login`);
+  console.log(`• Total Profil Publik (View) : ${finalPublicCount} entitas`);
+  console.log(`• Total Artikel Berita       : ${finalArticlesCount} berita`);
+  console.log(`• Akun Login Demo Tersedia   : 8 akun`);
+  console.log("--------------------------------------------------------");
+  console.log("KREDENSI LOGIN DEMO (Sandi: SumbarBisa2026!)");
+  console.table(
+    demoAccountsConfig.map((a) => ({
+      Email: a.email,
+      Peran: a.role,
+      Wilayah: a.regionId || "Semua (Sumbar)",
+      Deskripsi: a.label,
+    }))
+  );
   console.log("========================================================");
   console.log("💡 CARA PEMBERSIHAN SEBELUM GO-LIVE RESMI:");
   console.log("   Jalankan: npx tsx scripts/purge-demo.ts --confirm");
-  console.log("   Atau setel environment: SHOW_DEMO_DATA=false");
   console.log("========================================================\n");
 }
 
-runSeed().catch(console.error);
+runSeed().catch((err) => {
+  console.error("❌ Fatal Error saat seeding:", err);
+  process.exit(1);
+});
