@@ -183,10 +183,10 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
           </div>
         </div>
 
-        {/* 2-COLUMN REVIEW GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT COLUMN: IDENTITY, REGIONAL REPORT & GOLD SIMULATION (6 COLS) */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
+        {/* 3-PANEL REVIEW GRID (Prompt 10 Specification) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* PANEL KIRI (4 COLS): RIWAYAT DAERAH & PRATINJAU KARTU EMAS */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
             {/* 1. HASIL PEMERIKSAAN PENGCAB DAERAH (TAHAP 1) */}
             <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#262B38]">
@@ -265,8 +265,8 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: DOCUMENTS & DECISION ACTIONS (6 COLS) */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
+          {/* PANEL TENGAH (5 COLS): DOKUMEN BUKTI PRIVAT */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
             {/* 1. DOKUMEN BUKTI */}
             <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-4">
               <div className="flex items-center justify-between pb-3 border-b border-[#262B38]">
@@ -314,12 +314,17 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
                 ))}
               </div>
             </div>
+          </div>
 
-            {/* 2. DECISION ACTIONS PANEL */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-4">
-              <span className="text-xs font-heading font-bold text-gray-400 uppercase tracking-wider">
-                Keputusan Sidang Verifikasi Pengprov ESI Sumbar:
-              </span>
+          {/* PANEL KANAN LENGKET (3 COLS): AKSI KEPUTUSAN PENGPROV ESI */}
+          <div className="lg:col-span-3 sticky top-20 flex flex-col gap-4">
+            <div className="p-5 rounded-2xl bg-[#12151C] border border-[#D4AF37]/40 shadow-2xl flex flex-col gap-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#262B38]">
+                <span className="text-xs font-heading font-black text-[#D4AF37] uppercase tracking-wider">
+                  Keputusan Sidang
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400">PENGPROV</span>
+              </div>
 
               {/* ACTION 1: VERIFIKASI RESMI EMAS (PRIMARY ACTION) */}
               <button

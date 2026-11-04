@@ -225,12 +225,12 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
           </div>
         )}
 
-        {/* 2-COLUMN REVIEW GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* LEFT COLUMN: APPLICANT PROFILE & CARD PREVIEW (6 COLS) */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
+        {/* 3-PANEL REVIEW GRID (Prompt 10 Specification) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* PANEL KIRI (4 COLS): DATA PROFIL & PRATINJAU KARTU */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
             {/* 1. DATA LENGKAP PROFIL */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-4">
+            <div className="p-5 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-3">
               <div className="flex items-center justify-between pb-3 border-b border-[#262B38]">
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4 text-[#D4AF37]" />
@@ -243,57 +243,47 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-xs">
+              <div className="flex flex-col gap-2.5 text-xs">
                 <div>
-                  <span className="text-gray-400 text-[11px] block">In-Game Name (IGN):</span>
-                  <strong className="text-white font-heading text-sm">{item.ign}</strong>
+                  <span className="text-gray-400 text-[10px] font-mono block">In-Game Name (IGN):</span>
+                  <strong className="text-white font-heading text-sm text-[#D4AF37]">@{item.ign}</strong>
                 </div>
 
                 <div>
-                  <span className="text-gray-400 text-[11px] block">Nama Asli Pemohon:</span>
+                  <span className="text-gray-400 text-[10px] font-mono block">Nama Lengkap:</span>
                   <strong className="text-white font-medium">{item.name}</strong>
                 </div>
 
                 <div>
-                  <span className="text-gray-400 text-[11px] block">Game & Peran:</span>
-                  <strong className="text-white">{item.game} — {item.role}</strong>
+                  <span className="text-gray-400 text-[10px] font-mono block">Game &amp; Posisi:</span>
+                  <strong className="text-white">{item.game} • {item.role}</strong>
                 </div>
 
                 <div>
-                  <span className="text-gray-400 text-[11px] block">Domisili Kependudukan:</span>
+                  <span className="text-gray-400 text-[10px] font-mono block">Domisili Pengcab:</span>
                   <strong className="text-white flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-[#D4AF37]" />
                     {item.regionName} ({item.regionCode})
                   </strong>
                 </div>
 
-                <div>
-                  <span className="text-gray-400 text-[11px] block">Nomor Kontak / WhatsApp:</span>
-                  <span className="font-mono text-gray-200 bg-[#161922] px-2 py-0.5 rounded border border-[#262B38]">
-                    +62 812-7629-**** (Privat ESI)
-                  </span>
-                </div>
-
-                <div>
-                  <span className="text-gray-400 text-[11px] block">Tanggal Diajukan:</span>
-                  <span className="font-mono text-gray-300">
-                    {new Date(item.submittedAt).toLocaleString("id-ID")}
+                <div className="pt-2 border-t border-[#262B38]">
+                  <span className="text-gray-400 text-[10px] font-mono block">Nomor Kontak:</span>
+                  <span className="font-mono text-xs text-gray-200">
+                    +62 812-7629-**** (Terenkripsi)
                   </span>
                 </div>
               </div>
             </div>
 
             {/* 2. CARD SIMULATION PREVIEW */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col items-center gap-4">
-              <div className="w-full flex items-center justify-between pb-3 border-b border-[#262B38]">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-                  <h3 className="font-heading font-bold text-xs uppercase text-white">
-                    Simulasi Kartu Hasil Verifikasi Daerah
-                  </h3>
-                </div>
-                <span className="text-[10px] font-mono text-[#22C55E] font-bold">
-                  Regional Checked Preview
+            <div className="p-5 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col items-center gap-3">
+              <div className="w-full flex items-center justify-between pb-2 border-b border-[#262B38]">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+                  Pratinjau Kartu
+                </span>
+                <span className="text-[9px] font-mono text-[#22C55E] font-bold px-1.5 py-0.2 rounded bg-[#22C55E]/10">
+                  REGIONAL CHECKED
                 </span>
               </div>
 
@@ -312,46 +302,42 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                 size="sm"
                 interactive={true}
               />
-
-              <p className="text-[11px] text-[#9AA3B2] text-center max-w-sm">
-                Jika Anda menyetujui, kartu digital atlet akan menerima lencana perak hijau <em>Regional Checked</em> dan berhak melangkah ke seleksi tingkat provinsi.
-              </p>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: DOCUMENTS, CHECKLIST & ACTIONS (6 COLS) */}
-          <div className="lg:col-span-6 flex flex-col gap-6">
+          {/* PANEL TENGAH (5 COLS): DOKUMEN BUKTI & CHECKLIST VERIFIKASI */}
+          <div className="lg:col-span-5 flex flex-col gap-6">
             {/* 1. DOCUMENTS PANEL */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-4">
+            <div className="p-5 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-3">
               <div className="flex items-center justify-between pb-3 border-b border-[#262B38]">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#3B82F6]" />
+                  <FileText className="w-4 h-4 text-[#4C7DFF]" />
                   <h3 className="font-heading font-bold text-xs uppercase text-white tracking-wide">
-                    Dokumen Bukti Privat Pemohon ({item.documents.length})
+                    Galeri Bukti ({item.documents.length})
                   </h3>
                 </div>
                 <span className="text-[10px] font-mono text-gray-400 flex items-center gap-1">
-                  <Lock className="w-3 h-3 text-[#3B82F6]" />
-                  Link Expire: 15 Menit
+                  <Lock className="w-3 h-3 text-[#4C7DFF]" />
+                  Link 15 Menit
                 </span>
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2.5">
                 {item.documents.map((doc, idx) => (
                   <div
                     key={idx}
-                    className="p-3.5 rounded-xl bg-[#161922] border border-[#262B38] flex items-center justify-between gap-3"
+                    className="p-3 rounded-xl bg-[#161922] border border-[#262B38] flex items-center justify-between gap-3"
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-2.5">
                       <div className="p-2 rounded-lg bg-[#1A1E28] border border-[#262B38] text-[#D4AF37] shrink-0">
-                        <FileText className="w-4 h-4" />
+                        <FileText className="w-3.5 h-3.5" />
                       </div>
                       <div>
                         <h4 className="font-heading font-bold text-xs text-white">
                           {doc.title}
                         </h4>
-                        <span className="text-[10px] text-gray-400 font-mono">
-                          Ukuran: {doc.fileSize} • Diunggah: {doc.submittedAt}
+                        <span className="text-[9px] text-gray-400 font-mono">
+                          {doc.fileSize} • {doc.submittedAt}
                         </span>
                       </div>
                     </div>
@@ -359,9 +345,9 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                     <button
                       type="button"
                       onClick={() => setPreviewDocUrl(doc.url)}
-                      className="px-3 py-1.5 rounded-lg bg-[#1A1E28] hover:bg-[#262B38] text-xs font-heading font-bold text-[#D4AF37] hover:text-white uppercase flex items-center gap-1.5 transition-colors shrink-0"
+                      className="px-2.5 py-1 rounded-lg bg-[#1A1E28] hover:bg-[#262B38] text-[11px] font-mono font-bold text-[#D4AF37] hover:text-white uppercase flex items-center gap-1 transition-colors shrink-0"
                     >
-                      <ZoomIn className="w-3.5 h-3.5" />
+                      <ZoomIn className="w-3 h-3" />
                       <span>Lihat</span>
                     </button>
                   </div>
@@ -370,12 +356,12 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
             </div>
 
             {/* 2. VERIFICATION CHECKLIST (MANDATORY GATEWAY) */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-4">
+            <div className="p-5 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-3">
               <div className="flex items-center justify-between pb-3 border-b border-[#262B38]">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-[#22C55E]" />
                   <h3 className="font-heading font-bold text-xs uppercase text-white tracking-wide">
-                    Daftar Periksa Verifikasi Daerah
+                    Checklist Verifikasi Daerah
                   </h3>
                 </div>
                 <span
@@ -383,11 +369,11 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                     allChecklistCompleted ? "text-[#22C55E]" : "text-amber-400"
                   }`}
                 >
-                  {allChecklistCompleted ? "Semua Terpenuhi" : "Lengkapi Cek"}
+                  {allChecklistCompleted ? "3/3 Terpenuhi" : "Lengkapi 3/3"}
                 </span>
               </div>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2.5">
                 <label className="p-3 rounded-xl bg-[#161922] border border-[#262B38] flex items-start gap-3 cursor-pointer hover:border-[#3B4254] transition-colors">
                   <input
                     type="checkbox"
@@ -399,10 +385,10 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                   />
                   <div className="flex flex-col">
                     <span className="text-xs text-white font-heading font-bold uppercase">
-                      1. Identitas & Foto Sah Sesuai Dokumen
+                      1. Identitas &amp; Foto Sesuai
                     </span>
                     <span className="text-[11px] text-[#9AA3B2]">
-                      Nama asli, wajah, dan usia pemohon sesuai dengan kartu pelajar / mahasiswa yang diunggah.
+                      Nama asli, wajah, dan usia sesuai bukti identitas.
                     </span>
                   </div>
                 </label>
@@ -418,10 +404,10 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                   />
                   <div className="flex flex-col">
                     <span className="text-xs text-white font-heading font-bold uppercase">
-                      2. Terbukti Domisili Kota Padang
+                      2. Terbukti Domisili {item.regionName}
                     </span>
                     <span className="text-[11px] text-[#9AA3B2]">
-                      Asal instansi sekolah/kampus/komunitas berada di wilayah hukum Kota Padang.
+                      Instansi sekolah/kampus/klub berkedudukan di wilayah ini.
                     </span>
                   </div>
                 </label>
@@ -437,67 +423,89 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                   />
                   <div className="flex flex-col">
                     <span className="text-xs text-white font-heading font-bold uppercase">
-                      3. Bukti Akun Game Sesuai & Aktif
+                      3. Bukti Akun Game Valid
                     </span>
                     <span className="text-[11px] text-[#9AA3B2]">
-                      Tangkapan layar akun game jelas menampilkan ID akun, IGN pemohon, dan tier rank.
+                      Tangkapan layar akun game jelas menampilkan ID akun dan IGN.
                     </span>
                   </div>
                 </label>
               </div>
             </div>
+          </div>
 
-            {/* 3. ACTION BUTTONS */}
-            <div className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-md flex flex-col gap-3">
-              <span className="text-xs font-heading font-bold text-gray-400 uppercase tracking-wider">
-                Keputusan Verifikasi Pengcab:
-              </span>
-
-              <div className="flex flex-col sm:flex-row items-stretch gap-3">
-                {/* APPROVE (LOLOS DAERAH) */}
-                <button
-                  type="button"
-                  disabled={!allChecklistCompleted}
-                  onClick={() => setApproveModalOpen(true)}
-                  className="flex-1 py-3 px-4 rounded-xl bg-[#22C55E] hover:bg-[#1ea34d] disabled:opacity-40 disabled:cursor-not-allowed text-black text-xs font-heading font-extrabold uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Setujui (Lolos Daerah)</span>
-                </button>
-
-                {/* REVISION */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRevisionFields([]);
-                    setRevisionNotes("");
-                    setRevisionModalOpen(true);
-                  }}
-                  className="py-3 px-4 rounded-xl bg-[#1A1E28] hover:bg-amber-950/50 border border-[#262B38] hover:border-amber-700 text-amber-400 text-xs font-heading font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
-                >
-                  <AlertTriangle className="w-4 h-4" />
-                  <span>Minta Revisi</span>
-                </button>
-
-                {/* REJECT */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRejectReason("");
-                    setRejectModalOpen(true);
-                  }}
-                  className="py-3 px-4 rounded-xl bg-[#1A1E28] hover:bg-red-950/50 border border-[#262B38] hover:border-red-700 text-red-400 text-xs font-heading font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
-                >
-                  <XCircle className="w-4 h-4" />
-                  <span>Tolak</span>
-                </button>
+          {/* PANEL KANAN LENGKET (3 COLS): PANEL AKSI SETUJUI, REVISI, TOLAK */}
+          <div className="lg:col-span-3 sticky top-20 flex flex-col gap-4">
+            <div className="p-5 rounded-2xl bg-[#12151C] border border-[#262B38] shadow-2xl flex flex-col gap-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#262B38]">
+                <span className="text-xs font-heading font-bold text-gray-300 uppercase tracking-wider">
+                  Panel Aksi Cepat
+                </span>
+                <span className="text-[10px] font-mono text-[#D4AF37]">TAHAP 1</span>
               </div>
 
+              {/* Status Menunggu */}
+              <div className="p-3 rounded-xl bg-[#161922] border border-[#262B38] text-xs font-mono flex items-center justify-between">
+                <span className="text-gray-400">Menunggu:</span>
+                <span className="text-white font-bold">{item.daysWaiting} Hari</span>
+              </div>
+
+              {/* APPROVE (SETUJUI - UTAMA) */}
+              <button
+                type="button"
+                disabled={!allChecklistCompleted}
+                onClick={() => setApproveModalOpen(true)}
+                className="w-full py-3 px-4 rounded-xl bg-[#22C55E] hover:bg-[#1ea34d] disabled:opacity-40 disabled:cursor-not-allowed text-black text-xs font-heading font-black uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-2"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Setujui Berkas</span>
+              </button>
+
+              {/* REVISI */}
+              <button
+                type="button"
+                onClick={() => {
+                  setRevisionFields([]);
+                  setRevisionNotes("");
+                  setRevisionModalOpen(true);
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-[#1A1E28] hover:bg-amber-950/40 border border-[#262B38] hover:border-amber-700 text-amber-400 text-xs font-heading font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                <span>Minta Revisi</span>
+              </button>
+
+              {/* TOLAK */}
+              <button
+                type="button"
+                onClick={() => {
+                  setRejectReason("");
+                  setRejectModalOpen(true);
+                }}
+                className="w-full py-2.5 px-4 rounded-xl bg-[#1A1E28] hover:bg-red-950/40 border border-[#262B38] hover:border-red-700 text-red-400 text-xs font-heading font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
+              >
+                <XCircle className="w-4 h-4" />
+                <span>Tolak</span>
+              </button>
+
               {!allChecklistCompleted && (
-                <span className="text-[11px] text-amber-400/90 text-center">
-                  * Centang ketiga daftar periksa verifikasi di atas untuk mengaktifkan tombol &ldquo;Setujui (Lolos Daerah)&rdquo;.
+                <span className="text-[10px] font-mono text-amber-400/90 text-center leading-tight">
+                  * Centang ketiga checklist di tengah untuk membuka tombol Setujui.
                 </span>
               )}
+            </div>
+
+            {/* Hint Pintasan Keyboard */}
+            <div className="p-3 rounded-xl bg-[#0F1118] border border-white/[0.06] text-[10px] font-mono text-white/40 flex flex-col gap-1">
+              <span className="text-white/60 font-bold">Pintasan Keyboard:</span>
+              <div className="flex items-center justify-between">
+                <span>Setujui Cepat:</span>
+                <kbd className="px-1.5 py-0.2 bg-white/10 rounded text-[#22C55E]">A</kbd>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Buka Revisi:</span>
+                <kbd className="px-1.5 py-0.2 bg-white/10 rounded text-amber-400">R</kbd>
+              </div>
             </div>
           </div>
         </div>
