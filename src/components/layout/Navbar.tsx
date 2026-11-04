@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Menu,
   X,
@@ -13,14 +13,21 @@ import {
   LogIn,
   UserPlus,
   Search,
+  LayoutDashboard,
+  LogOut,
+  User,
 } from "lucide-react";
 import { CommandPalette } from "@/components/shared/CommandPalette";
+import { createClient } from "@/lib/supabase/client";
+import { signOutAction } from "@/app/actions/auth";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ id: string; email: string } | null>(null);
   const pathname = usePathname();
+  const router = useRouter();
 
   // 4 Core Navigation Links (Prompt 0 & 2 specification)
   const navLinks = [
@@ -38,6 +45,43 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Real Supabase User Session Listener
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        setCurrentUser({
+          id: data.user.id,
+          email: data.user.email || "",
+        });
+      } else {
+        setCurrentUser(null);
+      }
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setCurrentUser({
+          id: session.user.id,
+          email: session.user.email || "",
+        });
+      } else {
+        setCurrentUser(null);
+      }
+    });
+
+    return () => {
+      authListener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  const handleSignOut = async () => {
+    await signOutAction();
+    setCurrentUser(null);
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <>
@@ -95,7 +139,7 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* DESKTOP RIGHT ACTIONS: Cmd+K, Masuk, Daftar */}
+          {/* DESKTOP RIGHT ACTIONS: Cmd+K, Masuk/Daftar OR User Menu */}
           <div className="hidden md:flex items-center gap-2.5">
             {/* Command Palette Trigger Pill */}
             <button
@@ -109,23 +153,48 @@ export function Navbar() {
               </kbd>
             </button>
 
-            {/* Masuk */}
-            <Link
-              href="/login"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-heading font-bold text-gray-300 hover:text-white hover:bg-white/[0.04] transition-colors"
-            >
-              <LogIn className="w-3.5 h-3.5 text-gray-400" />
-              <span>Masuk</span>
-            </Link>
+            {currentUser ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0F1118] hover:bg-[#161A24] border border-white/[0.08] text-xs font-heading font-bold text-white transition-all"
+                >
+                  <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-[#D4AF37] to-[#B38F24] flex items-center justify-center text-black font-extrabold text-[10px]">
+                    {currentUser.email.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="truncate max-w-[120px]">{currentUser.email.split("@")[0]}</span>
+                  <LayoutDashboard className="w-3 h-3 text-[#D4AF37]" />
+                </Link>
 
-            {/* Daftar (Emas) */}
-            <Link
-              href="/register"
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] hover:brightness-110 text-black text-xs font-heading font-extrabold uppercase tracking-wider shadow-lg shadow-amber-950/30 transition-all active:scale-[0.98]"
-            >
-              <UserPlus className="w-3.5 h-3.5" />
-              <span>Daftar</span>
-            </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="p-1.5 rounded-full bg-[#0F1118] hover:bg-white/[0.06] border border-white/[0.08] text-gray-400 hover:text-red-400 transition-colors"
+                  title="Keluar"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Masuk */}
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-heading font-bold text-gray-300 hover:text-white hover:bg-white/[0.04] transition-colors"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-gray-400" />
+                  <span>Masuk</span>
+                </Link>
+
+                {/* Daftar (Emas) */}
+                <Link
+                  href="/register"
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] hover:brightness-110 text-black text-xs font-heading font-extrabold uppercase tracking-wider shadow-lg shadow-amber-950/30 transition-all active:scale-[0.98]"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>Daftar</span>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* MOBILE RIGHT CONTROLS: SEARCH + HAMBURGER */}
@@ -179,23 +248,48 @@ export function Navbar() {
             </nav>
 
             <div className="pt-3 border-t border-white/[0.08] flex items-center gap-2">
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#0F1118] border border-white/10 text-xs font-heading font-bold text-white text-center"
-              >
-                <LogIn className="w-3.5 h-3.5 text-gray-400" />
-                <span>Masuk</span>
-              </Link>
+              {currentUser ? (
+                <>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-black text-xs font-heading font-black uppercase tracking-wider text-center"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5" />
+                    <span>Dashboard</span>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleSignOut();
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-[#0F1118] border border-white/10 text-xs font-heading font-bold text-red-400 text-center flex items-center gap-1.5"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Keluar</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#0F1118] border border-white/10 text-xs font-heading font-bold text-white text-center"
+                  >
+                    <LogIn className="w-3.5 h-3.5 text-gray-400" />
+                    <span>Masuk</span>
+                  </Link>
 
-              <Link
-                href="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-black text-xs font-heading font-black uppercase tracking-wider shadow-lg text-center"
-              >
-                <UserPlus className="w-3.5 h-3.5" />
-                <span>Daftar</span>
-              </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-black text-xs font-heading font-black uppercase tracking-wider shadow-lg text-center"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Daftar</span>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

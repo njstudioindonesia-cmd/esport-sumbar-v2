@@ -2,11 +2,55 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import {
+  checkRateLimit,
+  recordFailedAttempt,
+  clearRateLimit,
+} from "@/lib/security/rate-limit";
+
+// ==============================================================================
+// SKEMA VALIDASI ZOD (SERVER-SIDE INPUT VALIDATION)
+// ==============================================================================
+
+export const signUpSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: "Alamat email wajib diisi." })
+    .email({ message: "Format alamat email tidak valid." }),
+  password: z
+    .string()
+    .min(8, { message: "Kata sandi minimal harus 8 karakter." })
+    .regex(/[A-Z]/, { message: "Kata sandi harus mengandung minimal 1 huruf kapital." })
+    .regex(/[0-9]/, { message: "Kata sandi harus mengandung minimal 1 angka." }),
+  birthDate: z.string().optional(),
+});
+
+export const signInSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: "Alamat email wajib diisi." })
+    .email({ message: "Format alamat email tidak valid." }),
+  password: z
+    .string()
+    .min(1, { message: "Kata sandi wajib diisi." }),
+});
+
+export const resetPasswordSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, { message: "Alamat email wajib diisi." })
+    .email({ message: "Format alamat email tidak valid." }),
+});
 
 export interface AuthActionResult {
   success: boolean;
   message?: string;
   error?: string;
+  needsConfirmation?: boolean;
   role?: string;
   user?: {
     id: string;
@@ -16,172 +60,245 @@ export interface AuthActionResult {
   };
 }
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+/**
+ * Registrasi Pengguna Baru via Supabase Auth + Trigger Sinkronisasi Accounts
+ */
 export async function signUpAction(formData: FormData): Promise<AuthActionResult> {
-  const email = formData.get("email")?.toString().trim();
-  const password = formData.get("password")?.toString();
-  const birthDate = formData.get("birthDate")?.toString();
+  const rawEmail = formData.get("email")?.toString();
+  const rawPassword = formData.get("password")?.toString();
+  const rawBirthDate = formData.get("birthDate")?.toString();
 
-  // Validasi Input Server-Side
-  if (!email || !password) {
-    return { success: false, error: "Email dan kata sandi wajib diisi." };
+  // 1. Validasi Zod
+  const validation = signUpSchema.safeParse({
+    email: rawEmail,
+    password: rawPassword,
+    birthDate: rawBirthDate,
+  });
+
+  if (!validation.success) {
+    const firstError = validation.error.issues[0]?.message || "Input tidak valid.";
+    return { success: false, error: firstError };
   }
 
-  if (!EMAIL_REGEX.test(email)) {
-    return { success: false, error: "Format alamat email tidak valid." };
-  }
-
-  if (password.length < 8) {
-    return { success: false, error: "Kata sandi minimal harus terdiri dari 8 karakter." };
-  }
-
-  // PENTING: Kunci peran pendaftar publik hanya sebagai 'user' (Cegah Privilege Escalation)
-  const role = "user";
-  const assignedRegionId = null;
+  const { email, password, birthDate } = validation.data;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   try {
     const supabase = await createClient();
 
-    // 1. Daftarkan akun di Supabase Auth
+    // 2. Daftarkan akun di Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${siteUrl}/auth/callback?next=/me/profile/new`,
+        data: {
+          birth_date: birthDate || null,
+        },
+      },
     });
 
     if (authError) {
-      if (authError.message.includes("fetch failed") || authError.message.includes("Invalid API key")) {
+      if (authError.message.toLowerCase().includes("already registered")) {
         return {
-          success: true,
-          message: "Akun berhasil didaftarkan (Mode Simulasi Offline Pengembang).",
-          role: "user",
-          user: {
-            id: "mock-user-" + Date.now(),
-            email,
-            role: "user",
-            assignedRegionId: null,
-          },
+          success: false,
+          error: "Alamat email ini sudah terdaftar. Silakan masuk atau gunakan fitur lupa kata sandi.",
         };
       }
       return { success: false, error: authError.message };
     }
 
-    const userId = authData.user?.id;
-    if (userId) {
-      // 2. Sinkronisasikan ke tabel public.accounts dengan peran 'user'
-      const { error: accountError } = await supabase.from("accounts").upsert({
-        id: userId,
-        email,
-        role,
-        assigned_region_id: assignedRegionId,
+    const user = authData.user;
+    if (!user) {
+      return { success: false, error: "Gagal membuat sesi pendaftaran." };
+    }
+
+    // 3. Pastikan baris accounts tersinkronisasi jika trigger belum aktif
+    await supabase.from("accounts").upsert(
+      {
+        id: user.id,
+        email: user.email || email,
+        role: "user",
+        assigned_region_id: null,
         birth_date: birthDate || null,
         is_active: true,
-      });
+      },
+      { onConflict: "id" }
+    );
 
-      if (accountError) {
-        console.warn("Gagal membuat profil akun di tabel accounts:", accountError.message);
-      }
-    }
+    // Jika konfirmasi email wajib dan session belum terbit
+    const needsConfirmation = !authData.session;
 
     revalidatePath("/login");
     return {
       success: true,
-      message: "Pendaftaran berhasil! Silakan periksa email Anda untuk verifikasi atau lanjutkan masuk.",
-      role,
+      needsConfirmation,
+      message: needsConfirmation
+        ? "Pendaftaran berhasil! Tautan aktivasi telah dikirim ke email Anda. Silakan periksa kotak masuk atau spam Anda."
+        : "Pendaftaran berhasil! Akun Anda telah aktif.",
+      role: "user",
       user: {
-        id: userId || "user-id",
-        email,
-        role,
-        assignedRegionId,
+        id: user.id,
+        email: user.email || email,
+        role: "user",
+        assignedRegionId: null,
       },
     };
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Terjadi kesalahan pendaftaran akun";
+    const errorMsg = err instanceof Error ? err.message : "Terjadi kesalahan sistem saat mendaftar.";
     return { success: false, error: errorMsg };
   }
 }
 
+/**
+ * Masuk Pengguna Resmi dengan Rate Limiting Sederhana
+ */
 export async function signInAction(formData: FormData): Promise<AuthActionResult> {
-  const email = formData.get("email")?.toString().trim();
-  const password = formData.get("password")?.toString();
+  const rawEmail = formData.get("email")?.toString();
+  const rawPassword = formData.get("password")?.toString();
 
-  if (!email || !password) {
-    return { success: false, error: "Email dan kata sandi wajib diisi." };
+  // 1. Validasi Zod
+  const validation = signInSchema.safeParse({
+    email: rawEmail,
+    password: rawPassword,
+  });
+
+  if (!validation.success) {
+    const firstError = validation.error.issues[0]?.message || "Email dan kata sandi wajib diisi.";
+    return { success: false, error: firstError };
   }
 
-  if (!EMAIL_REGEX.test(email)) {
-    return { success: false, error: "Format alamat email tidak valid." };
+  const { email, password } = validation.data;
+  const rateLimitKey = `login:${email.toLowerCase()}`;
+
+  // 2. Rate Limiting Check (Maksimal 5 percobaan dalam 15 menit)
+  const rateCheck = checkRateLimit(rateLimitKey, 5, 15 * 60 * 1000);
+  if (!rateCheck.allowed) {
+    const minutesLeft = Math.ceil(rateCheck.retryAfterSeconds / 60);
+    return {
+      success: false,
+      error: `Terlalu banyak percobaan masuk yang salah. Demi keamanan, akun ini ditangguhkan sementara. Coba lagi dalam ${minutesLeft} menit.`,
+    };
   }
 
   try {
     const supabase = await createClient();
 
-    // Autentikasi resmi via Supabase Auth
+    // 3. Otentikasi resmi via Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (authError) {
-      if (authError.message.includes("fetch failed") || authError.message.includes("Invalid API key")) {
+      recordFailedAttempt(rateLimitKey);
+
+      if (authError.message.toLowerCase().includes("email not confirmed")) {
         return {
-          success: true,
-          message: "Masuk berhasil (Mode Simulasi Pengembang).",
-          role: "user",
-          user: {
-            id: "mock-user-1",
-            email,
-            role: "user",
-          },
+          success: false,
+          error: "Email Anda belum dikonfirmasi. Silakan periksa email aktivasi yang telah kami kirimkan.",
         };
       }
-      return { success: false, error: "Email atau kata sandi tidak cocok." };
+
+      if (authError.message.toLowerCase().includes("invalid login credentials")) {
+        return {
+          success: false,
+          error: "Alamat email atau kata sandi tidak cocok. Sisa percobaan: " + (rateCheck.remaining - 1),
+        };
+      }
+
+      return { success: false, error: authError.message };
     }
 
-    // Ambil data peran resmi dari tabel accounts di database
+    // Login Sukses -> Reset counter rate limit
+    clearRateLimit(rateLimitKey);
+
     const userId = authData.user.id;
-    const { data: accountData, error: accountError } = await supabase
+
+    // 4. Ambil peran resmi pengguna dari tabel accounts di database
+    const { data: accountData } = await supabase
       .from("accounts")
       .select("role, assigned_region_id")
       .eq("id", userId)
       .single();
 
-    if (accountError && !accountData) {
-      console.warn("Profil accounts belum tersinkronisasi:", accountError?.message);
-    }
-
     const role = accountData?.role || "user";
     const assignedRegionId = accountData?.assigned_region_id || null;
 
     revalidatePath("/dashboard");
+    revalidatePath("/me/cards");
+
     return {
       success: true,
-      message: "Login berhasil.",
+      message: "Masuk berhasil! Mengalihkan ke dashboard...",
       role,
       user: {
         id: userId,
-        email,
+        email: authData.user.email || email,
         role,
         assignedRegionId,
       },
     };
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Terjadi kesalahan saat masuk";
+    const errorMsg = err instanceof Error ? err.message : "Terjadi kesalahan sistem saat mencoba masuk.";
     return { success: false, error: errorMsg };
   }
 }
 
+/**
+ * Permintaan Reset Kata Sandi Resmi
+ */
+export async function resetPasswordAction(formData: FormData): Promise<{ success: boolean; message?: string; error?: string }> {
+  const rawEmail = formData.get("email")?.toString();
+
+  const validation = resetPasswordSchema.safeParse({ email: rawEmail });
+  if (!validation.success) {
+    return { success: false, error: "Masukkan alamat email yang valid." };
+  }
+
+  const { email } = validation.data;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${siteUrl}/auth/callback?next=/me/settings`,
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return {
+      success: true,
+      message: "Instruksi pengaturan ulang kata sandi telah dikirim ke email Anda.",
+    };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Gagal mengirim permintaan reset kata sandi.";
+    return { success: false, error: errorMsg };
+  }
+}
+
+/**
+ * Keluar (Sign Out) dan Bersihkan Sesi Server & Cookie
+ */
 export async function signOutAction(): Promise<{ success: boolean }> {
   try {
     const supabase = await createClient();
     await supabase.auth.signOut();
   } catch (err) {
-    console.warn("Sign out fallback:", err);
+    console.warn("Sign out exception:", err);
   }
+
   revalidatePath("/");
+  revalidatePath("/dashboard");
+  revalidatePath("/login");
   return { success: true };
 }
 
+/**
+ * Ambil Identitas Pengguna yang Sedang Login dari Sesi Server
+ */
 export async function getCurrentUser() {
   try {
     const supabase = await createClient();

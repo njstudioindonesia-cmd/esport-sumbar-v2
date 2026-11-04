@@ -18,6 +18,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { signInAction, signUpAction } from "@/app/actions/auth";
+import { createClient } from "@/lib/supabase/client";
 
 interface MobileAuthFlowProps {
   initialMode?: "login" | "register";
@@ -38,6 +39,7 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
 
   const triggerHaptic = () => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
@@ -52,14 +54,27 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
   const isEmailValid = EMAIL_REGEX.test(email.trim());
   const isPasswordValid = password.length >= 8;
 
-  const handleGoogleAuth = () => {
+  const handleGoogleAuth = async () => {
     triggerHaptic();
     setIsLoading(true);
-    // Simulasi respons cepat Google OAuth
-    setTimeout(() => {
+    setAuthError(null);
+    try {
+      const supabase = createClient();
+      const origin = window.location.origin;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${origin}/auth/callback?next=/me/profile/new`,
+        },
+      });
+      if (error) {
+        setAuthError(error.message);
+        setIsLoading(false);
+      }
+    } catch (err: unknown) {
+      setAuthError(err instanceof Error ? err.message : "Gagal menghubungkan Google Auth");
       setIsLoading(false);
-      router.push("/me/profile/new");
-    }, 800);
+    }
   };
 
   const handleNextToPassword = () => {
@@ -85,20 +100,25 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
       if (mode === "register") {
         const res = await signUpAction(formData);
         if (res.success) {
-          router.push("/me/profile/new");
+          if (res.needsConfirmation) {
+            setNeedsEmailConfirmation(true);
+          } else {
+            router.push("/me/profile/new");
+          }
         } else {
           setAuthError(res.error || "Gagal daftar");
         }
       } else {
         const res = await signInAction(formData);
         if (res.success) {
-          router.push("/me/profile/new");
+          const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+          router.push(redirectParam || "/dashboard");
         } else {
-          setAuthError(res.error || "Gagal masuk");
+          setAuthError(res.error || "Email atau kata sandi keliru");
         }
       }
     } catch {
-      setAuthError("Gagal terhubung");
+      setAuthError("Gagal terhubung ke sistem.");
     } finally {
       setIsLoading(false);
     }
@@ -146,8 +166,38 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
       {/* CENTER CONTENT */}
       <div className="relative flex-1 w-full flex flex-col justify-center my-auto z-10">
         <AnimatePresence mode="wait">
+          {needsEmailConfirmation && (
+            <motion.div
+              key="step-confirm"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full p-6 rounded-2xl bg-[#0F1118] border border-[#D4AF37]/30 flex flex-col items-center text-center gap-4"
+            >
+              <div className="w-14 h-14 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]">
+                <Mail className="w-7 h-7" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <h3 className="text-lg font-heading font-black text-white">Periksa Email Anda</h3>
+                <p className="text-xs text-white/70 leading-relaxed">
+                  Kami telah mengirimkan tautan aktivasi ke <span className="text-[#D4AF37] font-semibold">{email}</span>. Silakan buka email Anda dan klik tautan aktivasi untuk membuat kartu atlet resmi.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setNeedsEmailConfirmation(false);
+                  setMode("login");
+                  setStep("email");
+                }}
+                className="w-full h-11 mt-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-black font-heading font-bold text-xs uppercase tracking-wider flex items-center justify-center"
+              >
+                Sudah Konfirmasi? Masuk
+              </button>
+            </motion.div>
+          )}
+
           {/* LAYAR 0: PILIH METODE (2 Tombol Besar, Tanpa Form Panjang) */}
-          {step === "select" && (
+          {!needsEmailConfirmation && step === "select" && (
             <motion.div
               key="step-select"
               initial={{ opacity: 0, y: 16 }}

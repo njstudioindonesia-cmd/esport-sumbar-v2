@@ -19,7 +19,8 @@ import {
   Gamepad2,
   Award,
 } from "lucide-react";
-import { signInAction, signUpAction } from "@/app/actions/auth";
+import { signInAction, signUpAction, resetPasswordAction } from "@/app/actions/auth";
+import { createClient } from "@/lib/supabase/client";
 import { GALLERY_CARDS } from "@/data/mockCards";
 
 interface DesktopAuthViewProps {
@@ -42,10 +43,17 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authSuccess, setAuthSuccess] = useState<string | null>(null);
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null);
 
   // Field validation status
   const isEmailValid = EMAIL_REGEX.test(email.trim());
-  const isPasswordValid = password.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasNumber = /[0-9]/.test(password);
+  const hasMinLength = password.length >= 8;
+  const isPasswordValid = hasMinLength && (mode === "login" || (hasUpperCase && hasNumber));
   const isEmailTouched = email.length > 0;
   const isPasswordTouched = password.length > 0;
 
@@ -75,14 +83,47 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
     mouseY.set(0);
   };
 
-  // Google OAuth Handler
-  const handleGoogleAuth = () => {
+  // Google OAuth Handler Resmi
+  const handleGoogleAuth = async () => {
     setIsLoading(true);
     setAuthError(null);
-    setTimeout(() => {
+    try {
+      const supabase = createClient();
+      const origin = window.location.origin;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${origin}/auth/callback?next=/me/profile/new`,
+        },
+      });
+      if (error) {
+        setAuthError(error.message);
+        setIsLoading(false);
+      }
+    } catch (err: unknown) {
+      setAuthError(err instanceof Error ? err.message : "Gagal menghubungkan Google Auth.");
       setIsLoading(false);
-      router.push("/me/profile/new");
-    }, 700);
+    }
+  };
+
+  // Reset Password Handler
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!EMAIL_REGEX.test(resetEmail.trim())) {
+      setAuthError("Masukkan alamat email yang valid.");
+      return;
+    }
+    setIsLoading(true);
+    setAuthError(null);
+    const formData = new FormData();
+    formData.append("email", resetEmail.trim());
+    const res = await resetPasswordAction(formData);
+    setIsLoading(false);
+    if (res.success) {
+      setResetSuccessMessage(res.message || "Tautan pemulihan kata sandi telah dikirim ke email Anda.");
+    } else {
+      setAuthError(res.error || "Gagal memproses permintaan reset kata sandi.");
+    }
   };
 
   // Form Submit Handler
@@ -95,7 +136,11 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
     }
 
     if (!isPasswordValid) {
-      setAuthError("Kata sandi minimal 8 karakter.");
+      setAuthError(
+        mode === "register"
+          ? "Kata sandi minimal 8 karakter, mengandung huruf kapital dan angka."
+          : "Kata sandi wajib diisi."
+      );
       return;
     }
 
@@ -115,19 +160,25 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
       if (mode === "register") {
         const res = await signUpAction(formData);
         if (res.success) {
-          setAuthSuccess("Pendaftaran berhasil! Mengalihkan ke pembuatan kartu...");
-          setTimeout(() => {
-            router.push("/me/profile/new");
-          }, 600);
+          if (res.needsConfirmation) {
+            setNeedsEmailConfirmation(true);
+            setAuthSuccess(res.message || "Tautan konfirmasi telah dikirim ke email Anda.");
+          } else {
+            setAuthSuccess("Pendaftaran berhasil! Mengalihkan ke pembuatan kartu...");
+            setTimeout(() => {
+              router.push("/me/profile/new");
+            }, 600);
+          }
         } else {
           setAuthError(res.error || "Gagal mendaftar akun");
         }
       } else {
         const res = await signInAction(formData);
         if (res.success) {
-          setAuthSuccess("Masuk berhasil! Mengalihkan...");
+          setAuthSuccess(res.message || "Masuk berhasil! Mengalihkan...");
           setTimeout(() => {
-            router.push("/dashboard");
+            const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+            router.push(redirectParam || "/dashboard");
           }, 600);
         } else {
           setAuthError(res.error || "Email atau kata sandi keliru");
@@ -365,8 +416,75 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             </div>
           )}
 
-          {/* FORMULIR BESAR */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* KONTEN FORMULIR / KONFIRMASI EMAIL / RESET PASSWORD */}
+          {needsEmailConfirmation ? (
+            <div className="p-6 rounded-2xl bg-[#0F1118] border border-[#D4AF37]/30 flex flex-col items-center text-center gap-4 animate-in fade-in duration-300">
+              <div className="w-14 h-14 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]">
+                <Mail className="w-7 h-7" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <h3 className="text-lg font-heading font-black text-white">Periksa Email Anda</h3>
+                <p className="text-xs text-white/70 leading-relaxed">
+                  Kami telah mengirimkan tautan aktivasi ke <span className="text-[#D4AF37] font-semibold">{email}</span>. Silakan klik tautan di email untuk mengaktifkan akun resmi dan mulai membuat kartu identitas atlet Anda.
+                </p>
+              </div>
+              <Link
+                href="/login"
+                className="w-full h-11 mt-2 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-black font-heading font-bold text-xs uppercase flex items-center justify-center tracking-wider hover:brightness-110 transition-all"
+              >
+                Sudah Konfirmasi? Masuk
+              </Link>
+            </div>
+          ) : isResetPasswordOpen ? (
+            <div className="p-6 rounded-2xl bg-[#0F1118] border border-white/10 flex flex-col gap-4 animate-in fade-in duration-300">
+              <div>
+                <h3 className="text-base font-heading font-bold text-white">Lupa Kata Sandi</h3>
+                <p className="text-xs text-white/50 mt-1">
+                  Masukkan email akun Anda. Kami akan mengirimkan tautan untuk mengatur ulang kata sandi.
+                </p>
+              </div>
+
+              {resetSuccessMessage ? (
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2">
+                  <Check className="w-4 h-4 shrink-0" />
+                  <span>{resetSuccessMessage}</span>
+                </div>
+              ) : (
+                <form onSubmit={handleResetPassword} className="flex flex-col gap-3">
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={resetEmail}
+                      onChange={(e) => setResetEmail(e.target.value)}
+                      placeholder="atlet@esportsumbar.id"
+                      required
+                      className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl pl-9 pr-3 text-xs text-white placeholder-white/30 outline-none"
+                    />
+                    <Mail className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="flex-1 h-10 rounded-xl bg-[#D4AF37] text-black font-heading font-bold text-xs uppercase hover:brightness-110 transition-all flex items-center justify-center"
+                    >
+                      {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Kirim Tautan"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsResetPasswordOpen(false)}
+                      className="px-4 h-10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-white/70 text-xs font-mono transition-colors"
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* FORMULIR BESAR */}
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* FIELD EMAIL */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[11px] font-mono uppercase tracking-wider text-white/60">
@@ -408,7 +526,11 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
                 {mode === "login" && (
                   <button
                     type="button"
-                    onClick={() => alert("Fitur pemulihan kata sandi dikirim via email terdaftar.")}
+                    onClick={() => {
+                      setIsResetPasswordOpen(true);
+                      setResetEmail(email);
+                      setAuthError(null);
+                    }}
                     className="text-[11px] font-mono text-[#D4AF37] hover:underline"
                   >
                     Lupa sandi?
@@ -508,30 +630,32 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             </button>
           </form>
 
-          {/* TAUTAN KECIL SWITCH LOGIN / REGISTER */}
-          <div className="mt-6 text-center text-xs text-white/50">
-            {mode === "login" ? (
-              <span>
-                Belum punya akun atlet?{" "}
-                <Link
-                  href="/register"
-                  className="text-[#D4AF37] hover:text-[#E5C158] font-bold hover:underline transition-colors"
-                >
-                  Daftar
-                </Link>
-              </span>
-            ) : (
-              <span>
-                Sudah memiliki kartu akun?{" "}
-                <Link
-                  href="/login"
-                  className="text-[#D4AF37] hover:text-[#E5C158] font-bold hover:underline transition-colors"
-                >
-                  Masuk
-                </Link>
-              </span>
-            )}
-          </div>
+              {/* TAUTAN KECIL SWITCH LOGIN / REGISTER */}
+              <div className="mt-6 text-center text-xs text-white/50">
+                {mode === "login" ? (
+                  <span>
+                    Belum punya akun atlet?{" "}
+                    <Link
+                      href="/register"
+                      className="text-[#D4AF37] hover:text-[#E5C158] font-bold hover:underline transition-colors"
+                    >
+                      Daftar
+                    </Link>
+                  </span>
+                ) : (
+                  <span>
+                    Sudah memiliki kartu akun?{" "}
+                    <Link
+                      href="/login"
+                      className="text-[#D4AF37] hover:text-[#E5C158] font-bold hover:underline transition-colors"
+                    >
+                      Masuk
+                    </Link>
+                  </span>
+                )}
+              </div>
+            </>
+          )}
 
           {/* FOOTER KECIL KEPATUHAN PDP */}
           <div className="mt-8 pt-4 border-t border-white/[0.06] text-center text-[10px] font-mono text-white/30 flex items-center justify-center gap-1.5">

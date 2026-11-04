@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { MobileBottomBar } from "./MobileBottomBar";
+import { signOutAction } from "@/app/actions/auth";
 
 type SubScreenType = "main" | "notifications" | "privacy" | "security";
 
@@ -309,9 +310,11 @@ export function MobileProfileSettings() {
 
                 {/* Tombol Keluar */}
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     triggerHaptic();
+                    await signOutAction();
                     router.push("/login");
+                    router.refresh();
                   }}
                   className="h-14 rounded-2xl bg-[#161A24] border border-white/[0.08] px-4 flex items-center justify-between text-white/60 hover:text-white transition-all mt-1"
                 >

@@ -19,6 +19,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { CommandPalette } from "@/components/shared/CommandPalette";
+import { createClient } from "@/lib/supabase/client";
+import { signOutAction } from "@/app/actions/auth";
 
 interface DesktopUserShellProps {
   children: React.ReactNode;
@@ -40,6 +42,33 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
   const [collapsed, setCollapsed] = useState(false);
   const [hasUnreadNotification, setHasUnreadNotification] = useState(true);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [userSession, setUserSession] = useState<{ email: string; role: string } | null>(null);
+
+  // Load real user session from Supabase
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        supabase
+          .from("accounts")
+          .select("role")
+          .eq("id", data.user.id)
+          .single()
+          .then(({ data: acc }) => {
+            setUserSession({
+              email: data.user.email || "atlet@esportsumbar.id",
+              role: acc?.role || "user",
+            });
+          });
+      }
+    });
+  }, []);
+
+  const handleSignOut = async () => {
+    await signOutAction();
+    router.push("/login");
+    router.refresh();
+  };
 
   // Keyboard shortcut listener for Cmd+K / Ctrl+K
   useEffect(() => {
@@ -142,21 +171,22 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
             }`}
           >
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-[#D4AF37]/40 shrink-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop"
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
-                />
+              <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-[#D4AF37]/40 shrink-0 bg-gradient-to-tr from-[#D4AF37] to-[#B38F24] flex items-center justify-center text-black font-extrabold text-xs">
+                {userSession?.email?.charAt(0).toUpperCase() || "A"}
               </div>
               {!collapsed && (
                 <div className="flex flex-col truncate">
                   <span className="text-xs font-heading font-bold text-white truncate">
-                    Sutan Harimau
+                    {userSession?.email?.split("@")[0] || "Atlet Ranah Minang"}
                   </span>
-                  <span className="text-[10px] font-mono text-[#D4AF37]">
-                    TIER 3 • ELITE
+                  <span className="text-[9px] font-mono text-[#D4AF37] uppercase tracking-wider">
+                    {userSession?.role === "prov_admin"
+                      ? "PENGPROV ESI"
+                      : userSession?.role === "region_admin"
+                      ? "PENGCAB ESI"
+                      : userSession?.role === "platform_operator"
+                      ? "OPERATOR"
+                      : "PASPOR ATLET"}
                   </span>
                 </div>
               )}
@@ -165,7 +195,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
             {!collapsed && (
               <button
                 type="button"
-                onClick={() => router.push("/login")}
+                onClick={handleSignOut}
                 className="w-7 h-7 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/[0.06] flex items-center justify-center transition-colors"
                 title="Keluar"
               >
