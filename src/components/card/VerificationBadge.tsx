@@ -2,13 +2,13 @@
 
 import React from "react";
 import { ShieldCheck, Award, PauseCircle, Clock } from "lucide-react";
-import { CardVerification } from "@/types/card";
+import { CardVerification, CardSize } from "@/types/card";
 
 interface VerificationBadgeProps {
   status: CardVerification;
   regionCode?: string;
   badgeNumber?: string;
-  size?: "sm" | "md" | "lg";
+  size?: CardSize;
 }
 
 export function VerificationBadge({

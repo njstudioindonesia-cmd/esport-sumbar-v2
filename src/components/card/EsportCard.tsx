@@ -2,7 +2,13 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useMotionTemplate,
+} from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import {
   RotateCw,
@@ -25,6 +31,7 @@ import {
   EsportCardProps,
   CardRarity,
   CardEntityType,
+  CardSize,
 } from "@/types/card";
 import { VerificationBadge } from "./VerificationBadge";
 import { BrandWatermark, BrandPattern, IssuedBy } from "@/components/brand";
@@ -87,10 +94,12 @@ const RARITY_CONFIG: Record<
   },
 };
 
-const SIZE_CLASSES = {
+const SIZE_CLASSES: Record<CardSize, string> = {
   sm: "w-[240px] h-[336px] text-xs",
   md: "w-[300px] h-[420px] text-sm",
   lg: "w-[360px] h-[504px] text-base",
+  mobile: "w-full max-w-[340px] aspect-[1/1.42] text-sm",
+  fluid: "w-full h-full text-sm",
 };
 
 export function EsportCard({
@@ -124,25 +133,27 @@ export function EsportCard({
 
   const rotateX = useSpring(
     useTransform(mouseY, [0, 1], reducedMotion ? [0, 0] : [14, -14]),
-    { stiffness: 220, damping: 20 }
+    { stiffness: 260, damping: 22 }
   );
   const rotateY = useSpring(
     useTransform(mouseX, [0, 1], reducedMotion ? [0, 0] : [-14, 14]),
-    { stiffness: 220, damping: 20 }
+    { stiffness: 260, damping: 22 }
   );
 
-  // Dynamic glare positioning
+  // Dynamic glare positioning with real-time reactive useMotionTemplate
   const glareX = useTransform(mouseX, [0, 1], ["0%", "100%"]);
   const glareY = useTransform(mouseY, [0, 1], ["0%", "100%"]);
+  const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.12) 28%, transparent 68%)`;
 
+  // Desktop Mouse Handlers
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!interactive || reducedMotion) return;
+    if (!interactive || reducedMotion || isFlipped) return;
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect) return;
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
-    mouseX.set(x);
-    mouseY.set(y);
+    mouseX.set(Math.min(Math.max(x, 0), 1));
+    mouseY.set(Math.min(Math.max(y, 0), 1));
   };
 
   const handleMouseLeave = () => {
@@ -151,8 +162,61 @@ export function EsportCard({
     mouseY.set(0.5);
   };
 
-  const handleFlip = (e?: React.MouseEvent) => {
+  // Mobile Touch Handlers
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!interactive || reducedMotion || isFlipped) return;
+    const touch = e.touches[0];
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect || !touch) return;
+    const x = (touch.clientX - rect.left) / rect.width;
+    const y = (touch.clientY - rect.top) / rect.height;
+    mouseX.set(Math.min(Math.max(x, 0), 1));
+    mouseY.set(Math.min(Math.max(y, 0), 1));
+  };
+
+  const handleTouchEnd = () => {
+    if (!interactive || reducedMotion) return;
+    mouseX.set(0.5);
+    mouseY.set(0.5);
+  };
+
+  // Mobile Device Gyroscope / Parallax support
+  useEffect(() => {
+    if (!interactive || reducedMotion || typeof window === "undefined") return;
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (e.gamma !== null && e.beta !== null && !isFlipped) {
+        // gamma: left-to-right [-90, 90], beta: front-to-back [-180, 180]
+        const clampedGamma = Math.min(Math.max(e.gamma, -25), 25);
+        const clampedBeta = Math.min(Math.max(e.beta - 45, -25), 25);
+        const targetX = (clampedGamma + 25) / 50;
+        const targetY = (clampedBeta + 25) / 50;
+        mouseX.set(targetX);
+        mouseY.set(targetY);
+      }
+    };
+
+    if (
+      window.DeviceOrientationEvent &&
+      typeof (DeviceOrientationEvent as any).requestPermission !== "function"
+    ) {
+      window.addEventListener("deviceorientation", handleOrientation, {
+        passive: true,
+      });
+    }
+    return () => {
+      window.removeEventListener("deviceorientation", handleOrientation);
+    };
+  }, [interactive, reducedMotion, isFlipped, mouseX, mouseY]);
+
+  const handleFlip = (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) e.stopPropagation();
+    if (typeof window !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate([15, 30, 15]);
+      } catch {
+        // Ignored
+      }
+    }
     setIsFlipped(!isFlipped);
   };
 
@@ -168,6 +232,9 @@ export function EsportCard({
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
     >
       <motion.div
         className="w-full h-full relative preserve-3d cursor-pointer rounded-[16px]"
@@ -197,12 +264,12 @@ export function EsportCard({
               <div className="absolute inset-0 opacity-20 pointer-events-none bg-gradient-to-tr from-[#7C3AED]/30 via-[#3B82F6]/30 to-[#34D399]/30 animate-shimmer" />
             )}
 
-            {/* Glare */}
+            {/* Glare: Dynamic Real-time Light Reflection */}
             {!reducedMotion && interactive && !isFlipped && (
               <motion.div
-                className="absolute inset-0 pointer-events-none z-30 opacity-25"
+                className="absolute inset-0 pointer-events-none z-30 opacity-40 mix-blend-overlay"
                 style={{
-                  background: `radial-gradient(circle at ${glareX.get()} ${glareY.get()}, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+                  background: glareBackground,
                 }}
               />
             )}
@@ -327,8 +394,8 @@ export function EsportCard({
                     className={`font-heading font-extrabold uppercase tracking-tight leading-none text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] truncate ${
                       size === "sm"
                         ? "text-base"
-                        : size === "md"
-                        ? "text-xl"
+                        : size === "mobile" || size === "fluid" || size === "md"
+                        ? "text-lg sm:text-xl"
                         : "text-2xl"
                     }`}
                   >

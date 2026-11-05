@@ -384,7 +384,15 @@ export function MobileCardWizard() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className={`relative w-48 h-64 rounded-[18px] bg-gradient-to-b from-[#1C1F2B] via-[#12151E] to-[#0A0C13] border-2 border-[#8C5A3C] shadow-[0_12px_32px_rgba(140,90,60,0.25)] p-3 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
+          className={`relative w-52 h-72 rounded-[18px] bg-gradient-to-b from-[#1C1F2B] via-[#12151E] to-[#0A0C13] border-2 p-3 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
+            rarityTier === "legend"
+              ? "border-[#C084FC] shadow-[0_0_30px_rgba(192,132,252,0.4)]"
+              : rarityTier === "elite"
+              ? "border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.45)]"
+              : rarityTier === "contender"
+              ? "border-[#94A3B8] shadow-[0_0_20px_rgba(148,163,184,0.3)]"
+              : "border-[#8C5A3C] shadow-[0_12px_32px_rgba(140,90,60,0.25)]"
+          } ${
             isFinishing || issuedResult ? "ring-4 ring-[#D4AF37] shadow-[0_0_48px_rgba(212,175,55,0.6)]" : ""
           }`}
         >
@@ -398,14 +406,24 @@ export function MobileCardWizard() {
             />
           )}
 
-          {/* Top Card Info: Rarity & Unverified Badge */}
+          {/* Top Card Info: Rarity & Entity Type */}
           <div className="w-full flex items-center justify-between z-10">
-            <span className="px-2 py-0.5 rounded-full bg-[#8C5A3C]/30 border border-[#8C5A3C]/60 text-[8px] font-mono font-bold text-[#E6B89C] uppercase">
+            <span
+              className={`px-2 py-0.5 rounded-full text-[8px] font-mono font-bold uppercase ${
+                rarityTier === "legend"
+                  ? "bg-[#7C3AED]/30 text-white"
+                  : rarityTier === "elite"
+                  ? "bg-[#D4AF37]/25 text-[#D4AF37]"
+                  : rarityTier === "contender"
+                  ? "bg-[#94A3B8]/25 text-[#F1F5F9]"
+                  : "bg-[#8C5A3C]/30 text-[#E6B89C]"
+              }`}
+            >
               {rarityTier.toUpperCase()}
             </span>
             <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-white/[0.06] border border-white/10">
               <Shield className="w-2.5 h-2.5 text-white/50" />
-              <span className="text-[7px] font-mono text-white/50">UNVERIFIED</span>
+              <span className="text-[7px] font-mono text-white/50 uppercase">{entityType}</span>
             </div>
           </div>
 

@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { MockCardVariant } from "@/data/mockCards";
+import { EsportCard } from "@/components/card/EsportCard";
 
 interface MobilePublicProfileProps {
   card: MockCardVariant;
@@ -151,55 +152,15 @@ export function MobilePublicProfile({ card, isQrScan = false }: MobilePublicProf
 
       {/* CENTER CONTENT */}
       <div className="px-5 flex flex-col items-center gap-4 pt-2">
-        {/* KARTU BESAR DI ATAS DENGAN EFEK 3D TILT */}
-        <motion.div
-          animate={{
-            rotateY: [ -2, 2, -2 ],
-            rotateX: [ 1, -1, 1 ],
-          }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-          className={`relative w-60 h-84 rounded-[20px] bg-gradient-to-b from-[#1C202E] via-[#121622] to-[#0A0D15] border-2 ${rarityTheme.border} p-4 flex flex-col justify-between overflow-hidden shadow-2xl`}
-          style={{ boxShadow: `0 16px 36px ${rarityTheme.glow}` }}
-        >
-          {/* Header Kartu: Rarity & Status */}
-          <div className="w-full flex items-center justify-between text-[8px] font-mono z-10">
-            <span
-              className="px-2 py-0.5 rounded-full font-bold uppercase tracking-wider"
-              style={{ backgroundColor: `${rarityTheme.accent}25`, color: rarityTheme.accent }}
-            >
-              {card.rarity.toUpperCase()}
-            </span>
-            <span className="text-white/40">{card.data.esportId}</span>
-          </div>
-
-          {/* Avatar / Foto */}
-          <div className="relative w-full flex-1 flex flex-col items-center justify-center my-1 z-10">
-            <div className="relative w-26 h-26 rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-[#07080C]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={card.data.avatarUrl}
-                alt={card.data.displayName}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="text-center mt-2">
-              <h2 className="font-heading font-black text-base text-white tracking-wide truncate max-w-[170px]">
-                {card.data.displayName}
-              </h2>
-              <span className="text-[11px] font-mono font-bold text-[#D4AF37] block mt-0.5">
-                @{card.data.ign || card.data.displayName}
-              </span>
-            </div>
-          </div>
-
-          {/* Strip Bawah Kartu: Game + Region */}
-          <div className="w-full pt-1.5 border-t border-white/[0.08] flex items-center justify-between text-[9px] font-mono text-white/70 z-10">
-            <span className="truncate max-w-[110px] text-white/80">
-              {card.data.game} • {card.data.role}
-            </span>
-            <span className="font-bold text-[#D4AF37]">{card.data.region.code}</span>
-          </div>
-        </motion.div>
+        {/* KARTU RESMI 3D PASPOR ATLET */}
+        <EsportCard
+          type={card.type}
+          rarity={card.rarity}
+          verification={card.verification}
+          data={card.data}
+          size="mobile"
+          interactive={true}
+        />
 
         {/* DI BAWAH KARTU: 1 BARIS (Nama, Lencana, Wilayah) */}
         <div className="w-full py-1.5 px-3 rounded-full bg-[#161A24]/90 border border-white/[0.08] flex items-center justify-center gap-2 text-xs font-mono text-white/70">

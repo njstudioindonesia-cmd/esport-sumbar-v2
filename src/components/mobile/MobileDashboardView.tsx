@@ -185,7 +185,7 @@ export function MobileDashboardView() {
                 rarity={userCard.rarity}
                 verification={userCard.verification}
                 data={userCard.data}
-                size="sm"
+                size="mobile"
                 interactive={true}
               />
 

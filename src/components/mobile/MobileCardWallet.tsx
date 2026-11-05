@@ -25,6 +25,7 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { GALLERY_CARDS, MockCardVariant } from "@/data/mockCards";
 import { mapVerificationToCard } from "@/types/card";
+import { EsportCard } from "@/components/card/EsportCard";
 import { MobileBottomBar } from "./MobileBottomBar";
 
 export function MobileCardWallet() {
@@ -83,6 +84,7 @@ export function MobileCardWallet() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [shareFormat, setShareFormat] = useState<"story" | "feed">("story");
   const [copiedLink, setCopiedLink] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const activeCard = myCards[activeCardIndex] || myCards[0] || null;
 
@@ -203,153 +205,16 @@ export function MobileCardWallet() {
         })}
       </div>
 
-      {/* DETAIL KARTU HERO DI TENGAH: 3D TILT & FLIP VERTICAL */}
-      <div className="relative w-full flex-1 flex flex-col items-center justify-center px-6 py-4 z-10 [perspective:1200px]">
-        {/* Flip Instruction Hint (1 baris teks kecil) */}
-        <div
-          onClick={handleFlip}
-          className="mb-2 text-[10px] font-mono text-white/40 flex items-center gap-1 cursor-pointer hover:text-white/70 transition-colors"
-        >
-          <RotateCw className="w-3 h-3" />
-          <span>Ketuk untuk membalik kartu</span>
-        </div>
-
-        {/* 3D FLIPPABLE CARD CONTAINER */}
-        <motion.div
-          animate={{ rotateY: isFlipped ? 180 : 0 }}
-          transition={{ type: "spring", damping: 22, stiffness: 180 }}
-          onClick={handleFlip}
-          className="relative w-64 h-96 [transform-style:preserve-3d] cursor-pointer"
-        >
-          {/* ============================================================== */}
-          {/* SISI DEPAN: KARTU IDENTITAS DIGITAL TCG                        */}
-          {/* ============================================================== */}
-          <div
-            className={`absolute inset-0 [backface-visibility:hidden] rounded-[22px] bg-gradient-to-b from-[#1C202E] via-[#121622] to-[#0A0D15] border-2 ${rarityTheme.border} p-4 flex flex-col justify-between overflow-hidden shadow-2xl`}
-            style={{ boxShadow: `0 16px 40px ${rarityTheme.glow}` }}
-          >
-            {/* Top Row: Rarity Tag + Verification Badge (Dua Elemen Terpisah) */}
-            <div className="w-full flex items-center justify-between z-10">
-              <span
-                className="px-2.5 py-0.5 rounded-full text-[9px] font-mono font-bold uppercase tracking-wider"
-                style={{ backgroundColor: `${rarityTheme.accent}25`, color: rarityTheme.accent }}
-              >
-                {rarityTheme.label}
-              </span>
-
-              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-[8px] font-mono">
-                {activeCard.verification === "verified" ? (
-                  <>
-                    <ShieldCheck className="w-3 h-3 text-[#D4AF37]" />
-                    <span className="text-[#D4AF37] font-bold">VERIFIED</span>
-                  </>
-                ) : activeCard.verification === "regional" ? (
-                  <>
-                    <ShieldCheck className="w-3 h-3 text-[#22C55E]" />
-                    <span className="text-[#22C55E] font-bold">REGIONAL</span>
-                  </>
-                ) : (
-                  <>
-                    <Shield className="w-3 h-3 text-white/40" />
-                    <span className="text-white/40">UNVERIFIED</span>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Avatar / Photo */}
-            <div className="relative w-full flex-1 flex flex-col items-center justify-center my-1 z-10">
-              <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-[#07080C]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={activeCard.data.avatarUrl}
-                  alt={activeCard.data.displayName}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="text-center mt-2.5">
-                <h2 className="font-heading font-black text-lg text-white tracking-wide">
-                  {activeCard.data.displayName}
-                </h2>
-                <span className="text-xs font-mono font-bold text-[#D4AF37] block mt-0.5">
-                  @{activeCard.data.ign || activeCard.data.displayName}
-                </span>
-              </div>
-            </div>
-
-            {/* Footer: Game, Role, ESPORT ID */}
-            <div className="w-full pt-2 border-t border-white/[0.08] flex items-center justify-between text-[9px] font-mono text-white/70 z-10">
-              <span className="truncate max-w-[120px] text-white/80">
-                {activeCard.data.game} • {activeCard.data.role}
-              </span>
-              <span className="font-bold text-[#D4AF37]">{activeCard.data.region.code}</span>
-            </div>
-          </div>
-
-          {/* ============================================================== */}
-          {/* SISI BELAKANG: PRESTASI & RIWAYAT (Ikon + Angka + Nama Singkat)*/}
-          {/* ============================================================== */}
-          <div
-            className={`absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] rounded-[22px] bg-gradient-to-b from-[#141824] via-[#0E111A] to-[#07090F] border-2 ${rarityTheme.border} p-4 flex flex-col justify-between overflow-hidden shadow-2xl`}
-            style={{ boxShadow: `0 16px 40px ${rarityTheme.glow}` }}
-          >
-            {/* Header Belakang: OVR & ESPORT ID */}
-            <div className="w-full flex items-center justify-between border-b border-white/[0.08] pb-2 text-[10px] font-mono">
-              <span className="text-[#D4AF37] font-bold">REKAM JEJAK</span>
-              <span className="text-white/40">{activeCard.data.esportId}</span>
-            </div>
-
-            {/* Konten Prestasi & Riwayat Singkat */}
-            <div className="flex-1 flex flex-col justify-center gap-3 py-2">
-              {/* Prestasi */}
-              <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37]">
-                  <Trophy className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-xs font-heading font-bold text-white block">
-                    Juara 1 • Walikota Padang
-                  </span>
-                  <span className="text-[9px] font-mono text-white/40">2026 • Kota</span>
-                </div>
-              </div>
-
-              {/* Riwayat Tim */}
-              <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#4C7DFF]/20 flex items-center justify-center text-[#4C7DFF]">
-                  <Users className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="text-xs font-heading font-bold text-white block">
-                    Singkarak Esports
-                  </span>
-                  <span className="text-[9px] font-mono text-white/40">2025 - Sekarang</span>
-                </div>
-              </div>
-
-              {/* Rating OVR */}
-              <div className="flex items-center justify-around py-1 text-center">
-                <div>
-                  <span className="text-2xl font-heading font-black text-white block">88</span>
-                  <span className="text-[9px] font-mono text-white/40 uppercase">OVR</span>
-                </div>
-                <div className="w-px h-8 bg-white/10" />
-                <div>
-                  <span className="text-2xl font-heading font-black text-[#22C55E] block">67%</span>
-                  <span className="text-[9px] font-mono text-white/40 uppercase">Win Rate</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Footer Belakang: QR Hint */}
-            <div className="w-full text-center pt-2 border-t border-white/[0.08]">
-              <span className="text-[9px] font-mono text-white/40 uppercase tracking-widest">
-                Paspor Digital ESPORT SUMBAR™
-              </span>
-            </div>
-          </div>
-        </motion.div>
+      {/* DETAIL KARTU HERO DI TENGAH: REAL 3D TCG CARD */}
+      <div className="relative w-full flex-1 flex flex-col items-center justify-center px-4 py-2 z-10">
+        <EsportCard
+          type={activeCard.type}
+          rarity={activeCard.rarity}
+          verification={activeCard.verification}
+          data={activeCard.data}
+          size="mobile"
+          interactive={true}
+        />
       </div>
 
       {/* 3 AKSI IKON BULAT (Bagikan, Unduh, QR) + 1 TOMBOL UTAMA KONTEKSTUAL */}
@@ -372,7 +237,8 @@ export function MobileCardWallet() {
           <button
             onClick={() => {
               triggerHaptic(25);
-              alert("Kartu atlet berhasil disimpan ke perangkat.");
+              setToastMessage("Kartu atlet berhasil disimpan ke perangkat.");
+              setTimeout(() => setToastMessage(null), 2500);
             }}
             className="w-13 h-13 rounded-full bg-[#161A24] border border-white/[0.08] hover:border-[#4C7DFF] text-white/80 hover:text-[#4C7DFF] flex items-center justify-center shadow-lg transition-all active:scale-95"
             aria-label="Unduh"
@@ -402,11 +268,16 @@ export function MobileCardWallet() {
           <span>Ajukan Verifikasi</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
+        {toastMessage && (
+          <div className="w-full text-center py-2 px-3 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-xs font-mono font-bold text-[#D4AF37] animate-fade-in">
+            ✓ {toastMessage}
+          </div>
+        )}
       </div>
     </>
   ) : (
     <div className="flex-1 flex flex-col items-center justify-center p-6 text-center gap-4 z-20">
-      <div className="w-16 h-16 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30 flex items-center justify-center text-[#FF1752] shadow-lg shadow-[#FF1752]/15">
+      <div className="w-16 h-16 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shadow-lg shadow-[#D4AF37]/15">
         <Sparkles className="w-8 h-8" />
       </div>
       <div>
@@ -418,9 +289,9 @@ export function MobileCardWallet() {
       <Link
         href="/me/profile/new"
         onClick={() => triggerHaptic()}
-        className="btn-brand-primary text-xs py-3 px-6 flex items-center gap-2 mt-2"
+        className="w-full max-w-xs py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-black font-heading font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_4px_24px_rgba(212,175,55,0.35)]"
       >
-        <Plus className="w-4 h-4" />
+        <Plus className="w-4 h-4 stroke-[2.5]" />
         <span>Buat Kartu Pertama</span>
       </Link>
     </div>

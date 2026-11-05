@@ -25,7 +25,7 @@ export function mapVerificationToCard(status?: string | null): CardVerification 
   return "unverified";
 }
 
-export type CardSize = "sm" | "md" | "lg";
+export type CardSize = "sm" | "md" | "lg" | "mobile" | "fluid";
 
 export interface CardAchievement {
   title: string;

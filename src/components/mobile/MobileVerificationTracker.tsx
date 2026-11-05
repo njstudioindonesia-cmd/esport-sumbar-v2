@@ -100,22 +100,24 @@ export function MobileVerificationTracker() {
           <ArrowLeft className="w-4 h-4" />
         </button>
 
-        {/* Demo Status Switcher (Kecil di Tengah) */}
-        <div className="flex bg-[#161A24] p-1 rounded-full border border-white/[0.08]">
-          {(["in_progress", "revision", "verified"] as VerificationStatusType[]).map((st) => (
-            <button
-              key={st}
-              onClick={() => {
-                triggerHaptic();
-                setStatus(st);
-              }}
-              className={`px-2.5 py-0.5 rounded-full text-[9px] font-mono uppercase transition-all ${
-                status === st ? "bg-[#D4AF37] text-[#07080C] font-bold" : "text-white/40"
-              }`}
-            >
-              {st === "in_progress" ? "Proses" : st === "revision" ? "Revisi" : "Lolos"}
-            </button>
-          ))}
+        {/* Status Resmi Badge (Tersinkronisasi dengan Data Backend) */}
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161A24] border border-white/[0.08]">
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${
+              status === "verified"
+                ? "bg-[#22C55E]"
+                : status === "revision"
+                ? "bg-amber-400"
+                : "bg-[#D4AF37] animate-pulse"
+            }`}
+          />
+          <span className="text-[10px] font-mono uppercase tracking-wider text-white/90 font-bold">
+            {status === "verified"
+              ? "Lolos PBESI"
+              : status === "revision"
+              ? "Perlu Revisi"
+              : "Verifikasi Berjenjang"}
+          </span>
         </div>
 
         {/* Cincin Progres Kecil: Sisa Hari Masa Berlaku */}

@@ -324,12 +324,12 @@ export function MobileExplore() {
                 const isContender = card.rarity === "contender";
 
                 const frameBorder = isLegend
-                  ? "border-[#D4AF37] shadow-[0_0_16px_rgba(212,175,55,0.25)]"
+                  ? "border-[#C084FC] shadow-[0_0_16px_rgba(192,132,252,0.35)]"
                   : isElite
-                  ? "border-[#22C55E] shadow-[0_0_12px_rgba(34,197,94,0.2)]"
+                  ? "border-[#D4AF37] shadow-[0_0_14px_rgba(212,175,55,0.35)]"
                   : isContender
-                  ? "border-[#4C7DFF] shadow-[0_0_12px_rgba(76,125,255,0.2)]"
-                  : "border-[#8C5A3C]";
+                  ? "border-[#94A3B8] shadow-[0_0_12px_rgba(148,163,184,0.25)]"
+                  : "border-[#8C5A3C] shadow-[0_0_10px_rgba(140,90,60,0.25)]";
 
                 const badgeColor =
                   card.verification === "verified"
