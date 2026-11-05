@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -37,6 +37,7 @@ import { GALLERY_CARDS } from "@/data/mockCards";
 import { MOCK_NEWS } from "@/data/mockNews";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { MobileHome } from "@/components/mobile/MobileHome";
+import { createClient } from "@/lib/supabase/client";
 import type { PlatformStats } from "@/lib/services/stats";
 import type { PublicArticle } from "@/lib/services/news";
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
@@ -49,6 +50,41 @@ interface HomePageClientProps {
 
 export function HomePageClient({ stats, articles, profiles }: HomePageClientProps) {
   const [productCardFlipped, setProductCardFlipped] = useState(false);
+  const [liveArticles, setLiveArticles] = useState<PublicArticle[]>(articles);
+
+  useEffect(() => {
+    setLiveArticles(articles);
+  }, [articles]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("home-news-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "articles",
+        },
+        async () => {
+          try {
+            const res = await fetch("/api/news?status=published");
+            if (res.ok) {
+              const json = await res.json();
+              if (json.articles) setLiveArticles(json.articles);
+            }
+          } catch {
+            // Ignored
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Hero cards: dari database atau fallback ke mock
   const heroCards = profiles.length >= 3
@@ -73,24 +109,24 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
       ];
 
   // News bento articles (1 headline + sub articles)
-  const headlineArticle = articles.length > 0
+  const headlineArticle = liveArticles.length > 0
     ? {
-        id: articles[0].id,
-        title: articles[0].title,
-        slug: articles[0].slug,
-        category: articles[0].category,
-        date: new Date(articles[0].publishedAt).toLocaleDateString("id-ID", {
+        id: liveArticles[0].id,
+        title: liveArticles[0].title,
+        slug: liveArticles[0].slug,
+        category: liveArticles[0].category,
+        date: new Date(liveArticles[0].publishedAt).toLocaleDateString("id-ID", {
           day: "numeric",
           month: "short",
           year: "numeric",
         }),
         readTime: "3 min baca",
-        imageUrl: articles[0].coverImageUrl || "/images/news-placeholder.jpg",
+        imageUrl: liveArticles[0].coverImageUrl || "/images/news-placeholder.jpg",
       }
     : (FLAGS.SHOW_DEMO_DATA ? (MOCK_NEWS.find((n) => n.isHeadline) || MOCK_NEWS[0]) : null);
 
-  const subArticles = articles.length > 1
-    ? articles.slice(1, 4).map((a) => ({
+  const subArticles = liveArticles.length > 1
+    ? liveArticles.slice(1, 4).map((a) => ({
         id: a.id,
         title: a.title,
         slug: a.slug,
@@ -132,7 +168,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
     <>
       {/* MOBILE EXPERIENCE (< 1024px Viewport) */}
       <div className="block lg:hidden min-h-screen bg-[var(--bg-base)]">
-        <MobileHome stats={stats} articles={articles} profiles={profiles} />
+        <MobileHome stats={stats} articles={liveArticles} profiles={profiles} />
       </div>
 
       {/* DESKTOP EXPERIENCE (≥ 1024px Cinematic Viewport) */}

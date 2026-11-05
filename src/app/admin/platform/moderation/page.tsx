@@ -21,12 +21,36 @@ import {
 import { AdminPlatformNavbar } from "@/components/admin/AdminPlatformNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { ProfileReportItem } from "@/data/mockAdminData";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminPlatformModerationPage() {
   const [reports, setReports] = useState<ProfileReportItem[]>([]);
   const [selectedReport, setSelectedReport] = useState<ProfileReportItem | null>(null);
   const [forwardReason, setForwardReason] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    // Supabase Realtime WebSocket Subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-platform-reports")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reports",
+        },
+        () => {
+          // If reports table changes, reload
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);

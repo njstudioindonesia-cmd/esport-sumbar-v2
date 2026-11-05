@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import {
   Server,
   LayoutDashboard,
@@ -37,6 +38,20 @@ export function AdminPlatformNavbar() {
       }
     }
     loadMetrics();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("navbar-platform-metrics")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "reports" },
+        () => loadMetrics()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const navLinks = [

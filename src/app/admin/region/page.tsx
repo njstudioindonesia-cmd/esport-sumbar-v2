@@ -20,6 +20,7 @@ import {
 import { AdminRegionNavbar } from "@/components/admin/AdminRegionNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileAdminPortal } from "@/components/mobile/MobileAdminPortal";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminRegionDashboardPage() {
   const [metrics, setMetrics] = React.useState({
@@ -42,6 +43,21 @@ export default function AdminRegionDashboardPage() {
       }
     }
     loadMetrics();
+
+    // Supabase Realtime WebSocket Subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-region-metrics")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "verification_requests" },
+        () => loadMetrics()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const pendingCount = metrics.pending;

@@ -17,6 +17,7 @@ import {
   Shield,
 } from "lucide-react";
 import { BrandBar, BrandLogo } from "@/components/brand";
+import { createClient } from "@/lib/supabase/client";
 
 export function AdminProvinceNavbar() {
   const pathname = usePathname();
@@ -37,6 +38,20 @@ export function AdminProvinceNavbar() {
       }
     }
     loadMetrics();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("navbar-province-metrics")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "verification_requests" },
+        () => loadMetrics()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const navLinks = [

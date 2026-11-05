@@ -20,6 +20,7 @@ import { AdminProvinceNavbar } from "@/components/admin/AdminProvinceNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { MobileAdminPortal } from "@/components/mobile/MobileAdminPortal";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminProvinceDashboardPage() {
   const [metrics, setMetrics] = React.useState({
@@ -41,6 +42,21 @@ export default function AdminProvinceDashboardPage() {
       }
     }
     loadMetrics();
+
+    // Supabase Realtime WebSocket Subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-province-metrics")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "verification_requests" },
+        () => loadMetrics()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const pendingGoldVerification = metrics.pendingGold;

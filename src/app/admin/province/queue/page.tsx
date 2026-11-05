@@ -22,6 +22,7 @@ import { AdminProvinceNavbar } from "@/components/admin/AdminProvinceNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { VerificationQueueItem } from "@/data/mockAdminData";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminProvinceQueuePage() {
   const [queueItems, setQueueItems] = useState<VerificationQueueItem[]>([]);
@@ -51,6 +52,27 @@ export default function AdminProvinceQueuePage() {
       }
     }
     loadQueue();
+
+    // Supabase Realtime WebSocket Subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-province-queue")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "verification_requests",
+        },
+        () => {
+          loadQueue();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const filteredItems = useMemo(() => {

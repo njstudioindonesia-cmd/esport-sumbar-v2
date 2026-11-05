@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { BrandBar, BrandLogo } from "@/components/brand";
+import { createClient } from "@/lib/supabase/client";
 
 export function AdminRegionNavbar() {
   const pathname = usePathname();
@@ -40,6 +41,20 @@ export function AdminRegionNavbar() {
       }
     }
     loadMetrics();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel("navbar-region-metrics")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "verification_requests" },
+        () => loadMetrics()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const activeRegion =

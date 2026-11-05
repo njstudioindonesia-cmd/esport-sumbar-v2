@@ -24,6 +24,7 @@ import {
 import { AdminRegionNavbar } from "@/components/admin/AdminRegionNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { VerificationQueueItem } from "@/data/mockAdminData";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminRegionQueuePage() {
   const [queueItems, setQueueItems] = useState<VerificationQueueItem[]>([]);
@@ -54,6 +55,27 @@ export default function AdminRegionQueuePage() {
       }
     }
     loadQueue();
+
+    // Supabase Realtime WebSocket Subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-region-queue")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "verification_requests",
+        },
+        () => {
+          loadQueue();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Selection for bulk actions

@@ -20,6 +20,7 @@ import {
 import { AdminPlatformNavbar } from "@/components/admin/AdminPlatformNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { MobileAdminPortal } from "@/components/mobile/MobileAdminPortal";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminPlatformDashboardPage() {
   const [metrics, setMetrics] = React.useState({
@@ -46,6 +47,26 @@ export default function AdminPlatformDashboardPage() {
       }
     }
     loadMetrics();
+
+    // Supabase Realtime WebSocket Subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel("realtime-platform-metrics")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "articles" },
+        () => loadMetrics()
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "profiles" },
+        () => loadMetrics()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
