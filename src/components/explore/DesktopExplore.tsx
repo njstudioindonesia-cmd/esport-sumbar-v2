@@ -65,7 +65,7 @@ export function DesktopExplore() {
         const res = await fetch("/api/profiles?limit=100");
         if (res.ok) {
           const json = await res.json();
-          if (json.profiles && json.profiles.length > 0) {
+          if (json.profiles) {
             setDbCards(
               json.profiles.map((p: any) => ({
                 id: p.id,
@@ -87,9 +87,11 @@ export function DesktopExplore() {
               }))
             );
           }
+        } else {
+          setDbCards([]);
         }
       } catch {
-        // Fallback to GALLERY_CARDS
+        setDbCards([]);
       }
     }
     fetchLiveProfiles();
@@ -124,7 +126,7 @@ export function DesktopExplore() {
 
   // Filtered Cards calculation
   const filteredCards = useMemo(() => {
-    const list = (dbCards || GALLERY_CARDS).filter((card) => {
+    const list = (dbCards !== null ? dbCards : []).filter((card) => {
       // Entity filter
       if (selectedEntity !== "all" && card.type !== selectedEntity) return false;
       // Game filter

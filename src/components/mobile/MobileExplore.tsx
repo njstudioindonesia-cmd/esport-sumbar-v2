@@ -45,7 +45,7 @@ export function MobileExplore() {
         const res = await fetch("/api/profiles?limit=60");
         if (res.ok) {
           const json = await res.json();
-          if (json.profiles && json.profiles.length > 0) {
+          if (json.profiles) {
             setDbCards(
               json.profiles.map((p: any) => ({
                 id: p.id,
@@ -66,10 +66,14 @@ export function MobileExplore() {
                 },
               }))
             );
+          } else {
+            setDbCards([]);
           }
+        } else {
+          setDbCards([]);
         }
       } catch {
-        // Fallback to GALLERY_CARDS
+        setDbCards([]);
       }
     }
     loadLiveCards();
@@ -97,7 +101,7 @@ export function MobileExplore() {
 
   // Filtered Cards
   const filteredCards = useMemo(() => {
-    return (dbCards || GALLERY_CARDS).filter((card) => {
+    return (dbCards !== null ? dbCards : []).filter((card) => {
       // Entity match
       if (selectedEntity !== "all" && card.type !== selectedEntity) return false;
       // Region match

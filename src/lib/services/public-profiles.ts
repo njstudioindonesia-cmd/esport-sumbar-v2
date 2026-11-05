@@ -331,50 +331,73 @@ export async function getPublicProfilesList(
 
     const { data, count, error } = await query;
 
-    if (!error && data && data.length > 0) {
-      const mapped = data.map((p: any) => ({
-        id: p.id,
-        accountId: p.account_id,
-        entityType: p.entity_type as EntityType,
-        esportId: p.esport_id,
-        slug: p.slug,
-        displayName: p.display_name,
-        ign: p.ign,
-        regionId: p.region_id,
-        regionName: p.region_name || "Sumatera Barat",
-        regionCode: p.region_code || "SB",
-        regionType: p.region_type,
-        mainGameId: p.main_game_id,
-        mainGameName: p.main_game_name || "Esport",
-        mainGameShort: p.main_game_short || "ESP",
-        roleName: p.role_name,
-        avatarUrl: p.avatar_url,
-        coverUrl: (p.attributes as any)?.cover_url || p.cover_path,
-        bio: p.bio,
-        attributes: (p.attributes as Record<string, any>) || {},
-        visibility: (p.visibility_jsonb as Record<string, boolean>) || {},
-        verificationStatus: (p.verification_status as VerificationStatus) || "unverified",
-        verifiedAt: p.verified_at,
-        verificationExpiresAt: p.verification_expires_at,
-        verifiedBadgeNo: p.verified_badge_no,
-        rarityTier: (p.rarity_tier as RarityTier) || "rookie",
-        completenessScore: p.completeness_score || 50,
-        isDemo: p.is_demo ?? false,
-        createdAt: p.created_at,
-        updatedAt: p.updated_at,
-      }));
+    if (!error && data) {
+      if (data.length === 0 && !FLAGS.SHOW_DEMO_DATA) {
+        return {
+          profiles: [],
+          total: 0,
+          page,
+          limit,
+          totalPages: 0,
+        };
+      }
 
-      const totalCount = count || mapped.length;
-      return {
-        profiles: mapped,
-        total: totalCount,
-        page,
-        limit,
-        totalPages: Math.ceil(totalCount / limit),
-      };
+      if (data.length > 0) {
+        const mapped = data.map((p: any) => ({
+          id: p.id,
+          accountId: p.account_id,
+          entityType: p.entity_type as EntityType,
+          esportId: p.esport_id,
+          slug: p.slug,
+          displayName: p.display_name,
+          ign: p.ign,
+          regionId: p.region_id,
+          regionName: p.region_name || "Sumatera Barat",
+          regionCode: p.region_code || "SB",
+          regionType: p.region_type,
+          mainGameId: p.main_game_id,
+          mainGameName: p.main_game_name || "Esport",
+          mainGameShort: p.main_game_short || "ESP",
+          roleName: p.role_name,
+          avatarUrl: p.avatar_url,
+          coverUrl: (p.attributes as any)?.cover_url || p.cover_path,
+          bio: p.bio,
+          attributes: (p.attributes as Record<string, any>) || {},
+          visibility: (p.visibility_jsonb as Record<string, boolean>) || {},
+          verificationStatus: (p.verification_status as VerificationStatus) || "unverified",
+          verifiedAt: p.verified_at,
+          verificationExpiresAt: p.verification_expires_at,
+          verifiedBadgeNo: p.verified_badge_no,
+          rarityTier: (p.rarity_tier as RarityTier) || "rookie",
+          completenessScore: p.completeness_score || 50,
+          isDemo: p.is_demo ?? false,
+          createdAt: p.created_at,
+          updatedAt: p.updated_at,
+        }));
+
+        const totalCount = count || mapped.length;
+        return {
+          profiles: mapped,
+          total: totalCount,
+          page,
+          limit,
+          totalPages: Math.ceil(totalCount / limit),
+        };
+      }
     }
   } catch (err) {
     console.warn("Public profiles query error, falling back to mock catalog:", err);
+  }
+
+  // Jika SHOW_DEMO_DATA dinonaktifkan, jangan pernah fallback ke mock cards
+  if (!FLAGS.SHOW_DEMO_DATA) {
+    return {
+      profiles: [],
+      total: 0,
+      page,
+      limit,
+      totalPages: 0,
+    };
   }
 
   // Fallback ke mock cards jika DB belum siap

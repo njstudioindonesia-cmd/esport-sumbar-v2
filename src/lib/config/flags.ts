@@ -6,16 +6,10 @@
 export const FLAGS = {
   /**
    * Apakah data dengan penanda `is_demo = true` diizinkan tampil di antarmuka publik.
-   * Default: false di produksi, true di lokal jika disetel.
+   * Dipastikan false untuk mode produksi bersih (hanya menampilkan data riil pendaftar).
    */
   get SHOW_DEMO_DATA(): boolean {
-    if (typeof window !== "undefined") {
-      return process.env.NEXT_PUBLIC_SHOW_DEMO_DATA === "true";
-    }
-    return (
-      process.env.NEXT_PUBLIC_SHOW_DEMO_DATA === "true" ||
-      process.env.SHOW_DEMO_DATA === "true"
-    );
+    return false;
   },
 
   /**
