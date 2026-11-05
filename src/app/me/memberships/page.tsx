@@ -18,11 +18,13 @@ import {
   X,
   PlusCircle,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
 import { DesktopMembershipsView } from "@/components/dashboard/DesktopMembershipsView";
+import { MobileBottomBar } from "@/components/mobile/MobileBottomBar";
 
 export default function MembershipsPage() {
   const [activeTab, setActiveTab] = useState<"invitations" | "requests" | "my_teams" | "history">("invitations");
@@ -92,8 +94,33 @@ export default function MembershipsPage() {
       {/* ========================================================= */}
       {/* MOBILE VIEW (< 1024px): PWA MEMBERSHIP CONTAINER          */}
       {/* ========================================================= */}
-      <div className="block lg:hidden min-h-[100dvh] w-full text-white">
-        <Navbar />
+      <div className="block lg:hidden min-h-[100dvh] w-full text-white pb-28">
+        <header className="sticky top-0 z-30 px-4 pt-3 pb-3 bg-[#07080C]/90 backdrop-blur-2xl border-b border-white/[0.08] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/dashboard"
+              className="w-10 h-10 rounded-full bg-[#161A24] border border-white/[0.08] flex items-center justify-center text-white/70 hover:text-white"
+              aria-label="Kembali ke Dashboard"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div>
+              <h1 className="text-sm font-heading font-black text-white uppercase tracking-wider">
+                Tim &amp; Roster
+              </h1>
+              <span className="text-[10px] font-mono text-[#D4AF37]">
+                Relasi Keanggotaan
+              </span>
+            </div>
+          </div>
+
+          <Link
+            href="/teams"
+            className="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-white/70 hover:text-white"
+          >
+            Cari Tim
+          </Link>
+        </header>
 
         {/* TOAST NOTIFICATION */}
         {toastMessage && (
@@ -105,23 +132,16 @@ export default function MembershipsPage() {
           </div>
         )}
 
-        <div className="max-w-md mx-auto px-4 pt-24 pb-20">
-          <div className="flex items-center justify-between mb-6">
+        <div className="max-w-md mx-auto px-4 pt-5 pb-8">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-heading font-black text-white uppercase tracking-tight">
-                Tim &amp; Roster
-              </h1>
-              <p className="text-xs text-white/50 mt-1">
-                Kelola afiliasi tim dan riwayat transfer atlet.
+              <h2 className="text-base font-heading font-black text-white uppercase tracking-tight">
+                Afiliasi Tim Anda
+              </h2>
+              <p className="text-[11px] text-white/50 mt-0.5">
+                Kelola status klub resmi dan riwayat transfer atlet.
               </p>
             </div>
-            <Link
-              href="/teams"
-              className="px-3 py-1.5 rounded-xl bg-white/[0.06] border border-white/10 text-xs font-mono text-[#D4AF37] flex items-center gap-1"
-            >
-              <span>Jelajah</span>
-              <ArrowRight className="w-3 h-3" />
-            </Link>
           </div>
 
           {/* TAB SELECTION */}
@@ -208,7 +228,8 @@ export default function MembershipsPage() {
           )}
         </div>
 
-        <Footer />
+        {/* Mobile Persistent Bottom Bar */}
+        <MobileBottomBar />
       </div>
     </main>
   );

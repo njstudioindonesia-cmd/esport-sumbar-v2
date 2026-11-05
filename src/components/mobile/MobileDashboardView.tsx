@@ -199,13 +199,23 @@ export function MobileDashboardView() {
                   <span>Edit Profil</span>
                 </Link>
 
-                <Link
-                  href="/me/verification"
-                  className="h-9 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border border-[#D4AF37]/40 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-1.5"
-                >
-                  <ShieldCheck className="w-3 h-3" />
-                  <span>Verifikasi</span>
-                </Link>
+                {entityType === "team" ? (
+                  <Link
+                    href={`/me/team/${activeProfile.id}/roster`}
+                    className="h-9 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border border-[#D4AF37]/40 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-1.5"
+                  >
+                    <Users className="w-3 h-3" />
+                    <span>Roster Tim</span>
+                  </Link>
+                ) : (
+                  <Link
+                    href="/me/verification"
+                    className="h-9 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border border-[#D4AF37]/40 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-1.5"
+                  >
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>Verifikasi</span>
+                  </Link>
+                )}
 
                 <button
                   type="button"

@@ -183,6 +183,40 @@ export function AdminProvinceNavbar() {
           <strong className="text-[#D4AF37]">&le; 3 Hari Kerja</strong>
         </div>
       </div>
+
+      {/* MOBILE HORIZONTAL NAVIGATION STRIP (< 640px) */}
+      <div className="flex sm:hidden overflow-x-auto gap-1.5 px-4 py-2 no-scrollbar border-t border-white/[0.06] bg-[#0E1118]">
+        {navLinks.map((link) => {
+          const Icon = link.icon;
+          const isActive = link.exact
+            ? pathname === link.href
+            : pathname.startsWith(link.href);
+
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-heading font-semibold uppercase tracking-wider shrink-0 transition-colors ${
+                isActive
+                  ? "bg-[#D4AF37] text-black shadow-sm font-bold"
+                  : "bg-white/[0.04] text-gray-300 hover:text-white"
+              }`}
+            >
+              <Icon className={`w-3 h-3 ${isActive ? "text-black" : "text-gray-400"}`} />
+              <span>{link.label}</span>
+              {link.badge && (
+                <span
+                  className={`ml-1 px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold ${
+                    isActive ? "bg-black text-[#D4AF37]" : "bg-[#D4AF37] text-black"
+                  }`}
+                >
+                  {link.badge}
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </div>
     </header>
   );
 }

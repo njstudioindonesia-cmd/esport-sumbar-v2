@@ -49,6 +49,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
     role: string;
     displayName?: string;
     entityType?: string;
+    slug?: string;
   } | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
 
@@ -70,7 +71,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
           supabase.from("accounts").select("role").eq("id", data.user.id).maybeSingle(),
           supabase
             .from("profiles")
-            .select("display_name, entity_type")
+            .select("display_name, entity_type, slug")
             .eq("account_id", data.user.id)
             .order("created_at", { ascending: false })
             .limit(1),
@@ -81,6 +82,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
             role: accRes.data?.role || "user",
             displayName: profile?.display_name || data.user.user_metadata?.full_name || data.user.email?.split("@")[0],
             entityType: profile?.entity_type || "player",
+            slug: profile?.slug || undefined,
           });
         });
       }
@@ -113,7 +115,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
       {/* SIDEBAR KIRI RAMPING DAPAT DILIPAT                        */}
       {/* ========================================================= */}
       <aside
-        className={`sticky top-0 h-screen border-r border-white/[0.08] bg-[#0B0D14] flex flex-col justify-between transition-all duration-300 z-40 ${
+        className={`sticky top-0 h-screen border-r border-white/[0.08] bg-[#0B0D14] hidden lg:flex flex-col justify-between transition-all duration-300 z-40 ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
@@ -348,7 +350,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
 
             {/* Public Profile View Shortcut */}
             <Link
-              href="/player/sutan_aim"
+              href={userSession?.slug ? `/${userSession.entityType || "player"}/${userSession.slug}` : "/dashboard"}
               target="_blank"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-xs font-mono text-[#D4AF37] transition-all"
             >

@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
 import { EditProfileClientForm } from "./EditProfileClientForm";
+import { MobileProfileEditView } from "@/components/mobile/MobileProfileEditView";
 import type { Metadata } from "next";
 
 export const instant = false;
@@ -71,9 +72,10 @@ export default async function EditProfilePage({
   };
 
   return (
-    <DesktopUserShell breadcrumb="Edit Profil">
-      <div className="max-w-4xl mx-auto py-4">
-        <EditProfileClientForm
+    <main className="min-h-screen w-full bg-[#07080C]">
+      {/* Mobile Flow (< 1024px): Dedicated Ergonomic Mobile Form */}
+      <div className="block lg:hidden min-h-[100dvh] w-full">
+        <MobileProfileEditView
           profileId={profile.id}
           entityType={profile.entity_type}
           initialDisplayName={profile.display_name}
@@ -85,6 +87,25 @@ export default async function EditProfilePage({
           slug={profile.slug}
         />
       </div>
-    </DesktopUserShell>
+
+      {/* Desktop Flow (>= 1024px): Full Shell with Sidebar */}
+      <div className="hidden lg:block w-full min-h-screen">
+        <DesktopUserShell breadcrumb="Edit Profil">
+          <div className="max-w-4xl mx-auto py-4">
+            <EditProfileClientForm
+              profileId={profile.id}
+              entityType={profile.entity_type}
+              initialDisplayName={profile.display_name}
+              initialIgn={profile.ign || ""}
+              initialBio={profile.bio || ""}
+              initialRoleName={profile.role_name || ""}
+              initialAttributes={initialAttributes}
+              verificationStatus={profile.verification_status}
+              slug={profile.slug}
+            />
+          </div>
+        </DesktopUserShell>
+      </div>
+    </main>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ArrowLeft,
   MoreVertical,
@@ -20,6 +21,7 @@ import {
   Sparkles,
   MapPin,
   X,
+  Edit3,
 } from "lucide-react";
 import { MockCardVariant } from "@/data/mockCards";
 import { EsportCard } from "@/components/card/EsportCard";
@@ -27,9 +29,10 @@ import { EsportCard } from "@/components/card/EsportCard";
 interface MobilePublicProfileProps {
   card: MockCardVariant;
   isQrScan?: boolean;
+  isOwner?: boolean;
 }
 
-export function MobilePublicProfile({ card, isQrScan = false }: MobilePublicProfileProps) {
+export function MobilePublicProfile({ card, isQrScan = false, isOwner = false }: MobilePublicProfileProps) {
   const router = useRouter();
 
   // Active tab: Ringkasan, Prestasi, Tim
@@ -346,14 +349,24 @@ export function MobilePublicProfile({ card, isQrScan = false }: MobilePublicProf
           <Share2 className="w-5 h-5" />
         </button>
 
-        {/* Tombol Utama: "Ajak Gabung" */}
-        <button
-          onClick={handleActionClick}
-          className="flex-1 h-14 rounded-full bg-[#4C7DFF] text-white hover:bg-[#3B6BE8] font-heading font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(76,125,255,0.3)] transition-all active:scale-[0.98]"
-        >
-          <UserPlus className="w-4 h-4" />
-          <span>Ajak Gabung</span>
-        </button>
+        {/* Tombol Utama: "Edit Profil" (jika pemilik) atau "Ajak Gabung" (jika publik) */}
+        {isOwner ? (
+          <Link
+            href={`/me/profile/${card.id}/edit`}
+            className="flex-1 h-14 rounded-full bg-gradient-to-r from-[#D4AF37] to-amber-400 text-black font-heading font-black text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(212,175,55,0.3)] transition-all active:scale-[0.98]"
+          >
+            <Edit3 className="w-4 h-4 text-black" />
+            <span>Edit Profil Saya</span>
+          </Link>
+        ) : (
+          <button
+            onClick={handleActionClick}
+            className="flex-1 h-14 rounded-full bg-[#4C7DFF] text-white hover:bg-[#3B6BE8] font-heading font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-[0_8px_24px_rgba(76,125,255,0.3)] transition-all active:scale-[0.98]"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span>Ajak Gabung</span>
+          </button>
+        )}
       </div>
 
       {/* FEEDBACK TOAST RINGKAS */}
