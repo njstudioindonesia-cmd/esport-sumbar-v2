@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -20,6 +20,24 @@ import { BrandBar, BrandLogo } from "@/components/brand";
 
 export function AdminPlatformNavbar() {
   const pathname = usePathname();
+  const [reportsCount, setReportsCount] = useState<number>(0);
+
+  useEffect(() => {
+    async function loadMetrics() {
+      try {
+        const res = await fetch("/api/admin/metrics");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.platform?.totalReports) {
+            setReportsCount(json.platform.totalReports);
+          }
+        }
+      } catch {
+        // Ignored
+      }
+    }
+    loadMetrics();
+  }, []);
 
   const navLinks = [
     {
@@ -47,7 +65,7 @@ export function AdminPlatformNavbar() {
       href: "/admin/platform/moderation",
       label: "Moderasi Laporan",
       icon: Flag,
-      badge: "2",
+      badge: reportsCount > 0 ? String(reportsCount) : undefined,
       badgeColor: "bg-red-500 text-white",
     },
     {

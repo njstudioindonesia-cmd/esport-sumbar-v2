@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -23,6 +23,24 @@ export function AdminRegionNavbar() {
   const pathname = usePathname();
   const [activeRegionCode, setActiveRegionCode] = useState("PDG");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [pendingRegionCount, setPendingRegionCount] = useState<number>(0);
+
+  useEffect(() => {
+    async function loadMetrics() {
+      try {
+        const res = await fetch("/api/admin/metrics");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.region?.pending) {
+            setPendingRegionCount(json.region.pending);
+          }
+        }
+      } catch {
+        // Ignored
+      }
+    }
+    loadMetrics();
+  }, []);
 
   const activeRegion =
     REGIONS_DETAIL.find((r) => r.code === activeRegionCode) || REGIONS_DETAIL[0];
@@ -38,7 +56,7 @@ export function AdminRegionNavbar() {
       href: "/admin/region/queue",
       label: "Antrean Pengajuan",
       icon: Inbox,
-      badge: "5",
+      badge: pendingRegionCount > 0 ? String(pendingRegionCount) : undefined,
       badgeColor: "bg-[#D4AF37] text-black",
     },
     {

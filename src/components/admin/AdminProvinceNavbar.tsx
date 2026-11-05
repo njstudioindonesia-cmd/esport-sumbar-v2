@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -20,6 +20,24 @@ import { BrandBar, BrandLogo } from "@/components/brand";
 
 export function AdminProvinceNavbar() {
   const pathname = usePathname();
+  const [pendingGoldCount, setPendingGoldCount] = useState<number>(0);
+
+  useEffect(() => {
+    async function loadMetrics() {
+      try {
+        const res = await fetch("/api/admin/metrics");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.province?.pendingGold) {
+            setPendingGoldCount(json.province.pendingGold);
+          }
+        }
+      } catch {
+        // Ignored
+      }
+    }
+    loadMetrics();
+  }, []);
 
   const navLinks = [
     {
@@ -32,7 +50,7 @@ export function AdminProvinceNavbar() {
       href: "/admin/province/queue",
       label: "Antrean Pengesahan Emas",
       icon: Inbox,
-      badge: "5",
+      badge: pendingGoldCount > 0 ? String(pendingGoldCount) : undefined,
       badgeColor: "bg-[#D4AF37] text-black",
     },
     {
