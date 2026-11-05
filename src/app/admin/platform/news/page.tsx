@@ -25,6 +25,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Article } from "@/data/mockNews";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { saveArticleAction, deleteArticleAction } from "@/app/actions/news";
+import { createClient } from "@/lib/supabase/client";
 
 interface NewsItemWithStats extends Article {
   status: "published" | "draft" | "archived";
@@ -103,6 +104,23 @@ export default function AdminPlatformNewsPage() {
 
   useEffect(() => {
     loadArticles();
+
+    // Supabase Realtime Listener
+    const supabase = createClient();
+    const channel = supabase
+      .channel("admin-articles-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "articles" },
+        () => {
+          loadArticles();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [loadArticles]);
 
   const handleOpenCreateModal = () => {

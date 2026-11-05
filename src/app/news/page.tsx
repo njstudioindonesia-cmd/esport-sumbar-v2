@@ -19,6 +19,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MOCK_NEWS, Article } from "@/data/mockNews";
 import { FLAGS } from "@/lib/config/flags";
+import { createClient } from "@/lib/supabase/client";
 
 export default function NewsIndexPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -27,49 +28,67 @@ export default function NewsIndexPage() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
-    async function loadNews() {
-      try {
-        const res = await fetch("/api/news?limit=30");
-        if (res.ok) {
-          const json = await res.json();
-          if (json.articles && Array.isArray(json.articles) && json.articles.length > 0) {
-            setArticles(
-              json.articles.map((a: any, idx: number) => ({
-                id: a.id,
-                title: a.title,
-                slug: a.slug,
-                excerpt: a.summary || (a.content ? a.content.slice(0, 150) + "..." : ""),
-                content: a.content ? [a.content] : [],
-                category: a.category,
-                region: a.regionName || "Sumatera Barat",
-                author: a.authorName || "Humas ESI Sumbar",
-                date: new Date(a.publishedAt).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                }),
-                readTime: "3 min baca",
-                imageUrl: a.coverImageUrl || "/images/news-placeholder.jpg",
-                coverImage: a.coverImageUrl || undefined,
-                isHeadline: idx === 0,
-              }))
-            );
-          } else {
-            // Jika DB kosong, hanya tampilkan mock bila flag demo aktif
-            setArticles(FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS : []);
-          }
+  const loadNews = React.useCallback(async () => {
+    try {
+      const res = await fetch("/api/news?limit=30");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.articles && Array.isArray(json.articles) && json.articles.length > 0) {
+          setArticles(
+            json.articles.map((a: any, idx: number) => ({
+              id: a.id,
+              title: a.title,
+              slug: a.slug,
+              excerpt: a.summary || (a.content ? a.content.slice(0, 150) + "..." : ""),
+              content: a.content ? [a.content] : [],
+              category: a.category,
+              region: a.regionName || "Sumatera Barat",
+              author: a.authorName || "Humas ESI Sumbar",
+              date: new Date(a.publishedAt).toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }),
+              readTime: "3 min baca",
+              imageUrl: a.coverImageUrl || "/images/news-placeholder.jpg",
+              coverImage: a.coverImageUrl || undefined,
+              isHeadline: idx === 0,
+            }))
+          );
         } else {
+          // Jika DB kosong, hanya tampilkan mock bila flag demo aktif
           setArticles(FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS : []);
         }
-      } catch {
+      } else {
         setArticles(FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS : []);
-      } finally {
-        setIsLoading(false);
       }
+    } catch {
+      setArticles(FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS : []);
+    } finally {
+      setIsLoading(false);
     }
-    loadNews();
   }, []);
+
+  React.useEffect(() => {
+    loadNews();
+
+    // Supabase Realtime Listener: dengarkan perubahan tabel articles secara live
+    const supabase = createClient();
+    const channel = supabase
+      .channel("public-articles-realtime")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "articles" },
+        () => {
+          loadNews();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadNews]);
 
   const categories = [
     { id: "all", label: "Semua Kategori" },
