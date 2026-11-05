@@ -29,7 +29,23 @@ export default function AdminPlatformModerationPage() {
   const [forwardReason, setForwardReason] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  const loadReports = React.useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/reports");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.reports && Array.isArray(json.reports)) {
+          setReports(json.reports);
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to load reports:", err);
+    }
+  }, []);
+
   React.useEffect(() => {
+    loadReports();
+
     // Supabase Realtime WebSocket Subscription
     const supabase = createClient();
     const channel = supabase
@@ -42,7 +58,7 @@ export default function AdminPlatformModerationPage() {
           table: "reports",
         },
         () => {
-          // If reports table changes, reload
+          loadReports();
         }
       )
       .subscribe();
@@ -50,22 +66,45 @@ export default function AdminPlatformModerationPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [loadReports]);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  const handleMarkResolved = (id: string) => {
+  const handleMarkResolved = async (id: string) => {
+    try {
+      await fetch("/api/admin/reports", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reportId: id, status: "reviewed_clean" }),
+      });
+    } catch (err) {
+      console.warn("Update report error:", err);
+    }
     setReports((prev) =>
       prev.map((r) => (r.id === id ? { ...r, status: "reviewed_clean" } : r))
     );
     showToast("Laporan ditandai telah ditinjau dan dinyatakan aman (tidak ada pelanggaran).");
   };
 
-  const handleForwardToProvince = () => {
+  const handleForwardToProvince = async () => {
     if (!selectedReport || !forwardReason.trim()) return;
+
+    try {
+      await fetch("/api/admin/reports", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reportId: selectedReport.id,
+          status: "forwarded_to_province",
+          resolutionNotes: forwardReason.trim(),
+        }),
+      });
+    } catch (err) {
+      console.warn("Forward report error:", err);
+    }
 
     setReports((prev) =>
       prev.map((r) =>
