@@ -11,6 +11,7 @@ export interface PublicArticle {
   regionId: string | null;
   regionName?: string;
   authorName?: string;
+  status?: string;
   publishedAt: string;
 }
 
@@ -21,20 +22,26 @@ export async function getLatestArticles(options?: {
   limit?: number;
   category?: string;
   regionId?: string;
+  status?: "draft" | "published" | "archived" | "all";
 }): Promise<PublicArticle[]> {
   try {
     const supabase = createPublicServerClient();
     let query = supabase
       .from("articles")
-      .select("id, title, slug, summary, content, category, cover_image_url, region_id, published_at, regions(name)")
-      .eq("status", "published")
+      .select("id, title, slug, summary, content, category, cover_image_url, region_id, status, published_at, regions(name)")
       .order("published_at", { ascending: false });
 
-    if (options?.category) {
+    if (options?.status && options.status !== "all") {
+      query = query.eq("status", options.status);
+    } else if (!options?.status) {
+      query = query.eq("status", "published");
+    }
+
+    if (options?.category && options.category !== "all") {
       query = query.eq("category", options.category);
     }
 
-    if (options?.regionId) {
+    if (options?.regionId && options.regionId !== "all") {
       query = query.eq("region_id", options.regionId);
     }
 
@@ -55,6 +62,7 @@ export async function getLatestArticles(options?: {
         coverImageUrl: item.cover_image_url,
         regionId: item.region_id,
         regionName: item.regions?.name,
+        status: item.status,
         publishedAt: item.published_at || new Date().toISOString(),
       }));
     }
@@ -73,7 +81,7 @@ export async function getArticleBySlug(slug: string): Promise<PublicArticle | nu
     const supabase = createPublicServerClient();
     const { data, error } = await supabase
       .from("articles")
-      .select("id, title, slug, summary, content, category, cover_image_url, region_id, published_at, regions(name)")
+      .select("id, title, slug, summary, content, category, cover_image_url, region_id, status, published_at, regions(name)")
       .eq("slug", slug)
       .eq("status", "published")
       .maybeSingle();
@@ -89,6 +97,7 @@ export async function getArticleBySlug(slug: string): Promise<PublicArticle | nu
         coverImageUrl: data.cover_image_url,
         regionId: data.region_id,
         regionName: (data as any).regions?.name,
+        status: (data as any).status,
         publishedAt: data.published_at || new Date().toISOString(),
       };
     }

@@ -18,7 +18,9 @@ import {
   Database,
   CheckCircle2,
   FileCheck,
+  Newspaper,
 } from "lucide-react";
+import { FLAGS } from "@/lib/config/flags";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { EsportCard } from "@/components/card/EsportCard";
@@ -77,11 +79,15 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
         title: articles[0].title,
         slug: articles[0].slug,
         category: articles[0].category,
-        date: new Date(articles[0].publishedAt).toLocaleDateString("id-ID"),
+        date: new Date(articles[0].publishedAt).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
         readTime: "3 min baca",
         imageUrl: articles[0].coverImageUrl || "/images/news-placeholder.jpg",
       }
-    : (MOCK_NEWS.find((n) => n.isHeadline) || MOCK_NEWS[0]);
+    : (FLAGS.SHOW_DEMO_DATA ? (MOCK_NEWS.find((n) => n.isHeadline) || MOCK_NEWS[0]) : null);
 
   const subArticles = articles.length > 1
     ? articles.slice(1, 4).map((a) => ({
@@ -89,10 +95,16 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
         title: a.title,
         slug: a.slug,
         category: a.category,
-        date: new Date(a.publishedAt).toLocaleDateString("id-ID"),
+        date: new Date(a.publishedAt).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
         imageUrl: a.coverImageUrl || "/images/news-placeholder.jpg",
       }))
-    : MOCK_NEWS.filter((n) => n.id !== headlineArticle.id).slice(0, 3);
+    : (FLAGS.SHOW_DEMO_DATA && headlineArticle
+        ? MOCK_NEWS.filter((n) => n.id !== headlineArticle.id).slice(0, 3)
+        : []);
 
   // Featured profiles for carousel
   const featuredCards = profiles.length > 0
@@ -479,70 +491,90 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               </Link>
             </div>
 
-            <div className="grid grid-cols-12 gap-6">
-              <Link
-                href={`/news/${headlineArticle.slug}`}
-                className="col-span-12 lg:col-span-7 rounded-2xl bg-[#0A0A2E] border border-white/10 hover:border-[#FF1752]/40 transition-all overflow-hidden group flex flex-col justify-between"
-              >
-                <div className="relative w-full h-80 overflow-hidden bg-black/40">
-                  {headlineArticle.imageUrl && (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      src={headlineArticle.imageUrl}
-                      alt={headlineArticle.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A2E] via-transparent to-transparent" />
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <span className="px-2.5 py-1 rounded-full bg-[#03031A]/90 border border-white/10 text-[10px] font-mono text-[#FF4D77] uppercase font-bold">
-                      {headlineArticle.category}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="p-6">
-                  <h3 className="font-heading font-bold text-2xl text-white group-hover:text-[#FF4D77] transition-colors leading-snug mb-2">
-                    {headlineArticle.title}
-                  </h3>
-                  <div className="flex items-center gap-3 text-xs text-white/50">
-                    <span>{headlineArticle.date}</span>
-                    <span>•</span>
-                    <span>{headlineArticle.readTime}</span>
-                  </div>
-                </div>
-              </Link>
-
-              <div className="col-span-12 lg:col-span-5 flex flex-col gap-4">
-                {subArticles.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/news/${article.slug}`}
-                    className="p-4 rounded-xl bg-[#0A0A2E] border border-white/10 hover:border-white/20 transition-all flex gap-4 group"
-                  >
-                    <div className="relative w-24 h-20 rounded-lg overflow-hidden bg-black/40 shrink-0">
-                      {article.imageUrl && (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                          src={article.imageUrl}
-                          alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                      )}
-                    </div>
-                    <div className="flex flex-col justify-between">
-                      <span className="text-[10px] font-mono text-[#FF4D77] uppercase font-bold">
-                        {article.category}
+            {headlineArticle ? (
+              <div className="grid grid-cols-12 gap-6">
+                <Link
+                  href={`/news/${headlineArticle.slug}`}
+                  className="col-span-12 lg:col-span-7 rounded-2xl bg-[#0A0A2E] border border-white/10 hover:border-[#FF1752]/40 transition-all overflow-hidden group flex flex-col justify-between"
+                >
+                  <div className="relative w-full h-80 overflow-hidden bg-black/40">
+                    {headlineArticle.imageUrl && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={headlineArticle.imageUrl}
+                        alt={headlineArticle.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A2E] via-transparent to-transparent" />
+                    <div className="absolute top-4 left-4 flex gap-2">
+                      <span className="px-2.5 py-1 rounded-full bg-[#03031A]/90 border border-white/10 text-[10px] font-mono text-[#FF4D77] uppercase font-bold">
+                        {headlineArticle.category}
                       </span>
-                      <h4 className="font-heading font-bold text-sm text-white group-hover:text-[#FF4D77] transition-colors line-clamp-2 leading-tight">
-                        {article.title}
-                      </h4>
-                      <span className="text-[11px] text-white/40">{article.date}</span>
                     </div>
-                  </Link>
-                ))}
+                  </div>
+
+                  <div className="p-6">
+                    <h3 className="font-heading font-bold text-2xl text-white group-hover:text-[#FF4D77] transition-colors leading-snug mb-2">
+                      {headlineArticle.title}
+                    </h3>
+                    <div className="flex items-center gap-3 text-xs text-white/50">
+                      <span>{headlineArticle.date}</span>
+                      <span>•</span>
+                      <span>{headlineArticle.readTime}</span>
+                    </div>
+                  </div>
+                </Link>
+
+                <div className="col-span-12 lg:col-span-5 flex flex-col gap-4">
+                  {subArticles.map((article) => (
+                    <Link
+                      key={article.id}
+                      href={`/news/${article.slug}`}
+                      className="p-4 rounded-xl bg-[#0A0A2E] border border-white/10 hover:border-white/20 transition-all flex gap-4 group"
+                    >
+                      <div className="relative w-24 h-20 rounded-lg overflow-hidden bg-black/40 shrink-0">
+                        {article.imageUrl && (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={article.imageUrl}
+                            alt={article.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                          />
+                        )}
+                      </div>
+                      <div className="flex flex-col justify-between">
+                        <span className="text-[10px] font-mono text-[#FF4D77] uppercase font-bold">
+                          {article.category}
+                        </span>
+                        <h4 className="font-heading font-bold text-sm text-white group-hover:text-[#FF4D77] transition-colors line-clamp-2 leading-tight">
+                          {article.title}
+                        </h4>
+                        <span className="text-[11px] text-white/40">{article.date}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="rounded-3xl bg-[#0A0A2E]/50 border border-white/10 p-12 text-center flex flex-col items-center justify-center">
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-white/40 mb-4">
+                  <Newspaper className="w-7 h-7" />
+                </div>
+                <h3 className="font-heading font-black uppercase text-xl text-white mb-2">
+                  Belum Ada Warta Resmi Diterbitkan
+                </h3>
+                <p className="text-xs text-white/50 max-w-md mb-6 leading-relaxed">
+                  Siaran pers dan agenda resmi PBESI Sumatera Barat akan ditampilkan di sini setelah dipublikasikan oleh humas pengurus.
+                </p>
+                <Link
+                  href="/news"
+                  className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-xs font-heading font-bold uppercase tracking-wider text-white transition-colors"
+                >
+                  Buka Portal Berita
+                </Link>
+              </div>
+            )}
           </section>
 
           {/* ==================== 6. MITRA STRIP PRE-FOOTER ==================== */}

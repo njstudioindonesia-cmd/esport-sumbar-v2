@@ -15,7 +15,9 @@ import {
   ChevronRight,
   Database,
   FileCheck,
+  Newspaper,
 } from "lucide-react";
+import { FLAGS } from "@/lib/config/flags";
 import { mapVerificationToCard } from "@/types/card";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { MOCK_NEWS } from "@/data/mockNews";
@@ -90,11 +92,15 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
         slug: a.slug,
         category: a.category,
         region: a.regionName || "Sumatera Barat",
-        date: new Date(a.publishedAt).toLocaleDateString("id-ID"),
+        date: new Date(a.publishedAt).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
         readTime: "3 min baca",
         imageUrl: a.coverImageUrl || "/images/news-placeholder.jpg",
       }))
-    : MOCK_NEWS.slice(0, 3);
+    : (FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS.slice(0, 3) : []);
 
   const triggerHaptic = (ms = 10) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
@@ -343,7 +349,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
         <section className="w-full grid grid-cols-3 gap-2 py-1">
           <div className="h-20 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col items-center justify-center">
             <span className="font-heading font-black text-2xl text-white tracking-tight">
-              {stats?.totalPlayers || "14.8k"}
+              {stats?.totalPlayers ?? 0}
             </span>
             <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider mt-0.5">
               Pemain
@@ -352,7 +358,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
 
           <div className="h-20 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col items-center justify-center">
             <span className="font-heading font-black text-2xl text-[#FF4D77] tracking-tight">
-              {stats?.totalTeams || "485"}
+              {stats?.totalTeams ?? 0}
             </span>
             <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider mt-0.5">
               Tim
@@ -361,7 +367,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
 
           <div className="h-20 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col items-center justify-center">
             <span className="font-heading font-black text-2xl text-[#D4AF37] tracking-tight">
-              {stats?.activeRegions || "19"}
+              {stats?.activeRegions ?? 19}
             </span>
             <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider mt-0.5">
               Wilayah
@@ -383,33 +389,41 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
             </Link>
           </div>
 
-          <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5 snap-x">
-            {recentNews.map((news) => (
-              <Link
-                key={news.id}
-                href={`/news/${news.slug}`}
-                onClick={() => triggerHaptic()}
-                className="relative flex-shrink-0 w-64 h-36 rounded-2xl overflow-hidden border border-white/10 shadow-lg snap-start group"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={news.imageUrl}
-                  alt={news.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#03031A] via-[#03031A]/60 to-transparent" />
+          {recentNews.length > 0 ? (
+            <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-5 px-5 snap-x">
+              {recentNews.map((news) => (
+                <Link
+                  key={news.id}
+                  href={`/news/${news.slug}`}
+                  onClick={() => triggerHaptic()}
+                  className="relative flex-shrink-0 w-64 h-36 rounded-2xl overflow-hidden border border-white/10 shadow-lg snap-start group"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={news.imageUrl}
+                    alt={news.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#03031A] via-[#03031A]/60 to-transparent" />
 
-                <div className="absolute bottom-3 left-3 right-3 z-10">
-                  <span className="text-[8px] font-mono text-[#FF4D77] uppercase tracking-widest block mb-1">
-                    {news.category}
-                  </span>
-                  <p className="font-heading font-bold text-xs text-white line-clamp-2 leading-snug">
-                    {news.title}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+                  <div className="absolute bottom-3 left-3 right-3 z-10">
+                    <span className="text-[8px] font-mono text-[#FF4D77] uppercase tracking-widest block mb-1">
+                      {news.category}
+                    </span>
+                    <p className="font-heading font-bold text-xs text-white line-clamp-2 leading-snug">
+                      {news.title}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10 text-center flex flex-col items-center">
+              <Newspaper className="w-6 h-6 text-white/30 mb-2" />
+              <p className="text-xs font-heading font-bold text-white uppercase">Belum Ada Warta Berita</p>
+              <p className="text-[10px] text-white/40 mt-1">Siaran pers resmi akan tampil di sini setelah diterbitkan.</p>
+            </div>
+          )}
         </section>
 
         {/* ==================== BLOK 7: MITRA STRIP ==================== */}

@@ -184,7 +184,11 @@ export async function getPublicProfileBySlug(
     console.warn("Database fetch warning (falling back to mock catalog):", err);
   }
 
-  // Fallback: cari dari katalog mockCards jika belum ada di database lokal
+  // Fallback: cari dari katalog mockCards jika belum ada di database lokal dan mode demo aktif
+  if (!FLAGS.SHOW_DEMO_DATA) {
+    return null;
+  }
+
   const mockCard = GALLERY_CARDS.find((c) => {
     const slugName = (c.data.ign || c.data.displayName).toLowerCase().replace(/[^a-z0-9]+/g, "-");
     return slugName === slug || c.data.esportId.toLowerCase() === slug.toLowerCase();

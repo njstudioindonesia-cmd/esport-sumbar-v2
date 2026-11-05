@@ -16,14 +16,9 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MOCK_NEWS, Article } from "@/data/mockNews";
 import { getArticleBySlug, getLatestArticles } from "@/lib/services/news";
+import { FLAGS } from "@/lib/config/flags";
 
 export const instant = false;
-
-export function generateStaticParams() {
-  return MOCK_NEWS.map((n) => ({
-    slug: n.slug,
-  }));
-}
 
 export default async function NewsDetailPage({
   params,
@@ -32,7 +27,9 @@ export default async function NewsDetailPage({
 }) {
   const { slug } = await params;
   const dbArticle = await getArticleBySlug(slug);
-  const mockArticle = MOCK_NEWS.find((n) => n.slug === slug);
+  const mockArticle = FLAGS.SHOW_DEMO_DATA
+    ? MOCK_NEWS.find((n) => n.slug === slug)
+    : null;
 
   if (!dbArticle && !mockArticle) {
     notFound();
@@ -44,11 +41,15 @@ export default async function NewsDetailPage({
         title: dbArticle.title,
         slug: dbArticle.slug,
         excerpt: dbArticle.summary || "",
-        content: dbArticle.content,
+        content: dbArticle.content ? [dbArticle.content] : [],
         category: dbArticle.category,
         region: dbArticle.regionName || "Sumatera Barat",
         author: dbArticle.authorName || "Humas ESI Sumbar",
-        date: new Date(dbArticle.publishedAt).toLocaleDateString("id-ID"),
+        date: new Date(dbArticle.publishedAt).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }),
         readTime: "3 min baca",
         imageUrl: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
         coverImage: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
@@ -66,15 +67,21 @@ export default async function NewsDetailPage({
           title: r.title,
           slug: r.slug,
           excerpt: r.summary || "",
-          content: r.content,
+          content: [r.content],
           category: r.category,
           region: r.regionName || "Sumatera Barat",
           author: "Humas ESI",
-          date: new Date(r.publishedAt).toLocaleDateString("id-ID"),
+          date: new Date(r.publishedAt).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          }),
           readTime: "3 min",
           imageUrl: r.coverImageUrl || "/images/news-placeholder.jpg",
         }))
-    : MOCK_NEWS.filter((n) => n.slug !== article.slug).slice(0, 3);
+    : (FLAGS.SHOW_DEMO_DATA
+        ? MOCK_NEWS.filter((n) => n.slug !== article.slug).slice(0, 3)
+        : []);
 
   return (
     <div className="min-h-screen bg-[#07080C] text-white flex flex-col select-none">
@@ -158,71 +165,71 @@ export default async function NewsDetailPage({
         {/* KOLOM TEKS 680 PX DENGAN TIPOGRAFI NYAMAN (18/30)        */}
         {/* ========================================================= */}
         <article className="max-w-[680px] mx-auto text-[18px] leading-[30px] font-sans text-white/90 space-y-6">
-          <p className="text-xl font-heading font-bold text-white leading-relaxed text-[#D4AF37]/90">
-            {article.excerpt}
-          </p>
+          {article.excerpt && (
+            <p className="text-xl font-heading font-bold text-white leading-relaxed text-[#D4AF37]/90">
+              {article.excerpt}
+            </p>
+          )}
 
-          <p>
-            Pengurus Provinsi Esports Indonesia (ESI) Sumatera Barat terus mempercepat standardisasi ekosistem olahraga elektronik di 19 kabupaten dan kota. Melalui platform ESPORT SUMBAR™, seluruh atlet, pelatih berlisensi, dan klub terverifikasi kini tercatat dalam satu pangkalan data terpusat yang terlindungi undang-undang.
-          </p>
-
-          <p>
-            Standardisasi ini mencakup sistem paspor atlet digital berbasis kartu TCG dengan 4 tingkatan prestasi (Rookie, Contender, Elite, dan Legend). Tingkatan tersebut menjadi acuan seleksi mitra kelembagaan untuk berbagai kejuaraan resmi mulai dari tingkat daerah hingga Pekan Olahraga Nasional (PON).
-          </p>
-
-          <div className="p-6 my-8 rounded-2xl bg-[#0F1118] border border-white/[0.08] border-l-4 border-l-brand-pink italic text-base text-white/80">
-            &ldquo;Integrasi kartu digital atlet di platform ESPORT SUMBAR™ menjamin transparansi rekam jejak atlet dan mematuhi kepatuhan perlindungan data pribadi sesuai UU PDP No. 27/2022.&rdquo;
-          </div>
-
-          <p>
-            Bagi para pengurus cabang yang telah aktif, verifikasi berkas dilakukan secara berjenjang guna memastikan keabsahan domisili atlet serta validitas riwayat kompetisi resmi. Informasi lebih lanjut dan pendaftaran akun resmi dapat diakses melalui menu Jelajah atau pendaftaran akun paspor atlet.
-          </p>
+          {Array.isArray(article.content) ? (
+            article.content.map((para, i) => (
+              <p key={i} className="whitespace-pre-line leading-relaxed">
+                {para}
+              </p>
+            ))
+          ) : (
+            <p className="whitespace-pre-line leading-relaxed">
+              {article.content}
+            </p>
+          )}
         </article>
 
         {/* ========================================================= */}
         {/* BERITA TERKAIT (3 KOLOM)                                  */}
         {/* ========================================================= */}
-        <section className="max-w-5xl mx-auto mt-16 pt-10 border-t border-white/[0.08]">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-heading font-black text-lg text-white uppercase tracking-wider">
-              Berita Terkait
-            </h2>
-            <Link href="/news" className="text-xs font-mono text-[#D4AF37] hover:underline">
-              Lihat Semua &rarr;
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {relatedArticles.map((item) => (
-              <Link
-                key={item.id}
-                href={`/news/${item.slug}`}
-                className="group p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-[#D4AF37]/50 flex flex-col justify-between transition-all"
-              >
-                <div>
-                  <div className="relative w-full h-36 rounded-xl overflow-hidden mb-3 bg-[#161A24]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <span className="text-[9px] font-mono text-[#D4AF37] uppercase block mb-1">
-                    {item.category}
-                  </span>
-                  <h3 className="text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2">
-                    {item.title}
-                  </h3>
-                </div>
-                <div className="mt-4 pt-2 border-t border-white/[0.06] text-[10px] font-mono text-white/40 flex items-center justify-between">
-                  <span>{item.date}</span>
-                  <span>{item.region}</span>
-                </div>
+        {relatedArticles.length > 0 && (
+          <section className="max-w-5xl mx-auto mt-16 pt-10 border-t border-white/[0.08]">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-heading font-black text-lg text-white uppercase tracking-wider">
+                Berita Terkait
+              </h2>
+              <Link href="/news" className="text-xs font-mono text-[#D4AF37] hover:underline">
+                Lihat Semua &rarr;
               </Link>
-            ))}
-          </div>
-        </section>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {relatedArticles.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/news/${item.slug}`}
+                  className="group p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-[#D4AF37]/50 flex flex-col justify-between transition-all"
+                >
+                  <div>
+                    <div className="relative w-full h-36 rounded-xl overflow-hidden mb-3 bg-[#161A24]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <span className="text-[9px] font-mono text-[#D4AF37] uppercase block mb-1">
+                      {item.category}
+                    </span>
+                    <h3 className="text-sm font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors line-clamp-2">
+                      {item.title}
+                    </h3>
+                  </div>
+                  <div className="mt-4 pt-2 border-t border-white/[0.06] text-[10px] font-mono text-white/40 flex items-center justify-between">
+                    <span>{item.date}</span>
+                    <span>{item.region}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />
