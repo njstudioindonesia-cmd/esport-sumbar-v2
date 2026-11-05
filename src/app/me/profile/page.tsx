@@ -19,14 +19,14 @@ export default async function MyProfileRedirectPage() {
   // Cari profil yang dimiliki akun ini
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("entity_type, slug")
+    .select("id, entity_type, slug")
     .eq("account_id", authData.user.id)
     .order("created_at", { ascending: false })
     .limit(1);
 
   if (profiles && profiles.length > 0) {
     const profile = profiles[0];
-    redirect(`/${profile.entity_type}/${profile.slug}`);
+    redirect(`/me/profile/${profile.id}/edit`);
   }
 
   // Jika belum punya profil sama sekali, arahkan untuk buat kartu pertama

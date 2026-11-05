@@ -44,7 +44,12 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
   const [collapsed, setCollapsed] = useState(false);
   const [hasUnreadNotification, setHasUnreadNotification] = useState(true);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
-  const [userSession, setUserSession] = useState<{ email: string; role: string } | null>(null);
+  const [userSession, setUserSession] = useState<{
+    email: string;
+    role: string;
+    displayName?: string;
+    entityType?: string;
+  } | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
 
   // Check URL error parameter
@@ -61,17 +66,23 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (data?.user) {
-        supabase
-          .from("accounts")
-          .select("role")
-          .eq("id", data.user.id)
-          .single()
-          .then(({ data: acc }) => {
-            setUserSession({
-              email: data.user.email || "atlet@esportsumbar.id",
-              role: acc?.role || "user",
-            });
+        Promise.all([
+          supabase.from("accounts").select("role").eq("id", data.user.id).maybeSingle(),
+          supabase
+            .from("profiles")
+            .select("display_name, entity_type")
+            .eq("account_id", data.user.id)
+            .order("created_at", { ascending: false })
+            .limit(1),
+        ]).then(([accRes, profRes]) => {
+          const profile = profRes.data && profRes.data.length > 0 ? profRes.data[0] : null;
+          setUserSession({
+            email: data.user.email || "atlet@esportsumbar.id",
+            role: accRes.data?.role || "user",
+            displayName: profile?.display_name || data.user.user_metadata?.full_name || data.user.email?.split("@")[0],
+            entityType: profile?.entity_type || "player",
           });
+        });
       }
     });
   }, []);
@@ -219,7 +230,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
               {!collapsed && (
                 <div className="flex flex-col truncate">
                   <span className="text-xs font-heading font-bold text-white truncate">
-                    {userSession?.email?.split("@")[0] || "Atlet Ranah Minang"}
+                    {userSession?.displayName || userSession?.email?.split("@")[0] || "Atlet Ranah Minang"}
                   </span>
                   <span className="text-[9px] font-mono text-[#D4AF37] uppercase tracking-wider">
                     {userSession?.role === "prov_admin"
@@ -228,6 +239,16 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                       ? "PENGCAB ESI"
                       : userSession?.role === "platform_operator"
                       ? "OPERATOR"
+                      : userSession?.entityType === "team"
+                      ? "PASPOR TIM"
+                      : userSession?.entityType === "coach"
+                      ? "PASPOR PELATIH"
+                      : userSession?.entityType === "school" || userSession?.entityType === "campus"
+                      ? "AKADEMIK"
+                      : userSession?.entityType === "community"
+                      ? "KOMUNITAS"
+                      : userSession?.entityType === "venue"
+                      ? "VENUE"
                       : "PASPOR ATLET"}
                   </span>
                 </div>

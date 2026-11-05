@@ -1055,7 +1055,23 @@ export function DesktopCardWizard() {
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-2 mt-2">
+                          <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
+                            <Link
+                              href="/dashboard"
+                              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] text-[#07080C] text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-amber-950/20 hover:brightness-110 transition-all"
+                            >
+                              <span>Buka Dashboard Saya</span>
+                              <ChevronRight className="w-4 h-4" />
+                            </Link>
+
+                            <Link
+                              href="/me/verification"
+                              className="px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-all"
+                            >
+                              <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
+                              <span>Ajukan Verifikasi</span>
+                            </Link>
+
                             <button
                               type="button"
                               onClick={() => {
@@ -1070,19 +1086,11 @@ export function DesktopCardWizard() {
                                   alert("Tautan kartu berhasil disalin ke clipboard!");
                                 }
                               }}
-                              className="px-4 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-mono text-white flex items-center gap-1.5"
+                              className="px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-mono text-white flex items-center gap-1.5"
                             >
                               <Share2 className="w-3.5 h-3.5" />
                               <span>Bagikan</span>
                             </button>
-
-                            <Link
-                              href="/me/verification"
-                              className="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C] text-xs font-heading font-black uppercase flex items-center gap-1.5"
-                            >
-                              <ShieldCheck className="w-3.5 h-3.5" />
-                              <span>Ajukan Verifikasi</span>
-                            </Link>
 
                             <button
                               type="button"
@@ -1092,7 +1100,7 @@ export function DesktopCardWizard() {
                                 setAvatarUrl("");
                                 setDisplayName("Profil Baru");
                               }}
-                              className="px-4 py-2 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-xs font-mono text-white/60 hover:text-white flex items-center gap-1.5"
+                              className="px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-xs font-mono text-white/60 hover:text-white flex items-center gap-1.5"
                             >
                               <PlusCircle className="w-3.5 h-3.5" />
                               <span>Tambah Profil</span>

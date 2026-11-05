@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -13,35 +14,307 @@ import {
   ExternalLink,
   ChevronRight,
   Sparkles,
+  Send,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
 
+interface VerificationData {
+  profile: {
+    id: string;
+    displayName: string;
+    ign: string | null;
+    esportId: string;
+    entityType: string;
+    regionId: string;
+    regionName: string;
+    regionCode: string;
+    gameName: string;
+    verificationStatus: string;
+    rarityTier: string;
+  } | null;
+  request: {
+    id: string;
+    status: string;
+    notes: string | null;
+    submittedAt: string;
+    decidedAt: string | null;
+    evidenceFiles: { name: string; url: string; size?: string }[];
+    revisionFields: string[];
+  } | null;
+}
+
 export function DesktopVerificationView() {
+  const [data, setData] = useState<VerificationData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeHighlight, setActiveHighlight] = useState<string | null>(null);
 
-  // Verification Steps (Package Tracker style)
-  const steps = [
-    { id: 1, name: "Diajukan", date: "12 Jan 2026", status: "completed" },
-    { id: 2, name: "Daerah", date: "15 Jan 2026", status: "completed" },
-    { id: 3, name: "Provinsi", date: "Dalam Review", status: "active" },
-    { id: 4, name: "Selesai", date: "Mendatang", status: "upcoming" },
-  ];
+  // Form submission state
+  const [userNotes, setUserNotes] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState<{ id: string; title: string; fileName: string; url: string }[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const loadVerificationData = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/me/verification");
+      if (res.ok) {
+        const json = await res.json();
+        setData(json);
+      }
+    } catch (err) {
+      console.warn("Failed to load verification status:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadVerificationData();
+  }, []);
+
+  const profile = data?.profile;
+  const request = data?.request;
+  const status = profile?.verificationStatus || "unverified";
+  const entityType = profile?.entityType || "player";
+
+  // Dynamic Stepper calculation based on true status
+  const getSteps = () => {
+    const isSubmitted = ["submitted", "in_review_regional", "regional_checked", "verified", "revision_requested"].includes(status);
+    const isRegionalChecked = ["regional_checked", "verified"].includes(status);
+    const isVerified = status === "verified";
+    const isRevision = status === "revision_requested";
+
+    return [
+      {
+        id: 1,
+        name: "Diajukan",
+        date: request?.submittedAt ? new Date(request.submittedAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : (status !== "unverified" ? "Terkirim" : "Belum Diajukan"),
+        status: isSubmitted ? "completed" : "active",
+      },
+      {
+        id: 2,
+        name: `Pengcab ${profile?.regionName || "Daerah"}`,
+        date: isRevision ? "Perlu Revisi" : isRegionalChecked ? "Lolos Seleksi" : isSubmitted ? "Dalam Telaah" : "Menunggu Berkas",
+        status: isRevision ? "revision" : isRegionalChecked ? "completed" : isSubmitted ? "active" : "upcoming",
+      },
+      {
+        id: 3,
+        name: "Pengprov Sumbar",
+        date: isVerified ? "Disahkan" : isRegionalChecked ? "Dalam Pengesahan" : "Menunggu Daerah",
+        status: isVerified ? "completed" : isRegionalChecked ? "active" : "upcoming",
+      },
+      {
+        id: 4,
+        name: "Lencana Emas",
+        date: isVerified ? "Aktif" : "Menunggu Selesai",
+        status: isVerified ? "completed" : "upcoming",
+      },
+    ];
+  };
+
+  const steps = getSteps();
+
+  // Document templates tailored to Entity Type
+  const getDocumentSlots = () => {
+    if (entityType === "team") {
+      return [
+        {
+          id: "legalitas_tim",
+          title: "Surat Keputusan / Legalitas Tim",
+          desc: "Akta pendirian klub, SK kepengurusan tim, atau surat keterangan manajemen resmi.",
+          defaultFile: "sk_kepengurusan_klub.pdf",
+        },
+        {
+          id: "roster_domisili",
+          title: "Daftar Roster & Bukti Domisili Sumbar",
+          desc: "Daftar susunan pemain aktif beserta identitas domisili Sumatera Barat.",
+          defaultFile: "roster_resmi_tim.pdf",
+        },
+        {
+          id: "prestasi_tim",
+          title: "Piagam Prestasi Turnamen Tim",
+          desc: "Sertifikat juara turnamen resmi atau piagam kejuaraan yang pernah diikuti.",
+          defaultFile: "portofolio_kejuaraan_tim.pdf",
+        },
+      ];
+    }
+    if (entityType === "school" || entityType === "campus") {
+      return [
+        {
+          id: "sk_sekolah",
+          title: "Surat Keterangan Sekolah / Kampus",
+          desc: "SK Kepala Sekolah / Dekan pengesahan Ekstrakurikuler atau UKM Esport resmi.",
+          defaultFile: "sk_ekstrakurikuler_esport.pdf",
+        },
+        {
+          id: "daftar_anggota",
+          title: "Daftar Pelajar / Mahasiswa Binaan",
+          desc: "Kartu Pelajar/Mahasiswa aktif anggota komunitas esport sekolah.",
+          defaultFile: "daftar_atlet_pelajar.pdf",
+        },
+        {
+          id: "surat_pembina",
+          title: "Surat Mandat Guru Pembina",
+          desc: "Penunjukan guru pendamping / pembina resmi perwakilan sekolah.",
+          defaultFile: "surat_mandat_guru_pembina.pdf",
+        },
+      ];
+    }
+    // Default: Player or Coach
+    return [
+      {
+        id: "ktp",
+        title: "Kartu Tanda Penduduk (KTP) / KIA",
+        desc: "Identitas resmi domisili Sumatera Barat untuk validasi NIK dan usia.",
+        defaultFile: "identitas_resmi_ktp_kia.jpg",
+      },
+      {
+        id: "piagam",
+        title: "Piagam Prestasi / Sertifikat Turnamen",
+        desc: "Sertifikat turnamen resmi PBESI, Kejurda, Porprov, atau turnamen komunitas resmi.",
+        defaultFile: "piagam_kejuaraan_terakhir.pdf",
+      },
+      {
+        id: "rekomendasi",
+        title: "Surat Rekomendasi Klub / Pengcab",
+        desc: "Surat pengantar resmi dari manajer tim terdaftar atau Pengcab ESI daerah.",
+        defaultFile: "surat_rekomendasi_resmi.pdf",
+      },
+    ];
+  };
+
+  const documentSlots = getDocumentSlots();
+
+  const handleSimulateUpload = (slotId: string, slotTitle: string, defaultFileName: string) => {
+    setUploadedFiles((prev) => {
+      const filtered = prev.filter((f) => f.id !== slotId);
+      return [
+        ...filtered,
+        {
+          id: slotId,
+          title: slotTitle,
+          fileName: defaultFileName,
+          url: `/uploads/${defaultFileName}`,
+        },
+      ];
+    });
+    setSubmitSuccess(`File "${defaultFileName}" siap dikirimkan.`);
+    setTimeout(() => setSubmitSuccess(null), 3000);
+  };
+
+  const handleSubmitVerification = async () => {
+    if (!profile) return;
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(null);
+
+    try {
+      const evidenceFiles = uploadedFiles.map((f) => ({
+        name: f.fileName,
+        url: f.url,
+        size: "1.2 MB",
+      }));
+
+      // Jika belum unggah file, sediakan file default dari slot pertama
+      const payloadFiles =
+        evidenceFiles.length > 0
+          ? evidenceFiles
+          : [
+              {
+                name: documentSlots[0].defaultFile,
+                url: `/uploads/${documentSlots[0].defaultFile}`,
+                size: "1.5 MB",
+              },
+            ];
+
+      const res = await fetch("/api/me/verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profileId: profile.id,
+          regionId: profile.regionId,
+          notes: userNotes || `Pengajuan verifikasi resmi entitas ${profile.entityType} untuk ${profile.displayName}.`,
+          evidenceFiles: payloadFiles,
+        }),
+      });
+
+      if (!res.ok) {
+        const errJson = await res.json();
+        throw new Error(errJson.error || "Gagal mengirim berkas verifikasi");
+      }
+
+      setSubmitSuccess("Berkas verifikasi resmi berhasil dikirimkan ke antrean Pengcab ESI!");
+      await loadVerificationData();
+    } catch (err: any) {
+      setSubmitError(err.message || "Terjadi kesalahan saat mengajukan verifikasi.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="w-full py-20 flex flex-col items-center justify-center gap-3 text-white/50">
+        <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
+        <span className="text-xs font-mono">Memuat status verifikasi Anda...</span>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="p-12 text-center rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col items-center gap-4">
+        <ShieldCheck className="w-12 h-12 text-[#D4AF37]" />
+        <div>
+          <h2 className="text-lg font-heading font-black text-white">Belum Ada Profil Terdaftar</h2>
+          <p className="text-xs text-white/50 max-w-sm mt-1">
+            Silakan buat profil digital atau kartu paspor terlebih dahulu sebelum mengajukan verifikasi keabsahan PBESI.
+          </p>
+        </div>
+        <Link href="/me/profile/new" className="px-5 py-2.5 rounded-xl bg-[#D4AF37] text-black font-heading font-black text-xs uppercase tracking-wider">
+          Buat Profil Sekarang →
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-col gap-8">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[10px] font-mono text-[#D4AF37] font-bold uppercase">
+              {entityType.toUpperCase()} • {profile.regionName}
+            </span>
+            <span className="text-xs font-mono text-white/40">
+              {profile.esportId}
+            </span>
+          </div>
           <h1 className="text-2xl font-heading font-black text-white tracking-tight">
-            Status Verifikasi Resmi
+            Status Verifikasi Resmi: {profile.displayName}
           </h1>
           <p className="text-xs text-white/50 mt-1">
             Pelacakan validasi berjenjang oleh Pengcab Kota/Kabupaten dan Pengprov ESI Sumatera Barat.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-xs font-mono text-[#D4AF37]">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-xs font-mono text-[#D4AF37] self-start sm:self-auto">
           <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
-          <span>TAHAP 3 • PROVINSI</span>
+          <span>
+            {status === "verified"
+              ? "TAHAP 4 • TERVERIFIKASI RESMI"
+              : status === "regional_checked"
+              ? "TAHAP 3 • PENGESAHAN PROVINSI"
+              : status === "submitted" || status === "in_review_regional"
+              ? "TAHAP 2 • PENELAAHAN PENGCAB DAERAH"
+              : status === "revision_requested"
+              ? "TAHAP 2 • PERLU REVISI DOKUMEN"
+              : "TAHAP 1 • MENUNGGU PENGAJUAN BERKAS"}
+          </span>
         </div>
       </div>
 
@@ -49,10 +322,20 @@ export function DesktopVerificationView() {
       {/* 1. TRACKER HORIZONTAL BERGAYA PELACAK PAKET               */}
       {/* ========================================================= */}
       <div className="p-8 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] shadow-2xl backdrop-blur-xl">
-        <div className="relative flex items-center justify-between max-w-4xl mx-auto px-8">
+        <div className="relative flex items-center justify-between max-w-4xl mx-auto px-4 sm:px-8">
           {/* Connecting Line */}
-          <div className="absolute left-16 right-16 top-6 h-0.5 bg-white/[0.08] -z-0">
-            <div className="h-full bg-gradient-to-r from-emerald-500 via-[#D4AF37] to-transparent w-[65%]" />
+          <div className="absolute left-12 right-12 top-6 h-0.5 bg-white/[0.08] -z-0">
+            <div
+              className={`h-full bg-gradient-to-r from-emerald-500 via-[#D4AF37] to-transparent transition-all duration-500 ${
+                status === "verified"
+                  ? "w-full"
+                  : status === "regional_checked"
+                  ? "w-[75%]"
+                  : status === "submitted" || status === "in_review_regional" || status === "revision_requested"
+                  ? "w-[45%]"
+                  : "w-[15%]"
+              }`}
+            />
           </div>
 
           {/* Stepper Nodes */}
@@ -62,13 +345,17 @@ export function DesktopVerificationView() {
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
+              ) : st.status === "revision" ? (
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.4)]">
+                  <AlertTriangle className="w-6 h-6" />
+                </div>
               ) : st.status === "active" ? (
                 <div className="relative w-12 h-12 rounded-2xl bg-[#D4AF37]/20 border-2 border-[#D4AF37] text-[#D4AF37] flex items-center justify-center shadow-[0_0_24px_rgba(212,175,55,0.5)]">
                   <span className="w-4 h-4 rounded-full bg-[#D4AF37] animate-pulse" />
                 </div>
               ) : (
                 <div className="w-12 h-12 rounded-2xl bg-[#161A24] border border-white/[0.08] text-white/30 flex items-center justify-center">
-                  <span className="font-mono text-sm font-bold">04</span>
+                  <span className="font-mono text-sm font-bold">0{st.id}</span>
                 </div>
               )}
 
@@ -78,7 +365,9 @@ export function DesktopVerificationView() {
                     st.status === "active"
                       ? "text-[#D4AF37]"
                       : st.status === "completed"
-                      ? "text-white"
+                      ? "text-emerald-400"
+                      : st.status === "revision"
+                      ? "text-amber-400"
                       : "text-white/40"
                   }`}
                 >
@@ -93,147 +382,197 @@ export function DesktopVerificationView() {
         </div>
       </div>
 
+      {/* FEEDBACK TOAST / ALERT */}
+      {submitSuccess && (
+        <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
+          <span>{submitSuccess}</span>
+        </div>
+      )}
+
+      {submitError && (
+        <div className="p-4 rounded-2xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
+          <span>{submitError}</span>
+        </div>
+      )}
+
       {/* ========================================================= */}
-      {/* 2. PANEL "PERLU REVISI" KUNING (MAKS 2 BARIS + CHIP)      */}
+      {/* 2. CATATAN PEMERIKSAAN DARI PENGCAB (JIKA ADA REVISI/NOTE) */}
       {/* ========================================================= */}
-      <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-start gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
-            <AlertTriangle className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-heading font-black text-sm text-amber-400">
-                Catatan Pemeriksaan Pengcab Padang
-              </span>
-              <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-amber-500/20 text-amber-300">
-                REVISI RINGAN
-              </span>
+      {status === "revision_requested" && (
+        <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+              <AlertTriangle className="w-5 h-5" />
             </div>
-            <p className="text-xs text-white/80 leading-relaxed mt-1 max-w-2xl">
-              Foto identitas KTP/KIA buram pada bagian NIK. Piagam turnamen belum mencantumkan stempel legalisir panitia resmi.
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-heading font-black text-sm text-amber-400">
+                  Catatan Pemeriksaan Pengcab {profile.regionName}
+                </span>
+                <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-amber-500/20 text-amber-300">
+                  PERLU REVISI
+                </span>
+              </div>
+              <p className="text-xs text-white/80 leading-relaxed mt-1 max-w-2xl">
+                {request?.notes || "Mohon perbarui atau lengkapi berkas identitas resmi Anda agar dapat disahkan."}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setActiveHighlight("dokumen")}
+              className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold transition-all"
+            >
+              Unggah Perbaikan Sekarang
+            </button>
           </div>
         </div>
+      )}
 
-        {/* Clickable Field Chips */}
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={() => setActiveHighlight("ktp")}
-            className="px-3 py-1.5 rounded-xl bg-[#0F1118] hover:bg-black border border-amber-500/40 text-amber-300 text-xs font-mono font-bold transition-all"
-          >
-            # Foto KTP
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveHighlight("piagam")}
-            className="px-3 py-1.5 rounded-xl bg-[#0F1118] hover:bg-black border border-amber-500/40 text-amber-300 text-xs font-mono font-bold transition-all"
-          >
-            # Piagam Turnamen
-          </button>
+      {/* JIKA STATUS UNVERIFIED: BANNER AJAKAN VERIFIKASI */}
+      {status === "unverified" && (
+        <div className="p-6 rounded-3xl bg-blue-950/20 border border-blue-800/40 text-xs text-[#93C5FD] flex items-start gap-3.5 shadow-md">
+          <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="flex flex-col gap-1 leading-relaxed">
+            <span className="font-heading font-black uppercase text-white text-sm">
+              Ajukan Verifikasi Resmi PBESI {profile.regionName}
+            </span>
+            <span>
+              Sebagai entitas <strong>{entityType.toUpperCase()}</strong> terdaftar ({profile.displayName}), Anda berhak memperoleh lisensi dan lencana keabsahan resmi dari Pengprov ESI Sumatera Barat. Unggah dokumen pendukung di bawah ini untuk diverifikasi langsung oleh Pengurus Cabang Anda.
+            </span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ========================================================= */}
-      {/* 3. DUA KOLOM: 3 TILE BUKTI BESAR & CINCIN MASA BERLAKU    */}
+      {/* 3. DUA KOLOM: TILE BUKTI & INFORMASI STATUS RESMI          */}
       {/* ========================================================= */}
       <div className="grid grid-cols-12 gap-8 items-start">
-        {/* KOLOM KIRI (8 COLS): 3 TILE BESAR UNGGAH BUKTI */}
+        {/* KOLOM KIRI (8 COLS): DOKUMEN BUKTI SESUAI ENTITAS */}
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-4">
           <div className="flex items-center justify-between mb-1">
             <h3 className="font-heading font-black text-base text-white">
-              Dokumen Bukti Pendukung
+              Dokumen Bukti Pendukung ({entityType.toUpperCase()})
             </h3>
             <span className="text-[11px] font-mono text-white/40">
               Enkripsi AES-256 • Sesuai UU PDP No. 27/2022
             </span>
           </div>
 
-          {/* 3 Large Tiles (Seret-Lepas) dengan Ikon Gembok */}
-          {[
-            {
-              id: "ktp",
-              title: "Kartu Tanda Penduduk / KIA",
-              desc: "KTP asli domisili Sumatera Barat untuk verifikasi NIK dan usia.",
-              fileName: "ktp_sutan_harimau_padang.jpg",
-              status: "Perlu Upload Ulang",
-            },
-            {
-              id: "piagam",
-              title: "Piagam Juara / Prestasi Turnamen",
-              desc: "Sertifikat turnamen resmi PBESI atau Kejurda tingkat kota/provinsi.",
-              fileName: "sertifikat_juara_walikota_2025.pdf",
-              status: "Perlu Stempel",
-            },
-            {
-              id: "rekomendasi",
-              title: "Surat Rekomendasi Klub / Pengcab",
-              desc: "Surat pengantar resmi dari pengurus cabang atau manajer tim terdaftar.",
-              fileName: "surat_rekomendasi_pbesi_pdg.pdf",
-              status: "Terverifikasi",
-            },
-          ].map((tile) => {
-            const isHighlighted = activeHighlight === tile.id;
+          {/* Dokumen Slots Sesuai Bidang */}
+          {documentSlots.map((slot) => {
+            const uploaded = uploadedFiles.find((f) => f.id === slot.id);
+            const isHighlighted = activeHighlight === slot.id || activeHighlight === "dokumen";
+
             return (
               <div
-                key={tile.id}
-                className={`p-6 rounded-3xl bg-[#0F1118]/80 border transition-all flex items-center justify-between group ${
+                key={slot.id}
+                className={`p-6 rounded-3xl bg-[#0F1118]/80 border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group ${
                   isHighlighted
                     ? "border-amber-400 ring-2 ring-amber-400/30 bg-amber-500/5 shadow-xl"
                     : "border-white/[0.08] hover:border-white/20"
                 }`}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-start sm:items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-[#161A24] border border-white/10 flex items-center justify-center text-[#D4AF37] group-hover:scale-105 transition-transform shrink-0">
                     <Lock className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-heading font-black text-sm text-white">
-                        {tile.title}
+                        {slot.title}
                       </span>
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-mono ${
-                          tile.status === "Terverifikasi"
+                          uploaded || status === "verified"
                             ? "bg-emerald-500/15 text-emerald-400"
-                            : "bg-amber-500/15 text-amber-400"
+                            : status === "revision_requested"
+                            ? "bg-amber-500/15 text-amber-400"
+                            : "bg-white/[0.06] text-white/50"
                         }`}
                       >
-                        {tile.status}
+                        {status === "verified"
+                          ? "Terverifikasi"
+                          : uploaded
+                          ? "Siap Diunggah"
+                          : status === "revision_requested"
+                          ? "Perlu Diunggah"
+                          : "Wajib"}
                       </span>
                     </div>
                     <p className="text-xs text-white/50 leading-relaxed mt-0.5">
-                      {tile.desc}
+                      {slot.desc}
                     </p>
                     <span className="text-[10px] font-mono text-white/40 block mt-1">
-                      File: {tile.fileName}
+                      File: {uploaded ? uploaded.fileName : slot.defaultFile}
                     </span>
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => alert(`Membuka dialog unggah file untuk: ${tile.title}`)}
-                  className="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-[#D4AF37] hover:text-[#07080C] border border-white/10 text-xs font-mono font-bold text-white transition-all flex items-center gap-1.5 shrink-0"
+                  onClick={() => handleSimulateUpload(slot.id, slot.title, slot.defaultFile)}
+                  className="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-[#D4AF37] hover:text-[#07080C] border border-white/10 text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-1.5 shrink-0 self-end sm:self-auto"
                 >
                   <Upload className="w-3.5 h-3.5" />
-                  <span>Unggah Baru</span>
+                  <span>{uploaded ? "Ganti File" : "Pilih File"}</span>
                 </button>
               </div>
             );
           })}
+
+          {/* Form Pengajuan / Catatan Pengirim */}
+          {(status === "unverified" || status === "revision_requested") && (
+            <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col gap-4 mt-2">
+              <span className="text-xs font-heading font-bold text-white">
+                Catatan Pengantar Pengajuan (Opsional)
+              </span>
+              <textarea
+                value={userNotes}
+                onChange={(e) => setUserNotes(e.target.value)}
+                placeholder="Tuliskan keterangan tambahan untuk pengurus cabang (misal: portofolio turnamen, nomor kontak manajer, dll)..."
+                className="w-full h-24 p-4 rounded-2xl bg-[#161A24] border border-white/10 text-xs text-white placeholder-white/30 focus:border-[#D4AF37] outline-none resize-none font-sans"
+              />
+
+              <div className="flex items-center justify-between pt-2">
+                <span className="text-[11px] text-white/40 font-mono">
+                  Pengajuan akan dikirimkan ke antrean Pengcab ESI {profile.regionName}.
+                </span>
+                <button
+                  type="button"
+                  onClick={handleSubmitVerification}
+                  disabled={isSubmitting}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] text-[#07080C] text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 shadow-lg disabled:opacity-50 flex items-center gap-2 transition-all"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Mengirim...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>{status === "revision_requested" ? "Kirim Berkas Revisi" : "Kirim Pengajuan"}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* KOLOM KANAN (4 COLS): CINCIN SISA MASA BERLAKU & BADGE */}
+        {/* KOLOM KANAN (4 COLS): STATUS LISENSI & OTORITAS */}
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
-          {/* Cincin Sisa Masa Berlaku */}
+          {/* Cincin Status Lisensi */}
           <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col items-center text-center">
             <span className="text-xs font-mono uppercase tracking-widest text-white/40 mb-4">
-              MASA BERLAKU LISENSI
+              STATUS KEABSAHAN LISENSI
             </span>
 
-            {/* Circular Gauge Ring */}
             <div className="relative w-36 h-36 flex items-center justify-center">
               <svg className="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
                 <circle
@@ -248,32 +587,52 @@ export function DesktopVerificationView() {
                   cx="60"
                   cy="60"
                   r="50"
-                  stroke="#D4AF37"
+                  stroke={status === "verified" ? "#22C55E" : "#D4AF37"}
                   strokeWidth="8"
                   strokeDasharray={2 * Math.PI * 50}
-                  strokeDashoffset={2 * Math.PI * 50 * (1 - 312 / 365)}
+                  strokeDashoffset={
+                    status === "verified"
+                      ? 0
+                      : status === "regional_checked"
+                      ? 2 * Math.PI * 50 * 0.25
+                      : status === "submitted"
+                      ? 2 * Math.PI * 50 * 0.5
+                      : 2 * Math.PI * 50 * 0.85
+                  }
                   strokeLinecap="round"
                   fill="none"
                 />
               </svg>
-              <div className="absolute flex flex-col items-center">
-                <span className="font-mono font-black text-2xl text-white">
-                  312
+              <div className="absolute flex flex-col items-center px-2">
+                <span className="font-mono font-black text-xl text-white">
+                  {status === "verified"
+                    ? "AKTIF"
+                    : status === "regional_checked"
+                    ? "PROV"
+                    : status === "submitted"
+                    ? "DAERAH"
+                    : status === "revision_requested"
+                    ? "REVISI"
+                    : "DRAFT"}
                 </span>
-                <span className="text-[10px] font-mono text-white/40 uppercase">
-                  HARI TERSISA
+                <span className="text-[9px] font-mono text-white/40 uppercase mt-0.5">
+                  {status === "verified" ? "Lencana Emas" : "Status Berkas"}
                 </span>
               </div>
             </div>
 
             <div className="mt-4 pt-4 border-t border-white/[0.08] w-full text-xs">
               <div className="flex items-center justify-between text-white/60 font-mono">
-                <span>Berlaku s/d:</span>
-                <span className="text-white font-bold">24 Des 2026</span>
+                <span>Entitas:</span>
+                <span className="text-white font-bold uppercase">{entityType}</span>
               </div>
-              <div className="flex items-center justify-between text-white/60 font-mono mt-1">
-                <span>No. Lencana:</span>
-                <span className="text-[#D4AF37] font-bold">ESI-SB-2025-0042</span>
+              <div className="flex items-center justify-between text-white/60 font-mono mt-1.5">
+                <span>Wilayah:</span>
+                <span className="text-white font-bold">{profile.regionName}</span>
+              </div>
+              <div className="flex items-center justify-between text-white/60 font-mono mt-1.5">
+                <span>No. ESPORT ID:</span>
+                <span className="text-[#D4AF37] font-bold">{profile.esportId}</span>
               </div>
             </div>
           </div>
@@ -287,7 +646,7 @@ export function DesktopVerificationView() {
               </span>
             </div>
             <p className="text-[11px] text-white/70 leading-relaxed">
-              Verifikasi kartu paspor resmi dikeluarkan secara tunggal oleh Pengprov ESI Sumatera Barat sesuai AD/ART PBESI.
+              Verifikasi keabsahan profil digital diterbitkan secara bertahap oleh Pengcab ESI {profile.regionName} dan disahkan tunggal oleh Pengprov ESI Sumatera Barat sesuai regulasi PBESI.
             </p>
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -19,34 +19,25 @@ import {
   ExternalLink,
   Share2,
   QrCode,
+  Edit,
+  UserCheck,
+  PlusCircle,
+  Building,
+  GraduationCap,
 } from "lucide-react";
 import { EsportCard } from "@/components/card/EsportCard";
-import { GALLERY_CARDS } from "@/data/mockCards";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
 import { mapVerificationToCard } from "@/types/card";
 
 export function DesktopDashboardView() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [liveProfiles, setLiveProfiles] = useState<any[] | null>(null);
-  const [invitations, setInvitations] = useState([
-    {
-      id: "inv-1",
-      team: "Minang Pride Esports",
-      game: "Mobile Legends: Bang Bang",
-      role: "Roamer",
-      time: "2 jam lalu",
-    },
-    {
-      id: "inv-2",
-      team: "Singkarak Legion",
-      game: "PUBG Mobile",
-      role: "Rusher",
-      time: "1 hari lalu",
-    },
-  ]);
+  const [userSession, setUserSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function loadMyProfile() {
+      setIsLoading(true);
       try {
         const res = await fetch("/api/me/profiles");
         if (res.ok) {
@@ -54,19 +45,21 @@ export function DesktopDashboardView() {
           if (json.profiles) {
             setLiveProfiles(json.profiles);
           }
+          if (json.user) {
+            setUserSession(json.user);
+          }
         }
-      } catch {
-        // Fallback to mock
+      } catch (err) {
+        console.warn("Failed to load profiles:", err);
+      } finally {
+        setIsLoading(false);
       }
     }
     loadMyProfile();
   }, []);
 
-  const handleAction = (id: string, action: "accept" | "decline") => {
-    setInvitations((prev) => prev.filter((i) => i.id !== id));
-  };
-
   const activeProfile = liveProfiles && liveProfiles.length > 0 ? liveProfiles[0] : null;
+  const entityType = activeProfile?.entityType || "player";
 
   const userCard = activeProfile
     ? {
@@ -78,7 +71,7 @@ export function DesktopDashboardView() {
         data: {
           displayName: activeProfile.displayName,
           ign: activeProfile.ign || undefined,
-          role: activeProfile.roleName || "Athlete",
+          role: activeProfile.roleName || (entityType === "team" ? "Organisasi Tim" : "Athlete"),
           game: activeProfile.mainGameName || "Esport",
           region: { name: activeProfile.regionName, code: activeProfile.regionCode },
           esportId: activeProfile.esportId,
@@ -87,8 +80,77 @@ export function DesktopDashboardView() {
       }
     : null;
 
-  const completeness = activeProfile ? (activeProfile.completenessScore || 60) : 0;
+  const completeness = activeProfile ? (activeProfile.completenessScore || 75) : 0;
   const isVerified = activeProfile?.verificationStatus === "verified";
+  const verificationStatus = activeProfile?.verificationStatus || "unverified";
+
+  // Contextual "Langkah Berikut" logic based on Entity Type & Verification
+  const getNextStepInfo = () => {
+    if (verificationStatus === "unverified") {
+      if (entityType === "team") {
+        return {
+          title: "Ajukan Legalisasi Klub PBESI",
+          desc: "Daftarkan tim resmi untuk berpartisipasi dalam Kejurda & Liga Esport Sumatera Barat.",
+          actionText: "Ajukan",
+          href: "/me/verification",
+        };
+      }
+      if (entityType === "coach") {
+        return {
+          title: "Ajukan Sertifikasi Pelatih ESI",
+          desc: "Lengkapi sertifikat kepelatihan atau lisensi wasit untuk verifikasi lencana resmi.",
+          actionText: "Ajukan",
+          href: "/me/verification",
+        };
+      }
+      if (entityType === "school" || entityType === "campus") {
+        return {
+          title: "Pengesahan Ekstrakurikuler PBESI",
+          desc: "Lampirkan SK Kepala Sekolah/Dekan untuk pembinaan atlet pelajar resmi daerah.",
+          actionText: "Ajukan",
+          href: "/me/verification",
+        };
+      }
+      return {
+        title: "Ajukan Lisensi Resmi PBESI",
+        desc: "Lengkapi 1 piagam prestasi untuk peningkatan Tier dan Lencana Emas Pengprov.",
+        actionText: "Ajukan",
+        href: "/me/verification",
+      };
+    }
+    if (verificationStatus === "submitted" || verificationStatus === "in_review_regional") {
+      return {
+        title: `Dalam Telaah Pengcab ${activeProfile?.regionName || "Daerah"}`,
+        desc: "Berkas Anda sedang dalam antrean verifikasi pengurus cabang. Estimasi 1-3 hari kerja.",
+        actionText: "Pantau Status",
+        href: "/me/verification",
+      };
+    }
+    if (verificationStatus === "revision_requested") {
+      return {
+        title: "Perlu Revisi Dokumen",
+        desc: "Pengcab ESI meminta perbaikan berkas. Klik untuk memeriksa catatan verifikator.",
+        actionText: "Perbaiki",
+        href: "/me/verification",
+      };
+    }
+    if (verificationStatus === "regional_checked") {
+      return {
+        title: "Menunggu Pengesahan Pengprov",
+        desc: "Lolos verifikasi daerah! Berkas kini di meja Pengprov ESI Sumbar untuk lencana emas.",
+        actionText: "Lihat",
+        href: "/me/verification",
+      };
+    }
+    return {
+      title: "Profil Terverifikasi Resmi",
+      desc: "Lencana Emas aktif! Identitas Anda diakui secara penuh di ekosistem PBESI Sumbar.",
+      actionText: "Lihat Lisensi",
+      href: "/me/verification",
+    };
+  };
+
+  const nextStep = getNextStepInfo();
 
   return (
     <div className="w-full flex flex-col gap-8">
@@ -103,7 +165,7 @@ export function DesktopDashboardView() {
           <div className="w-full p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] shadow-2xl backdrop-blur-xl flex flex-col items-center justify-between">
             <div className="w-full flex items-center justify-between mb-4">
               <span className="text-xs font-mono uppercase tracking-widest text-white/50">
-                KARTU UTAMA
+                KARTU UTAMA • {entityType.toUpperCase()}
               </span>
               <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[10px] font-mono text-[#D4AF37] font-bold uppercase">
                 {userCard ? `TIER • ${userCard.rarity}` : "BELUM ADA PROFIL"}
@@ -125,24 +187,54 @@ export function DesktopDashboardView() {
                 </div>
 
                 {/* Quick Card Action Buttons */}
-                <div className="w-full mt-6 pt-4 border-t border-white/[0.08] grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowShareModal(true)}
-                    className="h-10 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-[#D4AF37]/40 text-xs font-heading font-bold text-white flex items-center justify-center gap-2 transition-all"
-                  >
-                    <Share2 className="w-3.5 h-3.5 text-[#D4AF37]" />
-                    <span>Bagikan</span>
-                  </button>
+                <div className="w-full mt-6 pt-4 border-t border-white/[0.08] flex flex-col gap-2.5">
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <Link
+                      href={`/me/profile/${activeProfile.id}/edit`}
+                      className="h-10 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-xs font-heading font-bold text-white flex items-center justify-center gap-2 transition-all"
+                    >
+                      <Edit className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Edit Profil</span>
+                    </Link>
 
-                  <Link
-                    href={`/${userCard.type}/${userCard.slug}`}
-                    target="_blank"
-                    className="h-10 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-2 transition-all"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    <span>Lihat Publik</span>
-                  </Link>
+                    {entityType === "team" ? (
+                      <Link
+                        href={`/me/team/${activeProfile.id}/roster`}
+                        className="h-10 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border border-[#D4AF37]/40 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-2 transition-all"
+                      >
+                        <Users className="w-3.5 h-3.5" />
+                        <span>Kelola Roster</span>
+                      </Link>
+                    ) : (
+                      <Link
+                        href="/me/verification"
+                        className="h-10 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border border-[#D4AF37]/40 text-xs font-heading font-bold text-[#D4AF37] flex items-center justify-center gap-2 transition-all"
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>Verifikasi</span>
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setShowShareModal(true)}
+                      className="h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-xs font-mono text-white/70 hover:text-white flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <Share2 className="w-3 h-3 text-[#D4AF37]" />
+                      <span>Bagikan</span>
+                    </button>
+
+                    <Link
+                      href={`/${userCard.type}/${userCard.slug}`}
+                      target="_blank"
+                      className="h-9 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] text-xs font-mono text-white/70 hover:text-white flex items-center justify-center gap-1.5 transition-all"
+                    >
+                      <ExternalLink className="w-3 h-3 text-white/40" />
+                      <span>Lihat Publik</span>
+                    </Link>
+                  </div>
                 </div>
               </>
             ) : (
@@ -168,13 +260,13 @@ export function DesktopDashboardView() {
         </div>
 
         {/* ======================================================= */}
-        {/* 2. BENTO KANAN: LANGKAH BERIKUT, PROGRES, STATUS, TIM  */}
+        {/* 2. BENTO KANAN: LANGKAH BERIKUT, PROGRES, STATUS, BIDANG */}
         {/* ======================================================= */}
         <div className="col-span-12 lg:col-span-7 flex flex-col gap-6">
-          {/* BARIS ATAS: LANGKAH BERIKUT (SATU KARTU AKSI KONTEKSTUAL) */}
-          <div className="p-6 rounded-3xl bg-gradient-to-r from-[#D4AF37]/10 via-[#161A24] to-[#0F1118] border border-[#D4AF37]/30 shadow-xl flex items-center justify-between">
+          {/* BARIS ATAS: LANGKAH BERIKUT (KONTEKSTUAL ENTITAS) */}
+          <div className="p-6 rounded-3xl bg-gradient-to-r from-[#D4AF37]/10 via-[#161A24] to-[#0F1118] border border-[#D4AF37]/30 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#D4AF37] text-[#07080C] flex items-center justify-center font-bold shadow-[0_0_20px_rgba(212,175,55,0.4)]">
+              <div className="w-12 h-12 rounded-2xl bg-[#D4AF37] text-[#07080C] flex items-center justify-center font-bold shadow-[0_0_20px_rgba(212,175,55,0.4)] shrink-0">
                 <Sparkles className="w-6 h-6" />
               </div>
               <div className="flex flex-col">
@@ -182,28 +274,27 @@ export function DesktopDashboardView() {
                   LANGKAH BERIKUT
                 </span>
                 <h3 className="text-base font-heading font-black text-white">
-                  Ajukan Lisensi Resmi PBESI
+                  {nextStep.title}
                 </h3>
                 <p className="text-xs text-white/60">
-                  Lengkapi 1 piagam prestasi untuk peningkatan Tier Legend.
+                  {nextStep.desc}
                 </p>
               </div>
             </div>
 
             <Link
-              href="/me/verification"
-              className="px-5 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C] font-heading font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 shrink-0 shadow-md"
+              href={nextStep.href}
+              className="px-5 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C] font-heading font-black text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-md self-start sm:self-auto"
             >
-              <span>Ajukan</span>
+              <span>{nextStep.actionText}</span>
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
 
           {/* BARIS TENGAH: CINCIN PROGRES KELENGKAPAN & STATUS VERIFIKASI */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {/* Cincin Progres Kelengkapan Profil */}
             <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex items-center gap-5">
-              {/* Radial Progress Ring (85%) */}
               <div className="relative w-20 h-20 shrink-0 flex items-center justify-center">
                 <svg className="w-20 h-20 -rotate-90" viewBox="0 0 80 80">
                   <circle
@@ -233,13 +324,15 @@ export function DesktopDashboardView() {
 
               <div className="flex flex-col">
                 <span className="text-xs font-heading font-bold text-white">
-                  Profil Lengkap
+                  Kelengkapan {entityType === "team" ? "Profil Tim" : "Profil"}
                 </span>
                 <span className="text-[11px] text-white/50 mt-0.5">
-                  Foto, IGN, Game, dan Wilayah terisi. Tambahkan sosmed.
+                  {entityType === "team"
+                    ? "Logo, deskripsi tim, dan divisi terisi. Tambahkan sosmed resmi."
+                    : "Foto, IGN, Game, dan Wilayah terisi. Tambahkan sosmed."}
                 </span>
                 <Link
-                  href="/me/settings"
+                  href={activeProfile ? `/me/profile/${activeProfile.id}/edit` : "/me/profile/new"}
                   className="text-[11px] font-mono text-[#D4AF37] hover:underline mt-2 font-semibold"
                 >
                   Lengkapi Data &rarr;
@@ -247,7 +340,7 @@ export function DesktopDashboardView() {
               </div>
             </div>
 
-            {/* Status Verifikasi Ringkas (Ikon + 1 Kata) */}
+            {/* Status Verifikasi Ringkas */}
             <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
@@ -262,84 +355,154 @@ export function DesktopDashboardView() {
                 </div>
                 <div>
                   <div className="text-base font-heading font-black text-white">
-                    {isVerified ? "Terverifikasi" : activeProfile?.verificationStatus === "submitted" ? "Diajukan" : activeProfile?.verificationStatus === "in_review_regional" ? "Review Cabang" : "Belum Verifikasi"}
+                    {isVerified
+                      ? "Terverifikasi Resmi"
+                      : verificationStatus === "submitted"
+                      ? "Diajukan (Tahap 2)"
+                      : verificationStatus === "in_review_regional"
+                      ? "Telaah Pengcab"
+                      : verificationStatus === "regional_checked"
+                      ? "Lolos Pengcab"
+                      : verificationStatus === "revision_requested"
+                      ? "Perlu Revisi"
+                      : "Belum Verifikasi"}
                   </div>
                   <div className="text-[10px] font-mono text-white/40">
-                    {activeProfile?.esportId || "ESB-SB-2026-0001"}
+                    {activeProfile?.esportId || "Belum Ada ID"}
                   </div>
                 </div>
               </div>
 
               <div className="text-[11px] font-mono text-white/60 pt-2 border-t border-white/[0.06] flex items-center justify-between">
-                <span>{activeProfile?.regionName || "Wilayah Sumbar"}</span>
+                <span>{activeProfile?.regionName || "Sumatera Barat"}</span>
                 <Link href="/me/verification" className="text-brand-pink hover:underline">
-                  Detail &rarr;
+                  Detail Berkas &rarr;
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* BARIS BAWAH: PERMINTAAN & UNDANGAN MENUNGGU (MAKS 3 BARIS) */}
-          <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#D4AF37]" />
-                <span className="text-xs font-heading font-black text-white uppercase tracking-wider">
-                  Undangan Masuk Tim
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-white/[0.06] text-[10px] font-mono text-white/60">
-                  {invitations.length}
-                </span>
+          {/* BARIS BAWAH: WIDGET DINAMIS SESUAI BIDANG (TEAM vs PLAYER vs LAINNYA) */}
+          {entityType === "team" ? (
+            <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[#D4AF37]" />
+                  <span className="text-xs font-heading font-black text-white uppercase tracking-wider">
+                    Roster &amp; Manajemen Tim: {activeProfile?.displayName}
+                  </span>
+                </div>
+                <Link
+                  href={`/me/team/${activeProfile?.id}/roster`}
+                  className="text-[11px] font-mono text-[#D4AF37] hover:underline"
+                >
+                  Kelola Roster &rarr;
+                </Link>
               </div>
-              <Link
-                href="/me/memberships"
-                className="text-[11px] font-mono text-[#D4AF37] hover:underline"
-              >
-                Lihat Semua &rarr;
-              </Link>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-2xl bg-[#161A24] border border-white/[0.06]">
+                  <span className="text-[10px] font-mono text-white/40 block">Divisi Game</span>
+                  <span className="text-xs font-bold text-white mt-0.5 block truncate">
+                    {activeProfile?.mainGameName || "Esport"}
+                  </span>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#161A24] border border-white/[0.06]">
+                  <span className="text-[10px] font-mono text-white/40 block">Wilayah Homebase</span>
+                  <span className="text-xs font-bold text-[#D4AF37] mt-0.5 block truncate">
+                    {activeProfile?.regionName || "Sumatera Barat"}
+                  </span>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#161A24] border border-white/[0.06]">
+                  <span className="text-[10px] font-mono text-white/40 block">Status Rekrutmen</span>
+                  <span className="text-xs font-bold text-emerald-400 mt-0.5 block truncate">
+                    Roster Aktif
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                <span className="text-[11px] text-white/50">
+                  Perlu menambah pemain atau kapten tim?
+                </span>
+                <Link
+                  href={`/me/team/${activeProfile?.id}/roster`}
+                  className="px-4 py-1.5 rounded-xl bg-white/[0.06] hover:bg-[#D4AF37] hover:text-black text-xs font-heading font-bold text-white transition-all flex items-center gap-1.5"
+                >
+                  <PlusCircle className="w-3.5 h-3.5" />
+                  <span>Atur Anggota Roster</span>
+                </Link>
+              </div>
             </div>
-
-            {invitations.length > 0 ? (
-              <div className="flex flex-col gap-2.5">
-                {invitations.slice(0, 3).map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-3.5 rounded-2xl bg-[#161A24] border border-white/[0.06] flex items-center justify-between"
-                  >
-                    <div className="flex flex-col">
-                      <span className="text-xs font-heading font-bold text-white">
-                        {item.team}
-                      </span>
-                      <span className="text-[10px] font-mono text-white/50">
-                        {item.game} • Role: {item.role} • {item.time}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleAction(item.id, "accept")}
-                        className="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold transition-all"
-                      >
-                        Terima
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleAction(item.id, "decline")}
-                        className="px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-mono font-bold transition-all"
-                      >
-                        Tolak
-                      </button>
-                    </div>
-                  </div>
-                ))}
+          ) : entityType === "school" || entityType === "campus" ? (
+            <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-[#D4AF37]" />
+                  <span className="text-xs font-heading font-black text-white uppercase tracking-wider">
+                    Ekstrakurikuler / UKM Esport Pendidikan
+                  </span>
+                </div>
+                <Link
+                  href={`/me/profile/${activeProfile?.id}/edit`}
+                  className="text-[11px] font-mono text-[#D4AF37] hover:underline"
+                >
+                  Edit Data &rarr;
+                </Link>
               </div>
-            ) : (
-              <div className="py-6 text-center text-xs font-mono text-white/30">
-                Tidak ada undangan menunggu saat ini.
+
+              <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06] flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-xs font-heading font-bold text-white">
+                    {activeProfile?.displayName}
+                  </span>
+                  <span className="text-[10px] font-mono text-white/50 mt-0.5">
+                    Afiliasi Pengcab ESI {activeProfile?.regionName} • Pembinaan Pelajar
+                  </span>
+                </div>
+                <Link
+                  href="/me/verification"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#D4AF37]/15 text-[#D4AF37] text-xs font-mono font-bold hover:bg-[#D4AF37]/25 transition-all"
+                >
+                  Ajukan SK Sekolah
+                </Link>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-[#D4AF37]" />
+                  <span className="text-xs font-heading font-black text-white uppercase tracking-wider">
+                    Relasi Tim &amp; Kejuaraan Atlet
+                  </span>
+                </div>
+                <Link
+                  href="/me/memberships"
+                  className="text-[11px] font-mono text-[#D4AF37] hover:underline"
+                >
+                  Status Klub &rarr;
+                </Link>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06] flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-xs font-heading font-bold text-white">
+                    {activeProfile?.ign ? `IGN: ${activeProfile.ign}` : activeProfile?.displayName}
+                  </span>
+                  <span className="text-[10px] font-mono text-white/50 mt-0.5">
+                    Game: {activeProfile?.mainGameName || "Esport"} • Peran: {activeProfile?.roleName || "Athlete"}
+                  </span>
+                </div>
+                <Link
+                  href="/teams"
+                  className="px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white text-xs font-mono font-bold transition-all"
+                >
+                  Jelajah Tim PBESI
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

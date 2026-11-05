@@ -30,6 +30,20 @@ export function MobileVerificationTracker() {
   // Demo status state: "in_progress", "revision", "verified"
   const [status, setStatus] = useState<VerificationStatusType>("in_progress");
 
+  React.useEffect(() => {
+    fetch("/api/me/verification")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.profile?.verificationStatus) {
+          const vs = data.profile.verificationStatus;
+          if (vs === "verified") setStatus("verified");
+          else if (vs === "revision_requested") setStatus("revision");
+          else setStatus("in_progress");
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Uploaded proofs mock state
   const [proofs, setProofs] = useState({
     kartuPelajar: true,

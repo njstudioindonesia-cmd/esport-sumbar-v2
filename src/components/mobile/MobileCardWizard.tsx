@@ -808,16 +808,16 @@ export function MobileCardWizard() {
                     </span>
                     <div className="flex items-center gap-2">
                       <Link
-                        href="/me/verification"
-                        className="px-3 py-1.5 rounded-lg bg-[#D4AF37] text-black text-[11px] font-bold"
+                        href="/dashboard"
+                        className="px-3.5 py-1.5 rounded-lg bg-[#D4AF37] text-black text-[11px] font-bold"
                       >
-                        Verifikasi
+                        Buka Dashboard
                       </Link>
                       <Link
-                        href="/me/cards"
+                        href="/me/verification"
                         className="px-3 py-1.5 rounded-lg bg-white/10 text-white text-[11px]"
                       >
-                        Lihat Kartu
+                        Verifikasi
                       </Link>
                     </div>
                   </div>
