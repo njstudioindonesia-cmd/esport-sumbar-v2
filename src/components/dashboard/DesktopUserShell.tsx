@@ -45,6 +45,16 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
   const [hasUnreadNotification, setHasUnreadNotification] = useState(true);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [userSession, setUserSession] = useState<{ email: string; role: string } | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  // Check URL error parameter
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const err = params.get("error");
+      if (err) setAuthError(err);
+    }
+  }, []);
 
   // Load real user session from Supabase
   useEffect(() => {
@@ -165,6 +175,36 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
           })}
         </nav>
 
+        {/* Admin Navigation Quick Link */}
+        {userSession && ["platform_operator", "prov_admin", "region_admin"].includes(userSession.role) && (
+          <div className="px-3 pb-3">
+            <Link
+              href={
+                userSession.role === "platform_operator"
+                  ? "/admin/platform"
+                  : userSession.role === "prov_admin"
+                  ? "/admin/province"
+                  : "/admin/region"
+              }
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 transition-all shadow-lg ${
+                collapsed ? "justify-center px-0" : ""
+              }`}
+              title={collapsed ? "Buka Portal Admin" : undefined}
+            >
+              <ShieldCheck className="w-4 h-4 shrink-0" />
+              {!collapsed && (
+                <span className="truncate">
+                  {userSession.role === "platform_operator"
+                    ? "Panel Operator"
+                    : userSession.role === "prov_admin"
+                    ? "Panel Pengprov"
+                    : "Panel Pengcab"}
+                </span>
+              )}
+            </Link>
+          </div>
+        )}
+
         {/* Bottom User Profile Card */}
         <div className="p-3 border-t border-white/[0.06]">
           <div
@@ -262,6 +302,29 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
               )}
             </button>
 
+            {/* Admin Portal Jump Button */}
+            {userSession && ["platform_operator", "prov_admin", "region_admin"].includes(userSession.role) && (
+              <Link
+                href={
+                  userSession.role === "platform_operator"
+                    ? "/admin/platform"
+                    : userSession.role === "prov_admin"
+                    ? "/admin/province"
+                    : "/admin/region"
+                }
+                className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 shadow-md transition-all"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>
+                  {userSession.role === "platform_operator"
+                    ? "Panel Operator"
+                    : userSession.role === "prov_admin"
+                    ? "Panel Pengprov"
+                    : "Panel Pengcab"}
+                </span>
+              </Link>
+            )}
+
             {/* Public Profile View Shortcut */}
             <Link
               href="/player/sutan_aim"
@@ -275,7 +338,49 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
         </header>
 
         {/* Dynamic Page Content */}
-        <main className="flex-1 p-8 lg:p-10 max-w-7xl w-full mx-auto">{children}</main>
+        <main className="flex-1 p-8 lg:p-10 max-w-7xl w-full mx-auto">
+          {authError && (
+            <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start justify-between gap-3 text-xs text-amber-300">
+              <div className="flex items-start gap-2.5">
+                <ShieldCheck className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-white block font-heading uppercase text-sm mb-0.5">
+                    Pemberitahuan Akses Administrator
+                  </strong>
+                  <span className="text-white/70 leading-relaxed block">
+                    {authError === "unauthorized_operator"
+                      ? "Rute tersebut dikhususkan untuk Operator Sistem. Sebagai Pengprov ESI, gunakan tautan Panel Pengprov resmi Anda."
+                      : authError === "unauthorized_province"
+                      ? "Rute tersebut dikhususkan untuk Pengurus Provinsi ESI Sumatera Barat."
+                      : "Anda telah login sebagai administrator. Silakan buka menu panel di atas."}
+                  </span>
+                  <div className="mt-3 flex items-center gap-2">
+                    <Link
+                      href={
+                        userSession?.role === "platform_operator"
+                          ? "/admin/platform"
+                          : userSession?.role === "prov_admin"
+                          ? "/admin/province"
+                          : "/admin/region"
+                      }
+                      className="px-3.5 py-1.5 rounded-lg bg-[#D4AF37] text-black font-heading font-extrabold uppercase text-[11px] hover:brightness-110 transition-all"
+                    >
+                      Buka Panel Resmi Anda Sekarang →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAuthError(null)}
+                className="text-white/40 hover:text-white px-2 py-1"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+          {children}
+        </main>
       </div>
     </div>
   );

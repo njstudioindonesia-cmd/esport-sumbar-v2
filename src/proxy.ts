@@ -96,8 +96,8 @@ export async function proxy(request: NextRequest) {
 
     const role = account?.role || "user";
 
-    // Operator Platform Eksklusif
-    if (pathname.startsWith("/admin/platform") && role !== "platform_operator") {
+    // 1. Operator Platform & Pengprov ESI Sumbar
+    if (pathname.startsWith("/admin/platform") && !["platform_operator", "prov_admin"].includes(role)) {
       const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_operator", request.url));
       response.headers.getSetCookie().forEach((c) => {
         unauthRes.headers.append("set-cookie", c);
@@ -105,8 +105,8 @@ export async function proxy(request: NextRequest) {
       return unauthRes;
     }
 
-    // Pengprov ESI Sumbar Eksklusif
-    if (pathname.startsWith("/admin/province") && role !== "prov_admin") {
+    // 2. Pengprov ESI Sumbar (prov_admin atau platform_operator)
+    if (pathname.startsWith("/admin/province") && !["prov_admin", "platform_operator"].includes(role)) {
       const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_province", request.url));
       response.headers.getSetCookie().forEach((c) => {
         unauthRes.headers.append("set-cookie", c);
@@ -114,8 +114,8 @@ export async function proxy(request: NextRequest) {
       return unauthRes;
     }
 
-    // Pengcab ESI Daerah (Admin Daerah atau Pengprov)
-    if (pathname.startsWith("/admin/region") && !["region_admin", "prov_admin"].includes(role)) {
+    // 3. Pengcab ESI Daerah (Admin Daerah, Pengprov, atau Platform Operator)
+    if (pathname.startsWith("/admin/region") && !["region_admin", "prov_admin", "platform_operator"].includes(role)) {
       const unauthRes = NextResponse.redirect(new URL("/dashboard?error=unauthorized_region", request.url));
       response.headers.getSetCookie().forEach((c) => {
         unauthRes.headers.append("set-cookie", c);

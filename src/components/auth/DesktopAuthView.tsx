@@ -191,7 +191,17 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
           setAuthSuccess(res.message || "Masuk berhasil! Mengalihkan...");
           setTimeout(() => {
             const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-            router.push(redirectParam || "/dashboard");
+            if (redirectParam) {
+              router.push(redirectParam);
+            } else if (res.role === "platform_operator") {
+              router.push("/admin/platform");
+            } else if (res.role === "prov_admin") {
+              router.push("/admin/province");
+            } else if (res.role === "region_admin") {
+              router.push("/admin/region");
+            } else {
+              router.push("/dashboard");
+            }
           }, 600);
         } else {
           setAuthError(res.error || "Email atau kata sandi keliru");
