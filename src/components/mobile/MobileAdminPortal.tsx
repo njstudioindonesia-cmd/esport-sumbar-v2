@@ -35,10 +35,6 @@ import {
 import {
   VerificationQueueItem,
   ActivityLogItem,
-  MOCK_REGIONAL_QUEUE,
-  MOCK_PROVINCE_QUEUE,
-  MOCK_REGIONAL_LOGS,
-  MOCK_PROVINCE_LOGS,
 } from "@/data/mockAdminData";
 
 export type AdminRole = "region" | "province" | "platform";
@@ -61,9 +57,25 @@ export function MobileAdminPortal({
   const [activeTab, setActiveTab] = useState<"home" | "queue" | "logs">("home");
 
   // Queue Data (Local mutable state for live interaction)
-  const [queueItems, setQueueItems] = useState<VerificationQueueItem[]>(() => {
-    return role === "province" ? MOCK_PROVINCE_QUEUE : MOCK_REGIONAL_QUEUE;
-  });
+  const [queueItems, setQueueItems] = useState<VerificationQueueItem[]>([]);
+  const [logs, setLogs] = useState<ActivityLogItem[]>([]);
+
+  React.useEffect(() => {
+    async function loadData() {
+      try {
+        const res = await fetch(`/api/admin/queue?scope=${role === "province" ? "province" : "region"}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.items && Array.isArray(json.items)) {
+            setQueueItems(json.items);
+          }
+        }
+      } catch (err) {
+        console.warn("Mobile queue fetch error:", err);
+      }
+    }
+    loadData();
+  }, [role]);
 
   // Selected item for review detail bottom sheet / modal
   const [selectedReviewItem, setSelectedReviewItem] =
@@ -95,11 +107,6 @@ export function MobileAdminPortal({
   // Switch Role handler
   const handleRoleChange = (newRole: AdminRole) => {
     setRole(newRole);
-    if (newRole === "province") {
-      setQueueItems(MOCK_PROVINCE_QUEUE);
-    } else {
-      setQueueItems(MOCK_REGIONAL_QUEUE);
-    }
     setSelectedReviewItem(null);
     setActionSheetType(null);
   };
@@ -727,8 +734,12 @@ export function MobileAdminPortal({
 
             {/* LOGS LIST */}
             <div className="space-y-2">
-              {(role === "province" ? MOCK_PROVINCE_LOGS : MOCK_REGIONAL_LOGS).map(
-                (log: ActivityLogItem) => (
+              {logs.length === 0 ? (
+                <div className="p-8 text-center rounded-2xl bg-[#0F121A] border border-white/[0.08] text-xs text-white/40">
+                  Belum ada catatan log aktivitas tersimpan.
+                </div>
+              ) : (
+                logs.map((log: ActivityLogItem) => (
                   <div
                     key={log.id}
                     className="p-3.5 rounded-2xl bg-[#0F121A] border border-white/[0.08] space-y-2"
@@ -764,7 +775,7 @@ export function MobileAdminPortal({
                       SHA256: {log.logHash}
                     </div>
                   </div>
-                )
+                ))
               )}
             </div>
           </motion.div>

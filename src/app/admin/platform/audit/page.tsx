@@ -18,10 +18,10 @@ import {
 import { AdminPlatformNavbar } from "@/components/admin/AdminPlatformNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
-import { MOCK_GLOBAL_AUDIT_LOGS, ActivityLogItem } from "@/data/mockAdminData";
+import { ActivityLogItem } from "@/data/mockAdminData";
 
 export default function AdminPlatformAuditPage() {
-  const [logs] = useState<ActivityLogItem[]>(MOCK_GLOBAL_AUDIT_LOGS);
+  const [logs] = useState<ActivityLogItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");

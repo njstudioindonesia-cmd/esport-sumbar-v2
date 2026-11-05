@@ -20,10 +20,10 @@ import {
 } from "lucide-react";
 import { AdminPlatformNavbar } from "@/components/admin/AdminPlatformNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_REPORTS, ProfileReportItem } from "@/data/mockAdminData";
+import { ProfileReportItem } from "@/data/mockAdminData";
 
 export default function AdminPlatformModerationPage() {
-  const [reports, setReports] = useState<ProfileReportItem[]>(MOCK_REPORTS);
+  const [reports, setReports] = useState<ProfileReportItem[]>([]);
   const [selectedReport, setSelectedReport] = useState<ProfileReportItem | null>(null);
   const [forwardReason, setForwardReason] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -111,8 +111,19 @@ export default function AdminPlatformModerationPage() {
         </div>
 
         {/* REPORTS LIST */}
-        <div className="flex flex-col gap-4">
-          {reports.map((report) => (
+        {reports.length === 0 ? (
+          <div className="p-12 text-center rounded-2xl bg-[#12151C] border border-[#262B38] text-xs text-gray-400">
+            <ShieldAlert className="w-8 h-8 text-gray-600 mx-auto mb-3" />
+            <p className="font-heading font-bold text-white uppercase text-sm mb-1">
+              Tidak Ada Laporan Masuk
+            </p>
+            <p className="text-gray-400 max-w-md mx-auto">
+              Saat ini belum ada aduan publik atau indikasi pemalsuan akun yang menunggu triase operator.
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {reports.map((report) => (
             <div
               key={report.id}
               className={`p-6 rounded-2xl border transition-all flex flex-col gap-4 ${
@@ -237,6 +248,7 @@ export default function AdminPlatformModerationPage() {
             </div>
           ))}
         </div>
+        )}
       </main>
 
       {/* MODAL FORWARD RECOMMENDATION TO PROVINCE */}

@@ -16,18 +16,42 @@ import {
   Shield,
   Layers,
   ArrowRight,
+  Inbox,
 } from "lucide-react";
 import { AdminProvinceNavbar } from "@/components/admin/AdminProvinceNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
-import { MOCK_PROVINCE_QUEUE, VerificationQueueItem } from "@/data/mockAdminData";
+import { VerificationQueueItem } from "@/data/mockAdminData";
 
 export default function AdminProvinceQueuePage() {
-  const [queueItems] = useState<VerificationQueueItem[]>(MOCK_PROVINCE_QUEUE);
+  const [queueItems, setQueueItems] = useState<VerificationQueueItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedStatusTab, setSelectedStatusTab] = useState<"all" | "gold_ready" | "fallback">("all");
+
+  React.useEffect(() => {
+    async function loadQueue() {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/admin/queue?scope=province");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.items && Array.isArray(json.items)) {
+            setQueueItems(json.items);
+          } else {
+            setQueueItems([]);
+          }
+        }
+      } catch (err) {
+        console.warn("Province queue error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadQueue();
+  }, []);
 
   const filteredItems = useMemo(() => {
     return queueItems.filter((item) => {
@@ -196,7 +220,20 @@ export default function AdminProvinceQueuePage() {
                 </thead>
 
                 <tbody className="divide-y divide-[#262B38]/70">
-                  {filteredItems.map((item) => (
+                  {filteredItems.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-16 text-center text-xs text-gray-400">
+                        <Inbox className="w-10 h-10 mx-auto text-white/20 mb-3" />
+                        <p className="font-heading font-bold text-sm text-white mb-1">
+                          Antrean Pengesahan Emas Kosong
+                        </p>
+                        <p className="text-[11px] text-gray-500 max-w-sm mx-auto">
+                          Saat ini belum ada pengajuan verifikasi yang menunggu pengesahan tingkat provinsi.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredItems.map((item) => (
                     <tr key={item.id} className="hover:bg-[#161922]/70 transition-colors">
                       {/* NAMA & IGN */}
                       <td className="p-3.5">
@@ -304,7 +341,7 @@ export default function AdminProvinceQueuePage() {
                         )}
                       </td>
                     </tr>
-                  ))}
+                  )))}
                 </tbody>
               </table>
             </div>

@@ -22,6 +22,32 @@ import { Footer } from "@/components/layout/Footer";
 import { MobileAdminPortal } from "@/components/mobile/MobileAdminPortal";
 
 export default function AdminPlatformDashboardPage() {
+  const [metrics, setMetrics] = React.useState({
+    totalUsers: 0,
+    totalCards: 0,
+    playerCount: 0,
+    coachCount: 0,
+    teamCount: 0,
+    totalArticles: 0,
+    draftArticles: 0,
+    totalReports: 0,
+  });
+
+  React.useEffect(() => {
+    async function loadMetrics() {
+      try {
+        const res = await fetch("/api/admin/metrics");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.platform) setMetrics(json.platform);
+        }
+      } catch (err) {
+        console.warn("Metrics fetch error:", err);
+      }
+    }
+    loadMetrics();
+  }, []);
+
   return (
     <>
       {/* Mobile Admin Experience */}
@@ -95,14 +121,14 @@ export default function AdminPlatformDashboardPage() {
               </div>
             </div>
             <div>
-              <div className="text-3xl font-heading font-black text-white">1,480</div>
+              <div className="text-3xl font-heading font-black text-white">{metrics.totalUsers}</div>
               <p className="text-[11px] text-[#9AA3B2] mt-1">
-                +14% pendaftar baru dalam 30 hari terakhir.
+                {metrics.totalUsers} akun terautentikasi di Supabase.
               </p>
             </div>
             <span className="text-xs font-mono text-[#22C55E] flex items-center gap-1 font-bold pt-2 border-t border-[#262B38]">
               <TrendingUp className="w-3.5 h-3.5" />
-              Tingkat Retensi 88.4%
+              Sistem Aktif (Live)
             </span>
           </div>
 
@@ -117,13 +143,13 @@ export default function AdminPlatformDashboardPage() {
               </div>
             </div>
             <div>
-              <div className="text-3xl font-heading font-black text-[#D4AF37]">1,850</div>
+              <div className="text-3xl font-heading font-black text-[#D4AF37]">{metrics.totalCards}</div>
               <p className="text-[11px] text-[#9AA3B2] mt-1">
-                1,420 Player • 180 Coach • 250 Team
+                {metrics.playerCount} Player • {metrics.coachCount} Coach • {metrics.teamCount} Team
               </p>
             </div>
             <span className="text-xs font-mono text-gray-400 flex items-center gap-1 font-bold pt-2 border-t border-[#262B38]">
-              Rasio Pemilik Multi-Profil: 1.25x
+              Data Riil Supabase public.profiles
             </span>
           </div>
 
@@ -138,9 +164,9 @@ export default function AdminPlatformDashboardPage() {
               </div>
             </div>
             <div>
-              <div className="text-3xl font-heading font-black text-white">14</div>
+              <div className="text-3xl font-heading font-black text-white">{metrics.totalArticles}</div>
               <p className="text-[11px] text-[#9AA3B2] mt-1">
-                2 Draft editorial menunggu jadwal terbit.
+                {metrics.draftArticles} Draft editorial menunggu jadwal terbit.
               </p>
             </div>
             <Link
@@ -162,9 +188,9 @@ export default function AdminPlatformDashboardPage() {
               </div>
             </div>
             <div>
-              <div className="text-3xl font-heading font-black text-red-400">2</div>
+              <div className="text-3xl font-heading font-black text-red-400">{metrics.totalReports}</div>
               <p className="text-[11px] text-[#9AA3B2] mt-1">
-                Laporan dugaan pemalsuan/joki akun masuk.
+                {metrics.totalReports === 0 ? "Tidak ada laporan pelanggaran aktif." : `${metrics.totalReports} laporan menunggu triase.`}
               </p>
             </div>
             <Link

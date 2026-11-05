@@ -19,17 +19,38 @@ import {
 } from "lucide-react";
 import { AdminRegionNavbar } from "@/components/admin/AdminRegionNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_REGIONAL_QUEUE } from "@/data/mockAdminData";
 import { MobileAdminPortal } from "@/components/mobile/MobileAdminPortal";
 
 export default function AdminRegionDashboardPage() {
-  const pendingCount = MOCK_REGIONAL_QUEUE.filter((q) => q.status === "submitted").length;
-  const inReviewCount = MOCK_REGIONAL_QUEUE.filter((q) => q.status === "in_review").length;
-  const revisionCount = MOCK_REGIONAL_QUEUE.filter((q) => q.status === "revision_needed").length;
-  const approvedThisMonth = 28;
+  const [metrics, setMetrics] = React.useState({
+    pending: 0,
+    inReview: 0,
+    revision: 0,
+    approvedThisMonth: 0,
+  });
+
+  React.useEffect(() => {
+    async function loadMetrics() {
+      try {
+        const res = await fetch("/api/admin/metrics");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.region) setMetrics(json.region);
+        }
+      } catch (err) {
+        console.warn("Region metrics error:", err);
+      }
+    }
+    loadMetrics();
+  }, []);
+
+  const pendingCount = metrics.pending;
+  const inReviewCount = metrics.inReview;
+  const revisionCount = metrics.revision;
+  const approvedThisMonth = metrics.approvedThisMonth;
 
   // SLA approaching or critical items
-  const slaAlerts = MOCK_REGIONAL_QUEUE.filter((q) => q.slaStatus !== "normal");
+  const slaAlerts: any[] = [];
 
   return (
     <>

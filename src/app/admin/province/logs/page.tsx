@@ -21,10 +21,10 @@ import {
 import { AdminProvinceNavbar } from "@/components/admin/AdminProvinceNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
-import { MOCK_PROVINCE_LOGS, ActivityLogItem } from "@/data/mockAdminData";
+import { ActivityLogItem } from "@/data/mockAdminData";
 
 export default function AdminProvinceLogsPage() {
-  const [logs] = useState<ActivityLogItem[]>(MOCK_PROVINCE_LOGS);
+  const [logs] = useState<ActivityLogItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRegion, setFilterRegion] = useState<string>("all");
   const [filterAction, setFilterAction] = useState<string>("all");

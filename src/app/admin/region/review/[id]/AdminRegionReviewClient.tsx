@@ -24,11 +24,12 @@ import {
   Gamepad2,
   Phone,
   ZoomIn,
+  AlertOctagon,
 } from "lucide-react";
 import { AdminRegionNavbar } from "@/components/admin/AdminRegionNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { EsportCard } from "@/components/card/EsportCard";
-import { MOCK_REGIONAL_QUEUE, VerificationQueueItem } from "@/data/mockAdminData";
+import { VerificationQueueItem } from "@/data/mockAdminData";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { transitionVerificationAction } from "@/app/actions/verification";
 
@@ -38,12 +39,26 @@ interface Props {
 
 export default function AdminRegionReviewClient({ reviewId }: Props) {
   const router = useRouter();
+  const [item, setItem] = useState<VerificationQueueItem | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Find target item from mock queue
-  const item = MOCK_REGIONAL_QUEUE.find((q) => q.id === reviewId) || MOCK_REGIONAL_QUEUE[0];
-
-  // Multi-region RLS check: this admin is ESI Kota Padang (PDG)
-  const isAuthorized = item.regionCode === "PDG";
+  React.useEffect(() => {
+    async function loadItem() {
+      setIsLoading(true);
+      try {
+        const res = await fetch(`/api/admin/queue?id=${reviewId}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.item) setItem(json.item);
+        }
+      } catch (err) {
+        console.warn("Review load error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadItem();
+  }, [reviewId]);
 
   // Checklist state
   const [checklist, setChecklist] = useState({
@@ -63,6 +78,47 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
   const [revisionNotes, setRevisionNotes] = useState("");
   const [rejectReason, setRejectReason] = useState("");
   const [actionSuccessMessage, setActionSuccessMessage] = useState<string | null>(null);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#07080C] text-white flex flex-col">
+        <AdminRegionNavbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-spin w-8 h-8 border-2 border-[#D4AF37] border-t-transparent rounded-full" />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!item) {
+    return (
+      <div className="min-h-screen bg-[#07080C] text-white flex flex-col">
+        <AdminRegionNavbar />
+        <main className="flex-1 max-w-xl mx-auto px-6 py-20 flex flex-col items-center justify-center text-center">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mb-4">
+            <AlertOctagon className="w-8 h-8" />
+          </div>
+          <h1 className="text-xl font-heading font-black uppercase mb-2">
+            Pengajuan Tidak Ditemukan
+          </h1>
+          <p className="text-xs text-white/60 mb-6 leading-relaxed">
+            Berkas pengajuan verifikasi dengan ID ini tidak ditemukan atau sudah selesai diproses oleh Pengcab ESI Daerah.
+          </p>
+          <Link
+            href="/admin/region/queue"
+            className="px-5 py-2.5 rounded-xl bg-[#D4AF37] text-black text-xs font-heading font-bold uppercase tracking-wider hover:brightness-110 transition-all"
+          >
+            Kembali ke Antrean Pengajuan
+          </Link>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Multi-region check: this admin is ESI Kota Padang (PDG)
+  const isAuthorized = item.regionCode === "PDG";
 
   const allChecklistCompleted =
     checklist.identityVerified && checklist.domicileVerified && checklist.gameProofVerified;

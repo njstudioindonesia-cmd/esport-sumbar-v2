@@ -19,10 +19,10 @@ import {
 } from "lucide-react";
 import { AdminRegionNavbar } from "@/components/admin/AdminRegionNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_REGIONAL_LOGS, ActivityLogItem } from "@/data/mockAdminData";
+import { ActivityLogItem } from "@/data/mockAdminData";
 
 export default function AdminRegionLogsPage() {
-  const [logs] = useState<ActivityLogItem[]>(MOCK_REGIONAL_LOGS);
+  const [logs] = useState<ActivityLogItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterAction, setFilterAction] = useState<string>("all");
   const [isExporting, setIsExporting] = useState(false);

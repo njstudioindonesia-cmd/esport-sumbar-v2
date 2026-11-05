@@ -23,15 +23,38 @@ import {
 } from "lucide-react";
 import { AdminRegionNavbar } from "@/components/admin/AdminRegionNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_REGIONAL_QUEUE, VerificationQueueItem } from "@/data/mockAdminData";
+import { VerificationQueueItem } from "@/data/mockAdminData";
 
 export default function AdminRegionQueuePage() {
-  const [queueItems, setQueueItems] = useState<VerificationQueueItem[]>(MOCK_REGIONAL_QUEUE);
+  const [queueItems, setQueueItems] = useState<VerificationQueueItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
   const [filterGame, setFilterGame] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"longest" | "newest" | "name">("longest");
+
+  React.useEffect(() => {
+    async function loadQueue() {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/admin/queue?scope=region");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.items && Array.isArray(json.items)) {
+            setQueueItems(json.items);
+          } else {
+            setQueueItems([]);
+          }
+        }
+      } catch (err) {
+        console.warn("Region queue error:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadQueue();
+  }, []);
 
   // Selection for bulk actions
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -257,7 +280,20 @@ export default function AdminRegionQueuePage() {
                 </thead>
 
                 <tbody className="divide-y divide-[#262B38]/70">
-                  {filteredItems.map((item) => {
+                  {filteredItems.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="py-16 text-center text-xs text-gray-400">
+                        <Inbox className="w-10 h-10 mx-auto text-white/20 mb-3" />
+                        <p className="font-heading font-bold text-sm text-white mb-1">
+                          Antrean Verifikasi Daerah Kosong
+                        </p>
+                        <p className="text-[11px] text-gray-500 max-w-sm mx-auto">
+                          Saat ini belum ada pengajuan verifikasi kartu atlet baru yang masuk ke antrean wilayah ini.
+                        </p>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredItems.map((item) => {
                     const isSelected = selectedIds.includes(item.id);
 
                     return (
@@ -385,7 +421,7 @@ export default function AdminRegionQueuePage() {
                         </td>
                       </tr>
                     );
-                  })}
+                  }))}
                 </tbody>
               </table>
             </div>

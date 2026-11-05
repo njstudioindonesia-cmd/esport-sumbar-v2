@@ -23,14 +23,40 @@ import {
 import { AdminPlatformNavbar } from "@/components/admin/AdminPlatformNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { REGIONS_DETAIL } from "@/data/regions";
-import { MOCK_ADMIN_ACCOUNTS, AdminAccount } from "@/data/mockAdminData";
+import { AdminAccount } from "@/data/mockAdminData";
 import { inviteAdminAccountAction } from "@/app/actions/admin-management";
 
 export default function AdminPlatformAdminsPage() {
-  const [admins, setAdmins] = useState<AdminAccount[]>(MOCK_ADMIN_ACCOUNTS);
+  const [admins, setAdmins] = useState<AdminAccount[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState("all");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const loadAdmins = React.useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/admin/accounts");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.accounts && Array.isArray(json.accounts)) {
+          setAdmins(json.accounts);
+        } else {
+          setAdmins([]);
+        }
+      } else {
+        setAdmins([]);
+      }
+    } catch {
+      setAdmins([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    loadAdmins();
+  }, [loadAdmins]);
 
   // Modal create admin
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);

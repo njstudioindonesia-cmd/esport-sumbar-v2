@@ -1,12 +1,7 @@
 import React, { Suspense } from "react";
 import AdminProvinceReviewClient from "./AdminProvinceReviewClient";
-import { MOCK_PROVINCE_QUEUE } from "@/data/mockAdminData";
 
-export function generateStaticParams() {
-  return MOCK_PROVINCE_QUEUE.map((item) => ({
-    id: item.id,
-  }));
-}
+export const instant = false;
 
 export default async function AdminProvinceReviewPage({
   params,
