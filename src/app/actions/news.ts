@@ -16,12 +16,13 @@ export interface ArticleInput {
 }
 
 function generateSlug(title: string): string {
-  return title
+  const base = title
     .toLowerCase()
     .trim()
     .replace(/[^\w\s-]/g, "")
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
+  return base || `artikel-${Date.now()}`;
 }
 
 /**
@@ -63,11 +64,12 @@ export async function saveArticleAction(data: ArticleInput) {
       return { success: true, article: updated };
     } else {
       // Insert
-      const { data: inserted, error } = await admin
+      let finalSlug = slug;
+      let { data: inserted, error } = await admin
         .from("articles")
         .insert({
           title: data.title,
-          slug,
+          slug: finalSlug,
           summary: data.summary || null,
           content: data.content,
           category: data.category,
@@ -79,12 +81,34 @@ export async function saveArticleAction(data: ArticleInput) {
         .select()
         .single();
 
+      // Jika slug sudah pernah dipakai, tambahkan suffix unik secara otomatis
+      if (error && (error as any).code === "23505") {
+        finalSlug = `${slug}-${Date.now().toString().slice(-4)}`;
+        const retry = await admin
+          .from("articles")
+          .insert({
+            title: data.title,
+            slug: finalSlug,
+            summary: data.summary || null,
+            content: data.content,
+            category: data.category,
+            cover_image_url: data.coverImageUrl || null,
+            region_id: data.regionId || null,
+            status: data.status || "published",
+            published_at: data.status === "published" ? new Date().toISOString() : null,
+          } as any)
+          .select()
+          .single();
+        inserted = retry.data;
+        error = retry.error;
+      }
+
       if (error) {
         return { success: false, error: error.message };
       }
 
       revalidatePath("/news");
-      revalidatePath(`/news/${slug}`);
+      revalidatePath(`/news/${finalSlug}`);
       revalidatePath("/");
       revalidatePath("/admin/platform/news");
 
