@@ -146,7 +146,7 @@ export default async function RegionDetailPage({
                 ATLET RESMI
               </span>
               <div className="my-2">
-                <StatNumber value={region.playerCount} label="Player" className="text-3xl lg:text-4xl font-mono font-black text-white" />
+                <StatNumber value={playerCount} label="Player" className="text-3xl lg:text-4xl font-mono font-black text-white" />
               </div>
               <span className="text-[10px] font-mono text-[#D4AF37]">Player Terdaftar</span>
             </div>
@@ -157,7 +157,7 @@ export default async function RegionDetailPage({
                 PELATIH BERLISENSI
               </span>
               <div className="my-2">
-                <StatNumber value={Math.max(4, Math.floor(region.playerCount / 12))} label="Pelatih" className="text-3xl lg:text-4xl font-mono font-black text-[#4C7DFF]" />
+                <StatNumber value={coachCount} label="Pelatih" className="text-3xl lg:text-4xl font-mono font-black text-[#4C7DFF]" />
               </div>
               <span className="text-[10px] font-mono text-white/40">Pelatih Resmi</span>
             </div>
@@ -168,7 +168,7 @@ export default async function RegionDetailPage({
                 KLUB &amp; TIM
               </span>
               <div className="my-2">
-                <StatNumber value={region.teamCount} label="Tim" className="text-3xl lg:text-4xl font-mono font-black text-[#D4AF37]" />
+                <StatNumber value={teamCount} label="Tim" className="text-3xl lg:text-4xl font-mono font-black text-[#D4AF37]" />
               </div>
               <span className="text-[10px] font-mono text-white/40">Klub Terdaftar</span>
             </div>

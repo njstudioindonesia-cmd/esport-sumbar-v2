@@ -25,6 +25,24 @@ export default function RegionsIndexPage() {
   const [filterType, setFilterType] = useState<"all" | "kota" | "kabupaten">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showMap, setShowMap] = useState(true);
+  const [liveMapStats, setLiveMapStats] = useState<Record<string, any>>({});
+
+  React.useEffect(() => {
+    async function loadStats() {
+      try {
+        const res = await fetch("/api/stats");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.mapStats) {
+            setLiveMapStats(json.mapStats);
+          }
+        }
+      } catch {
+        // Ignored
+      }
+    }
+    loadStats();
+  }, []);
 
   const filteredRegions = useMemo(() => {
     return REGIONS_DETAIL.filter((region) => {
@@ -115,7 +133,7 @@ export default function RegionsIndexPage() {
                   </span>
                 </div>
                 <span className="text-[10px] font-mono text-white/40">
-                  {region.verifiedCount} Profil Terverifikasi
+                  {liveMapStats[region.code]?.verified ?? region.verifiedCount ?? 0} Profil Terverifikasi
                 </span>
               </div>
 

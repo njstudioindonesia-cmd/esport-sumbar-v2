@@ -45,6 +45,24 @@ export function DesktopRegionsView() {
   const [filterType, setFilterType] = useState<"all" | "kota" | "kabupaten">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [hoveredRegion, setHoveredRegion] = useState<RegionDetail | null>(null);
+  const [liveMapStats, setLiveMapStats] = useState<Record<string, any>>({});
+
+  React.useEffect(() => {
+    async function loadStats() {
+      try {
+        const res = await fetch("/api/stats");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.mapStats) {
+            setLiveMapStats(json.mapStats);
+          }
+        }
+      } catch {
+        // Ignored
+      }
+    }
+    loadStats();
+  }, []);
 
   const filteredRegions = useMemo(() => {
     return REGIONS_DETAIL.filter((region) => {
@@ -211,7 +229,7 @@ export function DesktopRegionsView() {
                   <div className="flex items-center gap-3">
                     <div className="text-right">
                       <span className="text-base font-heading font-black text-[#D4AF37] block">
-                        {hoveredRegion.verifiedCount}
+                        {liveMapStats[hoveredRegion.code]?.verified ?? hoveredRegion.verifiedCount ?? 0}
                       </span>
                       <span className="text-[9px] font-mono text-white/40 uppercase">
                         Terverifikasi
@@ -319,7 +337,7 @@ export function DesktopRegionsView() {
 
                   {/* Bottom strip: Verified count */}
                   <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-white/50">
-                    <span>{region.verifiedCount} Terverifikasi</span>
+                    <span>{liveMapStats[region.code]?.verified ?? region.verifiedCount ?? 0} Terverifikasi</span>
                     <ChevronRight className="w-3.5 h-3.5 text-white/30 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </Link>
