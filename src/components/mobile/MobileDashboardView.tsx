@@ -25,6 +25,7 @@ import { signOutAction } from "@/app/actions/auth";
 export function MobileDashboardView() {
   const router = useRouter();
   const [liveProfiles, setLiveProfiles] = useState<any[] | null>(null);
+  const [selectedProfileIndex, setSelectedProfileIndex] = useState(0);
   const [userSession, setUserSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -58,7 +59,7 @@ export function MobileDashboardView() {
     router.refresh();
   };
 
-  const activeProfile = liveProfiles && liveProfiles.length > 0 ? liveProfiles[0] : null;
+  const activeProfile = liveProfiles && liveProfiles.length > 0 ? liveProfiles[selectedProfileIndex] || liveProfiles[0] : null;
   const entityType = activeProfile?.entityType || "player";
 
   const userCard = activeProfile
@@ -134,6 +135,36 @@ export function MobileDashboardView() {
 
       {/* MAIN BODY */}
       <main className="flex-1 px-4 py-4 flex flex-col gap-4">
+        {/* MULTI-ENTITY SWITCHER (Jika memiliki lebih dari 1 kartu) */}
+        {liveProfiles && liveProfiles.length > 1 && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+            {liveProfiles.map((p, idx) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setSelectedProfileIndex(idx)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 shrink-0 transition-all ${
+                  selectedProfileIndex === idx
+                    ? "bg-[#D4AF37] text-black shadow-md shadow-amber-950/40"
+                    : "bg-white/[0.04] text-white/60 border border-white/[0.08]"
+                }`}
+              >
+                <span className="truncate max-w-[110px]">{p.displayName}</span>
+                <span className="text-[9px] uppercase px-1 rounded bg-black/20">
+                  {p.entityType}
+                </span>
+              </button>
+            ))}
+            <Link
+              href="/me/profile/new"
+              className="px-2.5 py-1.5 rounded-xl bg-white/[0.04] border border-dashed border-white/20 text-xs font-mono text-white/60 flex items-center gap-1 shrink-0"
+            >
+              <PlusCircle className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <span>Tambah</span>
+            </Link>
+          </div>
+        )}
+
         {/* KARTU UTAMA 3D */}
         <div className="w-full p-4 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] shadow-xl flex flex-col items-center">
           <div className="w-full flex items-center justify-between mb-3 text-[10px] font-mono uppercase tracking-wider text-white/50">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -17,7 +17,9 @@ import {
   Send,
   Loader2,
   AlertCircle,
+  FileCheck,
 } from "lucide-react";
+import { uploadEvidenceAction } from "@/app/actions/upload";
 
 interface VerificationData {
   profile: {
@@ -51,7 +53,9 @@ export function DesktopVerificationView() {
 
   // Form submission state
   const [userNotes, setUserNotes] = useState("");
-  const [uploadedFiles, setUploadedFiles] = useState<{ id: string; title: string; fileName: string; url: string }[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<{ id: string; title: string; fileName: string; url: string; size?: string }[]>([]);
+  const [uploadingSlotId, setUploadingSlotId] = useState<string | null>(null);
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -188,21 +192,41 @@ export function DesktopVerificationView() {
 
   const documentSlots = getDocumentSlots();
 
-  const handleSimulateUpload = (slotId: string, slotTitle: string, defaultFileName: string) => {
-    setUploadedFiles((prev) => {
-      const filtered = prev.filter((f) => f.id !== slotId);
-      return [
-        ...filtered,
-        {
-          id: slotId,
-          title: slotTitle,
-          fileName: defaultFileName,
-          url: `/uploads/${defaultFileName}`,
-        },
-      ];
-    });
-    setSubmitSuccess(`File "${defaultFileName}" siap dikirimkan.`);
-    setTimeout(() => setSubmitSuccess(null), 3000);
+  const handleFileSelected = async (slotId: string, slotTitle: string, file: File) => {
+    if (!profile) return;
+    setUploadingSlotId(slotId);
+    setSubmitError(null);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("profileId", profile.id);
+
+      const res = await uploadEvidenceAction(formData);
+      if (!res.success) {
+        throw new Error(res.error || "Gagal mengunggah berkas bukti.");
+      }
+
+      setUploadedFiles((prev) => {
+        const filtered = prev.filter((f) => f.id !== slotId);
+        return [
+          ...filtered,
+          {
+            id: slotId,
+            title: slotTitle,
+            fileName: res.name || file.name,
+            url: res.signedUrl || res.path || "",
+            size: res.size || `${(file.size / 1024).toFixed(0)} KB`,
+          },
+        ];
+      });
+
+      setSubmitSuccess(`Berkas "${res.name || file.name}" berhasil diunggah.`);
+      setTimeout(() => setSubmitSuccess(null), 3500);
+    } catch (err: any) {
+      setSubmitError(err.message || "Gagal mengunggah berkas bukti.");
+    } finally {
+      setUploadingSlotId(null);
+    }
   };
 
   const handleSubmitVerification = async () => {
@@ -215,20 +239,15 @@ export function DesktopVerificationView() {
       const evidenceFiles = uploadedFiles.map((f) => ({
         name: f.fileName,
         url: f.url,
-        size: "1.2 MB",
+        size: f.size || "1.2 MB",
       }));
 
-      // Jika belum unggah file, sediakan file default dari slot pertama
-      const payloadFiles =
-        evidenceFiles.length > 0
-          ? evidenceFiles
-          : [
-              {
-                name: documentSlots[0].defaultFile,
-                url: `/uploads/${documentSlots[0].defaultFile}`,
-                size: "1.5 MB",
-              },
-            ];
+      // Wajibkan minimal 1 dokumen bukti nyata diunggah
+      if (evidenceFiles.length === 0 && (!request?.evidenceFiles || request.evidenceFiles.length === 0)) {
+        throw new Error("Harap unggah setidaknya 1 berkas bukti pendukung (KTP/SK/Piagam) sebelum mengirim pengajuan.");
+      }
+
+      const payloadFiles = evidenceFiles.length > 0 ? evidenceFiles : request?.evidenceFiles || [];
 
       const res = await fetch("/api/me/verification", {
         method: "POST",
@@ -464,9 +483,11 @@ export function DesktopVerificationView() {
           </div>
 
           {/* Dokumen Slots Sesuai Bidang */}
-          {documentSlots.map((slot) => {
+          {documentSlots.map((slot, idx) => {
             const uploaded = uploadedFiles.find((f) => f.id === slot.id);
+            const existingFile = request?.evidenceFiles?.[idx] || request?.evidenceFiles?.find((f) => f.name.toLowerCase().includes(slot.id));
             const isHighlighted = activeHighlight === slot.id || activeHighlight === "dokumen";
+            const isUploadingThis = uploadingSlotId === slot.id;
 
             return (
               <div
@@ -477,6 +498,20 @@ export function DesktopVerificationView() {
                     : "border-white/[0.08] hover:border-white/20"
                 }`}
               >
+                {/* Hidden File Input */}
+                <input
+                  type="file"
+                  ref={(el) => {
+                    fileInputRefs.current[slot.id] = el;
+                  }}
+                  className="hidden"
+                  accept="image/jpeg,image/png,image/webp,application/pdf"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFileSelected(slot.id, slot.title, f);
+                  }}
+                />
+
                 <div className="flex items-start sm:items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-[#161A24] border border-white/10 flex items-center justify-center text-[#D4AF37] group-hover:scale-105 transition-transform shrink-0">
                     <Lock className="w-5 h-5" />
@@ -488,17 +523,21 @@ export function DesktopVerificationView() {
                       </span>
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-mono ${
-                          uploaded || status === "verified"
+                          uploaded
                             ? "bg-emerald-500/15 text-emerald-400"
+                            : existingFile || status === "verified"
+                            ? "bg-blue-500/15 text-blue-400"
                             : status === "revision_requested"
                             ? "bg-amber-500/15 text-amber-400"
                             : "bg-white/[0.06] text-white/50"
                         }`}
                       >
-                        {status === "verified"
-                          ? "Terverifikasi"
-                          : uploaded
+                        {uploaded
                           ? "Siap Diunggah"
+                          : status === "verified"
+                          ? "Terverifikasi"
+                          : existingFile
+                          ? "Sudah Terkirim"
                           : status === "revision_requested"
                           ? "Perlu Diunggah"
                           : "Wajib"}
@@ -508,18 +547,34 @@ export function DesktopVerificationView() {
                       {slot.desc}
                     </p>
                     <span className="text-[10px] font-mono text-white/40 block mt-1">
-                      File: {uploaded ? uploaded.fileName : slot.defaultFile}
+                      {uploaded ? (
+                        <span className="text-emerald-400">Berkas baru: {uploaded.fileName} ({uploaded.size})</span>
+                      ) : existingFile ? (
+                        <span className="text-white/60">Terkirim: {existingFile.name} {existingFile.size ? `(${existingFile.size})` : ""}</span>
+                      ) : (
+                        <span className="text-white/30">Belum ada berkas dipilih</span>
+                      )}
                     </span>
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => handleSimulateUpload(slot.id, slot.title, slot.defaultFile)}
-                  className="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-[#D4AF37] hover:text-[#07080C] border border-white/10 text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-1.5 shrink-0 self-end sm:self-auto"
+                  disabled={isUploadingThis || status === "verified"}
+                  onClick={() => fileInputRefs.current[slot.id]?.click()}
+                  className="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-[#D4AF37] hover:text-[#07080C] border border-white/10 text-xs font-mono font-bold text-white transition-all flex items-center justify-center gap-1.5 shrink-0 self-end sm:self-auto disabled:opacity-50"
                 >
-                  <Upload className="w-3.5 h-3.5" />
-                  <span>{uploaded ? "Ganti File" : "Pilih File"}</span>
+                  {isUploadingThis ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                      <span>Mengunggah...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{uploaded || existingFile ? "Ganti Berkas" : "Pilih Berkas"}</span>
+                    </>
+                  )}
                 </button>
               </div>
             );

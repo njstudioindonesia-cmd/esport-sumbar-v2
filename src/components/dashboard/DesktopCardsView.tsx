@@ -36,6 +36,12 @@ export function DesktopCardsView() {
   const [selectedCard, setSelectedCard] = useState<any>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showCriteriaDrawer, setShowCriteriaDrawer] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
 
   // Ambil profil nyata dari database via /api/me/profiles
   useEffect(() => {
@@ -86,11 +92,18 @@ export function DesktopCardsView() {
   }, []);
 
   const handleDownload = (cardTitle: string) => {
-    alert(`Mengunduh kartu paspor ${cardTitle} dalam resolusi tinggi PNG.`);
+    showToast(`Kartu paspor ${cardTitle} beresolusi HD PNG berhasil disiapkan.`);
   };
 
   return (
     <div className="w-full flex flex-col gap-8">
+      {/* Toast Feedback */}
+      {toastMessage && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-[#1A1E28] border border-[#22C55E] text-white text-xs font-heading font-medium shadow-2xl animate-in slide-in-from-top-4">
+          <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

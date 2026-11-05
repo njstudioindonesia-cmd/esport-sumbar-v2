@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: authData, error: authError } = await supabase.auth.getUser();
@@ -11,13 +11,21 @@ export async function GET() {
       return NextResponse.json({ profile: null, request: null }, { status: 401 });
     }
 
-    // Ambil profil aktif milik akun pengguna
-    const { data: profiles, error: profileErr } = await supabase
+    const { searchParams } = new URL(request.url);
+    const targetProfileId = searchParams.get("profile_id");
+
+    let query = supabase
       .from("profiles")
       .select("*")
-      .eq("account_id", authData.user.id)
-      .order("created_at", { ascending: false })
-      .limit(1);
+      .eq("account_id", authData.user.id);
+
+    if (targetProfileId) {
+      query = query.eq("id", targetProfileId);
+    } else {
+      query = query.order("created_at", { ascending: false });
+    }
+
+    const { data: profiles, error: profileErr } = await query;
 
     if (profileErr || !profiles || profiles.length === 0) {
       return NextResponse.json({ profile: null, request: null });

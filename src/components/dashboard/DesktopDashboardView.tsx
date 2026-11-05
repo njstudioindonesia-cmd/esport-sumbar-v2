@@ -32,6 +32,7 @@ import { mapVerificationToCard } from "@/types/card";
 export function DesktopDashboardView() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [liveProfiles, setLiveProfiles] = useState<any[] | null>(null);
+  const [selectedProfileIndex, setSelectedProfileIndex] = useState(0);
   const [userSession, setUserSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -58,7 +59,7 @@ export function DesktopDashboardView() {
     loadMyProfile();
   }, []);
 
-  const activeProfile = liveProfiles && liveProfiles.length > 0 ? liveProfiles[0] : null;
+  const activeProfile = liveProfiles && liveProfiles.length > 0 ? liveProfiles[selectedProfileIndex] || liveProfiles[0] : null;
   const entityType = activeProfile?.entityType || "player";
 
   const userCard = activeProfile
@@ -153,7 +154,45 @@ export function DesktopDashboardView() {
   const nextStep = getNextStepInfo();
 
   return (
-    <div className="w-full flex flex-col gap-8">
+    <div className="w-full flex flex-col gap-6">
+      {/* ========================================================= */}
+      {/* PROFILE SELECTOR STRIP (MULTI-ENTITY SWITCHER)           */}
+      {/* ========================================================= */}
+      {liveProfiles && liveProfiles.length > 1 && (
+        <div className="w-full flex items-center justify-between p-3 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] backdrop-blur-md">
+          <div className="flex items-center gap-2 overflow-x-auto">
+            <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider px-2 shrink-0">
+              PILIH PROFIL:
+            </span>
+            {liveProfiles.map((p, idx) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setSelectedProfileIndex(idx)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all shrink-0 ${
+                  selectedProfileIndex === idx
+                    ? "bg-gradient-to-r from-[#D4AF37] to-amber-400 text-black shadow-md shadow-amber-950/40"
+                    : "bg-white/[0.04] text-white/70 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]"
+                }`}
+              >
+                <span>{p.displayName}</span>
+                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-black/20">
+                  {p.entityType}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <Link
+            href="/me/profile/new"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/20 text-xs font-mono text-white/70 hover:text-white shrink-0 transition-all ml-2"
+          >
+            <PlusCircle className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span>Tambah Entitas</span>
+          </Link>
+        </div>
+      )}
+
       {/* ========================================================= */}
       {/* BENTO GRID UTAMA DASHBOARD                                */}
       {/* ========================================================= */}

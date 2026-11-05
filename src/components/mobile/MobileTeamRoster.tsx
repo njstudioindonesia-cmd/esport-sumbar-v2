@@ -33,63 +33,44 @@ interface TeamMember {
 export function MobileTeamRoster() {
   const router = useRouter();
 
-  // Active Team Roster: 5 active + 1 pending (Total 6/7)
-  const [members, setMembers] = useState<TeamMember[]>([
-    {
-      id: "mbr-1",
-      name: "Fikri Alamsyah",
-      ign: "MARAWA_KING",
-      role: "Kapten",
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop",
-    },
-    {
-      id: "mbr-2",
-      name: "Derry Andika",
-      ign: "BukitSlayer",
-      role: "Anggota",
-      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
-    },
-    {
-      id: "mbr-3",
-      name: "Iqbal Ramadhan",
-      ign: "SingaMalam",
-      role: "Anggota",
-      avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop",
-    },
-    {
-      id: "mbr-4",
-      name: "Ilham Chaniago",
-      ign: "Tactician_Hen",
-      role: "Pelatih",
-      avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop",
-    },
-    {
-      id: "mbr-5",
-      name: "Raka Pratama",
-      ign: "PariamanBoy",
-      role: "Cadangan",
-      avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop",
-    },
-    {
-      id: "mbr-6",
-      name: "Zaki Harun",
-      ign: "SolokStriker",
-      role: "Anggota",
-      avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop",
-      isPending: true, // Pending approval
-    },
-  ]);
+  const [members, setMembers] = useState<TeamMember[]>([]);
+  const [requests, setRequests] = useState<any[]>([]);
+  const [teamName, setTeamName] = useState<string>("Roster Tim");
+  const [teamEsportId, setTeamEsportId] = useState<string>("-");
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Inbox Requests (Permintaan Bergabung)
-  const [requests, setRequests] = useState([
-    {
-      id: "req-1",
-      name: "Rian Hidayat",
-      ign: "KABA_SNIPER",
-      game: "Free Fire",
-      avatarUrl: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=200&auto=format&fit=crop",
-    },
-  ]);
+  React.useEffect(() => {
+    async function loadRoster() {
+      setIsLoading(true);
+      try {
+        const profRes = await fetch("/api/me/profiles");
+        let teamId: string | null = null;
+        if (profRes.ok) {
+          const profJson = await profRes.json();
+          const team = (profJson.profiles || []).find((p: any) => p.entityType === "team");
+          if (team) {
+            teamId = team.id;
+            setTeamName(team.displayName);
+            setTeamEsportId(team.esportId);
+          }
+        }
+        if (teamId) {
+          const res = await fetch(`/api/me/memberships?team_id=${teamId}`);
+          if (res.ok) {
+            const json = await res.json();
+            if (json.roster) {
+              setMembers(json.roster);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load team roster:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadRoster();
+  }, []);
 
   // Sheets state
   const [isInviteOpen, setIsInviteOpen] = useState(false);
@@ -279,12 +260,30 @@ export function MobileTeamRoster() {
         {/* 2. ROSTER TIM: DERETAN AVATAR BULAT BESAR BERKARTU MINI           */}
         {/* ================================================================== */}
         <div className="w-full flex flex-col gap-2.5">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
-            Anggota Aktif
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+              Anggota Aktif ({teamName})
+            </span>
+            <span className="text-[10px] font-mono text-[#D4AF37]">
+              {teamEsportId}
+            </span>
+          </div>
 
           <div className="flex flex-col gap-2.5">
-            {members.map((mbr) => {
+            {members.length === 0 ? (
+              <div className="py-12 px-4 rounded-2xl bg-[#0F1118] border border-white/[0.08] text-center flex flex-col items-center gap-2">
+                <Users className="w-8 h-8 text-white/20 mb-1" />
+                <span className="text-xs font-mono text-white/50">Belum ada anggota pemain dalam tim ini.</span>
+                <button
+                  type="button"
+                  onClick={() => setIsInviteOpen(true)}
+                  className="mt-2 px-4 py-2 rounded-xl bg-[#D4AF37] text-black text-xs font-heading font-black uppercase tracking-wider shadow-md"
+                >
+                  Undang Pemain Sekarang
+                </button>
+              </div>
+            ) : (
+              members.map((mbr) => {
               const isKapten = mbr.role === "Kapten";
               const isPelatih = mbr.role === "Pelatih";
 
@@ -343,7 +342,7 @@ export function MobileTeamRoster() {
                   </div>
                 </div>
               );
-            })}
+            }))}
           </div>
         </div>
       </div>

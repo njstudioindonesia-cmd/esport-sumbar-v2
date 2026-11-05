@@ -32,7 +32,7 @@ export function AdminRegionNavbar() {
         const res = await fetch("/api/admin/metrics");
         if (res.ok) {
           const json = await res.json();
-          if (json.region?.pending) {
+          if (typeof json.region?.pending === "number") {
             setPendingRegionCount(json.region.pending);
           }
         }

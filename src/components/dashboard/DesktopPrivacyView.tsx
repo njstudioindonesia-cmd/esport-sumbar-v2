@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Lock,
   Eye,
@@ -12,9 +12,10 @@ import {
   X,
   ExternalLink,
   Info,
+  CheckCircle2,
 } from "lucide-react";
 import { EsportCard } from "@/components/card/EsportCard";
-import { GALLERY_CARDS } from "@/data/mockCards";
+import { mapVerificationToCard } from "@/types/card";
 
 export function DesktopPrivacyView() {
   const [privacySettings, setPrivacySettings] = useState({
@@ -25,9 +26,27 @@ export function DesktopPrivacyView() {
     socialLinks: true, // public
   });
 
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [showDangerModal, setShowDangerModal] = useState(false);
   const [confirmIgnInput, setConfirmIgnInput] = useState("");
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3500);
+  };
+
+  useEffect(() => {
+    fetch("/api/me/profiles")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.profiles && d.profiles.length > 0) {
+          setUserProfile(d.profiles[0]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const toggleField = (key: keyof typeof privacySettings) => {
     setPrivacySettings((prev) => ({
@@ -38,19 +57,20 @@ export function DesktopPrivacyView() {
 
   const handleSave = () => {
     setSavedSuccess(true);
+    showToast("Pengaturan privasi data berhasil diperbarui & disimpan.");
     setTimeout(() => setSavedSuccess(false), 2500);
   };
 
-  // User card for preview
-  const baseCard = GALLERY_CARDS[2];
+  const targetIgn = userProfile?.ign || userProfile?.displayName || "KONFIRMASI";
 
-  // Masked card data for public preview based on active toggles
   const publicPreviewData = {
-    ...baseCard.data,
-    displayName: baseCard.data.displayName,
-    ign: baseCard.data.ign,
-    history: privacySettings.teamHistory ? baseCard.data.history : [],
-    achievements: privacySettings.stats ? baseCard.data.achievements : [],
+    displayName: userProfile?.displayName || "Atlet PBESI",
+    ign: userProfile?.ign || undefined,
+    role: userProfile?.roleName || "Athlete",
+    game: userProfile?.mainGameName || "Esport",
+    region: { name: userProfile?.regionName || "Sumatera Barat", code: userProfile?.regionCode || "SB" },
+    esportId: userProfile?.esportId || "ESB-SB-PL-000000",
+    avatarUrl: userProfile?.avatarUrl || undefined,
   };
 
   return (
@@ -338,6 +358,14 @@ export function DesktopPrivacyView() {
         </div>
       </div>
 
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-[#1A1E28] border border-[#22C55E] text-white text-xs font-heading font-medium shadow-2xl animate-in slide-in-from-top-4">
+          <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* MODAL KONFIRMASI 2 LANGKAH */}
       {showDangerModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
@@ -362,14 +390,14 @@ export function DesktopPrivacyView() {
             </div>
 
             <p className="text-xs text-white/70 leading-relaxed">
-              Ketik IGN Anda: <strong className="text-[#D4AF37] font-mono">HARIMAU_AIM</strong> di bawah ini untuk mengonfirmasi penghapusan permanen.
+              Ketik identitas kartu Anda: <strong className="text-[#D4AF37] font-mono">{targetIgn}</strong> di bawah ini untuk mengonfirmasi penonaktifan kartu.
             </p>
 
             <input
               type="text"
               value={confirmIgnInput}
               onChange={(e) => setConfirmIgnInput(e.target.value.toUpperCase())}
-              placeholder="HARIMAU_AIM"
+              placeholder={targetIgn}
               className="w-full h-11 bg-[#161A24] border border-white/10 rounded-xl px-3 font-mono text-sm text-[#D4AF37] placeholder-white/20 outline-none focus:border-red-500"
             />
 
@@ -386,10 +414,11 @@ export function DesktopPrivacyView() {
               </button>
               <button
                 type="button"
-                disabled={confirmIgnInput !== "HARIMAU_AIM"}
+                disabled={confirmIgnInput !== targetIgn.toUpperCase()}
                 onClick={() => {
                   setShowDangerModal(false);
-                  alert("Kartu paspor berhasil dinonaktifkan.");
+                  setConfirmIgnInput("");
+                  showToast("Permohonan penonaktifan kartu telah diproses.");
                 }}
                 className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-heading font-black text-xs uppercase tracking-wider transition-all disabled:opacity-40 disabled:cursor-not-allowed"
               >

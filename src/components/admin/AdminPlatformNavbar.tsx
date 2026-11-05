@@ -29,7 +29,7 @@ export function AdminPlatformNavbar() {
         const res = await fetch("/api/admin/metrics");
         if (res.ok) {
           const json = await res.json();
-          if (json.platform?.totalReports) {
+          if (typeof json.platform?.totalReports === "number") {
             setReportsCount(json.platform.totalReports);
           }
         }

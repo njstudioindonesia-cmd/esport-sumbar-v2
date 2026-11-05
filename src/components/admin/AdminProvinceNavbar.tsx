@@ -29,7 +29,7 @@ export function AdminProvinceNavbar() {
         const res = await fetch("/api/admin/metrics");
         if (res.ok) {
           const json = await res.json();
-          if (json.province?.pendingGold) {
+          if (typeof json.province?.pendingGold === "number") {
             setPendingGoldCount(json.province.pendingGold);
           }
         }
