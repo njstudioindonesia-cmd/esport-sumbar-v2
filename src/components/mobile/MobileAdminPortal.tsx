@@ -906,7 +906,7 @@ export function MobileAdminPortal({
                       <label className="flex items-center gap-2.5 text-xs text-gray-300">
                         <input
                           type="checkbox"
-                          defaultChecked={selectedReviewItem.checklist.identityVerified}
+                          defaultChecked={selectedReviewItem.checklist?.identityVerified ?? false}
                           className="w-4 h-4 rounded accent-[#D4AF37]"
                         />
                         <span>Identitas asli sesuai data pendaftaran</span>
@@ -914,7 +914,7 @@ export function MobileAdminPortal({
                       <label className="flex items-center gap-2.5 text-xs text-gray-300">
                         <input
                           type="checkbox"
-                          defaultChecked={selectedReviewItem.checklist.domicileVerified}
+                          defaultChecked={selectedReviewItem.checklist?.domicileVerified ?? false}
                           className="w-4 h-4 rounded accent-[#D4AF37]"
                         />
                         <span>Domisili sah di wilayah Sumatera Barat</span>
@@ -922,7 +922,7 @@ export function MobileAdminPortal({
                       <label className="flex items-center gap-2.5 text-xs text-gray-300">
                         <input
                           type="checkbox"
-                          defaultChecked={selectedReviewItem.checklist.gameProofVerified}
+                          defaultChecked={selectedReviewItem.checklist?.gameProofVerified ?? false}
                           className="w-4 h-4 rounded accent-[#D4AF37]"
                         />
                         <span>Screenshot profil akun game terverifikasi</span>
@@ -941,7 +941,7 @@ export function MobileAdminPortal({
                       </span>
                     </div>
 
-                    {selectedReviewItem.documents.map((doc, idx) => (
+                    {(selectedReviewItem.documents || []).map((doc, idx) => (
                       <div
                         key={idx}
                         className="p-3 rounded-xl bg-[#0F121A] border border-white/[0.08] space-y-2"

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLatestArticles } from "@/lib/services/news";
 
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

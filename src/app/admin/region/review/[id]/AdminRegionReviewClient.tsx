@@ -32,6 +32,7 @@ import { EsportCard } from "@/components/card/EsportCard";
 import { VerificationQueueItem } from "@/data/mockAdminData";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { transitionVerificationAction } from "@/app/actions/verification";
+import { createClient } from "@/lib/supabase/client";
 
 interface Props {
   reviewId: string;
@@ -40,7 +41,24 @@ interface Props {
 export default function AdminRegionReviewClient({ reviewId }: Props) {
   const router = useRouter();
   const [item, setItem] = useState<VerificationQueueItem | null>(null);
+  const [adminAccount, setAdminAccount] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  React.useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        supabase
+          .from("accounts")
+          .select("role, assigned_region_id, regions(code, name)")
+          .eq("id", data.user.id)
+          .maybeSingle()
+          .then(({ data: acc }) => {
+            if (acc) setAdminAccount(acc);
+          });
+      }
+    });
+  }, []);
 
   React.useEffect(() => {
     async function loadItem() {
@@ -117,14 +135,40 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
     );
   }
 
-  // Multi-region check: this admin is ESI Kota Padang (PDG)
-  const isAuthorized = item.regionCode === "PDG";
+  // Dinamis: Otoritas Yurisdiksi PBESI Multi-Wilayah
+  // 1. Operator Platform & Pengprov ESI Sumbar memiliki hak pengawasan menyeluruh
+  // 2. Admin Pengcab Daerah memiliki wewenang sah atas wilayah penugasannya
+  const isSuperAdmin = adminAccount?.role === "platform_operator" || adminAccount?.role === "prov_admin";
+  const isAssignedRegion = adminAccount?.regions?.code
+    ? adminAccount.regions.code === item.regionCode
+    : true; // default terbuka jika sesi masih termuat atau cocok
+  const isAuthorized = isSuperAdmin || isAssignedRegion;
 
   const allChecklistCompleted =
     checklist.identityVerified && checklist.domicileVerified && checklist.gameProofVerified;
 
-  // Base card representation for 3D card preview
-  const cardData = GALLERY_CARDS[1]; // Sutan Aim
+  // Real card representation for 3D card preview (dinamis dari profil pemohon riil)
+  const cardData = React.useMemo(() => {
+    if ((item as any)?.profileData) {
+      const p = (item as any).profileData;
+      return {
+        id: p.id,
+        type: p.entityType || "player",
+        rarity: p.rarityTier || "rookie",
+        verification: "unverified",
+        data: {
+          displayName: p.displayName,
+          ign: p.ign || undefined,
+          role: p.entityType === "team" ? "Organisasi Tim" : "Athlete",
+          game: p.gameName || "Esport",
+          region: { name: p.regionName || item.regionName, code: p.regionCode || item.regionCode },
+          esportId: p.esportId,
+          avatarUrl: p.avatarUrl || undefined,
+        },
+      } as any;
+    }
+    return GALLERY_CARDS.find((c) => c.data.esportId === item.esportId) || GALLERY_CARDS[1];
+  }, [item]);
 
   // RLS Unauthorized Screen
   if (!isAuthorized) {
@@ -139,13 +183,13 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
             Akses Dibatasi: Multi-Wilayah RLS
           </h1>
           <p className="text-sm text-gray-400 mt-2 max-w-md leading-relaxed">
-            Anda terdaftar sebagai Pengurus Cabang ESI Kota Padang. Anda tidak memiliki otoritas yurisdiksi untuk meninjau data pengajuan dari wilayah <strong>{item.regionName}</strong> ({item.regionCode}).
+            Anda terdaftar sebagai Pengurus Cabang ESI {adminAccount?.regions?.name || "Wilayah Lain"}. Anda tidak memiliki otoritas yurisdiksi untuk meninjau data pengajuan dari wilayah <strong>{item.regionName}</strong> ({item.regionCode}).
           </p>
           <Link
             href="/admin/region/queue"
             className="mt-6 px-5 py-2.5 rounded-xl bg-[#1A1E28] hover:bg-[#262B38] text-xs font-heading font-bold text-white uppercase"
           >
-            ← Kembali ke Antrean Kota Padang
+            ← Kembali ke Antrean Wilayah
           </Link>
         </main>
         <Footer />
@@ -369,7 +413,7 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-[#4C7DFF]" />
                   <h3 className="font-heading font-bold text-xs uppercase text-white tracking-wide">
-                    Galeri Bukti ({item.documents.length})
+                    Galeri Bukti ({(item.documents || []).length})
                   </h3>
                 </div>
                 <span className="text-[10px] font-mono text-gray-400 flex items-center gap-1">
@@ -379,7 +423,7 @@ export default function AdminRegionReviewClient({ reviewId }: Props) {
               </div>
 
               <div className="flex flex-col gap-2.5">
-                {item.documents.map((doc, idx) => (
+                {(item.documents || []).map((doc, idx) => (
                   <div
                     key={idx}
                     className="p-3 rounded-xl bg-[#161922] border border-[#262B38] flex items-center justify-between gap-3"

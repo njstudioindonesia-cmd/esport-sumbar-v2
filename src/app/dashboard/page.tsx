@@ -1,16 +1,16 @@
 "use client";
 
 import React from "react";
-import { MobileHome } from "@/components/mobile/MobileHome";
+import { MobileDashboardView } from "@/components/mobile/MobileDashboardView";
 import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
 import { DesktopDashboardView } from "@/components/dashboard/DesktopDashboardView";
 
 export default function DashboardPage() {
   return (
     <main className="min-h-screen w-full bg-[#07080C]">
-      {/* Mobile Flow (< 1024px): PWA Dashboard Experience */}
+      {/* Mobile Flow (< 1024px): Dedicated User Dashboard Experience */}
       <div className="block lg:hidden min-h-[100dvh] w-full">
-        <MobileHome />
+        <MobileDashboardView />
       </div>
 
       {/* Desktop Dashboard (>= 1024px): Bento Grid Layout & Slim Sidebar */}

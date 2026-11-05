@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPublicProfilesList } from "@/lib/services/public-profiles";
 import type { EntityType, RarityTier, VerificationStatus } from "@/lib/supabase/database.types";
 
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

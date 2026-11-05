@@ -109,7 +109,28 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
     );
   }
 
-  const cardData = GALLERY_CARDS.find((c) => c.data.esportId === item.esportId) || GALLERY_CARDS[2];
+  // Real card representation for 3D card preview (dinamis dari profil pemohon riil)
+  const cardData = React.useMemo(() => {
+    if ((item as any)?.profileData) {
+      const p = (item as any).profileData;
+      return {
+        id: p.id,
+        type: p.entityType || "player",
+        rarity: p.rarityTier || "rookie",
+        verification: "unverified",
+        data: {
+          displayName: p.displayName,
+          ign: p.ign || undefined,
+          role: p.entityType === "team" ? "Organisasi Tim" : "Athlete",
+          game: p.gameName || "Esport",
+          region: { name: p.regionName || item.regionName, code: p.regionCode || item.regionCode },
+          esportId: p.esportId,
+          avatarUrl: p.avatarUrl || undefined,
+        },
+      } as any;
+    }
+    return GALLERY_CARDS.find((c) => c.data.esportId === item.esportId) || GALLERY_CARDS[2];
+  }, [item]);
 
   // Generated license number
   const officialBadgeNumber = `ESI-SB-VER-2026-${(item.esportId || "0000").slice(-4)}`;
@@ -328,7 +349,7 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-[#3B82F6]" />
                   <h3 className="font-heading font-bold text-xs uppercase text-white tracking-wide">
-                    Dokumen Bukti Privat ({item.documents.length})
+                    Dokumen Bukti Privat ({(item.documents || []).length})
                   </h3>
                 </div>
                 <span className="text-[10px] font-mono text-gray-400 flex items-center gap-1">
@@ -338,7 +359,7 @@ export default function AdminProvinceReviewClient({ reviewId }: Props) {
               </div>
 
               <div className="flex flex-col gap-3">
-                {item.documents.map((doc, idx) => (
+                {(item.documents || []).map((doc, idx) => (
                   <div
                     key={idx}
                     className="p-3.5 rounded-xl bg-[#161922] border border-[#262B38] flex items-center justify-between gap-3"

@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { verifyAdminAuth } from "@/lib/auth/api-guard";
+
 
 export async function GET() {
+  const { auth, errorResponse } = await verifyAdminAuth(["platform_operator", "prov_admin"]);
+  if (errorResponse) return errorResponse;
+
   try {
     const admin = createAdminClient();
     const { data, error } = await admin
@@ -41,6 +46,9 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
+  const { auth, errorResponse } = await verifyAdminAuth(["platform_operator", "prov_admin"]);
+  if (errorResponse) return errorResponse;
+
   try {
     const body = await request.json();
     const { reportId, status, resolutionNotes } = body;

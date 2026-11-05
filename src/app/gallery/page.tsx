@@ -26,10 +26,51 @@ import {
   CardVerification,
   CardEntityType,
   CardSize,
+  mapVerificationToCard,
 } from "@/types/card";
+import { FLAGS } from "@/lib/config/flags";
 
 export default function GaleriKartuPage() {
-  const [cards, setCards] = useState<MockCardVariant[]>(GALLERY_CARDS);
+  const [cards, setCards] = useState<MockCardVariant[]>(FLAGS.SHOW_DEMO_DATA ? GALLERY_CARDS : []);
+  const [isLoading, setIsLoading] = useState(true);
+
+  React.useEffect(() => {
+    async function loadLiveCards() {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/profiles?limit=50");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.profiles && json.profiles.length > 0) {
+            const mapped: MockCardVariant[] = json.profiles.map((p: any) => ({
+              id: p.id,
+              type: p.entityType || "player",
+              rarity: (p.rarityTier as CardRarity) || "rookie",
+              verification: mapVerificationToCard(p.verificationStatus),
+              slug: p.slug,
+              data: {
+                displayName: p.displayName,
+                ign: p.ign || undefined,
+                game: p.mainGameName || "Esport",
+                role: p.roleName || (p.entityType === "team" ? "Organisasi Tim" : "Athlete"),
+                region: { name: p.regionName || "Sumatera Barat", code: p.regionCode || "SB" },
+                esportId: p.esportId,
+                avatarUrl: p.avatarUrl || undefined,
+              },
+            }));
+            setCards(mapped);
+          } else {
+            setCards(FLAGS.SHOW_DEMO_DATA ? GALLERY_CARDS : []);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load gallery cards:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadLiveCards();
+  }, []);
   const [selectedType, setSelectedType] = useState<CardEntityType | "all">("all");
   const [selectedRarity, setSelectedRarity] = useState<CardRarity | "all">("all");
   const [selectedVerification, setSelectedVerification] = useState<CardVerification | "all">("all");

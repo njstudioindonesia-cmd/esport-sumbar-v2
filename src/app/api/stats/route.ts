@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getPlatformStats, getRegionMapStats } from "@/lib/services/stats";
 
+
 export async function GET() {
   try {
     const [stats, mapStats] = await Promise.all([

@@ -17,13 +17,16 @@ import {
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { MOCK_TOURNAMENTS } from "@/data/tournaments";
+import { FLAGS } from "@/lib/config/flags";
 
 export default function TournamentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 
+  const tournamentList = FLAGS.SHOW_DEMO_DATA ? MOCK_TOURNAMENTS : [];
+
   const filteredTournaments = useMemo(() => {
-    return MOCK_TOURNAMENTS.filter((item) => {
+    return tournamentList.filter((item) => {
       const matchSearch =
         item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.game.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -32,7 +35,7 @@ export default function TournamentsPage() {
         statusFilter === "all" || item.status === statusFilter;
       return matchSearch && matchStatus;
     });
-  }, [searchQuery, statusFilter]);
+  }, [tournamentList, searchQuery, statusFilter]);
 
   return (
     <div className="min-h-screen bg-[#0B0D12] text-[#F3F4F6] flex flex-col font-sans">
@@ -85,8 +88,19 @@ export default function TournamentsPage() {
         </div>
 
         {/* TOURNAMENTS LIST */}
-        <div className="flex flex-col gap-5">
-          {filteredTournaments.map((t) => (
+        {filteredTournaments.length === 0 ? (
+          <div className="w-full p-16 text-center rounded-2xl bg-[#12151C] border border-[#262B38] flex flex-col items-center justify-center">
+            <Trophy className="w-12 h-12 text-[#D4AF37]/40 mb-3" />
+            <h3 className="font-heading font-black text-xl text-white uppercase tracking-tight">
+              Belum Ada Kejuaraan Aktif
+            </h3>
+            <p className="text-xs text-white/50 max-w-md mt-1 leading-relaxed">
+              Kalender Sirkuit Kejuaraan Resmi PBESI Sumatera Barat musim kompetisi 2026 sedang dalam tahap penyusunan teknis bersama Pengcab 19 Kota/Kabupaten.
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-5">
+            {filteredTournaments.map((t) => (
             <div
               key={t.id}
               className="p-6 rounded-2xl bg-[#12151C] border border-[#262B38] hover:border-[#D4AF37]/50 transition-all shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6 group relative overflow-hidden"
@@ -163,6 +177,7 @@ export default function TournamentsPage() {
             </div>
           ))}
         </div>
+      )}
       </main>
 
       <Footer />

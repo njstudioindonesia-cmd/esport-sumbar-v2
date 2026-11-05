@@ -24,12 +24,33 @@ import { REGIONS_DETAIL } from "@/data/regions";
 import { ActivityLogItem } from "@/data/mockAdminData";
 
 export default function AdminProvinceLogsPage() {
-  const [logs] = useState<ActivityLogItem[]>([]);
+  const [logs, setLogs] = useState<ActivityLogItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRegion, setFilterRegion] = useState<string>("all");
   const [filterAction, setFilterAction] = useState<string>("all");
   const [isExporting, setIsExporting] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    async function loadAuditLogs() {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/admin/audit-logs?scope=province");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.logs && Array.isArray(json.logs)) {
+            setLogs(json.logs);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load audit logs:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadAuditLogs();
+  }, []);
 
   const filteredLogs = useMemo(() => {
     return logs.filter((log) => {

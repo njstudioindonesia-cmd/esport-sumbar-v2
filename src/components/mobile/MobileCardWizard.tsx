@@ -50,29 +50,22 @@ export function MobileCardWizard() {
 
   // Form State
   const [entityType, setEntityType] = useState<EntityType>("player");
-  const [birthDate, setBirthDate] = useState<string>("2007-06-15");
+  const [birthDate, setBirthDate] = useState<string>("");
   const [guardianName, setGuardianName] = useState<string>("");
   const [guardianContact, setGuardianContact] = useState<string>("");
   const [guardianRelationship, setGuardianRelationship] = useState<string>("Orang Tua Kandung");
   const [guardianConsent, setGuardianConsent] = useState<boolean>(false);
 
-  const [displayName, setDisplayName] = useState<string>("Sutan Harimau");
+  const [displayName, setDisplayName] = useState<string>("");
   const [regionCode, setRegionCode] = useState<string>("PDG");
   const [regionSearch, setRegionSearch] = useState<string>("");
 
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [coverUrl, setCoverUrl] = useState<string>("");
-  const [bio, setBio] = useState<string>("Atlet esport kompetitif asal Sumatera Barat.");
+  const [bio, setBio] = useState<string>("");
 
   // Atribut dinamis sesuai 7 bidang
-  const [attributes, setAttributes] = useState<Record<string, any>>({
-    ign: "HARIMAU_AIM",
-    game_id: "mlbb",
-    role: "Roamer",
-    rank: "Mythic Glory 120★",
-    year_started: 2022,
-    is_looking_for_team: true,
-  });
+  const [attributes, setAttributes] = useState<Record<string, any>>({});
 
   // Pengaturan Privasi per Field
   const [privacy, setPrivacy] = useState<{

@@ -52,29 +52,22 @@ export function DesktopCardWizard() {
 
   // Form State
   const [entityType, setEntityType] = useState<EntityType>("player");
-  const [birthDate, setBirthDate] = useState<string>("2007-06-15");
+  const [birthDate, setBirthDate] = useState<string>("");
   const [guardianName, setGuardianName] = useState<string>("");
   const [guardianContact, setGuardianContact] = useState<string>("");
   const [guardianRelationship, setGuardianRelationship] = useState<string>("Orang Tua Kandung");
   const [guardianConsent, setGuardianConsent] = useState<boolean>(false);
 
-  const [displayName, setDisplayName] = useState<string>("Sutan Harimau");
+  const [displayName, setDisplayName] = useState<string>("");
   const [regionCode, setRegionCode] = useState<string>("PDG");
   const [regionSearch, setRegionSearch] = useState<string>("");
 
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [coverUrl, setCoverUrl] = useState<string>("");
-  const [bio, setBio] = useState<string>("Atlet esport kompetitif asal Sumatera Barat.");
+  const [bio, setBio] = useState<string>("");
 
   // Atribut dinamis sesuai 7 bidang
-  const [attributes, setAttributes] = useState<Record<string, any>>({
-    ign: "HARIMAU_AIM",
-    game_id: "mlbb",
-    role: "Roamer",
-    rank: "Mythic Glory 120★",
-    year_started: 2022,
-    is_looking_for_team: true,
-  });
+  const [attributes, setAttributes] = useState<Record<string, any>>({});
 
   // Pengaturan Privasi per Field (Default Aman sesuai UU PDP No. 27/2022)
   const [privacy, setPrivacy] = useState<{
@@ -532,20 +525,6 @@ export function DesktopCardWizard() {
                               onClick={() => {
                                 if (isEnabled) {
                                   setEntityType(entity.type);
-                                  // Update preset label
-                                  if (entity.type === "team") {
-                                    setDisplayName("Minang Pride Esports");
-                                  } else if (entity.type === "coach") {
-                                    setDisplayName("Coach Rizal");
-                                  } else if (entity.type === "community") {
-                                    setDisplayName("Komunitas MLBB Ranah Minang");
-                                  } else if (entity.type === "venue") {
-                                    setDisplayName("Cyber Minang iCafe");
-                                  } else if (entity.type === "campus") {
-                                    setDisplayName("UKM Esport UNAND");
-                                  } else if (entity.type === "school") {
-                                    setDisplayName("Ekskul Esport SMAN 1 Padang");
-                                  }
                                 }
                               }}
                               disabled={!isEnabled}
@@ -737,7 +716,21 @@ export function DesktopCardWizard() {
                             type="text"
                             value={displayName}
                             onChange={(e) => setDisplayName(e.target.value)}
-                            placeholder="Nama resmi"
+                            placeholder={
+                              entityType === "team"
+                                ? "Contoh: Singkarak Legion Esports"
+                                : entityType === "school"
+                                ? "Contoh: SMAN 1 Padang (Ekskul Esport)"
+                                : entityType === "campus"
+                                ? "Contoh: UKM Esport Universitas Andalas"
+                                : entityType === "coach"
+                                ? "Contoh: Hendra Pratama, S.Pd"
+                                : entityType === "venue"
+                                ? "Contoh: Marawa Gaming Arena"
+                                : entityType === "community"
+                                ? "Contoh: Komunitas Esport Bukittinggi"
+                                : "Contoh: Fikri Alamsyah Putra"
+                            }
                             maxLength={100}
                             className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none"
                           />

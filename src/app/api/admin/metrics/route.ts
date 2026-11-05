@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
+import { verifyAdminAuth } from "@/lib/auth/api-guard";
+
 
 export async function GET(request: NextRequest) {
+  // Guard otentikasi & peran: operator platform, pengprov, dan admin pengcab daerah
+  const { auth, errorResponse } = await verifyAdminAuth(["platform_operator", "prov_admin", "region_admin"]);
+  if (errorResponse) return errorResponse;
+
   try {
     const admin = createAdminClient();
 

@@ -21,12 +21,33 @@ import { REGIONS_DETAIL } from "@/data/regions";
 import { ActivityLogItem } from "@/data/mockAdminData";
 
 export default function AdminPlatformAuditPage() {
-  const [logs] = useState<ActivityLogItem[]>([]);
+  const [logs, setLogs] = useState<ActivityLogItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState("all");
   const [filterRegion, setFilterRegion] = useState("all");
   const [isExporting, setIsExporting] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    async function loadAuditLogs() {
+      setIsLoading(true);
+      try {
+        const res = await fetch("/api/admin/audit-logs?scope=platform");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.logs && Array.isArray(json.logs)) {
+            setLogs(json.logs);
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to load audit logs:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadAuditLogs();
+  }, []);
 
   const filteredLogs = useMemo(() => {
     return logs.filter((log) => {
