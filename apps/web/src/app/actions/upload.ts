@@ -3,6 +3,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { validateImageMagicBytes } from "@/lib/security/magic-bytes";
 import { revalidatePath } from "next/cache";
+import { FLAGS } from "@/lib/config/flags";
+import {
+  processAndUploadMedia,
+  handleProfileDeletedEvent,
+} from "@/lib/services/media";
 
 const MAX_AVATAR_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB
 const MAX_GALLERY_SIZE_BYTES = 3 * 1024 * 1024; // 3 MB
@@ -47,6 +52,86 @@ export async function uploadAvatarAction(formData: FormData): Promise<UploadAvat
       return { success: false, error: "Tidak ada berkas yang dikirim." };
     }
 
+    // CABANG MIKROLAYANAN MEDIA (Sub-langkah 7.1)
+    if (FLAGS.USE_MEDIA_SERVICE) {
+      const supabase = await createClient();
+      const { data: authData } = await supabase.auth.getUser();
+
+      let accountId = authData?.user?.id;
+      const isPlaceholder = (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
+
+      if (!accountId) {
+        if (isPlaceholder) {
+          accountId = "00000000-0000-0000-0000-000000000001";
+        } else {
+          return {
+            success: false,
+            error: "Akses ditolak: Anda harus masuk ke akun Anda untuk mengunggah foto.",
+          };
+        }
+      }
+
+      // Ambil berkas lama untuk dihapus secara otomatis jika profil sudah ada
+      let oldUrl: string | null = null;
+      if (profileId && profileId !== "draft") {
+        const { data: currentProf } = await supabase
+          .from("profiles")
+          .select("avatar_url, cover_path")
+          .eq("id", profileId)
+          .single();
+
+        if (currentProf) {
+          oldUrl = kind === "cover" ? currentProf.cover_path : currentProf.avatar_url;
+        }
+      }
+
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      const mediaResult = await processAndUploadMedia(
+        {
+          fileBuffer: buffer,
+          fileName: file.name,
+          purpose: kind === "cover" ? "cover" : "avatar",
+          profileId,
+          accountId,
+          oldPublicUrl: oldUrl,
+        },
+        supabase
+      );
+
+      if (!mediaResult.success) {
+        return { success: false, error: mediaResult.error };
+      }
+
+      // Perbarui tabel profiles jika profileId valid
+      if (profileId && profileId !== "draft") {
+        const updateField =
+          kind === "cover"
+            ? { cover_path: mediaResult.publicUrl }
+            : { avatar_url: mediaResult.publicUrl, avatar_path: mediaResult.storagePath };
+
+        await supabase
+          .from("profiles")
+          .update({
+            ...updateField,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", profileId)
+          .eq("account_id", accountId);
+
+        revalidatePath(`/profile/${profileId}`);
+        revalidatePath("/me/cards");
+      }
+
+      return {
+        success: true,
+        url: mediaResult.publicUrl,
+        path: mediaResult.storagePath,
+      };
+    }
+
+    // MODE CADANGAN WARISAN (FALLBACK JIKA FEATURE_FLAG_MEDIA_SERVICE=false)
     // 1. Validasi Batas Ukuran Sisi Server (2 MB)
     if (file.size > MAX_AVATAR_SIZE_BYTES) {
       return {
@@ -469,6 +554,12 @@ export async function deleteProfileMediaAction(profileId: string): Promise<{ suc
     }
 
     const accountId = authData.user.id;
+
+    if (FLAGS.USE_MEDIA_SERVICE) {
+      await handleProfileDeletedEvent({ profileId, accountId });
+      return { success: true };
+    }
+
     const folderPrefix = `${accountId}/${profileId}`;
 
     // 1. Hapus dari bucket avatars

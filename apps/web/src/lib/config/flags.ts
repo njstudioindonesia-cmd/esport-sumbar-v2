@@ -13,6 +13,17 @@ export const FLAGS = {
   },
 
   /**
+   * Layanan Media Terekstraksi (Sub-langkah 7.1 Microservices)
+   * Mengatur apakah pemrosesan media (tanda tangan unggah, validasi biner, kompresi Sharp,
+   * pembersihan berkas lama & yatim, dan kuota) menggunakan Media Service baru.
+   * Nilai default: true. Jika diset false (via env FEATURE_FLAG_MEDIA_SERVICE=false),
+   * sistem seketika melakukan graceful rollback ke penyimpanan warisan.
+   */
+  get USE_MEDIA_SERVICE(): boolean {
+    return process.env.FEATURE_FLAG_MEDIA_SERVICE !== "false";
+  },
+
+  /**
    * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
    */
   ENABLED_ENTITY_TYPES: [
