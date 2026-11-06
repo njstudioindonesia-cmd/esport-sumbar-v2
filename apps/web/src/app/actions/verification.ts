@@ -2,6 +2,11 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { FLAGS } from "@/lib/config/flags";
+import {
+  submitVerification,
+  reviewVerificationDecision,
+} from "@/lib/services/verification";
 
 export interface VerificationReviewInput {
   requestId: string;
@@ -39,19 +44,53 @@ export async function submitVerificationAction(
     }
 
     // Verifikasi kepemilikan profil (Mencegah pengajuan atas nama atlet lain)
+    let entityType = "player";
     if (userId) {
       const { data: profileRecord } = await supabase
         .from("profiles")
-        .select("account_id")
+        .select("account_id, entity_type")
         .eq("id", profileId)
         .single();
 
       if (profileRecord && profileRecord.account_id !== userId) {
         return { success: false, error: "Akses ditolak: Anda tidak memiliki hak atas profil ini." };
       }
+      if (profileRecord?.entity_type) {
+        entityType = profileRecord.entity_type;
+      }
     }
 
-    // 1. Simpan pengajuan ke verification_requests
+    // Jalur Layanan Baru jika Feature Flag aktif (Sub-langkah 7.4)
+    if (FLAGS.USE_VERIFICATION_SERVICE) {
+      const serviceResult = await submitVerification({
+        profileId,
+        accountId: userId || "placeholder-user",
+        entityType,
+        regionId,
+        notes,
+        evidenceFiles,
+      });
+
+      if (!serviceResult.success) {
+        return {
+          success: false,
+          error: serviceResult.errors?.join(", ") || "Gagal memvalidasi berkas bukti verifikasi.",
+        };
+      }
+
+      revalidatePath("/verification");
+      revalidatePath("/admin/verification");
+      revalidatePath("/admin");
+      revalidatePath("/dashboard");
+
+      return {
+        success: true,
+        message: "Berkas verifikasi berhasil dikirim ke antrean telaah resmi ESPORT SUMBAR.",
+        newStatus: "submitted",
+      };
+    }
+
+    // Jalur Monolitik Warisan (Rollback Path)
     const { error: requestError } = await supabase
       .from("verification_requests")
       .insert({
@@ -63,13 +102,10 @@ export async function submitVerificationAction(
         submitted_at: new Date().toISOString(),
       });
 
-    if (requestError) {
-      if (!isPlaceholder) {
-        return { success: false, error: requestError.message };
-      }
+    if (requestError && !isPlaceholder) {
+      return { success: false, error: requestError.message };
     }
 
-    // 2. Sinkronkan status profil ke submitted
     if (userId) {
       await supabase
         .from("profiles")
@@ -110,8 +146,43 @@ export async function transitionVerificationAction(
 
   try {
     const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+    const reviewerId = authData?.user?.id;
 
-    // Panggil Stored Procedure / RPC PostgreSQL: transition_verification() V3
+    // Jalur Layanan Baru jika Feature Flag aktif (Sub-langkah 7.4)
+    if (FLAGS.USE_VERIFICATION_SERVICE && reviewerId) {
+      const decisionResult = await reviewVerificationDecision({
+        requestId: input.requestId,
+        reviewerId,
+        reviewerRole: "platform_admin",
+        decision: input.newStatus,
+        reason: input.reason,
+        notes: input.notes,
+        revisionFields: input.revisionFields,
+        badgeNo: input.badgeNo,
+      });
+
+      if (!decisionResult.success) {
+        return {
+          success: false,
+          error: decisionResult.error || "Gagal memproses keputusan verifikasi.",
+        };
+      }
+
+      revalidatePath("/admin");
+      revalidatePath("/admin/verification");
+      revalidatePath("/verification");
+      revalidatePath("/dashboard");
+
+      return {
+        success: true,
+        message: `Status permohonan berhasil diperbarui menjadi "${input.newStatus}".`,
+        newStatus: decisionResult.newStatus,
+        badgeNo: decisionResult.badgeNo,
+      };
+    }
+
+    // Jalur Monolitik Warisan (Rollback Path via RPC transition_verification)
     const { data, error } = await supabase.rpc("transition_verification", {
       p_request_id: input.requestId,
       p_new_status: input.newStatus,

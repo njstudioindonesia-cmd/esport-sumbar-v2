@@ -46,6 +46,17 @@ export const FLAGS = {
   },
 
   /**
+   * Layanan Verifikasi & Audit Terekstraksi (Sub-langkah 7.4 Microservices)
+   * Mengatur apakah penelaahan verifikasi, mesin status, SLA antrean,
+   * validasi portofolio prestasi, dan audit log append-only menggunakan Verification Service baru.
+   * Nilai default: true. Jika diset false (via env FEATURE_FLAG_VERIFICATION_SERVICE=false),
+   * sistem seketika melakukan graceful rollback ke RPC monolitik.
+   */
+  get USE_VERIFICATION_SERVICE(): boolean {
+    return process.env.FEATURE_FLAG_VERIFICATION_SERVICE !== "false";
+  },
+
+  /**
    * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
    */
   ENABLED_ENTITY_TYPES: [
