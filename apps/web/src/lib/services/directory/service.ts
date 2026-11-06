@@ -14,8 +14,15 @@ import {
   projectProfileDeleted,
 } from "./projections";
 import { FLAGS } from "@/lib/config/flags";
-import { logger } from "@esport-sumbar/lib";
+import { logger, createResiliencePolicy } from "@esport-sumbar/lib";
 import { EntityType, RarityTier, VerificationStatus } from "@/lib/supabase/database.types";
+
+export const directoryResiliencePolicy = createResiliencePolicy({
+  name: "directory-service",
+  timeoutMs: 3000,
+  retry: { maxAttempts: 2, baseDelayMs: 50 },
+  circuitBreaker: { failureThreshold: 5, recoveryTimeoutMs: 15000 },
+});
 
 const CACHE_TTL_SECONDS = 60; // 1 menit
 

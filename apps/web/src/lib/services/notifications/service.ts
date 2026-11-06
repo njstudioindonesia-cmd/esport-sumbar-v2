@@ -8,6 +8,7 @@ import {
   withIdempotency,
   generateDeterministicIdempotencyKey,
   logger,
+  createResiliencePolicy,
 } from "@esport-sumbar/lib";
 import { sendEmailSafe } from "./transporter";
 import { getNotificationPreferences } from "./preferences";
@@ -22,6 +23,19 @@ import {
 import { FLAGS } from "@/lib/config/flags";
 
 export const MAX_RETRY_COUNT = 3;
+
+export const notificationResiliencePolicy = createResiliencePolicy({
+  name: "notification-service",
+  timeoutMs: 4000,
+  retry: {
+    maxAttempts: 3,
+    baseDelayMs: 50,
+  },
+  circuitBreaker: {
+    failureThreshold: 4,
+    recoveryTimeoutMs: 15000,
+  },
+});
 
 export interface InAppNotificationRecord {
   id: string;
@@ -293,8 +307,20 @@ export async function processNotificationQueue(
       text: payload.text,
     };
 
-    // Eksekusi pengiriman email aman (fault-isolated)
-    const sendResult = await sendEmailSafe(emailMsg);
+    // Eksekusi pengiriman email aman terlindungi oleh Circuit Breaker & Retry
+    const sendResult = await notificationResiliencePolicy.execute(
+      async () => {
+        const res = await sendEmailSafe(emailMsg);
+        if (!res.success) {
+          throw new Error(res.error || "Email transport error");
+        }
+        return res;
+      },
+      (err) => ({
+        success: false,
+        error: err?.message || "Circuit breaker open / delivery failed",
+      })
+    );
 
     if (sendResult.success) {
       sent++;

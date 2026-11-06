@@ -10,7 +10,14 @@ import {
 import { createOutboxEvent, publishOutboxEvent } from "@esport-sumbar/lib";
 import { withIdempotency, generateDeterministicIdempotencyKey } from "@esport-sumbar/lib";
 import { FLAGS } from "@/lib/config/flags";
-import { logger } from "@esport-sumbar/lib";
+import { logger, createResiliencePolicy } from "@esport-sumbar/lib";
+
+export const mediaResiliencePolicy = createResiliencePolicy({
+  name: "media-service",
+  timeoutMs: 5000,
+  retry: { maxAttempts: 2, baseDelayMs: 100 },
+  circuitBreaker: { failureThreshold: 4, recoveryTimeoutMs: 15000 },
+});
 
 // ==============================================================================
 // 1. KONFIGURASI BATAS & KUOTA PENYIMPANAN MEDIA V3
