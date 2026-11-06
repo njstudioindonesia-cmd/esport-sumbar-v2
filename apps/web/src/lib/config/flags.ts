@@ -68,6 +68,17 @@ export const FLAGS = {
   },
 
   /**
+   * Modularisasi Core Subdomain (Sub-langkah 7.6 Microservices)
+   * Menegakkan isolasi modul inti (Identity, Profile, Ecosystem, Catalog),
+   * eliminasi JOIN lintas schema, dan referensi berbasis ID murni.
+   * Nilai default: true. Jika diset false (via env FEATURE_FLAG_MODULAR_CORE=false),
+   * sistem seketika melakukan graceful rollback ke fungsi monolitik.
+   */
+  get USE_MODULAR_CORE(): boolean {
+    return process.env.FEATURE_FLAG_MODULAR_CORE !== "false";
+  },
+
+  /**
    * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
    */
   ENABLED_ENTITY_TYPES: [
