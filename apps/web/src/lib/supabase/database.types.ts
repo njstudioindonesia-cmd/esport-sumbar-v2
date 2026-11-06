@@ -152,6 +152,8 @@ export type Database = {
           slug: string;
           publisher: string | null;
           category: string | null;
+          genre: string | null;
+          platform: string | null;
           roles_jsonb: Json;
           is_active: boolean;
           created_at: string;
@@ -164,6 +166,8 @@ export type Database = {
           slug: string;
           publisher?: string | null;
           category?: string | null;
+          genre?: string | null;
+          platform?: string | null;
           roles_jsonb?: Json;
           is_active?: boolean;
           created_at?: string;
@@ -176,10 +180,66 @@ export type Database = {
           slug?: string;
           publisher?: string | null;
           category?: string | null;
+          genre?: string | null;
+          platform?: string | null;
           roles_jsonb?: Json;
           is_active?: boolean;
           created_at?: string;
           updated_at?: string;
+        };
+        Relationships: [];
+      };
+      game_roles: {
+        Row: {
+          id: string;
+          game_id: string;
+          role_name: string;
+          description: string | null;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          game_id: string;
+          role_name: string;
+          description?: string | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          game_id?: string;
+          role_name?: string;
+          description?: string | null;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      game_ranks: {
+        Row: {
+          id: string;
+          game_id: string;
+          tier_name: string;
+          tier_level: number;
+          sort_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          game_id: string;
+          tier_name: string;
+          tier_level?: number;
+          sort_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          game_id?: string;
+          tier_name?: string;
+          tier_level?: number;
+          sort_order?: number;
+          created_at?: string;
         };
         Relationships: [];
       };

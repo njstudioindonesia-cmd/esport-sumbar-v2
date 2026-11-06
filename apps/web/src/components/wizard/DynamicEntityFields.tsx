@@ -161,8 +161,8 @@ export function DynamicEntityFields({
             </div>
           </div>
 
-          {/* Baris 2: Game Utama & Role */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Baris 2: Game Utama, Role & Rank (Dinamis Sesuai Game - Mandat 5.2) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
@@ -172,12 +172,22 @@ export function DynamicEntityFields({
               </div>
               <select
                 value={attributes.game_id || OFFICIAL_GAMES[0].id}
-                onChange={(e) => onChange("game_id", e.target.value)}
+                onChange={(e) => {
+                  const newGameId = e.target.value;
+                  onChange("game_id", newGameId);
+                  const targetGame = OFFICIAL_GAMES.find((g) => g.id === newGameId);
+                  if (targetGame && targetGame.roles.length > 0) {
+                    onChange("role", targetGame.roles[0]);
+                  }
+                  if (targetGame && targetGame.ranks && targetGame.ranks.length > 0) {
+                    onChange("current_rank", targetGame.ranks[0]);
+                  }
+                }}
                 className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
               >
                 {OFFICIAL_GAMES.map((game) => (
                   <option key={game.id} value={game.id} className="bg-[#161A24]">
-                    {game.name}
+                    {game.name} ({game.shortName})
                   </option>
                 ))}
               </select>
@@ -186,18 +196,66 @@ export function DynamicEntityFields({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
-                  Role / Posisi Utama
+                  Role / Posisi
                 </label>
                 <FieldBadge required={true} visibility="PB" />
               </div>
-              <input
-                type="text"
-                value={attributes.role || ""}
-                onChange={(e) => onChange("role", e.target.value)}
-                placeholder="mis. Roamer / Jungler / Duelist"
-                maxLength={40}
-                className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none"
-              />
+              {(() => {
+                const curGame = OFFICIAL_GAMES.find((g) => g.id === (attributes.game_id || OFFICIAL_GAMES[0].id)) || OFFICIAL_GAMES[0];
+                const availableRoles = curGame.roles;
+                return (
+                  <select
+                    value={attributes.role || (availableRoles[0] || "")}
+                    onChange={(e) => onChange("role", e.target.value)}
+                    className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
+                  >
+                    {availableRoles.map((r) => (
+                      <option key={r} value={r} className="bg-[#161A24]">
+                        {r}
+                      </option>
+                    ))}
+                    <option value="Flex / Cadangan" className="bg-[#161A24]">Flex / Cadangan</option>
+                  </select>
+                );
+              })()}
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
+                  Tier Rank Saat Ini
+                </label>
+                <FieldBadge required={false} visibility="PB" />
+              </div>
+              {(() => {
+                const curGame = OFFICIAL_GAMES.find((g) => g.id === (attributes.game_id || OFFICIAL_GAMES[0].id)) || OFFICIAL_GAMES[0];
+                const availableRanks = curGame.ranks || [];
+                if (availableRanks.length > 0) {
+                  return (
+                    <select
+                      value={attributes.current_rank || availableRanks[0]}
+                      onChange={(e) => onChange("current_rank", e.target.value)}
+                      className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
+                    >
+                      {availableRanks.map((rk) => (
+                        <option key={rk} value={rk} className="bg-[#161A24]">
+                          {rk}
+                        </option>
+                      ))}
+                    </select>
+                  );
+                }
+                return (
+                  <input
+                    type="text"
+                    value={attributes.current_rank || ""}
+                    onChange={(e) => onChange("current_rank", e.target.value)}
+                    placeholder="mis. Grandmaster"
+                    maxLength={40}
+                    className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none"
+                  />
+                );
+              })()}
             </div>
           </div>
 

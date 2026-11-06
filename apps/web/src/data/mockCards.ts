@@ -21,19 +21,19 @@ export const GALLERY_CARDS: MockCardVariant[] = [
     type: "player",
     rarity: "rookie",
     verification: "unverified",
-    tagline: "Pemain baru terdaftar, profil dasar lengkap",
+    tagline: "Pemain Honor of Kings divisi Farm Lane, profil dasar terdaftar",
     data: {
-      ign: "KABA_SHOOTER",
+      ign: "HOK_GARUDA",
       displayName: "Rizky Ramadhan",
       avatarUrl:
         "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400&auto=format&fit=crop",
-      game: "Free Fire",
-      role: "Rusher",
+      game: "Honor of Kings",
+      role: "Farm Lane",
       team: { name: "Singkarak Esports" },
       region: { name: "Kota Solok", code: "SLK" },
       esportId: "ESB-SLK-PL-000301",
       achievements: [],
-      history: [{ teamName: "Singkarak Esports", period: "2026 - Sekarang", role: "Rusher" }],
+      history: [{ teamName: "Singkarak Esports", period: "2026 - Sekarang", role: "Farm Lane" }],
       joinedAt: "Februari 2026",
     },
   },
@@ -42,7 +42,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
     type: "player",
     rarity: "contender",
     verification: "regional",
-    tagline: "Profil lengkap >80% & relasi tim aktif tervalidasi ESI Daerah",
+    tagline: "Profil lengkap >80% & relasi tim aktif tervalidasi ESPORT SUMBAR",
     data: {
       ign: "SUTAN_AIM",
       displayName: "Raka Pratama",
@@ -53,7 +53,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       team: { name: "Marawa Muda" },
       region: { name: "Kota Padang", code: "PDG" },
       esportId: "ESB-PDG-PL-000124",
-      badgeNumber: "ESI-PDG-2026-088",
+      badgeNumber: "ESP-SB-VER-2026-0088",
       achievements: [
         {
           title: "Piala Walikota Padang Esport",
@@ -75,7 +75,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
     type: "player",
     rarity: "elite",
     verification: "verified",
-    tagline: "Prestasi kejuaraan daerah tervalidasi & diverifikasi ESI Provinsi",
+    tagline: "Prestasi kejuaraan daerah tervalidasi & diverifikasi ESPORT SUMBAR",
     data: {
       ign: "MARAWA_KING",
       displayName: "Fikri Alamsyah",
@@ -86,10 +86,10 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       team: { name: "Minang Pride" },
       region: { name: "Kota Bukittinggi", code: "BKT" },
       esportId: "ESB-BKT-PL-000042",
-      badgeNumber: "ESI-SB-2025-0042",
+      badgeNumber: "ESP-SB-VER-2025-0042",
       achievements: [
         {
-          title: "Kejuaraan Daerah ESI Sumbar",
+          title: "Piala Gubernur Esport Sumbar",
           level: "provinsi",
           placement: "Medali Emas",
           year: "2025",
@@ -126,7 +126,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       team: { name: "Ranah Garuda" },
       region: { name: "Kab. Padang Pariaman", code: "PDP" },
       esportId: "ESB-PDP-PL-000007",
-      badgeNumber: "ESI-SB-2024-0007",
+      badgeNumber: "ESP-SB-VER-2024-0007",
       achievements: [
         {
           title: "PON XXI Eksibisi Esport",
@@ -182,7 +182,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
     type: "coach",
     rarity: "contender",
     verification: "regional",
-    tagline: "Pelatih dengan lisensi tingkat kota/kabupaten tervalidasi",
+    tagline: "Pelatih dengan lisensi kepelatihan tingkat kota/kabupaten tervalidasi",
     data: {
       displayName: "Hendra Wijaya",
       ign: "TACTICIAN_HEN",
@@ -193,11 +193,11 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       team: { name: "Padang Panjang FC" },
       region: { name: "Kota Padang Panjang", code: "PPJ" },
       esportId: "ESB-PPJ-CO-000045",
-      badgeNumber: "ESI-PPJ-2025-012",
+      badgeNumber: "ESP-SB-VER-2025-0012",
       certification: {
         isCertified: true,
-        name: "Lisensi Pelatih C ESI",
-        issuer: "ESI Padang Panjang",
+        name: "Sertifikasi Pelatih Komunitas",
+        issuer: "ESPORT SUMBAR Wilayah",
         year: "2025",
       },
       history: [
@@ -223,7 +223,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       team: { name: "Minang Pride" },
       region: { name: "Kota Padang", code: "PDG" },
       esportId: "ESB-PDG-CO-000012",
-      badgeNumber: "ESI-SB-2024-C002",
+      badgeNumber: "ESP-SB-VER-2024-0022",
       certification: {
         isCertified: true,
         name: "Lisensi Nasional B ESPORT SUMBAR",
@@ -232,7 +232,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       },
       achievements: [
         {
-          title: "Kejurda ESI Sumbar 2025",
+          title: "Kejurda Esport Sumbar 2025",
           level: "provinsi",
           placement: "Juara 1 (Pelatih)",
           year: "2025",
@@ -259,10 +259,10 @@ export const GALLERY_CARDS: MockCardVariant[] = [
         "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&auto=format&fit=crop",
       game: "PUBG Mobile & Valorant",
       role: "Direktur Taktikal Provinsi",
-      team: { name: "Puslatda ESI Sumbar" },
+      team: { name: "Puslatda Esport Sumbar" },
       region: { name: "Kota Padang", code: "PDG" },
       esportId: "ESB-PDG-CO-000001",
-      badgeNumber: "ESI-SB-2023-C001",
+      badgeNumber: "ESP-SB-VER-2023-0001",
       certification: {
         isCertified: true,
         name: "Lisensi Kepelatihan A ESPORT SUMBAR",
@@ -320,7 +320,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
     type: "team",
     rarity: "contender",
     verification: "regional",
-    tagline: "Klub kota aktif dengan roster terdaftar di ESI Payakumbuh",
+    tagline: "Klub kota aktif dengan roster terdaftar di ESPORT SUMBAR Payakumbuh",
     data: {
       displayName: "Payakumbuh United Esports",
       teamName: "Payakumbuh Cyber",
@@ -331,7 +331,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       homebase: "Kota Payakumbuh",
       region: { name: "Kota Payakumbuh", code: "PYK" },
       esportId: "ESB-PYK-TM-000034",
-      badgeNumber: "ESI-PYK-2025-007",
+      badgeNumber: "ESP-SB-VER-2025-0034",
       captainOrManager: { name: "Wahyu Pratama", role: "Manajer" },
       rosterCount: { current: 5, max: 6 },
       rosterMembers: [
@@ -358,7 +358,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
     type: "team",
     rarity: "elite",
     verification: "verified",
-    tagline: "Klub profesional resmi terakreditasi ESI Provinsi Sumatera Barat",
+    tagline: "Klub profesional resmi terakreditasi ESPORT SUMBAR",
     data: {
       displayName: "Minang Pride Esports Club",
       teamName: "Minang Pride",
@@ -369,7 +369,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       homebase: "Kota Bukittinggi",
       region: { name: "Kota Bukittinggi", code: "BKT" },
       esportId: "ESB-BKT-TM-000015",
-      badgeNumber: "ESI-SB-2024-T005",
+      badgeNumber: "ESP-SB-VER-2024-0015",
       captainOrManager: { name: "Andi Saputra", role: "Manajer" },
       coachName: "Coach Dedi Kurniawan",
       rosterCount: { current: 6, max: 8 },
@@ -416,7 +416,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       homebase: "Kota Padang",
       region: { name: "Kota Padang", code: "PDG" },
       esportId: "ESB-PDG-TM-000001",
-      badgeNumber: "ESI-SB-2023-T001",
+      badgeNumber: "ESP-SB-VER-2023-0001",
       captainOrManager: { name: "H. Syahrul Munaf", role: "Manajer" },
       coachName: "Bambang Pamungkas",
       rosterCount: { current: 5, max: 6 },
