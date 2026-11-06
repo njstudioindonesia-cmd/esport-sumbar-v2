@@ -86,7 +86,29 @@ CREATE TABLE IF NOT EXISTS public.relation_rules (
     CONSTRAINT uq_relation_rule_pair UNIQUE(source_entity_type, target_entity_type, relation_type)
 );
 
--- 8. Tambah kolom pada tabel entity_relations untuk mendukung siklus hidup V3
+-- 8. Tabel entity_relations (Hubungan Resmi Antar Entitas Ekosistem V3)
+CREATE TABLE IF NOT EXISTS public.entity_relations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    source_profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    target_profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+    relation_type VARCHAR(50) NOT NULL,
+    game_id VARCHAR(50) REFERENCES public.games(id) ON DELETE SET NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'rejected', 'cancelled', 'expired', 'ended')),
+    metadata_jsonb JSONB NOT NULL DEFAULT '{}'::jsonb,
+    expires_at TIMESTAMPTZ,
+    started_at TIMESTAMPTZ,
+    ended_at TIMESTAMPTZ,
+    approved_by UUID REFERENCES public.accounts(id) ON DELETE SET NULL,
+    rejection_reason TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_active_relation UNIQUE(source_profile_id, target_profile_id, relation_type)
+);
+
+CREATE INDEX IF NOT EXISTS idx_entity_relations_source ON public.entity_relations(source_profile_id);
+CREATE INDEX IF NOT EXISTS idx_entity_relations_target ON public.entity_relations(target_profile_id);
+CREATE INDEX IF NOT EXISTS idx_entity_relations_status ON public.entity_relations(status);
+
 ALTER TABLE public.entity_relations 
     ADD COLUMN IF NOT EXISTS game_id VARCHAR(50) REFERENCES public.games(id) ON DELETE SET NULL,
     ADD COLUMN IF NOT EXISTS expires_at TIMESTAMPTZ,
