@@ -111,7 +111,7 @@ export function DesktopCardsView() {
             Kartu Paspor Saya
           </h1>
           <p className="text-xs text-white/50 mt-1">
-            Kelola paspor esport resmi kamu yang terdaftar di Pengprov ESI Sumatera Barat.
+            Kelola paspor esport resmi kamu yang terdaftar di ESPORT SUMBAR.
           </p>
         </div>
 
@@ -151,7 +151,7 @@ export function DesktopCardsView() {
           <div>
             <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Paspor</h3>
             <p className="text-xs text-white/50 max-w-md mt-1 leading-relaxed">
-              Anda belum memiliki kartu paspor digital resmi PBESI Sumatera Barat. Daftarkan identitas Anda sekarang untuk mendapatkan ESPORT ID resmi dan akses turnamen.
+              Anda belum memiliki kartu paspor digital resmi ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan ESPORT ID resmi dan akses turnamen.
             </p>
           </div>
           <Link
@@ -280,7 +280,7 @@ export function DesktopCardsView() {
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      Status awal belum terverifikasi Pengcab.
+                      Status awal belum terverifikasi Wilayah.
                     </li>
                   </ul>
                 </div>
@@ -298,7 +298,7 @@ export function DesktopCardsView() {
                   <ul className="text-xs text-white/70 space-y-1.5">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      Telah diverifikasi resmi oleh Pengcab ESI Kabupaten/Kota.
+                      Telah diverifikasi resmi oleh Komunitas Esport Kabupaten/Kota.
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -320,7 +320,7 @@ export function DesktopCardsView() {
                   <ul className="text-xs text-white/70 space-y-1.5">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      Verifikasi Pengprov ESI Sumatera Barat dengan Nomor Register Lencana.
+                      Verifikasi ESPORT SUMBAR dengan Nomor Register Lencana.
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />

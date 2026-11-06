@@ -7,7 +7,7 @@ export const instant = false;
 
 export const metadata: Metadata = {
   title: "Direktori Tim Esport Sumatera Barat | ESPORT SUMBAR™",
-  description: "Daftar tim dan klub esport kompetitif binaan Pengcab ESI di Sumatera Barat.",
+  description: "Daftar tim dan klub esport kompetitif binaan Komunitas Esport di Sumatera Barat.",
 };
 
 export default async function TeamsDirectoryPage() {

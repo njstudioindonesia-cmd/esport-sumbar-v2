@@ -182,10 +182,10 @@ export function MobileOnboarding() {
                 </div>
 
                 <h2 className="font-heading font-black text-3xl uppercase tracking-tight text-white leading-none">
-                  Diverifikasi Mitra Kelembagaan ESI
+                  Diverifikasi tim kurasi ESPORT SUMBAR
                 </h2>
                 <p className="text-xs text-white/60 max-w-xs mx-auto">
-                  Data atlet divalidasi langsung oleh Pengcab & Pengprov ESI Sumbar.
+                  Data atlet divalidasi langsung oleh Wilayah & ESPORT SUMBAR.
                 </p>
               </div>
             </motion.div>

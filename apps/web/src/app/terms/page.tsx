@@ -37,9 +37,9 @@ export default function TermsPage() {
             Syarat &amp; Ketentuan Layanan
           </h1>
           <div className="flex flex-wrap items-center gap-3 text-xs text-white/50 mt-2 font-mono">
-            <span>Penyedia Layanan: <strong>ESPORT SUMBAR™</strong></span>
+            <span>Penyedia &amp; Pemverifikasi: <strong>ESPORT SUMBAR™</strong></span>
             <span>•</span>
-            <span>Mitra Verifikasi: <strong>ESI Sumbar &amp; Pengcab</strong></span>
+            <span>Ditinjau hukum: [TENTUKAN]</span>
             <span>•</span>
             <span>Berlaku sejak: 2026</span>
           </div>
@@ -53,18 +53,18 @@ export default function TermsPage() {
               Penyedia Platform &amp; Sifat Layanan
             </h2>
             <p className="text-white/70">
-              Platform <strong>ESPORT SUMBAR™</strong> disediakan dan dikelola secara mandiri oleh entitas <strong>ESPORT SUMBAR™</strong> sebagai pangkalan data dan identitas digital esport Sumatera Barat. Lembaga Pengurus Provinsi ESI Sumbar dan Pengurus Cabang ESI Kota/Kabupaten bertindak semata-mata sebagai <strong>Mitra Kelembagaan</strong> untuk memverifikasi data prestasi dan keabsahan atlet.
+              Platform <strong>ESPORT SUMBAR™</strong> disediakan dan dikelola sepenuhnya secara mandiri oleh entitas <strong>ESPORT SUMBAR™</strong> sebagai pangkalan data dan paspor identitas digital esport Sumatera Barat. Seluruh operasional, verifikasi profil, kurasi direktori, dan regulasi platform dijalankan di bawah kendali teknis tunggal ESPORT SUMBAR™.
             </p>
           </section>
 
-          {/* Pasal 2: Paspor Atlet & Integritas Akun */}
+          {/* Pasal 2: Aturan 1 Akun 1 Profil & Integritas */}
           <section className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10">
             <h2 className="text-lg font-heading font-black text-white uppercase mb-3 flex items-center gap-2">
               <span className="text-xs px-2 py-0.5 rounded bg-[#FF1752] text-white font-mono font-bold">02</span>
-              Keabsahan Paspor &amp; Kepemilikan Akun
+              Aturan Ketat Satu Akun Satu Profil
             </h2>
             <p className="text-white/70">
-              Setiap individu hanya diperkenankan memiliki <strong>satu (1) identitas paspor digital resmi (ESPORT ID)</strong>. Pemalsuan identitas, pemalsuan umur, atau penggunaan akun orang lain merupakan pelanggaran yang dapat berakibat penangguhan (*Suspended*) akun pada pangkalan data dan pembatalan status verifikasi.
+              Setiap pengguna hanya diperkenankan mendaftarkan <strong>satu (1) profil entitas bidang</strong> untuk satu akun terdaftar. Pembuatan multi-profil dalam satu akun diblokir oleh sistem. Pemalsuan identitas, manipulasi IGN, joki akun game, atau penggunaan data orang lain merupakan pelanggaran yang dapat berakibat penangguhan (<em>Suspended</em>) akun secara permanen.
             </p>
           </section>
 
@@ -76,22 +76,22 @@ export default function TermsPage() {
             </h2>
             <div className="space-y-3 text-white/70">
               <p>
-                Nama <strong>ESPORT SUMBAR™</strong>, logo mark, logo lockup, tata letak visual, kartu TCG digital, dan kode sistem dilindungi oleh hukum hak kekayaan intelektual Republik Indonesia.
+                Nama <strong>ESPORT SUMBAR™</strong>, logo mark, logo lockup, tata letak visual kartu TCG digital, dan kode sistem dilindungi oleh hukum hak kekayaan intelektual Republik Indonesia.
               </p>
               <p>
-                Dengan mengunggah foto profil, logo tim, dan riwayat prestasi ke platform ini, pengguna memberikan lisensi terbatas, non-eksklusif, dan bebas royalti kepada ESPORT SUMBAR™ untuk menampilkan konten tersebut pada kartu identitas publik, direktori atlet, dan materi publikasi ekosistem.
+                Dengan mengunggah foto profil, logo tim, dan riwayat prestasi ke platform ini, pengguna memberikan lisensi terbatas, non-eksklusif, dan bebas royalti kepada ESPORT SUMBAR™ untuk menampilkan konten tersebut pada kartu identitas publik, direktori ekosistem, dan materi publikasi resmi.
               </p>
             </div>
           </section>
 
-          {/* Pasal 4: Status Verifikasi & Masa Berlaku */}
+          {/* Pasal 4: Standar Verifikasi Satu Tahap */}
           <section className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10">
             <h2 className="text-lg font-heading font-black text-white uppercase mb-3 flex items-center gap-2">
-              <span className="text-xs px-2 py-0.5 rounded bg-[#22C55E] text-black font-mono font-bold">04</span>
-              Status Verifikasi Kelembagaan
+              <span className="text-xs px-2 py-0.5 rounded bg-emerald-500 text-black font-mono font-bold">04</span>
+              Standar Verifikasi Tunggal ESPORT SUMBAR
             </h2>
             <p className="text-white/70">
-              Lencana <em>Regional Checked</em> diterbitkan oleh Pengcab ESI Kota/Kabupaten sesuai domisili atlet. Lencana <em>Verified</em> diterbitkan secara berjenjang oleh Pengprov ESI Sumbar untuk atlet tingkat provinsi. Verifikasi ulang dapat dipicu secara berkala atau ketika terjadi mutasi tim dan perubahan data kependudukan.
+              Verifikasi keabsahan profil entitas dilakukan langsung dalam satu tahap oleh kurator ESPORT SUMBAR. Profil yang memenuhi syarat bukti kepemilikan in-game dan piagam kompetisi akan memperoleh lencana resmi dengan nomor registrasi <strong>ESP-SB-VER-YYYY-XXXX</strong>. Verifikasi ulang dapat dipicu secara berkala atau ketika terjadi perubahan data kunci profil.
             </p>
           </section>
 
@@ -99,7 +99,7 @@ export default function TermsPage() {
           <section className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10">
             <h2 className="text-lg font-heading font-black text-white uppercase mb-3 flex items-center gap-2">
               <span className="text-xs px-2 py-0.5 rounded bg-white text-black font-mono font-bold">05</span>
-              Perubahan Ketentuan &amp; Yurisdiksi
+              Perubahan Ketentuan &amp; Hukum yang Berlaku
             </h2>
             <p className="text-white/70">
               ESPORT SUMBAR™ berhak memperbarui Syarat dan Ketentuan ini dari waktu ke waktu. Syarat dan ketentuan ini diatur dan ditafsirkan berdasarkan hukum Negara Kesatuan Republik Indonesia.

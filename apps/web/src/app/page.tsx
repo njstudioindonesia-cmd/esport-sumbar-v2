@@ -10,7 +10,7 @@ export const instant = false;
 export const metadata: Metadata = {
   title: "ESPORT SUMBAR™ | Pusat Data & Paspor Digital Atlet Ranah Minang",
   description:
-    "Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem turnamen esport Sumatera Barat oleh ESPORT SUMBAR™. Diverifikasi mitra kelembagaan ESI.",
+    "Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem turnamen esport Sumatera Barat oleh ESPORT SUMBAR™. Diverifikasi tim kurasi ESPORT SUMBAR.",
 };
 
 export default async function HomePage() {

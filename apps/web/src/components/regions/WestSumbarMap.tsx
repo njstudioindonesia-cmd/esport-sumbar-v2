@@ -114,13 +114,7 @@ export function WestSumbarMap() {
                   cx={coords.x}
                   cy={coords.y}
                   r={isCity ? 11 : 9}
-                  fill={
-                    isSelected
-                      ? "#D4AF37"
-                      : region.adminMode === "active"
-                      ? "#22C55E"
-                      : "#3B82F6"
-                  }
+                  fill={isSelected ? "#D4AF37" : "#22C55E"}
                   stroke="#0B0D12"
                   strokeWidth="2.5"
                 />
@@ -178,14 +172,8 @@ export function WestSumbarMap() {
             <span className="px-2 py-0.5 rounded-full bg-[#1A1E28] border border-[#262B38] text-[10px] font-mono text-[#D4AF37] font-bold">
               KODE: {activeRegion.code}
             </span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-heading font-bold uppercase ${
-                activeRegion.adminMode === "active"
-                  ? "bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30"
-                  : "bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30"
-              }`}
-            >
-              {activeRegion.adminMode === "active" ? "Pengcab Aktif" : "Mode Fallback ESI"}
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-heading font-bold uppercase bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30">
+              {activeRegion.type === "kota" ? "Kota Otonom" : "Kabupaten"}
             </span>
             {activeRegion.isPilot && (
               <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 text-[9px] font-heading font-black">
@@ -229,13 +217,13 @@ export function WestSumbarMap() {
             </div>
           </div>
 
-          {/* ESI Contact Summary */}
+          {/* Layanan Terpadu Summary */}
           <div className="mt-4 p-3 rounded-lg bg-[#161922] border border-[#262B38] text-xs">
             <span className="text-[10px] uppercase font-mono text-[#9AA3B2] block mb-0.5">
-              Otoritas Pemeriksaan
+              Layanan Administrasi
             </span>
             <p className="font-semibold text-gray-200 text-[11px] leading-tight">
-              {activeRegion.esiContactName}
+              ESPORT SUMBAR Terpadu (Verifikasi Langsung Satu Tahap)
             </p>
           </div>
         </div>

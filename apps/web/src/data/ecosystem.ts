@@ -60,7 +60,7 @@ export const MOCK_COMMUNITIES: CommunityItem[] = [
     memberCount: 3420,
     leaderName: "Irfan 'MinangRoam' Syahputra",
     verifiedStatus: "verified",
-    description: "Komunitas resmi pemain Mobile Legends terbesar se-Sumbar dengan agenda mabar mingguan dan scouting atlet Pengcab ESI.",
+    description: "Komunitas resmi pemain Mobile Legends terbesar se-Sumbar dengan agenda mabar mingguan dan scouting atlet Komunitas Esport.",
     contactWa: "+62 812-6677-8899",
     socialMedia: "@mlbb_ranahminang",
     foundedYear: "2020",
@@ -241,7 +241,7 @@ export const MOCK_SCHOOLS: SchoolCampusItem[] = [
     supervisedByEsi: true,
     coachName: "Budi Satria, S.Kom",
     achievementsCount: 8,
-    description: "Sekolah kejuruan teknologi pertama di Sumbar dengan ekstrakurikuler esport resmi di bawah bimbingan Pengcab ESI Padang.",
+    description: "Sekolah kejuruan teknologi pertama di Sumbar dengan ekstrakurikuler esport resmi di bawah bimbingan Komunitas Esport Padang.",
   },
   {
     id: "sch-04",

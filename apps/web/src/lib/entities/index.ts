@@ -7,7 +7,7 @@
  * 1. Wizard pembuatan profil (form dinamis & validasi klien)
  * 2. Server Actions (validasi Zod & sanitasi teks)
  * 3. Halaman profil publik (rendering atribut dinamis)
- * 4. Kartu TCG (Frame Rarity & Lencana PBESI)
+ * 4. Kartu TCG (Frame Rarity & Lencana ESPORT SUMBAR)
  * 5. Kalkulator kelengkapan data & rarity tier
  */
 

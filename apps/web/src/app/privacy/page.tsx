@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ShieldCheck, Lock, ChevronRight, FileText, Mail, Building, CheckCircle2 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { BrandWatermark, OwnershipNote } from "@/components/brand";
+import { BrandWatermark } from "@/components/brand";
 
 export const metadata: Metadata = {
   title: "Kebijakan Privasi (UU PDP)",
@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
           <div className="flex flex-wrap items-center gap-3 text-xs text-white/50 mt-2 font-mono">
             <span>Pengendali Data: <strong>ESPORT SUMBAR™</strong></span>
             <span>•</span>
-            <span>Ditinjau hukum: Ditentukan</span>
+            <span>Ditinjau hukum: [TENTUKAN]</span>
             <span>•</span>
             <span>Berlaku sejak: 2026</span>
           </div>
@@ -56,28 +56,28 @@ export default function PrivacyPolicyPage() {
               Pengendali Data &amp; Landasan Hukum
             </h2>
             <p className="text-white/70">
-              Platform teknologi dan pangkalan data <strong>ESPORT SUMBAR™</strong> dimiliki dan dikendalikan sepenuhnya oleh entitas usaha <strong>ESPORT SUMBAR™</strong> (&ldquo;Kami&rdquo;), bertindak sebagai <strong>Pengendali Data Pribadi</strong> sesuai dengan ketentuan <strong>Undang-Undang Republik Indonesia Nomor 27 Tahun 2022 tentang Perlindungan Data Pribadi (UU PDP)</strong>.
+              Platform teknologi dan pangkalan data <strong>ESPORT SUMBAR™</strong> dimiliki dan dikendalikan sepenuhnya secara mandiri oleh entitas <strong>ESPORT SUMBAR™</strong> (&ldquo;Kami&rdquo;), bertindak sebagai <strong>Pengendali Data Pribadi Tunggal</strong> sesuai dengan ketentuan <strong>Undang-Undang Republik Indonesia Nomor 27 Tahun 2022 tentang Perlindungan Data Pribadi (UU PDP)</strong>.
             </p>
           </section>
 
-          {/* Pasal 2: Peran Kemitraan Kelembagaan ESI */}
+          {/* Pasal 2: Tata Kelola Mandiri & Pemrosesan Terbatas */}
           <section className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10">
             <h2 className="text-lg font-heading font-black text-white uppercase mb-3 flex items-center gap-2">
-              <span className="text-xs px-2 py-0.5 rounded bg-[#22C55E] text-black font-mono font-bold">02</span>
-              Akses Data Terbatas oleh Mitra Kelembagaan (ESI)
+              <span className="text-xs px-2 py-0.5 rounded bg-emerald-500 text-black font-mono font-bold">02</span>
+              Tata Kelola Mandiri &amp; Kerahasiaan Data
             </h2>
             <p className="mb-3 text-white/70">
-              Pengurus Provinsi E-Sport Indonesia Sumatera Barat (Pengprov ESI Sumbar) beserta Pengurus Cabang ESI Kota dan Kabupaten se-Sumatera Barat bertindak sebagai <strong>Mitra Kelembagaan</strong>, bukan pemilik sistem platform.
+              ESPORT SUMBAR adalah operator dan pemverifikasi tunggal atas pangkalan data platform.
             </p>
             <ul className="list-disc pl-5 space-y-2 text-white/60">
               <li>
-                Mitra kelembagaan hanya diberikan <strong>akses baca dan peninjauan terbatas</strong> terhadap berkas verifikasi identitas atlet untuk yurisdiksi wilayah yang menjadi kewenangannya.
+                Sistem tidak menyalin, memperjualbelikan, atau mendistribusikan data pribadi pengguna kepada pihak ketiga tanpa persetujuan eksplisit.
               </li>
               <li>
-                Akses diberikan semata-mata guna memvalidasi keabsahan status atlet olahraga prestasi (pemberian lencana Regional Checked dan Verified).
+                Verifikasi keabsahan profil dilakukan langsung satu pintu oleh tim verifikasi internal ESPORT SUMBAR.
               </li>
               <li>
-                Mitra kelembagaan dilarang menyalin, memperjualbelikan, atau mengalihkan data pengguna platform kepada pihak ketiga di luar tugas pengesahan resmi.
+                Dokumen pendukung pengajuan (bukti akun in-game, piagam kejuaraan) diakses melalui tautan aman dengan masa kedaluwarsa singkat (signed URL).
               </li>
             </ul>
           </section>
@@ -86,17 +86,17 @@ export default function PrivacyPolicyPage() {
           <section className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10">
             <h2 className="text-lg font-heading font-black text-white uppercase mb-3 flex items-center gap-2">
               <span className="text-xs px-2 py-0.5 rounded bg-[#FF1752] text-white font-mono font-bold">03</span>
-              Data yang Kami Kumpulkan
+              Minimisasi Data yang Kami Kumpulkan
             </h2>
             <p className="mb-3 text-white/70">
-              Kami memproses data dalam kategori berikut untuk keperluan penerbitan paspor atlet digital:
+              Sesuai prinsip minimisasi data, sistem tidak mengumpulkan Nomor Induk Kependudukan (NIK), foto KTP/KIA, maupun Kartu Keluarga. Kami hanya memproses data yang esensial untuk penerbitan paspor digital:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-white/60">
               <li>
-                <strong>Data Publik Kartu:</strong> Nama atlet, In-Game Name (IGN), ID Game, Divisi Game, Wilayah asal, Role/Posisi, dan foto paspor atlet.
+                <strong>Data Publik Kartu:</strong> Nama tampilan, In-Game Name (IGN), ID Akun Game, Divisi Game, Wilayah domisili, Role/Posisi, dan foto profil.
               </li>
               <li>
-                <strong>Data Administratif Sensitif:</strong> Alamat email, nomor kontak, dan dokumen kependudukan/kartu pelajar yang diunggah untuk verifikasi. Data ini tersimpan dengan enkripsi di peladen dan tidak dipublikasikan ke publik.
+                <strong>Data Kontak Terlindungi:</strong> Alamat email dan nomor WhatsApp/kontak yang tersimpan terenkripsi dan tidak dipublikasikan ke publik.
               </li>
               <li>
                 <strong>Pembersihan Metadata (EXIF Stripping):</strong> Seluruh foto yang diunggah ke storage sistem secara otomatis dihapus riwayat koordinat GPS dan tipe perangkat demi keamanan privasi.
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2 text-white/60">
               <li>
-                Pendaftar berusia di bawah 18 tahun wajib menyertakan surat persetujuan wali sebelum kartu paspor diterbitkan.
+                Pendaftar berusia di bawah 18 tahun wajib menyertakan nama dan kontak orang tua/wali sah sebelum profil aktif.
               </li>
               <li>
                 Wali sah berhak meminta penutupan atau penarikan data publik anak kapan saja melalui kanal kontak resmi kami.

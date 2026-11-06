@@ -126,12 +126,8 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
           const redirectParam = new URLSearchParams(window.location.search).get("redirect");
           if (redirectParam) {
             router.push(redirectParam);
-          } else if (res.role === "platform_operator") {
-            router.push("/admin/platform");
-          } else if (res.role === "prov_admin") {
-            router.push("/admin/province");
-          } else if (res.role === "region_admin") {
-            router.push("/admin/region");
+          } else if (res.role === "platform_admin") {
+            router.push("/admin");
           } else {
             router.push("/dashboard");
           }

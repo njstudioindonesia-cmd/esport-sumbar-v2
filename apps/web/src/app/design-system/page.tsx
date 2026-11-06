@@ -138,7 +138,7 @@ export default function ComponentCatalogPage() {
               {/* Functional: Regional */}
               <div className="p-3.5 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col gap-2">
                 <div className="w-full h-14 rounded-xl bg-[#22C55E]" />
-                <span className="text-xs font-bold text-white">Regional Checked</span>
+                <span className="text-xs font-bold text-white">Terverifikasi</span>
                 <span className="text-[10px] font-mono text-white/50">#22C55E (Fungsional)</span>
               </div>
 
@@ -338,7 +338,7 @@ export default function ComponentCatalogPage() {
                     <StatusBadge status="unverified" />
                   </div>
                   <div>
-                    <span className="text-[10px] text-white/40 font-mono block mb-1">Regional Checked:</span>
+                    <span className="text-[10px] text-white/40 font-mono block mb-1">Terverifikasi:</span>
                     <StatusBadge status="regional" />
                   </div>
                   <div>

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 export interface VerificationReviewInput {
   requestId: string;
-  newStatus: "regional_checked" | "verified" | "revision_requested" | "rejected" | "suspended";
+  newStatus: "verified" | "revision_requested" | "rejected" | "suspended";
   reason: string;
   notes?: string;
   revisionFields?: string[];
@@ -81,13 +81,14 @@ export async function submitVerificationAction(
         .eq("account_id", userId);
     }
 
-    revalidatePath("/me/verification");
-    revalidatePath("/admin/region/queue");
-    revalidatePath("/admin/province/queue");
+    revalidatePath("/verification");
+    revalidatePath("/admin/verification");
+    revalidatePath("/admin");
+    revalidatePath("/dashboard");
 
     return {
       success: true,
-      message: "Berkas verifikasi berhasil dikirim ke antrean telaah ESI Kota/Kabupaten.",
+      message: "Berkas verifikasi berhasil dikirim ke antrean telaah resmi ESPORT SUMBAR.",
       newStatus: "submitted",
     };
   } catch (err: unknown) {
@@ -110,7 +111,7 @@ export async function transitionVerificationAction(
   try {
     const supabase = await createClient();
 
-    // Panggil Stored Procedure / RPC PostgreSQL: transition_verification()
+    // Panggil Stored Procedure / RPC PostgreSQL: transition_verification() V3
     const { data, error } = await supabase.rpc("transition_verification", {
       p_request_id: input.requestId,
       p_new_status: input.newStatus,
@@ -128,15 +129,16 @@ export async function transitionVerificationAction(
     }
 
     const result = data as any;
-    revalidatePath("/admin/region/queue");
-    revalidatePath("/admin/province/queue");
-    revalidatePath("/me/verification");
+    revalidatePath("/admin");
+    revalidatePath("/admin/verification");
+    revalidatePath("/verification");
+    revalidatePath("/dashboard");
 
     return {
       success: true,
       message: `Status permohonan berhasil diperbarui menjadi "${input.newStatus}".`,
-      newStatus: result.new_status,
-      badgeNo: result.badge_no,
+      newStatus: result?.newStatus || input.newStatus,
+      badgeNo: result?.badgeNo,
     };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : "Terjadi kesalahan saat memproses keputusan verifikasi";

@@ -2,8 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { BrandLogo, BrandWatermark, OwnershipNote, PartnerStrip } from "@/components/brand";
-import { ShieldCheck, Mail, Globe, ExternalLink } from "lucide-react";
+import { BrandLogo, BrandWatermark, OwnershipNote } from "@/components/brand";
+import { Mail } from "lucide-react";
 
 const CURRENT_YEAR = 2026;
 
@@ -61,16 +61,16 @@ export function Footer() {
           {/* Col 1: Direktori */}
           <div className="flex flex-col gap-2.5 text-xs">
             <span className="font-heading font-black text-white uppercase tracking-wider text-xs mb-1">
-              Direktori & Data
+              Direktori &amp; Data
             </span>
             <Link href="/explore" className="hover:text-white transition-colors">
               Jelajah Roster Atlet
             </Link>
             <Link href="/explore?tab=teams" className="hover:text-white transition-colors">
-              Klub & Tim Esport
+              Klub &amp; Tim Esport
             </Link>
-            <Link href="/explore?tab=coaches" className="hover:text-white transition-colors">
-              Pelatih & Wasit
+            <Link href="/explore?tab=communities" className="hover:text-white transition-colors">
+              Komunitas &amp; Komunitas Game
             </Link>
             <Link href="/regions" className="hover:text-white transition-colors">
               19 Kota / Kabupaten
@@ -86,7 +86,7 @@ export function Footer() {
               Ekosistem
             </span>
             <Link href="/news" className="hover:text-white transition-colors">
-              Warta & Berita
+              Warta &amp; Berita
             </Link>
             <Link href="/how-it-works" className="hover:text-white transition-colors">
               Cara Kerja Sistem
@@ -94,27 +94,26 @@ export function Footer() {
             <Link href="/about" className="hover:text-white transition-colors">
               Tentang ESPORT SUMBAR
             </Link>
-            <Link href="/partners" className="hover:text-white transition-colors">
-              Kemitraan Kelembagaan
-            </Link>
             <Link href="/privacy" className="hover:text-white transition-colors">
               Kebijakan Privasi
             </Link>
             <Link href="/terms" className="hover:text-white transition-colors">
-              Syarat & Ketentuan
+              Syarat &amp; Ketentuan
             </Link>
           </div>
 
-          {/* Col 3: Mitra Strip Box */}
+          {/* Col 3: Verifikasi Mandiri */}
           <div className="flex flex-col gap-2.5 text-xs">
             <span className="font-heading font-black text-white uppercase tracking-wider text-xs mb-1">
-              Verifikasi Mitra
+              Verifikasi Tunggal
             </span>
             <p className="text-[11px] text-white/50 leading-relaxed">
-              Verifikasi keabsahan data daerah dilakukan oleh pengurus ESI wilayah terkait.
+              Standar sertifikasi paspor atlet dan profil entitas tunggal langsung diverifikasi oleh tim kurasi ESPORT SUMBAR.
             </p>
-            <div className="pt-1">
-              <PartnerStrip variant="cards" />
+            <div className="pt-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono text-[10px] font-bold">
+                ESP-SB-VER-2026
+              </span>
             </div>
           </div>
         </div>
@@ -123,7 +122,7 @@ export function Footer() {
         <div className="pt-6 border-t border-white/[0.08] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[11px] text-white/50">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
             <p className="font-medium text-white/70">
-              © {CURRENT_YEAR} ESPORT SUMBAR™. Hak cipta dilindungi undang-undang.
+              © {CURRENT_YEAR} ESPORT SUMBAR. Hak cipta dilindungi undang-undang.
             </p>
             <span className="hidden sm:inline text-white/20">•</span>
             <OwnershipNote variant="short" withAboutLink={true} />
@@ -138,9 +137,6 @@ export function Footer() {
             </Link>
             <Link href="/about" className="hover:text-white transition-colors">
               Tentang
-            </Link>
-            <Link href="/partners" className="hover:text-white transition-colors">
-              Mitra
             </Link>
           </div>
         </div>

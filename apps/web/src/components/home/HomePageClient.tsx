@@ -364,7 +364,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                 </div>
               </div>
 
-              {/* Right Panel: MITRA KELEMBAGAAN ESI */}
+              {/* Right Panel: tim kurasi ESPORT SUMBAR */}
               <div className="p-7 rounded-2xl bg-[#0A0A2E] border border-white/10 hover:border-[#22C55E]/40 transition-all flex flex-col justify-between relative overflow-hidden group">
                 <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#22C55E]/10 rounded-full blur-2xl group-hover:bg-[#22C55E]/15 transition-all" />
 
@@ -375,7 +375,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                     </div>
                     <div>
                       <h3 className="font-heading font-black text-xl text-white uppercase tracking-wide">
-                        Mitra Kelembagaan ESI
+                        tim kurasi ESPORT SUMBAR
                       </h3>
                       <span className="text-[10px] font-mono text-[#22C55E] uppercase font-bold">
                         Verifikator Data Keolahragaan
@@ -390,11 +390,11 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                     </li>
                     <li className="flex items-center gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
-                      <span><strong>Pemberian Lencana:</strong> Menerbitkan status <em>Regional Checked</em>.</span>
+                      <span><strong>Pemberian Lencana:</strong> Menerbitkan status <em>Terverifikasi</em>.</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-                      <span><strong>Validasi Provinsi:</strong> Pengprov ESI Sumbar mengesahkan status <em>Verified</em>.</span>
+                      <span><strong>Validasi Provinsi:</strong> ESPORT SUMBAR mengesahkan status <em>Verified</em>.</span>
                     </li>
                   </ul>
                 </div>
@@ -601,7 +601,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   Belum Ada Warta Resmi Diterbitkan
                 </h3>
                 <p className="text-xs text-white/50 max-w-md mb-6 leading-relaxed">
-                  Siaran pers dan agenda resmi PBESI Sumatera Barat akan ditampilkan di sini setelah dipublikasikan oleh humas pengurus.
+                  Siaran pers dan agenda resmi ESPORT SUMBAR akan ditampilkan di sini setelah dipublikasikan oleh humas pengurus.
                 </p>
                 <Link
                   href="/news"

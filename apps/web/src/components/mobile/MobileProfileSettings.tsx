@@ -51,7 +51,7 @@ export function MobileProfileSettings() {
     {
       id: "notif-1",
       type: "verification",
-      title: "Verifikasi Pengprov ESI disetujui",
+      title: "Verifikasi ESPORT SUMBAR disetujui",
       time: "2j lalu",
       isUnread: true,
       link: "/me/verification",

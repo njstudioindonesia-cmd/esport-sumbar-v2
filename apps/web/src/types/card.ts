@@ -18,10 +18,9 @@ export type CardVerification =
   | "reverify";
 
 export function mapVerificationToCard(status?: string | null): CardVerification {
-  if (status === "verified") return "verified";
-  if (status === "regional" || status === "regional_checked") return "regional";
+  if (status === "verified" || status === "prov_verified") return "verified";
   if (status === "suspended") return "suspended";
-  if (status === "reverify") return "reverify";
+  if (status === "reverify" || status === "under_review" || status === "submitted" || status === "revision_requested") return "reverify";
   return "unverified";
 }
 

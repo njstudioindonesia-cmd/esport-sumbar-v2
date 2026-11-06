@@ -616,7 +616,7 @@ export function MobileExplore() {
                   <div className="flex flex-wrap gap-2">
                     {[
                       { id: "verified", label: "Verified ESI" },
-                      { id: "regional", label: "Regional Checked" },
+                      { id: "regional", label: "Terverifikasi" },
                       { id: "unverified", label: "Unverified" },
                     ].map((v) => {
                       const isSelected = selectedVerif === v.id;

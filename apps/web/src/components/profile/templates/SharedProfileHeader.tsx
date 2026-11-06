@@ -38,7 +38,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
   const handleShare = () => {
     if (typeof navigator !== "undefined" && navigator.share) {
       navigator.share({
-        title: `${profile.displayName} - PBESI Sumatera Barat`,
+        title: `${profile.displayName} - ESPORT SUMBAR`,
         text: `Lihat kartu identitas esport resmi: ${profile.displayName} (${profile.esportId})`,
         url: profileUrl,
       }).catch(() => {});
@@ -126,7 +126,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
             </button>
 
             <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-wider mb-1">
-              PASPOR DIGITAL PBESI
+              PASPOR DIGITAL ESPORT SUMBAR
             </span>
             <h3 className="text-base font-heading font-black text-white mb-1">
               {profile.displayName}
@@ -178,7 +178,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
               </h3>
             </div>
             <p className="text-xs text-white/50 mb-4">
-              Laporan Anda akan ditinjau langsung oleh Admin Pengcab ESI dan Operator Platform.
+              Laporan Anda akan ditinjau langsung oleh Admin Komunitas Esport dan Operator Platform.
             </p>
 
             {reportSuccess ? (
@@ -249,24 +249,24 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
 }
 
 /**
- * Status Lencana Verifikasi Resmi PBESI (Terpisah dari Tier Rarity)
+ * Status Lencana Verifikasi Resmi ESPORT SUMBAR (Terpisah dari Tier Rarity)
  */
 export function VerificationStatusBadge({ status, badgeNo }: { status: string; badgeNo?: string | null }) {
   if (status === "verified") {
     return (
       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-[#D4AF37]/20 to-amber-500/20 border border-[#D4AF37] text-[10px] font-mono font-bold text-[#F3E5AB] shadow-[0_0_15px_rgba(212,175,55,0.3)]">
         <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
-        <span>TERVERIFIKASI PBESI</span>
+        <span>TERVERIFIKASI ESPORT SUMBAR</span>
         {badgeNo && <span className="opacity-70">#{badgeNo}</span>}
       </div>
     );
   }
 
-  if (status === "regional_checked" || status === "regional_approved" || status === "district_approved") {
+  if (status === "verified" || status === "regional_approved" || status === "district_approved") {
     return (
       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/50 text-[10px] font-mono font-bold text-emerald-300">
         <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-        <span>TERVERIFIKASI PENGCAB</span>
+        <span>TERVERIFIKASI ESPORT SUMBAR</span>
       </div>
     );
   }

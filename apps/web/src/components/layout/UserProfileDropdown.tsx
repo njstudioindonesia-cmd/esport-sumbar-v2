@@ -184,14 +184,8 @@ export function UserProfileDropdown({ isMobileDrawer = false, onClose }: UserPro
 
   // Link Panel Admin sesuai peran
   const getAdminPanelLink = () => {
-    if (user.role === "platform_operator") {
-      return { href: "/admin/platform", label: "Panel Operator Platform" };
-    }
-    if (user.role === "province_admin") {
-      return { href: "/admin/province", label: "Panel Admin Pengprov" };
-    }
-    if (user.role === "region_admin") {
-      return { href: "/admin/region", label: "Panel Admin Pengcab" };
+    if (user.role === "platform_admin") {
+      return { href: "/admin", label: "Panel Admin Platform" };
     }
     return null;
   };
@@ -257,39 +251,7 @@ export function UserProfileDropdown({ isMobileDrawer = false, onClose }: UserPro
         </div>
       )}
 
-      {/* 2. PEMILIH MULTI-PROFIL (JIKA PUNYA > 1 PROFIL) */}
-      {profiles.length > 1 && (
-        <div className="p-3 border-b border-white/[0.08] bg-black/20">
-          <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-white/40 mb-2 px-1">
-            Ganti Profil Aktif
-          </p>
-          <div className="flex flex-col gap-1 max-h-36 overflow-y-auto pr-1">
-            {profiles.map((p) => {
-              const isSelected = p.id === activeProfile?.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => handleSelectProfile(p.id)}
-                  className={`flex items-center justify-between p-2 rounded-lg text-xs font-heading transition-all ${
-                    isSelected
-                      ? "bg-[#FF1752]/15 border border-[#FF1752]/40 text-white font-bold"
-                      : "hover:bg-white/[0.04] text-white/70"
-                  }`}
-                >
-                  <div className="flex items-center gap-2 truncate">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isSelected ? "#FF1752" : "#888" }} />
-                    <span className="truncate">{p.displayName}</span>
-                    <span className="text-[9px] font-mono text-white/40 uppercase">({p.entityType})</span>
-                  </div>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-[#FF1752] shrink-0" />}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* 3. TAUTAN UTAMA SESUAI SPEC 2.4 */}
+      {/* 2. TAUTAN UTAMA SESUAI SPEC 2.4 */}
       <div className="p-2 flex flex-col gap-0.5">
         {activeProfile && (
           <>
@@ -398,21 +360,6 @@ export function UserProfileDropdown({ isMobileDrawer = false, onClose }: UserPro
             </Link>
           </div>
         )}
-
-        {/* Tambah Profil Baru */}
-        <div className="pt-1.5 mt-1 border-t border-white/[0.06]">
-          <Link
-            href="/me/profile/new"
-            onClick={() => {
-              setIsOpen(false);
-              if (onClose) onClose();
-            }}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-heading text-[#FF4D77] hover:bg-[#FF1752]/10 transition-colors"
-          >
-            <PlusCircle className="w-4 h-4 text-[#FF4D77]" />
-            <span>Tambah Profil Bidang Lain</span>
-          </Link>
-        </div>
 
         {/* Keluar */}
         <div className="pt-1.5 mt-1 border-t border-white/[0.06]">

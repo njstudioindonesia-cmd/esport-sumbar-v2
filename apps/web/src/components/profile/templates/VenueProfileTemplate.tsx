@@ -46,7 +46,7 @@ export function VenueProfileTemplate({ profile }: { profile: UnifiedProfileDetai
           {isTournamentReady && (
             <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/60 text-fuchsia-300 text-[10px] font-mono font-bold backdrop-blur-md">
               <Trophy className="w-3.5 h-3.5 text-fuchsia-400" />
-              <span>SIAP TURNAMEN PBESI</span>
+              <span>SIAP TURNAMEN ESPORT SUMBAR</span>
             </div>
           )}
         </div>

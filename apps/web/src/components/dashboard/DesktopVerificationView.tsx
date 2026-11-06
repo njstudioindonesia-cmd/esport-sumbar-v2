@@ -84,36 +84,29 @@ export function DesktopVerificationView() {
   const status = profile?.verificationStatus || "unverified";
   const entityType = profile?.entityType || "player";
 
-  // Dynamic Stepper calculation based on true status
+  // Dynamic Stepper calculation based on true status (V3 Single Tier)
   const getSteps = () => {
-    const isSubmitted = ["submitted", "in_review_regional", "regional_checked", "verified", "revision_requested"].includes(status);
-    const isRegionalChecked = ["regional_checked", "verified"].includes(status);
+    const isSubmitted = ["submitted", "in_review_regional", "in_review_provincial", "verified", "verified", "revision_requested"].includes(status);
     const isVerified = status === "verified";
     const isRevision = status === "revision_requested";
 
     return [
       {
         id: 1,
-        name: "Diajukan",
+        name: "Pengajuan Berkas",
         date: request?.submittedAt ? new Date(request.submittedAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : (status !== "unverified" ? "Terkirim" : "Belum Diajukan"),
         status: isSubmitted ? "completed" : "active",
       },
       {
         id: 2,
-        name: `Pengcab ${profile?.regionName || "Daerah"}`,
-        date: isRevision ? "Perlu Revisi" : isRegionalChecked ? "Lolos Seleksi" : isSubmitted ? "Dalam Telaah" : "Menunggu Berkas",
-        status: isRevision ? "revision" : isRegionalChecked ? "completed" : isSubmitted ? "active" : "upcoming",
+        name: "Telaah ESPORT SUMBAR",
+        date: isRevision ? "Perlu Revisi" : isVerified ? "Lolos Verifikasi" : isSubmitted ? "Dalam Penelaahan" : "Menunggu Berkas",
+        status: isRevision ? "revision" : isVerified ? "completed" : isSubmitted ? "active" : "upcoming",
       },
       {
         id: 3,
-        name: "Pengprov Sumbar",
-        date: isVerified ? "Disahkan" : isRegionalChecked ? "Dalam Pengesahan" : "Menunggu Daerah",
-        status: isVerified ? "completed" : isRegionalChecked ? "active" : "upcoming",
-      },
-      {
-        id: 4,
-        name: "Lencana Emas",
-        date: isVerified ? "Aktif" : "Menunggu Selesai",
+        name: "Lencana Terverifikasi",
+        date: isVerified ? "Aktif (Tersertifikasi)" : "Menunggu Selesai",
         status: isVerified ? "completed" : "upcoming",
       },
     ];
@@ -170,21 +163,21 @@ export function DesktopVerificationView() {
     // Default: Player or Coach
     return [
       {
-        id: "ktp",
-        title: "Kartu Tanda Penduduk (KTP) / KIA",
-        desc: "Identitas resmi domisili Sumatera Barat untuk validasi NIK dan usia.",
-        defaultFile: "identitas_resmi_ktp_kia.jpg",
+        id: "ingame_proof",
+        title: "Tangkapan Layar Profil In-Game & UID",
+        desc: "Screenshot profil akun game aktif yang menampilkan IGN, UID/ID Akun, dan Tier Rank saat ini.",
+        defaultFile: "bukti_akun_ingame.jpg",
       },
       {
         id: "piagam",
         title: "Piagam Prestasi / Sertifikat Turnamen",
-        desc: "Sertifikat turnamen resmi PBESI, Kejurda, Porprov, atau turnamen komunitas resmi.",
+        desc: "Sertifikat atau piagam kejuaraan, turnamen komunitas, atau kompetisi esports.",
         defaultFile: "piagam_kejuaraan_terakhir.pdf",
       },
       {
         id: "rekomendasi",
-        title: "Surat Rekomendasi Klub / Pengcab",
-        desc: "Surat pengantar resmi dari manajer tim terdaftar atau Pengcab ESI daerah.",
+        title: "Surat Rekomendasi Klub / Tim / Komunitas",
+        desc: "Surat pengantar atau bukti keanggotaan dari manajer tim atau pimpinan komunitas esports.",
         defaultFile: "surat_rekomendasi_resmi.pdf",
       },
     ];
@@ -244,7 +237,7 @@ export function DesktopVerificationView() {
 
       // Wajibkan minimal 1 dokumen bukti nyata diunggah
       if (evidenceFiles.length === 0 && (!request?.evidenceFiles || request.evidenceFiles.length === 0)) {
-        throw new Error("Harap unggah setidaknya 1 berkas bukti pendukung (KTP/SK/Piagam) sebelum mengirim pengajuan.");
+        throw new Error("Harap unggah setidaknya 1 berkas bukti pendukung (Bukti In-Game/Piagam/Rekomendasi) sebelum mengirim pengajuan.");
       }
 
       const payloadFiles = evidenceFiles.length > 0 ? evidenceFiles : request?.evidenceFiles || [];
@@ -265,7 +258,7 @@ export function DesktopVerificationView() {
         throw new Error(errJson.error || "Gagal mengirim berkas verifikasi");
       }
 
-      setSubmitSuccess("Berkas verifikasi resmi berhasil dikirimkan ke antrean Pengcab ESI!");
+      setSubmitSuccess("Berkas verifikasi resmi berhasil dikirimkan ke antrean Komunitas Esport!");
       await loadVerificationData();
     } catch (err: any) {
       setSubmitError(err.message || "Terjadi kesalahan saat mengajukan verifikasi.");
@@ -290,7 +283,7 @@ export function DesktopVerificationView() {
         <div>
           <h2 className="text-lg font-heading font-black text-white">Belum Ada Profil Terdaftar</h2>
           <p className="text-xs text-white/50 max-w-sm mt-1">
-            Silakan buat profil digital atau kartu paspor terlebih dahulu sebelum mengajukan verifikasi keabsahan PBESI.
+            Silakan buat profil digital atau kartu paspor terlebih dahulu sebelum mengajukan verifikasi keabsahan ESPORT SUMBAR.
           </p>
         </div>
         <Link href="/me/profile/new" className="px-5 py-2.5 rounded-xl bg-[#D4AF37] text-black font-heading font-black text-xs uppercase tracking-wider">
@@ -317,7 +310,7 @@ export function DesktopVerificationView() {
             Status Verifikasi Resmi: {profile.displayName}
           </h1>
           <p className="text-xs text-white/50 mt-1">
-            Pelacakan validasi berjenjang oleh Pengcab Kota/Kabupaten dan Pengprov ESI Sumatera Barat.
+            Pelacakan validasi berjenjang oleh Wilayah Kota/Kabupaten dan ESPORT SUMBAR.
           </p>
         </div>
 
@@ -325,14 +318,12 @@ export function DesktopVerificationView() {
           <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
           <span>
             {status === "verified"
-              ? "TAHAP 4 • TERVERIFIKASI RESMI"
-              : status === "regional_checked"
-              ? "TAHAP 3 • PENGESAHAN PROVINSI"
-              : status === "submitted" || status === "in_review_regional"
-              ? "TAHAP 2 • PENELAAHAN PENGCAB DAERAH"
+              ? "TERVERIFIKASI RESMI ESPORT SUMBAR"
               : status === "revision_requested"
-              ? "TAHAP 2 • PERLU REVISI DOKUMEN"
-              : "TAHAP 1 • MENUNGGU PENGAJUAN BERKAS"}
+              ? "PERLU REVISI DOKUMEN"
+              : status === "submitted" || status === "in_review_regional"
+              ? "DALAM PENELAAHAN KURATOR"
+              : "MENUNGGU PENGAJUAN BERKAS"}
           </span>
         </div>
       </div>
@@ -348,7 +339,7 @@ export function DesktopVerificationView() {
               className={`h-full bg-gradient-to-r from-emerald-500 via-[#D4AF37] to-transparent transition-all duration-500 ${
                 status === "verified"
                   ? "w-full"
-                  : status === "regional_checked"
+                  : status === "verified"
                   ? "w-[75%]"
                   : status === "submitted" || status === "in_review_regional" || status === "revision_requested"
                   ? "w-[45%]"
@@ -417,7 +408,7 @@ export function DesktopVerificationView() {
       )}
 
       {/* ========================================================= */}
-      {/* 2. CATATAN PEMERIKSAAN DARI PENGCAB (JIKA ADA REVISI/NOTE) */}
+      {/* 2. CATATAN PEMERIKSAAN KURATOR (JIKA ADA REVISI/NOTE)     */}
       {/* ========================================================= */}
       {status === "revision_requested" && (
         <div className="p-6 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -428,7 +419,7 @@ export function DesktopVerificationView() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-heading font-black text-sm text-amber-400">
-                  Catatan Pemeriksaan Pengcab {profile.regionName}
+                  Catatan Pemeriksaan Wilayah {profile.regionName}
                 </span>
                 <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-amber-500/20 text-amber-300">
                   PERLU REVISI
@@ -458,10 +449,10 @@ export function DesktopVerificationView() {
           <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-1 leading-relaxed">
             <span className="font-heading font-black uppercase text-white text-sm">
-              Ajukan Verifikasi Resmi PBESI {profile.regionName}
+              Ajukan Verifikasi Resmi ESPORT SUMBAR {profile.regionName}
             </span>
             <span>
-              Sebagai entitas <strong>{entityType.toUpperCase()}</strong> terdaftar ({profile.displayName}), Anda berhak memperoleh lisensi dan lencana keabsahan resmi dari Pengprov ESI Sumatera Barat. Unggah dokumen pendukung di bawah ini untuk diverifikasi langsung oleh Pengurus Cabang Anda.
+              Sebagai entitas <strong>{entityType.toUpperCase()}</strong> terdaftar ({profile.displayName}), Anda berhak memperoleh lisensi dan lencana keabsahan resmi dari ESPORT SUMBAR. Unggah dokumen pendukung di bawah ini untuk diverifikasi langsung oleh Pengurus Cabang Anda.
             </span>
           </div>
         </div>
@@ -595,7 +586,7 @@ export function DesktopVerificationView() {
 
               <div className="flex items-center justify-between pt-2">
                 <span className="text-[11px] text-white/40 font-mono">
-                  Pengajuan akan dikirimkan ke antrean Pengcab ESI {profile.regionName}.
+                  Pengajuan akan dikirimkan ke antrean Komunitas Esport {profile.regionName}.
                 </span>
                 <button
                   type="button"
@@ -648,7 +639,7 @@ export function DesktopVerificationView() {
                   strokeDashoffset={
                     status === "verified"
                       ? 0
-                      : status === "regional_checked"
+                      : status === "verified"
                       ? 2 * Math.PI * 50 * 0.25
                       : status === "submitted"
                       ? 2 * Math.PI * 50 * 0.5
@@ -662,7 +653,7 @@ export function DesktopVerificationView() {
                 <span className="font-mono font-black text-xl text-white">
                   {status === "verified"
                     ? "AKTIF"
-                    : status === "regional_checked"
+                    : status === "verified"
                     ? "PROV"
                     : status === "submitted"
                     ? "DAERAH"
@@ -692,16 +683,16 @@ export function DesktopVerificationView() {
             </div>
           </div>
 
-          {/* Otoritas PBESI Sumbar Guarantee */}
+          {/* Otoritas ESPORT SUMBAR Guarantee */}
           <div className="p-5 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
               <span className="text-xs font-heading font-black text-[#D4AF37]">
-                Jaminan Pengprov ESI Sumbar
+                Jaminan ESPORT SUMBAR
               </span>
             </div>
             <p className="text-[11px] text-white/70 leading-relaxed">
-              Verifikasi keabsahan profil digital diterbitkan secara bertahap oleh Pengcab ESI {profile.regionName} dan disahkan tunggal oleh Pengprov ESI Sumatera Barat sesuai regulasi PBESI.
+              Verifikasi keabsahan profil digital diterbitkan secara bertahap oleh Komunitas Esport {profile.regionName} dan disahkan tunggal oleh ESPORT SUMBAR sesuai regulasi ESPORT SUMBAR.
             </p>
           </div>
         </div>

@@ -17,7 +17,7 @@ export default async function PlayersDirectoryPage() {
     <EntityDirectoryView
       entityType="player"
       title="Direktori Atlet Esport Sumbar"
-      subtitle="Pangkalan data atlet kompetitif terdaftar resmi Pengcab ESI di 19 Kota dan Kabupaten Sumatera Barat."
+      subtitle="Pangkalan data atlet kompetitif terdaftar resmi Komunitas Esport di 19 Kota dan Kabupaten Sumatera Barat."
       initialProfiles={profiles}
     />
   );

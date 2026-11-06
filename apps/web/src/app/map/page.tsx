@@ -86,10 +86,10 @@ export default function EsportsMapPage() {
       svgX: v.regionId === "pdg" || v.regionId === "reg-pdg" ? 220 : v.regionId === "bkt" || v.regionId === "reg-bkt" ? 310 : 390,
       svgY: v.regionId === "pdg" || v.regionId === "reg-pdg" ? 350 : v.regionId === "bkt" || v.regionId === "reg-bkt" ? 240 : 200,
     })),
-    // Sekretariat Pengcab Utama
+    // Sekretariat Wilayah Utama
     {
       id: "esi-pdg",
-      title: "Sekretariat Pengcab ESI Kota Padang",
+      title: "Sekretariat Komunitas Esport Kota Padang",
       subtitle: "Pusat Pelatihan Daerah & Verifikasi Berkas",
       type: "Sekretariat ESI",
       address: "Kompleks GOR H. Agus Salim, Padang Barat",
@@ -100,7 +100,7 @@ export default function EsportsMapPage() {
     },
     {
       id: "esi-bkt",
-      title: "Sekretariat Pengcab ESI Bukittinggi",
+      title: "Sekretariat Komunitas Esport Bukittinggi",
       subtitle: "Gedung Pemuda & Olahraga Gulai Bancah",
       type: "Sekretariat ESI",
       address: "Gedung Pemuda & Olahraga, Gulai Bancah, Bukittinggi",
@@ -143,7 +143,7 @@ export default function EsportsMapPage() {
             { id: "Arena", label: "Esports Arena" },
             { id: "Lounge", label: "Cyber Lounge" },
             { id: "Bootcamp", label: "Bootcamp Station" },
-            { id: "Sekretariat", label: "Sekretariat Pengcab ESI" },
+            { id: "Sekretariat", label: "Sekretariat Komunitas Esport" },
           ].map((cat) => (
             <button
               key={cat.id}
@@ -328,7 +328,7 @@ export default function EsportsMapPage() {
             <div className="mt-6 pt-4 border-t border-[#262B38] text-[11px] text-[#9AA3B2] flex items-center gap-2">
               <Info className="w-4 h-4 text-[#D4AF37] shrink-0" />
               <span>
-                Fasilitas Anda belum terdaftar di peta esport Sumbar? Hubungi Pengprov ESI untuk sertifikasi venue.
+                Fasilitas Anda belum terdaftar di peta esport Sumbar? Hubungi ESPORT SUMBAR untuk sertifikasi venue.
               </span>
             </div>
           </div>

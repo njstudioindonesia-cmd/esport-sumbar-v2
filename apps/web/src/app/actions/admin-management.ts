@@ -18,7 +18,7 @@ export interface AdminManagementResult {
 }
 
 /**
- * Server Action: Mengundang dan menetapkan akun Admin Daerah / Provinsi oleh Platform Operator
+ * Server Action: Mengundang dan menetapkan akun Admin Platform / Provinsi oleh Platform Operator
  * Setiap tindakan wajib tercatat di tabel `audit_logs`.
  */
 export async function inviteAdminAccountAction(
@@ -38,7 +38,7 @@ export async function inviteAdminAccountAction(
     // 1. Tulis log audit
     await supabase.from("audit_logs").insert({
       actor_account_id: authData?.user?.id || null,
-      actor_role: "platform_operator",
+      actor_role: "platform_admin",
       action: "INVITE_ADMIN_ACCOUNT",
       target_type: "admin_assignments",
       target_id: input.email.toLowerCase(),
@@ -52,8 +52,8 @@ export async function inviteAdminAccountAction(
       },
     });
 
-    revalidatePath("/admin/platform/admins");
-    revalidatePath("/admin/platform/audit");
+    revalidatePath("/admin/users");
+    revalidatePath("/admin/audit");
 
     return {
       success: true,

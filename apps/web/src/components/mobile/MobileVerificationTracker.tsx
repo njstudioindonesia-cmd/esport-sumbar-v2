@@ -72,15 +72,14 @@ export function MobileVerificationTracker() {
     setTimeout(() => setToastMessage(null), 1800);
   };
 
-  // Stepper Steps configuration
+  // Stepper Steps configuration (V3 Single Tier)
   const steps = [
     { id: 1, label: "Diajukan", icon: FileText, date: "01 Nov" },
-    { id: 2, label: "Daerah", icon: Shield, date: status !== "revision" ? "02 Nov" : undefined },
-    { id: 3, label: "Provinsi", icon: Award, date: status === "verified" ? "03 Nov" : undefined },
-    { id: 4, label: "Selesai", icon: ShieldCheck, date: status === "verified" ? "04 Nov" : undefined },
+    { id: 2, label: "Telaah", icon: Shield, date: status !== "revision" ? "02 Nov" : undefined },
+    { id: 3, label: "Terverifikasi", icon: ShieldCheck, date: status === "verified" ? "03 Nov" : undefined },
   ];
 
-  const currentStep = status === "verified" ? 4 : status === "revision" ? 2 : 3;
+  const currentStep = status === "verified" ? 3 : status === "revision" ? 2 : 2;
 
   return (
     <div className="relative w-full min-h-[100dvh] max-w-[420px] mx-auto bg-[#07080C] text-white flex flex-col justify-between pb-24 overflow-x-hidden select-none">
@@ -113,10 +112,10 @@ export function MobileVerificationTracker() {
           />
           <span className="text-[10px] font-mono uppercase tracking-wider text-white/90 font-bold">
             {status === "verified"
-              ? "Lolos PBESI"
+              ? "Terverifikasi"
               : status === "revision"
               ? "Perlu Revisi"
-              : "Verifikasi Berjenjang"}
+              : "Penelaahan Berkas"}
           </span>
         </div>
 
@@ -460,7 +459,7 @@ export function MobileVerificationTracker() {
 
               {/* Teks Maksimal 2 Baris */}
               <p className="text-xs text-white/80 leading-snug">
-                Mengubah data kunci akan memicu verifikasi ulang berjenjang oleh ESI Pengprov Sumbar.
+                Mengubah data kunci akan memicu peninjauan ulang status verifikasi profil oleh ESPORT SUMBAR.
               </p>
 
               {/* 2 Tombol: Lanjut Ubah & Batal */}

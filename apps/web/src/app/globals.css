@@ -20,7 +20,7 @@
   --text-muted: rgba(255, 255, 255, 0.40);
 
   /* Functional Status Colors (Never used as mere decoration) */
-  --status-regional: #22C55E; /* Regional Checked */
+  --status-regional: #22C55E; /* Terverifikasi */
   --status-verified: #D4AF37; /* Emas ONLY for Verified status & Elite tier */
   --status-pending: #F5A524;
   --status-error: #F04438;   /* Functional error, never brand pink */

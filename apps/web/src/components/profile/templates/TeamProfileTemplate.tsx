@@ -212,7 +212,7 @@ export function TeamProfileTemplate({ profile }: { profile: UnifiedProfileDetail
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
             <div>
-              <span className="text-[10px] font-mono text-white/40 block">Wilayah Pengcab</span>
+              <span className="text-[10px] font-mono text-white/40 block">Wilayah Wilayah</span>
               <span className="font-bold text-white">{profile.regionName}</span>
             </div>
             <div>
@@ -221,7 +221,7 @@ export function TeamProfileTemplate({ profile }: { profile: UnifiedProfileDetail
             </div>
             <div>
               <span className="text-[10px] font-mono text-white/40 block">Status Keanggotaan</span>
-              <span className="font-bold text-emerald-400">Aktif PBESI</span>
+              <span className="font-bold text-emerald-400">Aktif ESPORT SUMBAR</span>
             </div>
             <div>
               <span className="text-[10px] font-mono text-white/40 block">Divisi Game</span>

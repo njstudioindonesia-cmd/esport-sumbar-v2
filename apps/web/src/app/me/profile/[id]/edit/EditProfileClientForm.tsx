@@ -50,7 +50,7 @@ export function EditProfileClientForm({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const isVerified = ["verified", "regional_checked"].includes(verificationStatus);
+  const isVerified = ["verified", "verified"].includes(verificationStatus);
 
   const handleAttributeChange = (key: string, value: any) => {
     setAttributes((prev) => ({
@@ -134,7 +134,7 @@ export function EditProfileClientForm({
           <div>
             <div className="font-bold text-amber-300">Profil Sudah Terverifikasi Resmi ESI</div>
             <p className="text-[11px] text-amber-200/70 mt-0.5 leading-relaxed">
-              Jika Anda mengubah nama tampilan resmi atau In-Game Name (IGN), sistem akan otomatis mengalihkan status verifikasi ke <strong>peninjauan ulang</strong> demi menjaga integritas data kejuaraan PBESI.
+              Jika Anda mengubah nama tampilan resmi atau In-Game Name (IGN), sistem akan otomatis mengalihkan status verifikasi ke <strong>peninjauan ulang</strong> demi menjaga integritas data kejuaraan ESPORT SUMBAR.
             </p>
           </div>
         </div>

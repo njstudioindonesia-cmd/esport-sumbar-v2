@@ -121,7 +121,7 @@ export function DesktopMembershipsView() {
           Keanggotaan Tim &amp; Roster
         </h1>
         <p className="text-xs text-white/50 mt-1">
-          Kelola tim resmi, daftar roster atlet, dan undangan transfer pemain antar klub PBESI Sumbar.
+          Kelola tim resmi, daftar roster atlet, dan undangan transfer pemain antar klub ESPORT SUMBAR.
         </p>
       </div>
 
@@ -239,7 +239,7 @@ export function DesktopMembershipsView() {
                       Status Tim Resmi Anda
                     </h3>
                     <p className="text-xs text-white/50">
-                      Klub esport tempat Anda terdaftar sebagai atlet binaan PBESI Sumatera Barat.
+                      Klub esport tempat Anda terdaftar sebagai atlet binaan ESPORT SUMBAR.
                     </p>
                   </div>
                 </div>
@@ -248,7 +248,7 @@ export function DesktopMembershipsView() {
                   href="/gallery?type=team"
                   className="px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-xs font-mono text-white flex items-center gap-1.5 transition-all"
                 >
-                  <span>Jelajah Tim PBESI</span>
+                  <span>Jelajah Tim ESPORT SUMBAR</span>
                   <ExternalLink className="w-3 h-3 text-white/50" />
                 </Link>
               </div>

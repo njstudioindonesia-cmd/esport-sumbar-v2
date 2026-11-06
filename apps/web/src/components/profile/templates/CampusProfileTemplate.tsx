@@ -47,7 +47,7 @@ export function CampusProfileTemplate({ profile }: { profile: UnifiedProfileDeta
 
             <h1 className="text-2xl font-heading font-black text-white">{ukmName}</h1>
             <p className="text-sm font-semibold text-cyan-300 mt-0.5">{campusName}</p>
-            <p className="text-xs font-mono text-white/50 mt-1">Afiliasi Pengcab ESI {profile.regionName}</p>
+            <p className="text-xs font-mono text-white/50 mt-1">Afiliasi Komunitas Esport {profile.regionName}</p>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ export function CampusProfileTemplate({ profile }: { profile: UnifiedProfileDeta
         <div>
           <span className="font-semibold text-white block mb-1">Pembinaan UKM:</span>
           <p className="leading-relaxed">
-            Wadah resmi pengembangan bakat atlet esport mahasiswa {campusName} di bawah bimbingan kemahasiswaan dan PBESI Sumatera Barat.
+            Wadah resmi pengembangan bakat atlet esport mahasiswa {campusName} di bawah bimbingan kemahasiswaan dan ESPORT SUMBAR.
           </p>
         </div>
 

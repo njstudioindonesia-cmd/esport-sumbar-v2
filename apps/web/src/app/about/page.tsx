@@ -8,7 +8,6 @@ import {
   BrandSlash,
   BrandWatermark,
   OwnershipNote,
-  PartnerStrip,
   IssuedBy,
 } from "@/components/brand";
 import {
@@ -22,12 +21,13 @@ import {
   MapPin,
   ExternalLink,
   Users,
+  Sparkles,
 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Tentang Kami",
   description:
-    "Mengenal platform ESPORT SUMBAR™, visi ekosistem teknologi data esports Sumatera Barat, dan struktur kemitraan verifikasi kelembagaan bersama ESI.",
+    "Mengenal platform ESPORT SUMBAR™, visi ekosistem teknologi data esports Sumatera Barat, dan tata kelola verifikasi mandiri satu pintu.",
 };
 
 export default function AboutPage() {
@@ -44,12 +44,12 @@ export default function AboutPage() {
             <BrandLogo variant="lockup" size="lg" withLink={false} />
 
             <h1 className="text-4xl sm:text-6xl font-heading font-black uppercase text-white tracking-tight mt-2 leading-none">
-              PUSAT DATA & IDENTITAS ESPORT{" "}
+              PUSAT DATA &amp; IDENTITAS ESPORT{" "}
               <span className="text-[#FF1752] display-skew">SUMATERA BARAT</span>
             </h1>
 
             <p className="text-sm sm:text-base text-white/70 max-w-2xl leading-relaxed mt-2">
-              Membangun fondasi digital yang transparan, modern, dan inklusif bagi seluruh atlet, tim, pelatih, dan komunitas esports di 19 Kota dan Kabupaten Ranah Minang.
+              Membangun fondasi digital yang mandiri, transparan, dan terhubung bagi seluruh atlet, tim, pelatih, komunitas, venue, dan institusi pendidikan di 19 Kota dan Kabupaten Ranah Minang.
             </p>
 
             <div className="pt-4">
@@ -71,7 +71,7 @@ export default function AboutPage() {
               Siapa Kami
             </h2>
             <p className="text-sm text-white/70 leading-relaxed">
-              <strong className="text-white">ESPORT SUMBAR™</strong> adalah platform teknologi dan basis data esport independen yang berdiri pada tahun 2026. Kami menghadirkan sistem paspor atlet digital (ESPORT ID), direktori rekam jejak turnamen, serta agregator warta kejuaraan terintegrasi bagi ekosistem esport Sumatera Barat.
+              <strong className="text-white">ESPORT SUMBAR™</strong> adalah platform teknologi dan basis data esport independen yang berdiri pada tahun 2026. Kami menghadirkan sistem paspor atlet digital (ESPORT ID), direktori ekosistem 7 entitas, serta agregator warta kejuaraan terintegrasi bagi ekosistem esport Sumatera Barat.
             </p>
           </div>
 
@@ -93,10 +93,10 @@ export default function AboutPage() {
                   <CreditCard className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading font-black text-lg text-white uppercase">
-                  Identitas Atlet
+                  Identitas Digital
                 </h3>
                 <p className="text-xs text-white/60 leading-relaxed">
-                  Penerbitan kartu digital ESPORT ID dengan tingkat kelangkaan (rarity) dan nomor seri terdaftar untuk verifikasi kompetisi.
+                  Penerbitan kartu digital paspor atlet (ESPORT ID) dengan tingkat kelangkaan (rarity) dan nomor seri terdaftar untuk validasi turnamen.
                 </p>
               </div>
 
@@ -109,7 +109,7 @@ export default function AboutPage() {
                   Pusat Data
                 </h3>
                 <p className="text-xs text-white/60 leading-relaxed">
-                  Sentralisasi data 19 Kota/Kabupaten: profil atlet, daftar tim terverifikasi, pelatih berlisensi, dan rekam medali prestasi.
+                  Sentralisasi data 19 Kota/Kabupaten: profil atlet terverifikasi, klub esport, komunitas akar rumput, dan riwayat prestasi kompetisi.
                 </p>
               </div>
 
@@ -119,143 +119,115 @@ export default function AboutPage() {
                   <Radio className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading font-black text-lg text-white uppercase">
-                  Publikasi Media
+                  Publikasi &amp; Ekosistem
                 </h3>
                 <p className="text-xs text-white/60 leading-relaxed">
-                  Pemberitaan warta kejuaraan daerah, liputan turnamen, sorotan atlet binaan, dan agenda komunitas esports se-Sumatera Barat.
+                  Pemberitaan warta kejuaraan daerah, liputan turnamen, sorotan talenta berbakat, dan agenda komunitas esports se-Sumatera Barat.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ==================== 3. PERAN KAMI VS MITRA (TABEL 2 KOLOM) ==================== */}
+        {/* ==================== 3. TATA KELOLA MANDIRI ==================== */}
         <section className="w-full max-w-5xl mx-auto px-6 py-16 border-t border-white/[0.08]">
           <div className="text-center mb-10">
             <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D77] uppercase">
-              Batasan & Pembagian Kerja
+              Prinsip &amp; Tata Kelola
             </span>
             <h2 className="text-2xl sm:text-3xl font-heading font-black uppercase text-white mt-1">
-              Peran ESPORT SUMBAR™ vs Mitra Kelembagaan
+              Tata Kelola Mandiri ESPORT SUMBAR™
             </h2>
             <p className="text-xs text-white/60 mt-2 max-w-xl mx-auto">
-              Penegasan garis batas antara pengelola platform teknologi mandiri dan pengurus olahraga prestasi kelembagaan.
+              Komitmen kami dalam mengoperasikan sistem pangkalan data independen berintegritas tinggi.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Kolom 1: ESPORT SUMBAR */}
             <div className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-4 text-[#FF1752]">
-                  <Database className="w-5 h-5" />
-                  <h3 className="font-heading font-black text-lg text-white uppercase">
-                    ESPORT SUMBAR™
-                  </h3>
-                </div>
-
-                <ul className="space-y-3.5 text-xs text-white/70">
-                  <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
-                    <span><strong>Kepemilikan Penuh:</strong> Memiliki dan mengoperasikan platform teknologi esport-sumbar-v2.</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
-                    <span><strong>Penerbit Paspor:</strong> Menerbitkan format kartu digital ESPORT ID dan algoritma kelangkaan.</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
-                    <span><strong>Pengendali Data:</strong> Bertanggung jawab atas penyimpanan, keamanan server, dan hak privasi pengguna (UU PDP).</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
-                    <span><strong>Media & Komersial:</strong> Mengelola liputan berita, kemitraan sponsor, dan fitur platform umum.</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-white/5 text-[10px] font-mono text-white/40">
-                Penyedia Layanan Teknologi & Merek
-              </div>
-            </div>
-
-            {/* Kolom 2: Mitra ESI */}
-            <div className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-4 text-[#22C55E]">
                   <ShieldCheck className="w-5 h-5" />
                   <h3 className="font-heading font-black text-lg text-white uppercase">
-                    Mitra Kelembagaan (ESI)
+                    Verifikasi Satu Pintu
                   </h3>
                 </div>
 
                 <ul className="space-y-3.5 text-xs text-white/70">
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
-                    <span><strong>Pemeriksaan Daerah:</strong> ESI Kota dan Kabupaten meninjau berkas identitas dan domisili atlet.</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
+                    <span><strong>Sertifikasi Mandiri:</strong> Verifikasi satu tahap tunggal langsung oleh kurator profesional ESPORT SUMBAR.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
-                    <span><strong>Lencana Wilayah:</strong> Menerbitkan status keabsahan <em>Regional Checked</em> di yurisdiksinya.</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
+                    <span><strong>Kode Sertifikasi Unik:</strong> Setiap profil yang lolos verifikasi memperoleh nomor registrasi resmi format <code>ESP-SB-VER-YYYY-XXXX</code>.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
-                    <span><strong>Validasi Provinsi:</strong> Pengprov ESI Sumbar memvalidasi atlet untuk kejuaraan resmi dan lencana <em>Verified</em>.</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#22C55E] shrink-0 mt-0.5" />
-                    <span><strong>Bukan Pemilik Platform:</strong> Mitra kelembagaan tidak memiliki hak kepemilikan maupun kendali teknis server platform.</span>
+                    <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
+                    <span><strong>Target SLA 24-48 Jam:</strong> Penelaahan berkas bukti in-game dan piagam kompetisi diproses secara cepat dan transparan.</span>
                   </li>
                 </ul>
               </div>
 
               <div className="mt-6 pt-4 border-t border-white/5 text-[10px] font-mono text-white/40">
-                Otoritas Pengesahan Olahraga Prestasi
+                Standar Verifikasi Profesional
               </div>
             </div>
-          </div>
 
-          <div className="mt-8">
-            <OwnershipNote variant="full" withAboutLink={false} />
+            <div className="p-6 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-4 text-emerald-400">
+                  <Database className="w-5 h-5" />
+                  <h3 className="font-heading font-black text-lg text-white uppercase">
+                    Kepatuhan UU PDP &amp; Privasi
+                  </h3>
+                </div>
+
+                <ul className="space-y-3.5 text-xs text-white/70">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <span><strong>Minimisasi Data:</strong> Sistem tidak mengumpulkan data sensitif seperti NIK, foto KTP, maupun nomor KK.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <span><strong>Perlindungan Atlet Pelajar:</strong> Pendaftaran pemain di bawah usia 18 tahun tunduk pada persetujuan orang tua/wali sah.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <span><strong>Pemisahan Data Privat:</strong> Informasi kontak pribadi disimpan dalam enkripsi ketat dan terpisah dari kartu profil publik.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/5 text-[10px] font-mono text-white/40">
+                Kepatuhan UU No. 27 Tahun 2022
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ==================== 4. KONTAK & ALAMAT ==================== */}
+        {/* ==================== 4. HUBUNGI KAMI ==================== */}
         <section className="w-full max-w-5xl mx-auto px-6 py-16 border-t border-white/[0.08]">
-          <div className="p-8 rounded-3xl bg-[#0A0A2E] border border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-            <div className="flex flex-col gap-2">
+          <div className="p-8 rounded-3xl bg-[#0A0A2E] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
               <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D77] uppercase">
-                Hubungi Kami
+                Kontak &amp; Kerjasama
               </span>
-              <h3 className="text-2xl font-heading font-black uppercase text-white">
-                Informasi & Kerjasama
-              </h3>
-              <p className="text-xs text-white/60 max-w-md leading-relaxed">
-                Untuk pertanyaan kemitraan komunitas, verifikasi institusi, atau integrasi data turnamen, hubungi tim kami.
+              <h2 className="text-2xl font-heading font-black uppercase text-white mt-1">
+                Terhubung Bersama Kami
+              </h2>
+              <p className="text-xs text-white/60 mt-1 max-w-md">
+                Punya pertanyaan seputar verifikasi profil, penyelenggaraan turnamen, atau integrasi data esport Sumatera Barat?
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 text-xs text-white/80 shrink-0">
-              <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-[#FF1752]" />
-                <a href="mailto:halo@esportsumbar.com" className="hover:text-white underline">
-                  halo@esportsumbar.com
-                </a>
-              </div>
-              <div className="flex items-center gap-3">
-                <MapPin className="w-4 h-4 text-[#FF1752]" />
-                <span>Sumatera Barat, Indonesia</span>
-              </div>
-              <div className="pt-2">
-                <Link
-                  href="/partners"
-                  className="btn-brand-primary text-xs py-2 px-5"
-                >
-                  <span>Daftar Mitra Kelembagaan</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
+            <a
+              href="mailto:halo@esportsumbar.com"
+              className="btn-brand-primary px-5 py-3 rounded-xl font-heading font-bold text-xs uppercase tracking-wider flex items-center gap-2 shrink-0"
+            >
+              <Mail className="w-4 h-4" />
+              <span>halo@esportsumbar.com</span>
+            </a>
           </div>
         </section>
       </main>

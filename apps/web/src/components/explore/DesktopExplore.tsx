@@ -326,10 +326,10 @@ export function DesktopExplore() {
             </div>
           </div>
 
-          {/* WILAYAH / PENGCAB FILTER (SEARCHABLE LIST) */}
+          {/* WILAYAH DOMISILI FILTER (SEARCHABLE LIST) */}
           <div className="space-y-2">
             <label className="text-[11px] font-heading font-bold uppercase text-gray-400 tracking-wider">
-              19 Wilayah PBESI
+              19 Wilayah ESPORT SUMBAR
             </label>
             <input
               type="text"
@@ -725,7 +725,7 @@ export function DesktopExplore() {
                     <span className="font-bold text-white">{previewCard.data.game}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Wilayah PBESI:</span>
+                    <span className="text-gray-400">Wilayah ESPORT SUMBAR:</span>
                     <span className="font-bold text-white">
                       {previewCard.data.region.name} ({previewCard.data.region.code})
                     </span>

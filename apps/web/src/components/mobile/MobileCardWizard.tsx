@@ -494,7 +494,7 @@ export function MobileCardWizard() {
                   Pilih Bidang
                 </div>
                 <p className="text-[11px] text-white/50 mb-3">
-                  Pilih kategori identitas PBESI Sumatera Barat Anda.
+                  Pilih kategori identitas ESPORT SUMBAR Anda.
                 </p>
 
                 <div className="grid grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
@@ -554,7 +554,7 @@ export function MobileCardWizard() {
                       Tanggal Lahir
                     </div>
                     <p className="text-[11px] text-white/50 mb-3">
-                      Sesuai akta/KTP untuk pembagian divisi usia kompetisi resmi PBESI.
+                      Sesuai akta / tanggal lahir untuk validasi usia dan perlindungan atlet.
                     </p>
 
                     <input
@@ -804,7 +804,7 @@ export function MobileCardWizard() {
                   Siap Diterbitkan
                 </div>
                 <p className="text-[11px] text-white/50 mb-3">
-                  ESPORT ID resmi diterbitkan otomatis ke basis data PBESI.
+                  ESPORT ID resmi diterbitkan otomatis ke basis data ESPORT SUMBAR.
                 </p>
 
                 <div className="p-3 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-between text-xs mb-3">

@@ -11,10 +11,10 @@ export interface VerificationQueueItem {
   submittedAt: string;
   daysWaiting: number;
   slaStatus: "normal" | "warning" | "critical"; // normal: <5 days (green), warning: 5-14 days (yellow), critical: >14 days (red)
-  status: "submitted" | "in_review" | "revision_needed" | "regional_checked" | "verified" | "rejected";
+  status: "submitted" | "in_review" | "revision_needed" | "verified" | "verified" | "rejected";
   assignedTo?: string | null;
   reviewerNotes?: string;
-  isFallback?: boolean; // True for regions without active Pengcab ESI
+  isFallback?: boolean; // True for regions without active Komunitas Esport
   regionalReviewer?: {
     name: string;
     role: string;
@@ -108,7 +108,7 @@ export const MOCK_REGIONAL_QUEUE: VerificationQueueItem[] = [
     daysWaiting: 9,
     slaStatus: "warning",
     status: "in_review",
-    assignedTo: "Admin Pengcab Padang #01",
+    assignedTo: "Admin Wilayah Padang #01",
     documents: [
       {
         type: "kartu_identitas",
@@ -182,11 +182,11 @@ export const MOCK_REGIONAL_QUEUE: VerificationQueueItem[] = [
     daysWaiting: 4,
     slaStatus: "normal",
     status: "in_review",
-    assignedTo: "Admin Pengcab Padang #02",
+    assignedTo: "Admin Wilayah Padang #02",
     documents: [
       {
         type: "sertifikat_pelatih",
-        title: "Sertifikasi Pelatih Esports Tingkat Daerah PBESI",
+        title: "Sertifikasi Pelatih Esports Tingkat Daerah ESPORT SUMBAR",
         url: "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600&auto=format&fit=crop",
         submittedAt: "28 Feb 2026",
         fileSize: "2.4 MB",
@@ -212,7 +212,7 @@ export const MOCK_REGIONAL_QUEUE: VerificationQueueItem[] = [
     daysWaiting: 7,
     slaStatus: "warning",
     status: "revision_needed",
-    assignedTo: "Admin Pengcab Padang #01",
+    assignedTo: "Admin Wilayah Padang #01",
     reviewerNotes: "Tangkapan layar akun game terpotong pada nomor ID akun. Mohon unggah ulang gambar penuh.",
     documents: [
       {
@@ -235,8 +235,8 @@ export const MOCK_REGIONAL_LOGS: ActivityLogItem[] = [
   {
     id: "log-pdg-001",
     timestamp: "2026-03-04 14:15:22 WIB",
-    actorRole: "Admin Pengcab ESI Padang",
-    actorName: "Admin Pengcab Padang #01",
+    actorRole: "Admin Komunitas Esport Padang",
+    actorName: "Admin Wilayah Padang #01",
     regionCode: "PDG",
     action: "Lolos Daerah",
     targetId: "ESB-PDG-PL-000118",
@@ -248,8 +248,8 @@ export const MOCK_REGIONAL_LOGS: ActivityLogItem[] = [
   {
     id: "log-pdg-002",
     timestamp: "2026-03-03 16:40:11 WIB",
-    actorRole: "Admin Pengcab ESI Padang",
-    actorName: "Admin Pengcab Padang #02",
+    actorRole: "Admin Komunitas Esport Padang",
+    actorName: "Admin Wilayah Padang #02",
     regionCode: "PDG",
     action: "Minta Revisi",
     targetId: "ESB-PDG-PL-000155",
@@ -261,8 +261,8 @@ export const MOCK_REGIONAL_LOGS: ActivityLogItem[] = [
   {
     id: "log-pdg-003",
     timestamp: "2026-03-02 11:20:05 WIB",
-    actorRole: "Admin Pengcab ESI Padang",
-    actorName: "Admin Pengcab Padang #01",
+    actorRole: "Admin Komunitas Esport Padang",
+    actorName: "Admin Wilayah Padang #01",
     regionCode: "PDG",
     action: "Tolak Pengajuan",
     targetId: "ESB-PDG-PL-000099",
@@ -274,8 +274,8 @@ export const MOCK_REGIONAL_LOGS: ActivityLogItem[] = [
   {
     id: "log-pdg-004",
     timestamp: "2026-03-01 09:12:44 WIB",
-    actorRole: "Admin Pengcab ESI Padang",
-    actorName: "Admin Pengcab Padang #01",
+    actorRole: "Admin Komunitas Esport Padang",
+    actorName: "Admin Wilayah Padang #01",
     regionCode: "PDG",
     action: "Lolos Daerah",
     targetId: "ESB-PDG-TM-000005",
@@ -302,11 +302,11 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
     submittedAt: "2026-03-02T11:00:00Z",
     daysWaiting: 2,
     slaStatus: "normal",
-    status: "regional_checked",
+    status: "verified",
     isFallback: false,
     regionalReviewer: {
-      name: "Admin Pengcab Bukittinggi #01",
-      role: "Pengurus Cabang ESI Kota Bukittinggi",
+      name: "Admin Wilayah Bukittinggi #01",
+      role: "Komunitas Esport Wilayah Kota Bukittinggi",
       approvedAt: "02 Mar 2026, 14:10 WIB",
       notes: "Berkas identitas domisili Bukittinggi dan sertifikasi kapten tim lengkap. Rekomendasi verifikasi emas.",
     },
@@ -353,7 +353,7 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
     daysWaiting: 12,
     slaStatus: "warning",
     status: "submitted",
-    isFallback: true, // Wilayah tanpa Pengcab aktif -> ESI Provinsi bertindak langsung
+    isFallback: true, // Wilayah tanpa Wilayah aktif -> ESI Provinsi bertindak langsung
     documents: [
       {
         type: "kartu_identitas",
@@ -389,11 +389,11 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
     submittedAt: "2026-03-03T15:20:00Z",
     daysWaiting: 1,
     slaStatus: "normal",
-    status: "regional_checked",
+    status: "verified",
     isFallback: false,
     regionalReviewer: {
-      name: "Admin Pengcab Padang #01",
-      role: "Pengurus Cabang ESI Kota Padang",
+      name: "Admin Wilayah Padang #01",
+      role: "Komunitas Esport Wilayah Kota Padang",
       approvedAt: "03 Mar 2026, 17:00 WIB",
       notes: "Akta pendirian klub, domisili sekretariat di Padang Barat, dan daftar 5 pemain inti lengkap. Siap pengesahan emas.",
     },
@@ -432,11 +432,11 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
     submittedAt: "2026-02-18T14:15:00Z",
     daysWaiting: 14,
     slaStatus: "critical",
-    status: "regional_checked",
+    status: "verified",
     isFallback: false,
     regionalReviewer: {
-      name: "Admin Pengcab Payakumbuh #01",
-      role: "Pengurus Cabang ESI Kota Payakumbuh",
+      name: "Admin Wilayah Payakumbuh #01",
+      role: "Komunitas Esport Wilayah Kota Payakumbuh",
       approvedAt: "19 Feb 2026, 10:20 WIB",
       notes: "Lolos daerah. Menunggu verifikasi tingkat provinsi.",
     },
@@ -491,8 +491,8 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
   {
     id: "log-prov-001",
     timestamp: "2026-03-04 11:25:10 WIB",
-    actorRole: "Admin Pengprov ESI Sumbar",
-    actorName: "Ketua Bidang Atlet Pengprov Sumbar",
+    actorRole: "Admin ESPORT SUMBAR",
+    actorName: "Ketua Bidang Atlet ESPORT SUMBAR Sumbar",
     regionCode: "PDG",
     action: "Verifikasi Emas",
     targetId: "ESB-PDG-PL-000003",
@@ -504,7 +504,7 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
   {
     id: "log-prov-002",
     timestamp: "2026-03-03 15:40:00 WIB",
-    actorRole: "Admin Pengprov ESI Sumbar",
+    actorRole: "Admin ESPORT SUMBAR",
     actorName: "Komisi Disiplin ESI Sumbar",
     regionCode: "SLK",
     action: "Tangguhkan",
@@ -517,8 +517,8 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
   {
     id: "log-prov-003",
     timestamp: "2026-03-02 16:10:45 WIB",
-    actorRole: "Admin Pengprov ESI Sumbar",
-    actorName: "Sekretaris Umum Pengprov Sumbar",
+    actorRole: "Admin ESPORT SUMBAR",
+    actorName: "Sekretaris Umum ESPORT SUMBAR Sumbar",
     regionCode: "BKT",
     action: "Verifikasi Emas",
     targetId: "ESB-BKT-TM-000002",
@@ -530,14 +530,14 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
   {
     id: "log-prov-004",
     timestamp: "2026-03-01 13:30:12 WIB",
-    actorRole: "Admin Pengprov ESI Sumbar",
-    actorName: "Admin Pengprov ESI Sumbar #01",
+    actorRole: "Admin ESPORT SUMBAR",
+    actorName: "Admin ESPORT SUMBAR #01",
     regionCode: "MTW",
     action: "Lolos Daerah",
     targetId: "ESB-MTW-PL-000009",
     targetName: "Petrus Taileleu (MENTAWAI_WAVE)",
     targetType: "Player",
-    reason: "Pemeriksaan tahap daerah jalur Fallback (wilayah tanpa pengcab) oleh Pengprov Sumbar.",
+    reason: "Pemeriksaan berkas verifikasi langsung oleh kurator ESPORT SUMBAR.",
     logHash: "sha256:556677889900aabbccddeeff11223344556677889900aabbccddeeff11223344",
   },
 ];
@@ -602,7 +602,7 @@ export const MOCK_ADMIN_ACCOUNTS: AdminAccount[] = [
     email: "sekum@esi-sumbar.id",
     role: "admin_province",
     assignedRegionCode: "SUMBAR",
-    assignedRegionName: "Seluruh Sumatera Barat (Pengprov)",
+    assignedRegionName: "Seluruh Sumatera Barat (ESPORT SUMBAR)",
     status: "active",
     lastLogin: "Hari ini, 11:30 WIB",
     createdAt: "01 Jan 2025",

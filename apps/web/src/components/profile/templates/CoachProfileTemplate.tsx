@@ -172,7 +172,7 @@ export function CoachProfileTemplate({ profile }: { profile: UnifiedProfileDetai
               <div className="p-4 rounded-2xl bg-[#12151F] border border-white/[0.06] text-xs text-white/70">
                 <span className="font-semibold text-white block mb-1">Kredensial Resmi:</span>
                 <p>
-                  Pelatih berlisensi dan terafiliasi dengan Pengcab PBESI {profile.regionName}. Terdaftar aktif dalam pembinaan atlet esport daerah.
+                  Pelatih berlisensi dan terafiliasi dengan Wilayah ESPORT SUMBAR {profile.regionName}. Terdaftar aktif dalam pembinaan atlet esport daerah.
                 </p>
               </div>
             )}

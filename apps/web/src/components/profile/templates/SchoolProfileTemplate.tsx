@@ -49,7 +49,7 @@ export function SchoolProfileTemplate({ profile }: { profile: UnifiedProfileDeta
 
             <h1 className="text-2xl font-heading font-black text-white">{extraName}</h1>
             <p className="text-sm font-semibold text-yellow-200 mt-0.5">{schoolName}</p>
-            <p className="text-xs font-mono text-white/50 mt-1">Pembinaan Tingkat Pelajar Pengcab {profile.regionName}</p>
+            <p className="text-xs font-mono text-white/50 mt-1">Pembinaan Tingkat Pelajar Wilayah {profile.regionName}</p>
           </div>
         </div>
 

@@ -193,12 +193,8 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             const redirectParam = new URLSearchParams(window.location.search).get("redirect");
             if (redirectParam) {
               router.push(redirectParam);
-            } else if (res.role === "platform_operator") {
-              router.push("/admin/platform");
-            } else if (res.role === "prov_admin") {
-              router.push("/admin/province");
-            } else if (res.role === "region_admin") {
-              router.push("/admin/region");
+            } else if (res.role === "platform_admin") {
+              router.push("/admin");
             } else {
               router.push("/dashboard");
             }
@@ -245,7 +241,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
                 ESPORT SUMBAR
               </span>
               <span className="text-[9px] font-mono text-white/40 tracking-widest uppercase">
-                PBESI SUMATERA BARAT
+                ESPORT SUMBAR SUMATERA BARAT
               </span>
             </div>
           </Link>
@@ -283,7 +279,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
               {/* Holographic Subtle Glare */}
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.05] to-transparent pointer-events-none" />
 
-              {/* Top Row: Rarity Badge + PBESI Official Verification */}
+              {/* Top Row: Rarity Badge + ESPORT SUMBAR Official Verification */}
               <div className="w-full flex items-center justify-between z-10">
                 <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] text-[9px] font-mono font-black text-[#D4AF37] uppercase tracking-wider">
                   TIER 3 • ELITE
@@ -346,7 +342,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             Identitas Resmi Atlet Ranah Minang
           </h2>
           <p className="mt-1 text-xs font-sans text-white/50 leading-relaxed max-w-sm">
-            Paspor esport digital berbasis verifikasi PBESI Sumbar. Terlindungi UU PDP No. 27/2022.
+            Paspor esport digital berbasis verifikasi ESPORT SUMBAR. Terlindungi UU PDP No. 27/2022.
           </p>
 
           <div className="mt-4 flex items-center gap-6 pt-3 border-t border-white/[0.06] text-white/40 text-[11px] font-mono">
@@ -354,10 +350,10 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
               <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" /> Terenkripsi
             </span>
             <span className="flex items-center gap-1.5">
-              <Award className="w-3.5 h-3.5 text-[#4C7DFF]" /> 19 Pengcab
+              <Award className="w-3.5 h-3.5 text-[#4C7DFF]" /> 19 Wilayah
             </span>
             <span className="flex items-center gap-1.5">
-              <Trophy className="w-3.5 h-3.5 text-white/60" /> Standar PBESI
+              <Trophy className="w-3.5 h-3.5 text-white/60" /> Standar ESPORT SUMBAR
             </span>
           </div>
         </div>
@@ -587,7 +583,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
                   <Link href="/privacy" className="text-[#D4AF37] hover:underline">
                     Kebijakan Privasi
                   </Link>{" "}
-                  PBESI Sumbar.
+                  ESPORT SUMBAR.
                 </span>
               </label>
             ) : (
@@ -649,7 +645,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
           {/* FOOTER KECIL KEPATUHAN PDP */}
           <div className="mt-8 pt-4 border-t border-white/[0.06] text-center text-[10px] font-mono text-white/30 flex items-center justify-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>Kepatuhan UU PDP No. 27/2022 • PBESI Sumatera Barat</span>
+            <span>Kepatuhan UU PDP No. 27/2022 • ESPORT SUMBAR</span>
           </div>
         </div>
       </div>

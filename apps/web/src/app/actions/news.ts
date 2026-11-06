@@ -59,7 +59,7 @@ export async function saveArticleAction(data: ArticleInput) {
       revalidatePath("/news");
       revalidatePath(`/news/${slug}`);
       revalidatePath("/");
-      revalidatePath("/admin/platform/news");
+      revalidatePath("/admin/news");
 
       return { success: true, article: updated };
     } else {
@@ -110,7 +110,7 @@ export async function saveArticleAction(data: ArticleInput) {
       revalidatePath("/news");
       revalidatePath(`/news/${finalSlug}`);
       revalidatePath("/");
-      revalidatePath("/admin/platform/news");
+      revalidatePath("/admin/news");
 
       return { success: true, article: inserted };
     }
@@ -134,7 +134,7 @@ export async function deleteArticleAction(id: string) {
 
     revalidatePath("/news");
     revalidatePath("/");
-    revalidatePath("/admin/platform/news");
+    revalidatePath("/admin/news");
 
     return { success: true };
   } catch (err: any) {

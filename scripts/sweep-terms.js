@@ -91,13 +91,15 @@ function scanDirectory(dir, findings = []) {
 const rootDir = path.resolve(__dirname, "..");
 console.log("🔍 Menjalankan Sapu Istilah Terlarang V3 pada:", rootDir);
 
-// Di Bagian 2, sapu difokuskan pada packages/, scripts/, dan file konfigurasi baru
+// Di Bagian 4, sapu mencakup seluruh apps/web/src, packages/, dan scripts/
 const packagesDir = path.join(rootDir, "packages");
 const scriptsDir = path.join(rootDir, "scripts");
+const appsWebSrcDir = path.join(rootDir, "apps", "web", "src");
 
 let newCodeFindings = [];
 if (fs.existsSync(packagesDir)) scanDirectory(packagesDir, newCodeFindings);
 if (fs.existsSync(scriptsDir)) scanDirectory(scriptsDir, newCodeFindings);
+if (fs.existsSync(appsWebSrcDir)) scanDirectory(appsWebSrcDir, newCodeFindings);
 
 if (newCodeFindings.length > 0) {
   console.error("\n❌ Ditemukan istilah terlarang pada kode/paket baru V3:");

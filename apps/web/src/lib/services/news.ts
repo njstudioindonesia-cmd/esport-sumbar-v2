@@ -16,7 +16,7 @@ export interface PublicArticle {
 }
 
 /**
- * Mengambil daftar berita dan pengumuman resmi PBESI yang telah dipublikasikan
+ * Mengambil daftar berita dan pengumuman resmi ESPORT SUMBAR yang telah dipublikasikan
  */
 export async function getLatestArticles(options?: {
   limit?: number;

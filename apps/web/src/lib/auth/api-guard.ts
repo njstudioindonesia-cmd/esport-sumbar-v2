@@ -11,10 +11,10 @@ export interface AuthenticatedAdminContext {
 
 /**
  * Memvalidasi sesi dan otorisasi peran (RBAC) pada endpoint API admin.
- * Melindungi dari akses tanpa izin (unauthenticated / unauthorized API calling).
+ * Di ESPORT SUMBAR V3, hanya 'platform_admin' yang berwenang mengakses panel admin.
  */
 export async function verifyAdminAuth(
-  allowedRoles: AccountRole[] = ["platform_operator", "prov_admin", "region_admin"]
+  allowedRoles: AccountRole[] = ["platform_admin"]
 ): Promise<{ auth: AuthenticatedAdminContext | null; errorResponse: NextResponse | null }> {
   try {
     const supabase = await createClient();
@@ -36,7 +36,7 @@ export async function verifyAdminAuth(
     const admin = createAdminClient();
     const { data: account, error: accError } = await admin
       .from("accounts")
-      .select("role, assigned_region_id, is_active")
+      .select("role, is_active")
       .eq("id", user.id)
       .single();
 
@@ -54,7 +54,7 @@ export async function verifyAdminAuth(
       return {
         auth: null,
         errorResponse: NextResponse.json(
-          { error: "Forbidden: Anda tidak memiliki otoritas peran untuk mengakses endpoint ini." },
+          { error: "Forbidden: Hanya Administrator ESPORT SUMBAR yang berwenang mengakses modul ini." },
           { status: 403 }
         ),
       };
@@ -65,7 +65,7 @@ export async function verifyAdminAuth(
         userId: user.id,
         email: user.email || "",
         role: account.role as AccountRole,
-        assignedRegionId: account.assigned_region_id,
+        assignedRegionId: null,
       },
       errorResponse: null,
     };

@@ -15,6 +15,7 @@ import {
   Search,
   Check,
   ArrowLeft,
+  ArrowRight,
   Sparkles,
   Upload,
   Calendar,
@@ -906,7 +907,7 @@ export function DesktopCardWizard() {
                           {
                             key: "kontak",
                             label: "Nomor Kontak & WhatsApp",
-                            desc: "Hanya terlihat oleh Admin Verifikator Pengcab jika privat.",
+                            desc: "Hanya terlihat oleh Admin Verifikator Wilayah jika privat.",
                             isPublic: privacy.kontak,
                           },
                           {
@@ -1016,7 +1017,7 @@ export function DesktopCardWizard() {
                           <span className="font-semibold text-white truncate block">{displayName}</span>
                         </div>
                         <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
-                          <span className="text-[10px] font-mono text-white/40 block">Wilayah Pengcab</span>
+                          <span className="text-[10px] font-mono text-white/40 block">Wilayah Wilayah</span>
                           <span className="font-semibold text-[#D4AF37] truncate block">{selectedRegion.name}</span>
                         </div>
                         <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
@@ -1085,19 +1086,13 @@ export function DesktopCardWizard() {
                               <span>Bagikan</span>
                             </button>
 
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setIssuedResult(null);
-                                setStep(1);
-                                setAvatarUrl("");
-                                setDisplayName("Profil Baru");
-                              }}
+                            <Link
+                              href="/dashboard"
                               className="px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-xs font-mono text-white/60 hover:text-white flex items-center gap-1.5"
                             >
-                              <PlusCircle className="w-3.5 h-3.5" />
-                              <span>Tambah Profil</span>
-                            </button>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                              <span>Buka Dasbor</span>
+                            </Link>
                           </div>
                         </motion.div>
                       )}

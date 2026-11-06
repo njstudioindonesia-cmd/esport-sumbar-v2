@@ -58,7 +58,7 @@ export default function LeaderboardPage() {
               Klasemen Sirkuit Belum Berjalan
             </h3>
             <p className="text-xs text-white/50 max-w-md mt-1 leading-relaxed">
-              Akumulasi poin sirkuit tim se-Sumatera Barat akan diperbarui secara otomatis setelah turnamen resmi perdana musim kompetisi 2026 selesai diselenggarakan oleh PBESI Sumbar &amp; Pengcab daerah.
+              Akumulasi poin sirkuit tim se-Sumatera Barat akan diperbarui secara otomatis setelah turnamen resmi perdana musim kompetisi 2026 selesai diselenggarakan oleh ESPORT SUMBAR &amp; Wilayah daerah.
             </p>
           </div>
         ) : (

@@ -34,10 +34,10 @@ export async function getRegionsList(): Promise<PublicRegion[]> {
         slug: r.slug,
         type: r.type,
         logoUrl: r.logo_url,
-        esiContactName: r.esi_contact_name,
+        esiContactName: r.contact_name,
         esiSecretariat: r.esi_secretariat,
         description: r.description,
-        adminMode: r.admin_mode,
+        adminMode: r.status_mode,
         isPilot: r.is_pilot,
       }));
     }
@@ -68,10 +68,10 @@ export async function getRegionBySlug(slug: string): Promise<PublicRegion | null
         slug: data.slug,
         type: data.type,
         logoUrl: data.logo_url,
-        esiContactName: data.esi_contact_name,
+        esiContactName: data.contact_name,
         esiSecretariat: data.esi_secretariat,
         description: data.description,
-        adminMode: data.admin_mode,
+        adminMode: data.status_mode,
         isPilot: data.is_pilot,
       };
     }

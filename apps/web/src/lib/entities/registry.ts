@@ -506,7 +506,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
     code: "EO",
     label: "Event Organizer",
     singularLabel: "Organizer",
-    description: "Penyelenggara turnamen resmi berizin rekomendasi Pengprov ESI Sumatera Barat.",
+    description: "Penyelenggara turnamen resmi berizin rekomendasi ESPORT SUMBAR.",
     badgeColor: "from-rose-500/20 to-red-600/30 text-rose-400 border-rose-500/40",
     accentGradient: "from-rose-500 to-red-600",
     defaultRarity: "rookie",

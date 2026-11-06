@@ -90,7 +90,7 @@ export function DesktopDashboardView() {
     if (verificationStatus === "unverified") {
       if (entityType === "team") {
         return {
-          title: "Ajukan Legalisasi Klub PBESI",
+          title: "Ajukan Legalisasi Klub ESPORT SUMBAR",
           desc: "Daftarkan tim resmi untuk berpartisipasi dalam Kejurda & Liga Esport Sumatera Barat.",
           actionText: "Ajukan",
           href: "/me/verification",
@@ -106,22 +106,22 @@ export function DesktopDashboardView() {
       }
       if (entityType === "school" || entityType === "campus") {
         return {
-          title: "Pengesahan Ekstrakurikuler PBESI",
+          title: "Pengesahan Ekstrakurikuler ESPORT SUMBAR",
           desc: "Lampirkan SK Kepala Sekolah/Dekan untuk pembinaan atlet pelajar resmi daerah.",
           actionText: "Ajukan",
           href: "/me/verification",
         };
       }
       return {
-        title: "Ajukan Lisensi Resmi PBESI",
-        desc: "Lengkapi 1 piagam prestasi untuk peningkatan Tier dan Lencana Emas Pengprov.",
+        title: "Ajukan Lisensi Resmi ESPORT SUMBAR",
+        desc: "Lengkapi 1 piagam prestasi untuk peningkatan Tier dan Lencana Emas ESPORT SUMBAR.",
         actionText: "Ajukan",
         href: "/me/verification",
       };
     }
     if (verificationStatus === "submitted" || verificationStatus === "in_review_regional") {
       return {
-        title: `Dalam Telaah Pengcab ${activeProfile?.regionName || "Daerah"}`,
+        title: `Dalam Telaah Wilayah ${activeProfile?.regionName || "Daerah"}`,
         desc: "Berkas Anda sedang dalam antrean verifikasi pengurus cabang. Estimasi 1-3 hari kerja.",
         actionText: "Pantau Status",
         href: "/me/verification",
@@ -130,22 +130,22 @@ export function DesktopDashboardView() {
     if (verificationStatus === "revision_requested") {
       return {
         title: "Perlu Revisi Dokumen",
-        desc: "Pengcab ESI meminta perbaikan berkas. Klik untuk memeriksa catatan verifikator.",
+        desc: "Komunitas Esport meminta perbaikan berkas. Klik untuk memeriksa catatan verifikator.",
         actionText: "Perbaiki",
         href: "/me/verification",
       };
     }
-    if (verificationStatus === "regional_checked") {
+    if (verificationStatus === "verified") {
       return {
-        title: "Menunggu Pengesahan Pengprov",
-        desc: "Lolos verifikasi daerah! Berkas kini di meja Pengprov ESI Sumbar untuk lencana emas.",
+        title: "Menunggu Pengesahan ESPORT SUMBAR",
+        desc: "Lolos verifikasi daerah! Berkas kini di meja ESPORT SUMBAR untuk lencana emas.",
         actionText: "Lihat",
         href: "/me/verification",
       };
     }
     return {
       title: "Profil Terverifikasi Resmi",
-      desc: "Lencana Emas aktif! Identitas Anda diakui secara penuh di ekosistem PBESI Sumbar.",
+      desc: "Lencana Emas aktif! Identitas Anda diakui secara penuh di ekosistem ESPORT SUMBAR.",
       actionText: "Lihat Lisensi",
       href: "/me/verification",
     };
@@ -155,44 +155,6 @@ export function DesktopDashboardView() {
 
   return (
     <div className="w-full flex flex-col gap-6">
-      {/* ========================================================= */}
-      {/* PROFILE SELECTOR STRIP (MULTI-ENTITY SWITCHER)           */}
-      {/* ========================================================= */}
-      {liveProfiles && liveProfiles.length > 1 && (
-        <div className="w-full flex items-center justify-between p-3 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] backdrop-blur-md">
-          <div className="flex items-center gap-2 overflow-x-auto">
-            <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider px-2 shrink-0">
-              PILIH PROFIL:
-            </span>
-            {liveProfiles.map((p, idx) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setSelectedProfileIndex(idx)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-2 transition-all shrink-0 ${
-                  selectedProfileIndex === idx
-                    ? "bg-gradient-to-r from-[#D4AF37] to-amber-400 text-black shadow-md shadow-amber-950/40"
-                    : "bg-white/[0.04] text-white/70 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]"
-                }`}
-              >
-                <span>{p.displayName}</span>
-                <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-black/20">
-                  {p.entityType}
-                </span>
-              </button>
-            ))}
-          </div>
-
-          <Link
-            href="/me/profile/new"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/20 text-xs font-mono text-white/70 hover:text-white shrink-0 transition-all ml-2"
-          >
-            <PlusCircle className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>Tambah Entitas</span>
-          </Link>
-        </div>
-      )}
-
       {/* ========================================================= */}
       {/* BENTO GRID UTAMA DASHBOARD                                */}
       {/* ========================================================= */}
@@ -284,7 +246,7 @@ export function DesktopDashboardView() {
                 <div>
                   <h4 className="font-heading font-black text-white text-base">Belum Ada Kartu Paspor</h4>
                   <p className="text-xs text-white/50 max-w-xs mt-1">
-                    Buat paspor digital Anda untuk mendapatkan kartu resmi berstandar PBESI Sumatera Barat.
+                    Buat paspor digital Anda untuk mendapatkan kartu resmi berstandar ESPORT SUMBAR.
                   </p>
                 </div>
                 <Link
@@ -399,9 +361,9 @@ export function DesktopDashboardView() {
                       : verificationStatus === "submitted"
                       ? "Diajukan (Tahap 2)"
                       : verificationStatus === "in_review_regional"
-                      ? "Telaah Pengcab"
-                      : verificationStatus === "regional_checked"
-                      ? "Lolos Pengcab"
+                      ? "Telaah Wilayah"
+                      : verificationStatus === "verified"
+                      ? "Lolos Wilayah"
                       : verificationStatus === "revision_requested"
                       ? "Perlu Revisi"
                       : "Belum Verifikasi"}
@@ -496,7 +458,7 @@ export function DesktopDashboardView() {
                     {activeProfile?.displayName}
                   </span>
                   <span className="text-[10px] font-mono text-white/50 mt-0.5">
-                    Afiliasi Pengcab ESI {activeProfile?.regionName} • Pembinaan Pelajar
+                    Afiliasi Komunitas Esport {activeProfile?.regionName} • Pembinaan Pelajar
                   </span>
                 </div>
                 <Link
@@ -537,7 +499,7 @@ export function DesktopDashboardView() {
                   href="/teams"
                   className="px-3.5 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-white text-xs font-mono font-bold transition-all"
                 >
-                  Jelajah Tim PBESI
+                  Jelajah Tim ESPORT SUMBAR
                 </Link>
               </div>
             </div>

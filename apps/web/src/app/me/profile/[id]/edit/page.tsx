@@ -10,7 +10,7 @@ export const instant = false;
 
 export const metadata: Metadata = {
   title: "Edit Profil | ESPORT SUMBAR™",
-  description: "Perbarui identitas profil digital PBESI Sumatera Barat Anda.",
+  description: "Perbarui identitas profil digital ESPORT SUMBAR Anda.",
 };
 
 export default async function EditProfilePage({

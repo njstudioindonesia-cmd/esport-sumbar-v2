@@ -107,15 +107,9 @@ export function MobileDashboardView() {
         </div>
 
         <div className="flex items-center gap-2">
-          {userSession?.role && ["platform_operator", "prov_admin", "region_admin"].includes(userSession.role) && (
+          {userSession?.role === "platform_admin" && (
             <Link
-              href={
-                userSession.role === "platform_operator"
-                  ? "/admin/platform"
-                  : userSession.role === "prov_admin"
-                  ? "/admin/province"
-                  : "/admin/region"
-              }
+              href="/admin"
               className="px-2.5 py-1 rounded-lg bg-[#D4AF37] text-black text-[10px] font-heading font-black uppercase tracking-wider shadow-md hover:brightness-110"
             >
               Admin
@@ -240,7 +234,7 @@ export function MobileDashboardView() {
               <ShieldCheck className="w-10 h-10 text-[#FF1752]" />
               <h4 className="font-heading font-bold text-white text-sm">Belum Ada Kartu Paspor</h4>
               <p className="text-[11px] text-white/50 max-w-xs">
-                Buat paspor digital Anda untuk mendapatkan kartu resmi berstandar PBESI Sumatera Barat.
+                Buat paspor digital Anda untuk mendapatkan kartu resmi berstandar ESPORT SUMBAR.
               </p>
               <Link href="/me/profile/new" className="btn-brand-primary text-xs py-2 px-4 mt-2">
                 <span>Buat Kartu Baru</span>
@@ -328,7 +322,7 @@ export function MobileDashboardView() {
               <GraduationCap className="w-6 h-6 text-[#D4AF37]" />
               <div className="flex flex-col">
                 <span className="text-xs font-heading font-bold text-white">Ekskul / UKM Esport</span>
-                <span className="text-[10px] font-mono text-white/50">Binaan Pengcab {activeProfile?.regionName}</span>
+                <span className="text-[10px] font-mono text-white/50">Binaan Wilayah {activeProfile?.regionName}</span>
               </div>
             </div>
             <Link
@@ -344,7 +338,7 @@ export function MobileDashboardView() {
               <Trophy className="w-5 h-5 text-[#D4AF37]" />
               <div className="flex flex-col">
                 <span className="text-xs font-heading font-bold text-white">Kompetisi Resmi</span>
-                <span className="text-[10px] text-white/50">Sirkuit & Kejuaraan PBESI Sumbar</span>
+                <span className="text-[10px] text-white/50">Sirkuit & Kejuaraan ESPORT SUMBAR</span>
               </div>
             </div>
             <Link

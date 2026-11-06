@@ -1,6 +1,6 @@
 /**
  * Feature Flags Configuration
- * Mengatur visibilitas data demo, mode sistem, dan konfigurasi rilis PBESI Sumbar.
+ * Mengatur visibilitas data demo, mode sistem, dan konfigurasi rilis ESPORT SUMBAR.
  */
 
 export const FLAGS = {

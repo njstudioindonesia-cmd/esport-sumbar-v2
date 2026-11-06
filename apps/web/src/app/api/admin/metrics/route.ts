@@ -2,16 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { verifyAdminAuth } from "@/lib/auth/api-guard";
 
-
 export async function GET(request: NextRequest) {
-  // Guard otentikasi & peran: operator platform, pengprov, dan admin pengcab daerah
-  const { auth, errorResponse } = await verifyAdminAuth(["platform_operator", "prov_admin", "region_admin"]);
+  const { auth, errorResponse } = await verifyAdminAuth(["platform_admin"]);
   if (errorResponse) return errorResponse;
 
   try {
     const admin = createAdminClient();
 
-    // Query counts in parallel
     const [
       { count: totalUsers },
       { count: totalCards },
@@ -21,11 +18,8 @@ export async function GET(request: NextRequest) {
       { count: totalArticles },
       { count: draftArticles },
       { count: totalReports },
-      { count: pendingGold },
       { count: goldActive },
-      { count: regionalPending },
-      { count: regionalInReview },
-      { count: regionalRevision },
+      { count: pendingVerifications },
     ] = await Promise.all([
       admin.from("accounts").select("*", { count: "exact", head: true }),
       admin.from("profiles").select("*", { count: "exact", head: true }),
@@ -35,11 +29,8 @@ export async function GET(request: NextRequest) {
       admin.from("articles").select("*", { count: "exact", head: true }),
       admin.from("articles").select("*", { count: "exact", head: true }).eq("status", "draft"),
       admin.from("reports").select("*", { count: "exact", head: true }).eq("status", "pending"),
-      admin.from("verification_requests").select("*", { count: "exact", head: true }).eq("status", "regional_checked"),
       admin.from("profiles").select("*", { count: "exact", head: true }).eq("verification_status", "verified"),
-      admin.from("verification_requests").select("*", { count: "exact", head: true }).eq("status", "submitted"),
-      admin.from("verification_requests").select("*", { count: "exact", head: true }).eq("status", "in_review_regional"),
-      admin.from("verification_requests").select("*", { count: "exact", head: true }).eq("status", "revision_requested"),
+      admin.from("verification_requests").select("*", { count: "exact", head: true }).in("status", ["submitted", "under_review"]),
     ]);
 
     return NextResponse.json({
@@ -54,14 +45,14 @@ export async function GET(request: NextRequest) {
         totalReports: totalReports || 0,
       },
       province: {
-        pendingGold: pendingGold || 0,
+        pendingGold: pendingVerifications || 0,
         goldActive: goldActive || 0,
         fallbackPending: 0,
       },
       region: {
-        pending: regionalPending || 0,
-        inReview: regionalInReview || 0,
-        revision: regionalRevision || 0,
+        pending: 0,
+        inReview: 0,
+        revision: 0,
         approvedThisMonth: 0,
       },
     });

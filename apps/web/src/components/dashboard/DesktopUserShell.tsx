@@ -189,30 +189,18 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
         </nav>
 
         {/* Admin Navigation Quick Link */}
-        {userSession && ["platform_operator", "prov_admin", "region_admin"].includes(userSession.role) && (
+        {userSession && userSession.role === "platform_admin" && (
           <div className="px-3 pb-3">
             <Link
-              href={
-                userSession.role === "platform_operator"
-                  ? "/admin/platform"
-                  : userSession.role === "prov_admin"
-                  ? "/admin/province"
-                  : "/admin/region"
-              }
+              href="/admin"
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 transition-all shadow-lg ${
                 collapsed ? "justify-center px-0" : ""
               }`}
-              title={collapsed ? "Buka Portal Admin" : undefined}
+              title={collapsed ? "Buka Panel Admin" : undefined}
             >
               <ShieldCheck className="w-4 h-4 shrink-0" />
               {!collapsed && (
-                <span className="truncate">
-                  {userSession.role === "platform_operator"
-                    ? "Panel Operator"
-                    : userSession.role === "prov_admin"
-                    ? "Panel Pengprov"
-                    : "Panel Pengcab"}
-                </span>
+                <span className="truncate">Panel Admin</span>
               )}
             </Link>
           </div>
@@ -235,12 +223,8 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                     {userSession?.displayName || userSession?.email?.split("@")[0] || "Atlet Ranah Minang"}
                   </span>
                   <span className="text-[9px] font-mono text-[#D4AF37] uppercase tracking-wider">
-                    {userSession?.role === "prov_admin"
-                      ? "PENGPROV ESI"
-                      : userSession?.role === "region_admin"
-                      ? "PENGCAB ESI"
-                      : userSession?.role === "platform_operator"
-                      ? "OPERATOR"
+                    {userSession?.role === "platform_admin"
+                      ? "PLATFORM ADMIN"
                       : userSession?.entityType === "team"
                       ? "PASPOR TIM"
                       : userSession?.entityType === "coach"
@@ -326,12 +310,12 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
             </button>
 
             {/* Admin Portal Jump Button */}
-            {userSession && ["platform_operator", "prov_admin", "region_admin"].includes(userSession.role) && (
+            {userSession && ["platform_admin", "platform_admin", "platform_admin"].includes(userSession.role) && (
               <Link
                 href={
-                  userSession.role === "platform_operator"
+                  userSession.role === "platform_admin"
                     ? "/admin/platform"
-                    : userSession.role === "prov_admin"
+                    : userSession.role === "platform_admin"
                     ? "/admin/province"
                     : "/admin/region"
                 }
@@ -339,11 +323,11 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>
-                  {userSession.role === "platform_operator"
+                  {userSession.role === "platform_admin"
                     ? "Panel Operator"
-                    : userSession.role === "prov_admin"
-                    ? "Panel Pengprov"
-                    : "Panel Pengcab"}
+                    : userSession.role === "platform_admin"
+                    ? "Panel ESPORT SUMBAR"
+                    : "Panel Wilayah"}
                 </span>
               </Link>
             )}
@@ -372,7 +356,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                   </strong>
                   <span className="text-white/70 leading-relaxed block">
                     {authError === "unauthorized_operator"
-                      ? "Rute tersebut dikhususkan untuk Operator Sistem. Sebagai Pengprov ESI, gunakan tautan Panel Pengprov resmi Anda."
+                      ? "Rute tersebut dikhususkan untuk Operator Sistem. Sebagai ESPORT SUMBAR, gunakan tautan Panel ESPORT SUMBAR resmi Anda."
                       : authError === "unauthorized_province"
                       ? "Rute tersebut dikhususkan untuk Pengurus Provinsi ESI Sumatera Barat."
                       : "Anda telah login sebagai administrator. Silakan buka menu panel di atas."}
@@ -380,9 +364,9 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                   <div className="mt-3 flex items-center gap-2">
                     <Link
                       href={
-                        userSession?.role === "platform_operator"
+                        userSession?.role === "platform_admin"
                           ? "/admin/platform"
-                          : userSession?.role === "prov_admin"
+                          : userSession?.role === "platform_admin"
                           ? "/admin/province"
                           : "/admin/region"
                       }

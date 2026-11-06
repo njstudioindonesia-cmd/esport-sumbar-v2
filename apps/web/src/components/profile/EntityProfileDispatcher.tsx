@@ -84,7 +84,7 @@ export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProp
     type: profile.entityType as any,
     rarity: (profile.rarityTier as any) || "rookie",
     verification: mapVerificationToCard(profile.verificationStatus),
-    tagline: profile.bio || `Profil resmi ${profile.displayName} PBESI Sumatera Barat`,
+    tagline: profile.bio || `Profil resmi ${profile.displayName} ESPORT SUMBAR`,
     slug: profile.slug,
     data: {
       displayName: profile.displayName,

@@ -73,6 +73,37 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       }
     }
 
+    // 0. Penegakan Aturan V3: Periksa Peran Admin & 1 Akun 1 Profil
+    if (accountId && !accountId.startsWith("00000000")) {
+      const { data: accountData } = await supabase
+        .from("accounts")
+        .select("role")
+        .eq("id", accountId)
+        .maybeSingle();
+
+      if (accountData?.role === "platform_admin") {
+        return {
+          success: false,
+          error: "Akun administrator platform dilarang memiliki profil entitas.",
+        };
+      }
+
+      const { data: existingProfile } = await supabase
+        .from("profiles")
+        .select("id, esport_id")
+        .eq("account_id", accountId)
+        .maybeSingle();
+
+      if (existingProfile) {
+        return {
+          success: false,
+          error: "Sesuai aturan ketat 1 akun 1 profil (V3), akun Anda telah memiliki profil terdaftar.",
+          profileId: existingProfile.id,
+          esportId: existingProfile.esport_id,
+        };
+      }
+    }
+
     // 1. Validasi perlindungan anak < 18 tahun (UU PDP)
     if (input.birthDate) {
       const birth = new Date(input.birthDate);
@@ -371,7 +402,7 @@ export async function saveProfileDraftAction(
           attributes: (input.metadata || {}) as any,
           metadata_jsonb: (input.metadata || {}) as any,
           visibility_jsonb: (input.visibility || {}) as any,
-          verification_status: "draft",
+          verification_status: "unverified",
           is_published: false,
           updated_at: new Date().toISOString(),
         },
@@ -435,12 +466,12 @@ export async function updateProfileAction(
       existing.display_name !== input.displayName.trim() ||
       (existing.ign || "") !== (input.ign?.trim() || "");
 
-    const wasVerified = ["verified", "regional_checked"].includes(existing.verification_status);
+    const wasVerified = existing.verification_status === "verified";
     let newStatus = existing.verification_status;
     let reVerifyRequired = false;
 
     if (wasVerified && keyFieldChanged) {
-      newStatus = "in_review_regional";
+      newStatus = "submitted";
       reVerifyRequired = true;
 
       // Catat ke audit log
@@ -453,7 +484,7 @@ export async function updateProfileAction(
           target_id: profileId,
           region_id: null,
           previous_status: existing.verification_status,
-          new_status: "in_review_regional",
+          new_status: "submitted",
           reason: "Perubahan nama atau IGN pada profil terverifikasi memicu verifikasi ulang otomatis.",
           metadata_jsonb: {
             old_name: existing.display_name,

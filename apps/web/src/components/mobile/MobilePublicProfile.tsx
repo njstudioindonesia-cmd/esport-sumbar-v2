@@ -239,7 +239,7 @@ export function MobilePublicProfile({ card, isQrScan = false, isOwner = false }:
                 <div className="p-3 rounded-2xl bg-[#0F1118] border border-white/[0.06] flex items-center justify-between">
                   <div className="flex items-center gap-2 text-xs text-white/60">
                     <Lock className="w-3.5 h-3.5 text-[#22C55E]" />
-                    <span>Kontak &amp; NIK Terlindungi</span>
+                    <span>Data Pribadi Terlindungi</span>
                   </div>
                   <span className="text-[9px] font-mono text-white/40 uppercase">UU PDP</span>
                 </div>

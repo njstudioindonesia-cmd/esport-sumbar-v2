@@ -73,7 +73,7 @@ export default function RegionsIndexPage() {
         {/* Header */}
         <div className="flex flex-col gap-1 mb-6">
           <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#D4AF37] uppercase">
-            <span>19 Pengcab ESI Daerah</span>
+            <span>19 Komunitas Esport Daerah</span>
           </div>
           <h1 className="text-2xl font-heading font-black uppercase text-white tracking-tight">
             Wilayah Sumbar

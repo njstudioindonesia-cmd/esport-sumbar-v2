@@ -54,7 +54,7 @@ export function MobileProfileEditView({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const isVerified = ["verified", "regional_checked"].includes(verificationStatus);
+  const isVerified = ["verified", "verified"].includes(verificationStatus);
 
   const triggerHaptic = (ms = 15) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
@@ -154,7 +154,7 @@ export function MobileProfileEditView({
             <div>
               <div className="font-bold text-amber-300">Profil Terverifikasi Resmi ESI</div>
               <p className="text-[11px] text-amber-200/70 mt-0.5 leading-relaxed">
-                Mengubah nama tampilan atau IGN akan memerlukan validasi ulang Pengcab ESI.
+                Mengubah nama tampilan atau IGN akan memerlukan validasi ulang Komunitas Esport.
               </p>
             </div>
           </div>

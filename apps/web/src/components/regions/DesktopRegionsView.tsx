@@ -82,7 +82,7 @@ export function DesktopRegionsView() {
         <div>
           <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#D4AF37] uppercase mb-1">
             <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-            <span>Struktur Administratif PBESI</span>
+            <span>Struktur Administratif ESPORT SUMBAR</span>
           </div>
           <h1 className="text-3xl font-heading font-black text-white tracking-tight">
             19 Wilayah Sumatera Barat
@@ -92,7 +92,7 @@ export function DesktopRegionsView() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/60">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>19 Pengcab Terpetakan</span>
+            <span>19 Wilayah Terpetakan</span>
           </div>
         </div>
       </div>
@@ -179,13 +179,7 @@ export function DesktopRegionsView() {
                         cx={coords.x}
                         cy={coords.y}
                         r={isCity ? 10 : 8}
-                        fill={
-                          isHovered
-                            ? "#D4AF37"
-                            : region.adminMode === "active"
-                            ? "#10B981"
-                            : "#F59E0B"
-                        }
+                        fill={isHovered ? "#D4AF37" : "#10B981"}
                         stroke="#07080C"
                         strokeWidth="2.5"
                         className="transition-colors duration-150"
@@ -222,7 +216,7 @@ export function DesktopRegionsView() {
                       </span>
                     </div>
                     <span className="text-[11px] text-white/50">
-                      {hoveredRegion.adminMode === "active" ? "Pengcab ESI Aktif" : "Ditangani Provinsi"}
+                      {hoveredRegion.type === "kota" ? "Kota Otonom" : "Kabupaten"} • Direktori Terdaftar
                     </span>
                   </div>
 
@@ -300,7 +294,6 @@ export function DesktopRegionsView() {
           {/* 19 Regions Emblem Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {filteredRegions.map((region) => {
-              const isAktif = region.adminMode === "active";
               return (
                 <Link
                   key={region.code}
@@ -314,14 +307,8 @@ export function DesktopRegionsView() {
                     <span className="text-[10px] font-mono text-[#D4AF37] font-bold">
                       {region.code}
                     </span>
-                    <span
-                      className={`px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase ${
-                        isAktif
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                          : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                      }`}
-                    >
-                      {isAktif ? "Aktif" : "Provinsi"}
+                    <span className="px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      {region.isPilot ? "Pilot" : (region.type === "kota" ? "Kota" : "Kabupaten")}
                     </span>
                   </div>
 

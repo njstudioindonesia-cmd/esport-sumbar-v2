@@ -6,19 +6,17 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
-export type AccountRole = "user" | "region_admin" | "prov_admin" | "platform_operator";
+export type AccountRole = "user" | "platform_admin";
 export type EntityType = "player" | "coach" | "team" | "community" | "venue" | "campus" | "school" | "organizer";
 export type VerificationStatus =
   | "unverified"
-  | "draft"
   | "submitted"
-  | "in_review_regional"
-  | "regional_checked"
-  | "in_review_provincial"
-  | "verified"
+  | "under_review"
   | "revision_requested"
+  | "verified"
   | "rejected"
-  | "suspended";
+  | "suspended"
+  | "expired";
 export type RarityTier = "rookie" | "contender" | "elite" | "legend";
 export type MembershipStatus = "pending" | "accepted" | "declined" | "ended";
 export type AchievementLevel = "kota" | "provinsi" | "nasional" | "internasional" | "lainnya";
@@ -34,10 +32,10 @@ export type Database = {
           type: "kota" | "kabupaten";
           slug: string;
           logo_url: string | null;
-          esi_contact_name: string | null;
+          contact_name: string | null;
           esi_secretariat: string | null;
           description: string | null;
-          admin_mode: "active" | "fallback";
+          status_mode: "active" | "fallback";
           is_pilot: boolean;
           created_at: string;
           updated_at: string;
@@ -49,10 +47,10 @@ export type Database = {
           type: "kota" | "kabupaten";
           slug: string;
           logo_url?: string | null;
-          esi_contact_name?: string | null;
+          contact_name?: string | null;
           esi_secretariat?: string | null;
           description?: string | null;
-          admin_mode?: "active" | "fallback";
+          status_mode?: "active" | "fallback";
           is_pilot?: boolean;
           created_at?: string;
           updated_at?: string;
@@ -64,10 +62,10 @@ export type Database = {
           type?: "kota" | "kabupaten";
           slug?: string;
           logo_url?: string | null;
-          esi_contact_name?: string | null;
+          contact_name?: string | null;
           esi_secretariat?: string | null;
           description?: string | null;
-          admin_mode?: "active" | "fallback";
+          status_mode?: "active" | "fallback";
           is_pilot?: boolean;
           created_at?: string;
           updated_at?: string;

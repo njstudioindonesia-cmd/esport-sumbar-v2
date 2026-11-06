@@ -226,8 +226,8 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       badgeNumber: "ESI-SB-2024-C002",
       certification: {
         isCertified: true,
-        name: "Lisensi Nasional B PBESI",
-        issuer: "Akademi Garudaku / PBESI",
+        name: "Lisensi Nasional B ESPORT SUMBAR",
+        issuer: "Akademi Garudaku / ESPORT SUMBAR",
         year: "2024",
       },
       achievements: [
@@ -265,8 +265,8 @@ export const GALLERY_CARDS: MockCardVariant[] = [
       badgeNumber: "ESI-SB-2023-C001",
       certification: {
         isCertified: true,
-        name: "Lisensi Kepelatihan A PBESI",
-        issuer: "PBESI Pusat",
+        name: "Lisensi Kepelatihan A ESPORT SUMBAR",
+        issuer: "ESPORT SUMBAR Pusat",
         year: "2023",
       },
       achievements: [

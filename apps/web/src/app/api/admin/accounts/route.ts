@@ -2,43 +2,50 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { verifyAdminAuth } from "@/lib/auth/api-guard";
 
-
 export async function GET(request: NextRequest) {
-  // Guard otentikasi & peran: hanya operator platform dan pengprov ESI
-  const { auth, errorResponse } = await verifyAdminAuth(["platform_operator", "prov_admin"]);
+  const { auth, errorResponse } = await verifyAdminAuth(["platform_admin"]);
   if (errorResponse) return errorResponse;
 
   try {
     const admin = createAdminClient();
-    const { data, error } = await admin
+    const { data: accountsData, error: accountsError } = await admin
       .from("accounts")
-      .select("id, email, role, assigned_region_id, is_active, created_at, regions(name, code)")
-      .in("role", ["platform_operator", "prov_admin", "region_admin"])
-      .order("created_at", { ascending: true });
+      .select("id, email, role, is_active, created_at")
+      .order("created_at", { ascending: false });
 
-    if (error) {
-      return NextResponse.json({ error: error.message, accounts: [] }, { status: 500 });
+    if (accountsError) {
+      return NextResponse.json({ error: accountsError.message, accounts: [] }, { status: 500 });
     }
 
-    const accounts = (data || []).map((acc: any) => ({
+    // Fetch linked profiles
+    const accountIds = (accountsData || []).map((a) => a.id);
+    const { data: profilesData } = await admin
+      .from("profiles")
+      .select("id, account_id, display_name, entity_type, esport_id, verification_status")
+      .in("account_id", accountIds);
+
+    const profileMap = new Map<string, any>();
+    (profilesData || []).forEach((p) => {
+      profileMap.set(p.account_id, {
+        id: p.id,
+        displayName: p.display_name,
+        entityType: p.entity_type,
+        esportId: p.esport_id,
+        verificationStatus: p.verification_status,
+      });
+    });
+
+    const accounts = (accountsData || []).map((acc: any) => ({
       id: acc.id,
-      name:
-        acc.role === "platform_operator"
-          ? "Operator Platform"
-          : acc.role === "prov_admin"
-          ? "Pengprov ESI Sumbar"
-          : `Pengcab ESI ${acc.regions?.name || "Daerah"}`,
       email: acc.email,
       role: acc.role,
-      assignedRegionCode: acc.regions?.code || (acc.role === "prov_admin" ? "SUMBAR" : "-"),
-      assignedRegionName: acc.regions?.name || (acc.role === "prov_admin" ? "Seluruh Sumatera Barat" : "Pusat"),
       status: acc.is_active ? "active" : "inactive",
-      lastLogin: "Aktif",
       createdAt: new Date(acc.created_at).toLocaleDateString("id-ID", {
         day: "numeric",
         month: "short",
         year: "numeric",
       }),
+      profile: profileMap.get(acc.id) || null,
     }));
 
     return NextResponse.json({ accounts });

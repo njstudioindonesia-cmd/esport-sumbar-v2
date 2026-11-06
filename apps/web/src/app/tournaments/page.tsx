@@ -54,7 +54,7 @@ export default function TournamentsPage() {
             Jadwal <span className="text-[#D4AF37]">Turnamen Esport</span> Sumbar
           </h1>
           <p className="text-sm text-[#9AA3B2] max-w-2xl leading-relaxed">
-            Kompetisi resmi terakreditasi Pengprov ESI Sumatera Barat. Raih Circuit Points resmi untuk kualifikasi Kejurda dan PON.
+            Kompetisi resmi terakreditasi ESPORT SUMBAR. Raih Circuit Points resmi untuk kualifikasi Kejurda dan PON.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function TournamentsPage() {
               Belum Ada Kejuaraan Aktif
             </h3>
             <p className="text-xs text-white/50 max-w-md mt-1 leading-relaxed">
-              Kalender Sirkuit Kejuaraan Resmi PBESI Sumatera Barat musim kompetisi 2026 sedang dalam tahap penyusunan teknis bersama Pengcab 19 Kota/Kabupaten.
+              Kalender Sirkuit Kejuaraan Resmi ESPORT SUMBAR musim kompetisi 2026 sedang dalam tahap penyusunan teknis bersama Wilayah 19 Kota/Kabupaten.
             </p>
           </div>
         ) : (

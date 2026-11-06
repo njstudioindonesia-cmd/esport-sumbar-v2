@@ -129,7 +129,7 @@ export function DynamicEntityFields({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
-                  Nama Lengkap (KTP / KIA)
+                  Nama Lengkap (Sesuai Akta / Identitas)
                 </label>
                 <FieldBadge required={true} visibility="P" />
               </div>

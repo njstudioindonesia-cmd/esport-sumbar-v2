@@ -474,15 +474,15 @@ export default function GaleriKartuPage() {
               <div className="flex items-start gap-2 text-xs p-2 rounded bg-[#12151C] border border-[#22C55E]/40">
                 <ShieldCheck className="w-3.5 h-3.5 text-[#22C55E] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-[#22C55E]">Regional Checked:</strong>
-                  <p className="text-[11px] text-[#9AA3B2]">Telah diperiksa dan disetujui oleh Pengcab ESI Kota/Kabupaten.</p>
+                  <strong className="text-[#22C55E]">Terverifikasi:</strong>
+                  <p className="text-[11px] text-[#9AA3B2]">Telah diperiksa dan disetujui oleh Komunitas Esport Kota/Kabupaten.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2 text-xs p-2 rounded bg-[#12151C] border border-[#D4AF37]/40">
                 <Award className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-[#D4AF37]">Verified (ESI Sumbar):</strong>
-                  <p className="text-[11px] text-[#9AA3B2]">Verifikasi resmi Pengprov ESI Sumbar + Nomor Register Lencana.</p>
+                  <p className="text-[11px] text-[#9AA3B2]">Verifikasi resmi ESPORT SUMBAR + Nomor Register Lencana.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2 text-xs p-2 rounded bg-[#12151C] border border-[#F59E0B]/40">

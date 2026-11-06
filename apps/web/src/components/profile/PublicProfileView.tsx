@@ -192,7 +192,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
               </div>
             </div>
 
-            {/* 2. Institutional PBESI Verification Guarantee Notice */}
+            {/* 2. Institutional ESPORT SUMBAR Verification Guarantee Notice */}
             <div className="p-4 rounded-2xl bg-gradient-to-r from-[#0F1118] to-[#12151D] border border-white/[0.08] flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] shrink-0">
@@ -200,13 +200,13 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                 </div>
                 <div>
                   <h4 className="font-heading font-bold text-xs uppercase text-white">
-                    Verifikasi PBESI Sumatera Barat
+                    Verifikasi ESPORT SUMBAR
                   </h4>
                   <p className="text-[11px] text-[#8E95A5] mt-0.5">
                     {verification === "verified"
                       ? `Lencana Emas resmi (No: ${data.badgeNumber || "ESI-SB-2026-0124"}) aktif 12 bulan.`
                       : verification === "regional"
-                      ? `Lolos verifikasi daerah Pengcab ${data.region.name}. Menunggu pleno provinsi.`
+                      ? `Lolos verifikasi daerah Wilayah ${data.region.name}. Menunggu pleno provinsi.`
                       : "Profil pendaftaran mandiri. Belum diverifikasi resmi ESI."}
                   </p>
                 </div>
@@ -326,7 +326,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                   <div className="p-3.5 rounded-2xl bg-[#0F1118] border border-white/[0.06] flex items-center gap-2.5 text-xs text-[#8E95A5]">
                     <Lock className="w-4 h-4 text-[#22C55E] shrink-0" />
                     <span>
-                      Data sensitif (NIK, nomor kontak, tanggal lahir) tersimpan aman di basis data privat terenkripsi.
+                      Data pribadi dan nomor kontak tersimpan aman di basis data privat terenkripsi sesuai UU PDP.
                     </span>
                   </div>
                 </div>
@@ -525,7 +525,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                   Laporan Diterima
                 </h3>
                 <p className="text-xs text-gray-400">
-                  Tim Pengawas PBESI Sumbar akan meninjau laporan ini dalam 2x24 jam.
+                  Tim Pengawas ESPORT SUMBAR akan meninjau laporan ini dalam 2x24 jam.
                 </p>
               </div>
             ) : (
@@ -546,7 +546,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                   >
                     <option value="fake_data">Data atlet / identitas palsu</option>
                     <option value="impersonation">Pencatutan nama klub / tim</option>
-                    <option value="cheating">Pelanggaran sportivitas / ban PBESI</option>
+                    <option value="cheating">Pelanggaran sportivitas / ban ESPORT SUMBAR</option>
                     <option value="other">Lainnya</option>
                   </select>
                 </div>

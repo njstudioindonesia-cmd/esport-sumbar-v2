@@ -64,7 +64,7 @@ export function DesktopPrivacyView() {
   const targetIgn = userProfile?.ign || userProfile?.displayName || "KONFIRMASI";
 
   const publicPreviewData = {
-    displayName: userProfile?.displayName || "Atlet PBESI",
+    displayName: userProfile?.displayName || "Atlet ESPORT SUMBAR",
     ign: userProfile?.ign || undefined,
     role: userProfile?.roleName || "Athlete",
     game: userProfile?.mainGameName || "Esport",
@@ -251,7 +251,7 @@ export function DesktopPrivacyView() {
                 </button>
               </div>
 
-              {/* 5. NIK / IDENTITAS HUKUM (PERMANENTLY LOCKED) */}
+              {/* 5. DATA KONTAK PRIBADI (PERMANENTLY LOCKED) */}
               <div className="p-4 rounded-2xl bg-black/40 border border-white/[0.04] flex items-center justify-between opacity-70">
                 <div className="flex items-center gap-3.5">
                   <div className="w-10 h-10 rounded-xl bg-white/[0.04] text-white/40 flex items-center justify-center shrink-0">
@@ -259,10 +259,10 @@ export function DesktopPrivacyView() {
                   </div>
                   <div>
                     <div className="text-xs font-heading font-bold text-white">
-                      Nomor Induk Kependudukan (NIK)
+                      Kontak Pribadi &amp; Tanggal Lahir
                     </div>
                     <div className="text-[11px] text-white/40">
-                      Wajib Terkunci (Dilindungi UU PDP No. 27/2022)
+                      Selalu Terlindungi (Kepatuhan UU PDP No. 27/2022)
                     </div>
                   </div>
                 </div>

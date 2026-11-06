@@ -29,7 +29,7 @@ export function InitialsAvatar({
 
   const initials = getInitials(name);
 
-  // Palet gradien sesuai estetika PBESI Sumbar & Rarity
+  // Palet gradien sesuai estetika ESPORT SUMBAR & Rarity
   const getGradient = (type: string) => {
     switch (type) {
       case "player":

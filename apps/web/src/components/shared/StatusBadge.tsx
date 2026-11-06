@@ -30,7 +30,7 @@ export function StatusBadge({ status, size = "md", className = "" }: StatusBadge
       text: "text-gray-400",
     },
     regional: {
-      label: "Regional Checked",
+      label: "Terverifikasi",
       icon: ShieldCheck,
       bg: "bg-[#22C55E]/15",
       border: "border-[#22C55E]/40",

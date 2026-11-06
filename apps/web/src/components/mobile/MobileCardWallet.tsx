@@ -283,7 +283,7 @@ export function MobileCardWallet() {
       <div>
         <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Paspor</h3>
         <p className="text-xs text-white/50 max-w-xs mt-1 leading-relaxed">
-          Anda belum memiliki kartu paspor digital resmi PBESI Sumatera Barat. Daftarkan identitas Anda sekarang untuk mendapatkan identitas esport resmi.
+          Anda belum memiliki kartu paspor digital resmi ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan identitas esport resmi.
         </p>
       </div>
       <Link

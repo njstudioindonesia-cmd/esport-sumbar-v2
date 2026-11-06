@@ -65,7 +65,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       id: "nav-regions",
       category: "Navigasi",
       title: "19 Kota & Kabupaten",
-      subtitle: "Peta struktur Pengcab ESI se-Sumbar",
+      subtitle: "Peta struktur Komunitas Esport se-Sumbar",
       href: "/regions",
       icon: MapPin,
     },
@@ -88,7 +88,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     {
       id: "nav-admin-region",
       category: "Navigasi",
-      title: "Portal Pengcab Padang",
+      title: "Portal Wilayah Padang",
       subtitle: "Akses antrean verifikasi daerah",
       href: "/admin/region",
       icon: Shield,
@@ -97,7 +97,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     {
       id: "nav-admin-province",
       category: "Navigasi",
-      title: "Portal Pengprov Sumbar",
+      title: "Portal ESPORT SUMBAR Sumbar",
       subtitle: "Otoritas tunggal Lencana Emas",
       href: "/admin/province",
       icon: Trophy,
@@ -166,10 +166,10 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           id: `region-${r.id}`,
           category: "Daerah",
           title: r.name,
-          subtitle: `Wilayah PBESI (${r.code}) · ${r.verifiedCount} profil`,
+          subtitle: `Wilayah ESPORT SUMBAR (${r.code}) · ${r.verifiedCount} profil`,
           href: `/regions/${r.slug}`,
           icon: MapPin,
-          badge: r.adminMode === "fallback" ? "FALLBACK" : "PENGCAB",
+          badge: "WILAYAH",
         });
       }
     });

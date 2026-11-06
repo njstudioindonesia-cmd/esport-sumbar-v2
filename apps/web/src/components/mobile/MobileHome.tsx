@@ -169,7 +169,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F121C]/80 border border-white/10 w-fit backdrop-blur-md">
             <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
             <span className="text-[10px] font-mono uppercase tracking-wider text-white/80">
-              Platform Resmi PBESI Sumbar
+              Platform Resmi ESPORT SUMBAR
             </span>
           </div>
 
@@ -178,7 +178,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           </h1>
 
           <p className="text-xs text-white/60 leading-relaxed">
-            Identitas digital atlet, rekam jejak turnamen, dan lisensi resmi berstandar Pengcab & Pengprov ESI.
+            Identitas digital atlet, rekam jejak turnamen, dan lisensi resmi berstandar Wilayah & ESPORT SUMBAR.
           </p>
 
           <Link
@@ -291,18 +291,18 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
                 <div className="flex items-center gap-2 mb-2 text-[#22C55E]">
                   <FileCheck className="w-4 h-4" />
                   <span className="font-heading font-black text-xs uppercase text-white tracking-wider">
-                    Mitra Kelembagaan ESI
+                    tim kurasi ESPORT SUMBAR
                   </span>
                 </div>
                 <span className="text-[9px] font-mono text-[#22C55E] uppercase font-bold block mb-2">
                   Diverifikasi Mitra
                 </span>
                 <p className="text-[11px] text-white/60 leading-relaxed">
-                  Pemeriksaan keabsahan domisili atlet oleh ESI Kota/Kabupaten dan verifikasi provinsi oleh Pengprov ESI Sumbar.
+                  Pemeriksaan keabsahan domisili atlet oleh ESI Kota/Kabupaten dan verifikasi provinsi oleh ESPORT SUMBAR.
                 </p>
               </div>
               <div className="mt-3 pt-2 border-t border-white/5 text-[9px] font-mono text-white/40">
-                19 Pengcab &amp; Pengprov
+                19 Wilayah &amp; ESPORT SUMBAR
               </div>
             </div>
           </div>

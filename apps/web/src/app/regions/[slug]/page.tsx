@@ -57,8 +57,6 @@ export default async function RegionDetailPage({
   const teamCount = regionProfiles.filter((p) => p.entityType === "team").length;
   const coachCount = regionProfiles.filter((p) => p.entityType === "coach").length;
 
-  const isAktif = region.adminMode === "active";
-
   return (
     <div className="min-h-screen bg-[#07080C] text-white flex flex-col select-none">
       <Navbar />
@@ -100,14 +98,8 @@ export default async function RegionDetailPage({
                 <span className="px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-[10px] font-mono text-[#D4AF37] font-bold uppercase">
                   {region.type === "kota" ? "KOTA OTONOM" : "KABUPATEN"}
                 </span>
-                <span
-                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase ${
-                    isAktif
-                      ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                      : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                  }`}
-                >
-                  {isAktif ? "PENGCAB AKTIF" : "FALLBACK PROVINSI"}
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold uppercase">
+                  WILAYAH TERDAFTAR
                 </span>
                 {region.isPilot && (
                   <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 text-[9px] font-mono font-black">
@@ -174,39 +166,31 @@ export default async function RegionDetailPage({
             </div>
           </div>
 
-          {/* KARTU PENGURUS ESI (5 COLS): KONTAK RESMI / FALLBACK */}
+          {/* KARTU PUSAT LAYANAN: PUSAT REGISTRASI & VERIFIKASI LANGSUNG */}
           <div className="col-span-12 lg:col-span-5 p-6 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col justify-between">
             <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-[#D4AF37]" />
                 <span className="font-heading font-black text-xs uppercase text-white tracking-wider">
-                  Otoritas Pengurus Cabang
+                  Layanan Wilayah Terpadu
                 </span>
               </div>
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isAktif ? "bg-emerald-400" : "bg-amber-400"
-                }`}
-              />
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
             </div>
 
             <div className="my-3 flex flex-col gap-1.5 text-xs">
               <div className="text-sm font-heading font-bold text-white">
-                {isAktif
-                  ? `Pengcab ESI ${region.name}`
-                  : `Pengprov ESI Sumatera Barat (Fallback)`}
+                Direktori Resmi {region.name}
               </div>
               <div className="text-[11px] font-mono text-white/50">
-                {isAktif
-                  ? "Sekretariat Cabang & Komisi Wasit Atlet"
-                  : "Penanganan administrasi dialihkan ke Sekretariat Pengprov Padang"}
+                Pendaftaran dan verifikasi profil dilayani langsung secara mandiri oleh ESPORT SUMBAR.
               </div>
             </div>
 
             <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] font-mono text-white/50">
-              <span>Status Administrasi:</span>
-              <span className={isAktif ? "text-emerald-400 font-bold" : "text-amber-400 font-bold"}>
-                {isAktif ? "Pelayanan Mandiri" : "Penugasan Provinsi"}
+              <span>Status Operasional:</span>
+              <span className="text-emerald-400 font-bold">
+                Terhubung Langsung
               </span>
             </div>
           </div>

@@ -113,7 +113,7 @@ export function MobileAdminPortal({
 
   // Metrics calculation
   const pendingCount = queueItems.filter(
-    (q) => q.status === "submitted" || q.status === "regional_checked"
+    (q) => q.status === "submitted" || q.status === "verified"
   ).length;
   const inReviewCount = queueItems.filter((q) => q.status === "in_review").length;
   const revisionCount = queueItems.filter((q) => q.status === "revision_needed").length;
@@ -130,7 +130,7 @@ export function MobileAdminPortal({
 
       const matchStatus =
         statusFilter === "all" ||
-        (statusFilter === "pending" && (item.status === "submitted" || item.status === "regional_checked")) ||
+        (statusFilter === "pending" && (item.status === "submitted" || item.status === "verified")) ||
         (statusFilter === "review" && item.status === "in_review") ||
         (statusFilter === "revision" && item.status === "revision_needed") ||
         (statusFilter === "fallback" && item.isFallback);
@@ -153,7 +153,7 @@ export function MobileAdminPortal({
       if (item.id === selectedReviewItem.id) {
         return {
           ...item,
-          status: (role === "province" ? "verified" : "regional_checked") as VerificationQueueItem["status"],
+          status: (role === "province" ? "verified" : "verified") as VerificationQueueItem["status"],
         };
       }
       return item;
@@ -255,7 +255,7 @@ export function MobileAdminPortal({
                   Portal Admin
                 </h1>
                 <span className="px-1.5 py-0.2 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[9px] font-mono text-[#D4AF37] font-bold">
-                  {role === "region" ? "Pengcab" : role === "province" ? "Pengprov" : "Operator"}
+                  {role === "region" ? "Wilayah" : role === "province" ? "ESPORT SUMBAR" : "Operator"}
                 </span>
               </div>
               <p className="text-[11px] text-[#8E95A5] font-mono">
@@ -309,7 +309,7 @@ export function MobileAdminPortal({
         <div className="mx-4 mt-3 p-3 rounded-2xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-2.5 text-[11px] text-blue-200">
           <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div className="leading-relaxed">
-            <strong className="text-white">Tata Kelola PBESI: </strong>
+            <strong className="text-white">Tata Kelola ESPORT SUMBAR: </strong>
             Operator Platform berfokus pada infrastruktur. Tombol verifikasi resmi dinonaktifkan permanen demi independensi kelembagaan ESI.
           </div>
         </div>
@@ -463,7 +463,7 @@ export function MobileAdminPortal({
                       <div>
                         <div className="font-bold text-white">Pasaman Barat</div>
                         <div className="text-[9px] text-amber-200/70">
-                          Tanpa Pengcab Aktif · Diampu Langsung Pengprov
+                          Tanpa Wilayah Aktif · Diampu Langsung ESPORT SUMBAR
                         </div>
                       </div>
                     </div>
@@ -883,7 +883,7 @@ export function MobileAdminPortal({
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-400">Wilayah PBESI</span>
+                        <span className="text-gray-400">Wilayah ESPORT SUMBAR</span>
                         <span className="font-bold text-white">
                           {selectedReviewItem.regionName} ({selectedReviewItem.regionCode})
                         </span>
@@ -998,7 +998,7 @@ export function MobileAdminPortal({
                 {role === "platform" ? (
                   /* OPERATOR GUARD: NO VERIFICATION BUTTONS */
                   <div className="text-center py-2 text-xs text-gray-400">
-                    Mode Pengawasan Platform — Tindakan verifikasi resmi didelegasikan ke Pengprov ESI.
+                    Mode Pengawasan Platform — Tindakan verifikasi resmi didelegasikan ke ESPORT SUMBAR.
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">

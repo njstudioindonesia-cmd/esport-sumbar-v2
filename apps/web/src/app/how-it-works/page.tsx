@@ -36,11 +36,11 @@ export default function HowItWorksPage() {
     },
     {
       q: "Apa perbedaan Frame Rarity dengan Lencana Verifikasi?",
-      a: "Frame Rarity menunjukkan tingkatan prestasi kompetitif atlet di platform ESPORT SUMBAR™. Sedangkan Lencana merupakan status pengesahan dari mitra kelembagaan ESI.",
+      a: "Frame Rarity menunjukkan tingkatan prestasi kompetitif atlet di platform ESPORT SUMBAR™. Sedangkan Lencana merupakan status pengesahan dari tim kurasi ESPORT SUMBAR.",
     },
     {
       q: "Siapa yang berhak memberikan verifikasi lencana resmi?",
-      a: "Verifikasi lencana kartu disetujui berjenjang oleh mitra kelembagaan: Pengcab ESI Kota/Kabupaten sebagai pemeriksa wilayah, dan Pengprov ESI Sumatera Barat sebagai verifikator provinsi. Platform dikelola independen oleh ESPORT SUMBAR™.",
+      a: "Verifikasi lencana kartu disetujui berjenjang oleh tata kelola mandiri: Komunitas Esport Kota/Kabupaten sebagai pemeriksa wilayah, dan ESPORT SUMBAR sebagai verifikator provinsi. Platform dikelola independen oleh ESPORT SUMBAR™.",
     },
     {
       q: "Berapa lama masa berlaku lencana verifikasi?",
@@ -88,13 +88,13 @@ export default function HowItWorksPage() {
               {
                 step: "02",
                 title: "Validasi Daerah",
-                desc: "Pengcab Kota/Kabupaten memeriksa identitas domisili dan dokumen.",
+                desc: "Wilayah Kota/Kabupaten memeriksa identitas domisili dan dokumen.",
                 icon: Award,
               },
               {
                 step: "03",
-                title: "Pengesahan Pengprov",
-                desc: "Pengprov ESI Sumbar menerbitkan lencana resmi bernomor seri nasional.",
+                title: "Pengesahan ESPORT SUMBAR",
+                desc: "ESPORT SUMBAR menerbitkan lencana resmi bernomor seri nasional.",
                 icon: ShieldCheck,
               },
             ].map((item, idx) => {
@@ -171,8 +171,8 @@ export default function HowItWorksPage() {
                     </span>
                   </td>
                   <td className="py-4 text-white/70">Silver Gloss Border</td>
-                  <td className="py-4 text-white/90">Validasi berkas identitas domisili oleh Pengcab Kota/Kab.</td>
-                  <td className="py-4 text-right pr-2 text-white/40">Pengcab</td>
+                  <td className="py-4 text-white/90">Validasi berkas identitas domisili oleh Wilayah Kota/Kab.</td>
+                  <td className="py-4 text-right pr-2 text-white/40">Wilayah</td>
                 </tr>
 
                 {/* TIER 3 */}
@@ -183,8 +183,8 @@ export default function HowItWorksPage() {
                     </span>
                   </td>
                   <td className="py-4 text-[#D4AF37]">Gold Mirror &amp; Hologram</td>
-                  <td className="py-4 text-white/90">Juara 1-3 Kejurda atau turnamen terverifikasi Pengprov ESI Sumbar.</td>
-                  <td className="py-4 text-right pr-2 text-[#D4AF37] font-bold">Pengprov</td>
+                  <td className="py-4 text-white/90">Juara 1-3 Kejurda atau turnamen terverifikasi ESPORT SUMBAR.</td>
+                  <td className="py-4 text-right pr-2 text-[#D4AF37] font-bold">ESPORT SUMBAR</td>
                 </tr>
 
                 {/* TIER 4 */}
@@ -196,7 +196,7 @@ export default function HowItWorksPage() {
                   </td>
                   <td className="py-4 text-purple-400">Crystal Chroma Animated</td>
                   <td className="py-4 text-white/90">Medali PON / Kejurnas atau lisensi kepelatihan nasional.</td>
-                  <td className="py-4 text-right pr-2 text-purple-400 font-bold">PBESI Pusat</td>
+                  <td className="py-4 text-right pr-2 text-purple-400 font-bold">ESPORT SUMBAR Pusat</td>
                 </tr>
               </tbody>
             </table>

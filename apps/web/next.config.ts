@@ -30,6 +30,30 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  async redirects() {
+    return [
+      {
+        source: "/admin/region/:path*",
+        destination: "/admin/verification",
+        permanent: true,
+      },
+      {
+        source: "/admin/province/:path*",
+        destination: "/admin/verification",
+        permanent: true,
+      },
+      {
+        source: "/admin/platform/:path*",
+        destination: "/admin",
+        permanent: true,
+      },
+      {
+        source: "/partners",
+        destination: "/about",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

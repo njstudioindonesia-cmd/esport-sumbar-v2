@@ -2,16 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 import { verifyAdminAuth } from "@/lib/auth/api-guard";
 
-
 export async function GET() {
-  const { auth, errorResponse } = await verifyAdminAuth(["platform_operator", "prov_admin"]);
+  const { auth, errorResponse } = await verifyAdminAuth(["platform_admin"]);
   if (errorResponse) return errorResponse;
 
   try {
     const admin = createAdminClient();
     const { data, error } = await admin
       .from("reports")
-      .select("id, reporter_account_id, target_profile_id, category, reason, evidence_urls, status, created_at, profiles(display_name, ign, esport_id)")
+      .select("id, reporter_account_id, target_profile_id, category, reason, evidence_urls, status, created_at, profiles(display_name, ign, esport_id, entity_type)")
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -24,13 +23,13 @@ export async function GET() {
       reportedProfileName: r.profiles?.display_name || "Profil Dilaporkan",
       reportedEsportId: r.profiles?.esport_id || "-",
       reportedType: (r.profiles?.entity_type ? r.profiles.entity_type.charAt(0).toUpperCase() + r.profiles.entity_type.slice(1) : "Player") as any,
-      regionCode: "PDG",
+      regionCode: "SB",
       regionName: "Sumatera Barat",
-      reporterName: r.reporter_account_id ? "Pengguna Terverifikasi" : "Masyarakat Umum",
+      reporterName: r.reporter_account_id ? "Pengguna Terdaftar" : "Masyarakat Umum",
       reasonCategory: (r.category || "fake_identity") as any,
       description: r.reason || "-",
       evidenceUrl: Array.isArray(r.evidence_urls) && r.evidence_urls.length > 0 ? r.evidence_urls[0] : undefined,
-      status: r.status === "forwarded_to_esi" ? "forwarded_to_province" : r.status === "resolved" ? "reviewed_clean" : "pending",
+      status: r.status === "resolved" ? "reviewed_clean" : r.status || "pending",
       reportedAt: new Date(r.created_at).toLocaleDateString("id-ID", {
         day: "numeric",
         month: "short",
@@ -46,7 +45,7 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
-  const { auth, errorResponse } = await verifyAdminAuth(["platform_operator", "prov_admin"]);
+  const { auth, errorResponse } = await verifyAdminAuth(["platform_admin"]);
   if (errorResponse) return errorResponse;
 
   try {
@@ -58,18 +57,12 @@ export async function PATCH(request: NextRequest) {
     }
 
     const admin = createAdminClient();
-    const dbStatus =
-      status === "forwarded_to_province"
-        ? "forwarded_to_esi"
-        : status === "reviewed_clean"
-        ? "resolved"
-        : status;
-
     const { error } = await admin
       .from("reports")
       .update({
-        status: dbStatus,
+        status,
         resolution_notes: resolutionNotes || null,
+        resolved_by: auth?.userId || null,
         updated_at: new Date().toISOString(),
       })
       .eq("id", reportId);
@@ -80,6 +73,7 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
+    console.error("API PATCH /api/admin/reports error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

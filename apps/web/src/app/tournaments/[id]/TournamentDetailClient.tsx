@@ -69,7 +69,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
             {tournament.isOfficialEsi && (
               <span className="flex items-center gap-1 px-2.5 py-0.5 rounded bg-[#22C55E]/20 border border-[#22C55E]/40 text-[#22C55E] text-[10px] font-heading font-extrabold">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Sertifikasi Resmi PBESI Sumbar
+                Sertifikasi Resmi ESPORT SUMBAR
               </span>
             )}
           </div>
@@ -103,7 +103,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
           <div className="flex items-center gap-2 border-b border-[#262B38] pt-2">
             {[
               { id: "bracket", label: "Bagan Pertandingan (Bracket)" },
-              { id: "rules", label: "Regulasi & Ketentuan PBESI" },
+              { id: "rules", label: "Regulasi & Ketentuan ESPORT SUMBAR" },
               { id: "register", label: "Pendaftaran Tim" },
             ].map((tab) => (
               <button
@@ -300,10 +300,10 @@ export default function TournamentDetailClient({ tournament }: Props) {
         {activeTab === "rules" && (
           <div className="p-6 sm:p-8 rounded-3xl bg-[#12151C] border border-[#262B38] shadow-xl flex flex-col gap-4">
             <h2 className="text-xl font-heading font-bold text-white uppercase">
-              Regulasi Resmi Pertandingan PBESI Sumatera Barat
+              Regulasi Standar Pertandingan ESPORT SUMBAR
             </h2>
             <p className="text-xs text-[#9AA3B2] leading-relaxed">
-              Seluruh peserta wajib membaca dan menaati kode etik dan regulasi resmi keolahragaan elektronik Pengprov ESI Sumbar:
+              Seluruh peserta wajib membaca dan menaati kode etik dan regulasi resmi keolahragaan elektronik ESPORT SUMBAR:
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
