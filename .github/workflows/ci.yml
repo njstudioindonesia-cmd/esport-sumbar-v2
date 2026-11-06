@@ -1,0 +1,52 @@
+name: ESPORT SUMBAR V3 Continuous Integration
+
+on:
+  push:
+    branches: [main, staging, "feature/**"]
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  quality-gate:
+    name: Turborepo Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install Monorepo Dependencies
+        run: npm ci
+
+      - name: Scan Hardcoded Secrets
+        run: node scripts/scan-secrets.js
+
+      - name: Sweep Forbidden Terms (Sapu Istilah V3)
+        run: node scripts/sweep-terms.js
+
+      - name: Validate Database Migrations
+        run: node scripts/check-migrations.js
+
+      - name: Type-Check Monorepo Workspaces
+        run: npm run type-check
+
+      - name: Lint Analysis
+        run: npm run lint
+
+      - name: Automated Unit & Contract Tests
+        run: npm run test
+
+      - name: Build Web Application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: "https://placeholder-esport-sumbar.supabase.co"
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: "placeholder-anon-key"
+          SUPABASE_SERVICE_ROLE_KEY: "placeholder-service-key"
+          NEXT_PUBLIC_SITE_URL: "https://esport-sumbar.vercel.app"

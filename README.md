@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ESPORT SUMBAR V3
 
-## Getting Started
+> Platform Ekosistem & Identitas Digital Esport Sumatera Barat.  
+> 100% Mandiri, Profesional, Berbasis Arsitektur Hibrida & Turborepo Monorepo.
 
-First, run the development server:
+---
+
+## Ringkasan Proyek
+
+ESPORT SUMBAR V3 adalah platform identitas digital terpadu untuk 7 entitas esport di Sumatera Barat: Atlet (*Player*), Pelatih (*Coach*), Tim (*Team*), Komunitas (*Community*), Arena (*Venue*), Sekolah (*School*), dan Perguruan Tinggi (*Campus*).
+
+### Fitur Utama V3
+- **Kartu Identitas Digital 3D:** Kartu visual interaktif dengan rarity frame, QR-code, dan nomor registrasi unik `ESP-SB-VER-YYYY-XXXX`.
+- **Verifikasi Satu Pintu:** Verifikasi langsung oleh tim verifikator ESPORT SUMBAR tanpa birokrasi berjenjang.
+- **Ekosistem Terhubung:** Relasi bilateral antar-entitas (keanggotaan roster tim, naungan komunitas, homebase venue, pembinaan sekolah) yang ditegakkan dengan aturan basis data.
+- **Katalog Game Dinamis:** Mendukung cabang game terkini termasuk **Honor of Kings (HOK)**, MLBB, Free Fire, PUBG Mobile, Valorant, Dota 2, dan CS2.
+- **Privasi & Keamanan:** Tanpa penyimpanan NIK/KTP. Akses admin terisolasi dengan otentikasi MFA.
+
+---
+
+## Struktur Monorepo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+├── apps/
+│   └── web/                   # Next.js 16 Web Application (App Router)
+├── packages/
+│   ├── contracts/             # Zod DTOs, Event Types v1, Verification Schemas
+│   ├── lib/                   # Structured Logger, Domain Errors, Constants
+│   └── config/                # Shared ESLint, TSConfig, Tailwind
+├── services/                  # Microservices Hono (Tahap Strangler)
+└── supabase/
+    └── migrations/            # SQL Migrations (Expand -> Migrate -> Contract)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Panduan Memulai Cepat
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prasyarat
+- Node.js >= 20.x (disarankan 22.x LTS)
+- npm >= 10.x atau pnpm >= 9.x
 
-## Learn More
+### Instalasi & Menjalankan Lokal
+```bash
+# 1. Pasang dependensi monorepo
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# 2. Salin template variabel lingkungan
+cp .env.example .env.local
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# 3. Jalankan server pengembangan
+npm run dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# 4. Jalankan pengujian otomatis & type-check
+npm run test
+npm run type-check
 
-## Deploy on Vercel
+# 5. Build aplikasi untuk produksi
+npm run build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Standar Kualitas & Skrip Audit
+- `npm run type-check`: Menjalankan pemeriksaan tipe TypeScript di seluruh workspace.
+- `npm run test`: Menjalankan test runner otomatis (Vitest).
+- `node scripts/sweep-terms.js`: Audit sapu istilah terlarang (menolak istilah ESI, Pengcab, dll.).
+- `node scripts/scan-secrets.js`: Pemindai kebocoran rahasia / service role key.
+- `node scripts/check-migrations.js`: Validasi format dan integritas berkas SQL migrasi.

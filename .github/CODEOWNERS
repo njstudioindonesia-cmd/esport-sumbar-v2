@@ -1,0 +1,9 @@
+# ESPORT SUMBAR V3 Codeowners
+# Menentukan penanggung jawab per area arsitektur
+
+*       @esport-sumbar/core-team
+/apps/  @esport-sumbar/frontend-leads
+/packages/contracts/ @esport-sumbar/architecture-team
+/packages/lib/       @esport-sumbar/architecture-team
+/services/           @esport-sumbar/backend-leads
+/supabase/           @esport-sumbar/database-architects

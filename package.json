@@ -1,35 +1,24 @@
 {
-  "name": "esport-sumbar",
-  "version": "0.1.0",
+  "name": "esport-sumbar-monorepo",
+  "version": "3.0.0",
   "private": true,
+  "packageManager": "npm@10.9.9",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.118.0",
-    "clsx": "^2.1.1",
-    "framer-motion": "^14.9.0",
-    "html-to-image": "^1.11.13",
-    "lucide-react": "^1.67.0",
-    "next": "16.4.5",
-    "qrcode.react": "^4.2.0",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "tailwind-merge": "^3.7.0",
-    "zod": "^4.6.7"
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "test": "vitest run",
+    "audit:secrets": "node scripts/scan-secrets.js",
+    "audit:terms": "node scripts/sweep-terms.js"
   },
   "devDependencies": {
-    "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.4.5",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "turbo": "^2.11.10",
+    "vitest": "^3.0.0"
   }
 }
