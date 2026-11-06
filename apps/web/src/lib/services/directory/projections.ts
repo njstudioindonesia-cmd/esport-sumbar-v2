@@ -235,7 +235,12 @@ export async function projectVerificationDecided(
         if (existing.rarityTier === "rookie") {
           existing.rarityTier = "contender";
         }
-      } else if (event.decision === "rejected" || event.decision === "suspended") {
+      } else if (
+        event.decision === "rejected" ||
+        event.decision === "suspended" ||
+        event.decision === "unverified" ||
+        event.decision === "expired"
+      ) {
         existing.verifiedBadgeNo = null;
       }
       existing.updatedAt = new Date().toISOString();
