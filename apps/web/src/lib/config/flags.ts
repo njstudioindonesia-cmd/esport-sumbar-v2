@@ -35,6 +35,17 @@ export const FLAGS = {
   },
 
   /**
+   * Layanan Direktori Terekstraksi (Sub-langkah 7.3 Microservices)
+   * Mengatur apakah pembacaan profil publik, pencarian, filter, dan statistik
+   * menggunakan Read Model denormalisasi dan cache berbasis peristiwa dari Directory Service.
+   * Nilai default: true. Jika diset false (via env FEATURE_FLAG_DIRECTORY_SERVICE=false),
+   * sistem seketika melakukan graceful rollback ke kueri monolit.
+   */
+  get USE_DIRECTORY_SERVICE(): boolean {
+    return process.env.FEATURE_FLAG_DIRECTORY_SERVICE !== "false";
+  },
+
+  /**
    * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
    */
   ENABLED_ENTITY_TYPES: [

@@ -3,6 +3,7 @@ import type { EntityType, RarityTier, VerificationStatus } from "@/lib/supabase/
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { FLAGS } from "@/lib/config/flags";
 import { getPublicProfileRelations, type ActiveRelationItem } from "@/lib/services/relations";
+import { searchDirectory } from "@/lib/services/directory";
 
 export interface UnifiedProfileDetail {
   id: string;
@@ -270,6 +271,59 @@ export async function getPublicProfilesList(
   const page = Math.max(1, options?.page || 1);
   const limit = Math.min(100, Math.max(1, options?.limit || 20));
   const offset = (page - 1) * limit;
+
+  // JALUR MIKROLAYANAN DIREKTORI (Sub-langkah 7.3)
+  if (FLAGS.USE_DIRECTORY_SERVICE) {
+    const dirRes = await searchDirectory({
+      entityType: options?.entityType,
+      regionCode: options?.regionCode,
+      gameId: options?.gameId,
+      verificationStatus: options?.verificationStatus,
+      rarityTier: options?.rarityTier,
+      search: options?.search,
+      sortBy: options?.sortBy,
+      page,
+      limit,
+    });
+
+    if (dirRes.items.length > 0 || !FLAGS.SHOW_DEMO_DATA) {
+      return {
+        profiles: dirRes.items.map((p) => ({
+          id: p.id,
+          accountId: p.accountId,
+          entityType: p.entityType,
+          esportId: p.esportId,
+          slug: p.slug,
+          displayName: p.displayName,
+          ign: p.ign,
+          regionId: p.regionId,
+          regionName: p.regionName,
+          regionCode: p.regionCode,
+          mainGameId: p.mainGameId,
+          mainGameName: p.mainGameName || undefined,
+          roleName: p.roleName,
+          avatarUrl: p.avatarUrl,
+          coverUrl: p.coverUrl,
+          bio: p.bio,
+          attributes: {},
+          visibility: { stats: true, history: true, achievements: true, email: false, phone: false, realName: true },
+          verificationStatus: p.verificationStatus,
+          verifiedBadgeNo: p.verifiedBadgeNo,
+          verifiedAt: p.verifiedAt,
+          rarityTier: p.rarityTier,
+          completenessScore: p.completenessScore,
+          isDemo: p.isDemo,
+          createdAt: p.createdAt,
+          updatedAt: p.updatedAt,
+          relations: [],
+        })),
+        total: dirRes.total,
+        page: dirRes.page,
+        limit: dirRes.limit,
+        totalPages: dirRes.totalPages,
+      };
+    }
+  }
 
   try {
     const supabase = createPublicServerClient();

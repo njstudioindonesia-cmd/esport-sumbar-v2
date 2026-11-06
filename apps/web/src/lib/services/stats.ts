@@ -1,5 +1,6 @@
 import { createPublicServerClient } from "@/lib/supabase/server";
 import { FLAGS } from "@/lib/config/flags";
+import { getDirectoryStats } from "@/lib/services/directory";
 
 export interface PlatformStats {
   totalEntities: number;
@@ -31,6 +32,25 @@ export interface RegionMapStat {
  * Mengambil ringkasan statistik platform dihitung dari view `public_profiles`
  */
 export async function getPlatformStats(): Promise<PlatformStats> {
+  // JALUR MIKROLAYANAN DIREKTORI (Sub-langkah 7.3)
+  if (FLAGS.USE_DIRECTORY_SERVICE) {
+    const dirStats = await getDirectoryStats();
+    if (dirStats.totalEntities > 0 || !FLAGS.SHOW_DEMO_DATA) {
+      return {
+        totalEntities: dirStats.totalEntities,
+        totalPlayers: dirStats.totalPlayers,
+        totalCoaches: dirStats.totalCoaches,
+        totalTeams: dirStats.totalTeams,
+        totalCommunities: dirStats.totalCommunities,
+        totalVenues: dirStats.totalVenues,
+        totalCampuses: dirStats.totalCampuses,
+        totalSchools: dirStats.totalSchools,
+        activeRegions: dirStats.activeRegions,
+        verifiedCount: dirStats.verifiedCount,
+      };
+    }
+  }
+
   try {
     const supabase = createPublicServerClient();
     let query = supabase.from("public_profiles").select("entity_type, region_code, verification_status, is_demo");

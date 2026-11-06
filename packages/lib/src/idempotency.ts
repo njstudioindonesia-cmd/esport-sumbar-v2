@@ -69,3 +69,10 @@ export async function withIdempotency<T>(
     throw error;
   }
 }
+
+/**
+ * Membersihkan cache idempotensi in-memory (berguna untuk isolasi pengujian unit)
+ */
+export function clearIdempotencyStore(): void {
+  inMemoryStore.clear();
+}
