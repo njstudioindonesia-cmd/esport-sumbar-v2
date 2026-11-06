@@ -18,6 +18,7 @@ import {
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { SharedProfileActions, VerificationStatusBadge } from "./SharedProfileHeader";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function VenueProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
   const [weeklyHoursOpen, setWeeklyHoursOpen] = useState(false);
@@ -117,7 +118,15 @@ export function VenueProfileTemplate({ profile }: { profile: UnifiedProfileDetai
         </div>
       </div>
 
-      {/* 4. GALERI VENUE (MAKS 8 FOTO) */}
+      {/* 4. EKOSISTEM: TIM, KOMUNITAS & INSTITUSI BERBASIS */}
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xs font-mono uppercase text-white/60 tracking-wider">
+          Ekosistem Terhubung ({Object.values(profile.groupedRelations || {}).flat().length || profile.relations?.length || 0})
+        </h3>
+        <ProfileEcosystemSection profile={profile} isOwner={profile.isOwner} />
+      </div>
+
+      {/* 5. GALERI VENUE (MAKS 8 FOTO) */}
       {gallery.length > 0 && (
         <div className="flex flex-col gap-3">
           <h3 className="text-xs font-mono uppercase text-white/60 tracking-wider">Galeri Venue</h3>

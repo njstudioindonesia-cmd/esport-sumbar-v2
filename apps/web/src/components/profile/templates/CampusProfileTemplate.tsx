@@ -15,6 +15,7 @@ import {
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { SharedProfileActions, VerificationStatusBadge } from "./SharedProfileHeader";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function CampusProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
   const [activeTab, setActiveTab] = useState<"about" | "achievements">("about");
@@ -93,6 +94,14 @@ export function CampusProfileTemplate({ profile }: { profile: UnifiedProfileDeta
             </span>
           </div>
         </div>
+      </div>
+
+      {/* 4. EKOSISTEM TERHUBUNG KAMPUS */}
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xs font-mono uppercase text-white/60 tracking-wider">
+          Ekosistem UKM Mahasiswa ({Object.values(profile.groupedRelations || {}).flat().length || profile.relations?.length || 0})
+        </h3>
+        <ProfileEcosystemSection profile={profile} isOwner={profile.isOwner} />
       </div>
     </div>
   );

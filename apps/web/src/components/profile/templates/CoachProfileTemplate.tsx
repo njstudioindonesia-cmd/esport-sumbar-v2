@@ -18,6 +18,7 @@ import {
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { SharedProfileActions, VerificationStatusBadge } from "./SharedProfileHeader";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function CoachProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
   const [activeTab, setActiveTab] = useState<"summary" | "teams" | "achievements">("summary");
@@ -147,7 +148,10 @@ export function CoachProfileTemplate({ profile }: { profile: UnifiedProfileDetai
           <div className="flex items-center gap-2 border-b border-white/[0.08] pt-2">
             {[
               { id: "summary", label: "Ringkasan" },
-              { id: "teams", label: "Tim yang Dilatih" },
+              {
+                id: "teams",
+                label: `Tim & Afiliasi (${Object.values(profile.groupedRelations || {}).flat().length || profile.relations?.length || 0})`,
+              },
               { id: "achievements", label: `Prestasi (${achievements.length})` },
             ].map((tab) => (
               <button
@@ -178,9 +182,7 @@ export function CoachProfileTemplate({ profile }: { profile: UnifiedProfileDetai
             )}
 
             {activeTab === "teams" && (
-              <div className="py-6 text-center text-xs text-white/40 bg-white/[0.02] rounded-2xl border border-white/[0.04]">
-                Sedang mengasuh tim divisi {profile.mainGameName}.
-              </div>
+              <ProfileEcosystemSection profile={profile} isOwner={profile.isOwner} />
             )}
 
             {activeTab === "achievements" && (

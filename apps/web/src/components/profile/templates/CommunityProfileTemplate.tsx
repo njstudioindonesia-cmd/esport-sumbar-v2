@@ -16,9 +16,10 @@ import {
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { SharedProfileActions, VerificationStatusBadge } from "./SharedProfileHeader";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function CommunityProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
-  const [activeTab, setActiveTab] = useState<"about" | "gallery" | "teams">("about");
+  const [activeTab, setActiveTab] = useState<"about" | "ecosystem" | "gallery">("about");
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
   const { attributes, gallery = [] } = profile;
@@ -97,17 +98,21 @@ export function CommunityProfileTemplate({ profile }: { profile: UnifiedProfileD
         </div>
       </div>
 
-      {/* 3. TABS: TENTANG | GALERI (MAKS 8) */}
-      <div className="flex items-center gap-2 border-b border-white/[0.08]">
+      {/* 3. TABS: TENTANG | EKOSISTEM | GALERI (MAKS 8) */}
+      <div className="flex items-center gap-2 border-b border-white/[0.08] overflow-x-auto">
         {[
           { id: "about", label: "Tentang Komunitas" },
+          {
+            id: "ecosystem",
+            label: `Ekosistem (${Object.values(profile.groupedRelations || {}).flat().length || profile.relations?.length || 0})`,
+          },
           { id: "gallery", label: `Galeri Foto (${gallery.length}/8)` },
         ].map((tab) => (
           <button
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id as any)}
-            className={`px-4 py-2.5 text-xs font-heading font-black tracking-wider uppercase transition-all relative ${
+            className={`px-4 py-2.5 text-xs font-heading font-black tracking-wider uppercase transition-all relative shrink-0 ${
               activeTab === tab.id ? "text-emerald-400" : "text-white/50 hover:text-white"
             }`}
           >
@@ -128,6 +133,10 @@ export function CommunityProfileTemplate({ profile }: { profile: UnifiedProfileD
               </p>
             </div>
           </div>
+        )}
+
+        {activeTab === "ecosystem" && (
+          <ProfileEcosystemSection profile={profile} isOwner={profile.isOwner} />
         )}
 
         {activeTab === "gallery" && (

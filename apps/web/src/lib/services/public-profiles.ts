@@ -2,6 +2,7 @@ import { createPublicServerClient } from "@/lib/supabase/server";
 import type { EntityType, RarityTier, VerificationStatus } from "@/lib/supabase/database.types";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { FLAGS } from "@/lib/config/flags";
+import { getPublicProfileRelations, type ActiveRelationItem } from "@/lib/services/relations";
 
 export interface UnifiedProfileDetail {
   id: string;
@@ -50,6 +51,7 @@ export interface UnifiedProfileDetail {
       verificationStatus: VerificationStatus;
     };
   }[];
+  groupedRelations?: Record<string, ActiveRelationItem[]>;
   achievements?: {
     id: string;
     title: string;
@@ -86,27 +88,30 @@ export async function getPublicProfileBySlug(
       .maybeSingle();
 
     if (profileRecord) {
-      // 2. Ambil relasi (Roster tim, Pelatih, Naungan) via tabel memberships
-      const { data: relationsData } = await supabase
-        .from("memberships")
-        .select(`
-          id,
-          role_in_org,
-          status,
-          member_profile_id,
-          profiles!memberships_member_profile_id_fkey (
-            id,
-            display_name,
-            ign,
-            avatar_url,
-            slug,
-            entity_type,
-            rarity_tier,
-            verification_status
-          )
-        `)
-        .eq("org_profile_id", profileRecord.id)
-        .eq("status", "accepted");
+      // 2. Ambil relasi aktif V3 (entity_relations) via getPublicProfileRelations
+      let groupedRelations: Record<string, ActiveRelationItem[]> = {};
+      try {
+        groupedRelations = await getPublicProfileRelations(profileRecord.id);
+      } catch (e) {
+        console.warn("Failed to fetch relations:", e);
+      }
+
+      const allRelationsList: ActiveRelationItem[] = Object.values(groupedRelations).flat();
+      const mappedRelations = allRelationsList.map((item) => ({
+        id: item.id,
+        roleInRelation: item.relationType,
+        status: item.status,
+        targetProfile: {
+          id: item.otherProfile.id,
+          displayName: item.otherProfile.displayName,
+          ign: item.otherProfile.ign,
+          avatarUrl: item.otherProfile.avatarUrl,
+          slug: item.otherProfile.slug,
+          entityType: item.otherProfile.entityType as EntityType,
+          rarityTier: (item.otherProfile.rarityTier as RarityTier) || "rookie",
+          verificationStatus: (item.otherProfile.verificationStatus as VerificationStatus) || "unverified",
+        },
+      }));
 
       // 3. Ambil prestasi
       const { data: achievementsData } = await supabase
@@ -122,22 +127,6 @@ export async function getPublicProfileBySlug(
         .eq("profile_id", profileRecord.id)
         .eq("kind", "gallery")
         .order("sort_order", { ascending: true });
-
-      const mappedRelations = (relationsData || []).map((r: any) => ({
-        id: r.id,
-        roleInRelation: r.role_in_org || "Anggota",
-        status: r.status,
-        targetProfile: {
-          id: r.profiles?.id || "",
-          displayName: r.profiles?.display_name || "",
-          ign: r.profiles?.ign,
-          avatarUrl: r.profiles?.avatar_url,
-          slug: r.profiles?.slug || "",
-          entityType: (r.profiles?.entity_type as EntityType) || "player",
-          rarityTier: (r.profiles?.rarity_tier as RarityTier) || "rookie",
-          verificationStatus: (r.profiles?.verification_status as VerificationStatus) || "unverified",
-        },
-      }));
 
       return {
         id: profileRecord.id,
@@ -170,6 +159,7 @@ export async function getPublicProfileBySlug(
         createdAt: profileRecord.created_at,
         updatedAt: profileRecord.updated_at,
         relations: mappedRelations,
+        groupedRelations,
         achievements: (achievementsData as any) || [],
         gallery: (galleryData || []).map((g: any) => ({
           id: g.id,

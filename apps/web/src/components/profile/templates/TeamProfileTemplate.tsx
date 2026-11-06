@@ -18,6 +18,7 @@ import {
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { SharedProfileActions, VerificationStatusBadge } from "./SharedProfileHeader";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function TeamProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
   const [activeTab, setActiveTab] = useState<"roster" | "achievements" | "about">("roster");
@@ -30,8 +31,8 @@ export function TeamProfileTemplate({ profile }: { profile: UnifiedProfileDetail
   const foundedYear = attributes.founded_year || 2023;
   const homebase = attributes.homebase || profile.regionName;
 
-  // Anggota roster aktif (hanya yang disetujui)
-  const rosterMembers = relations.filter((r) => r.status === "approved");
+  // Anggota roster aktif
+  const rosterMembers = profile.groupedRelations?.anggota || relations.filter((r) => r.status === "active" || r.status === "approved");
   const rosterCount = rosterMembers.length;
   const maxQuota = 7;
 
@@ -125,54 +126,9 @@ export function TeamProfileTemplate({ profile }: { profile: UnifiedProfileDetail
         ))}
       </div>
 
-      {/* 3. ISI TAB ROSTER TIM */}
+      {/* 3. ISI TAB ROSTER & EKOSISTEM TIM */}
       {activeTab === "roster" && (
-        <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {rosterMembers.length > 0 ? (
-              rosterMembers.map((member) => (
-                <Link
-                  key={member.id}
-                  href={`/player/${member.targetProfile.slug}`}
-                  className="p-3.5 rounded-2xl bg-[#12151F] border border-white/[0.06] hover:border-[#D4AF37]/50 flex items-center gap-3.5 transition-all group"
-                >
-                  <div className="w-12 h-14 rounded-xl overflow-hidden bg-black/40 border border-white/10 shrink-0">
-                    {member.targetProfile.avatarUrl ? (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img
-                        src={member.targetProfile.avatarUrl}
-                        alt={member.targetProfile.displayName}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                    ) : (
-                      <InitialsAvatar
-                        name={member.targetProfile.displayName}
-                        entityType="player"
-                        size="full"
-                      />
-                    )}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-heading font-bold text-white truncate group-hover:text-[#D4AF37] transition-colors">
-                      {member.targetProfile.displayName}
-                    </div>
-                    <div className="text-[10px] font-mono text-white/50 truncate">
-                      {member.targetProfile.ign ? `@${member.targetProfile.ign}` : member.roleInRelation}
-                    </div>
-                    <span className="inline-block mt-1 px-1.5 py-0.2 rounded bg-white/[0.04] text-[9px] font-mono text-amber-300">
-                      {member.roleInRelation}
-                    </span>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              <div className="col-span-full py-10 text-center text-xs text-white/40 bg-white/[0.02] rounded-2xl border border-white/[0.04]">
-                Roster resmi belum ditautkan. Hubungi manajer tim untuk pendaftaran roster.
-              </div>
-            )}
-          </div>
-        </div>
+        <ProfileEcosystemSection profile={profile} isOwner={profile.isOwner} />
       )}
 
       {/* 4. ISI TAB PRESTASI */}

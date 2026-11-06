@@ -15,6 +15,7 @@ import {
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { SharedProfileActions, VerificationStatusBadge } from "./SharedProfileHeader";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function SchoolProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
   const { attributes, achievements = [] } = profile;
@@ -100,6 +101,14 @@ export function SchoolProfileTemplate({ profile }: { profile: UnifiedProfileDeta
             Menyalurkan minat dan bakat esport pelajar {schoolName} ke arah positif, berprestasi, berdisiplin tinggi, serta seimbang dengan capaian akademik.
           </p>
         </div>
+      </div>
+
+      {/* 5. EKOSISTEM EKSKUL PELAJAR */}
+      <div className="flex flex-col gap-3">
+        <h3 className="text-xs font-mono uppercase text-white/60 tracking-wider">
+          Ekosistem Ekskul Pelajar ({Object.values(profile.groupedRelations || {}).flat().length || profile.relations?.length || 0})
+        </h3>
+        <ProfileEcosystemSection profile={profile} isOwner={profile.isOwner} />
       </div>
     </div>
   );

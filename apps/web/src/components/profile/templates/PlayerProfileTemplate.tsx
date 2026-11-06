@@ -20,9 +20,10 @@ import {
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { SharedProfileActions, VerificationStatusBadge } from "./SharedProfileHeader";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
+import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function PlayerProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
-  const [activeTab, setActiveTab] = useState<"summary" | "achievements" | "history">("summary");
+  const [activeTab, setActiveTab] = useState<"summary" | "ecosystem" | "achievements" | "history">("summary");
 
   const { attributes, achievements = [] } = profile;
   const isLookingForTeam = attributes.is_looking_for_team ?? false;
@@ -170,10 +171,14 @@ export function PlayerProfileTemplate({ profile }: { profile: UnifiedProfileDeta
             </div>
           )}
 
-          {/* NAVIGASI TAB: Ringkasan | Prestasi | Riwayat Tim */}
-          <div className="flex items-center gap-2 border-b border-white/[0.08] pt-2">
+          {/* NAVIGASI TAB: Ringkasan | Ekosistem | Prestasi | Riwayat Tim */}
+          <div className="flex items-center gap-2 border-b border-white/[0.08] pt-2 overflow-x-auto">
             {[
               { id: "summary", label: "Ringkasan" },
+              {
+                id: "ecosystem",
+                label: `Ekosistem (${Object.values(profile.groupedRelations || {}).flat().length || profile.relations?.length || 0})`,
+              },
               { id: "achievements", label: `Prestasi (${achievements.length})` },
               { id: "history", label: "Riwayat Tim" },
             ].map((tab) => (
@@ -181,7 +186,7 @@ export function PlayerProfileTemplate({ profile }: { profile: UnifiedProfileDeta
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`px-4 py-2 text-xs font-heading font-black tracking-wider uppercase transition-all relative ${
+                className={`px-4 py-2 text-xs font-heading font-black tracking-wider uppercase transition-all relative shrink-0 ${
                   activeTab === tab.id ? "text-[#D4AF37]" : "text-white/50 hover:text-white"
                 }`}
               >
@@ -212,6 +217,10 @@ export function PlayerProfileTemplate({ profile }: { profile: UnifiedProfileDeta
                   </div>
                 </div>
               </div>
+            )}
+
+            {activeTab === "ecosystem" && (
+              <ProfileEcosystemSection profile={profile} isOwner={profile.isOwner} />
             )}
 
             {activeTab === "achievements" && (

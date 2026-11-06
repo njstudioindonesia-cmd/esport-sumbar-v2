@@ -474,6 +474,90 @@ export type Database = {
         };
         Relationships: [];
       };
+      relation_rules: {
+        Row: {
+          id: string;
+          source_entity_type: EntityType;
+          target_entity_type: EntityType;
+          relation_type: string;
+          requires_approval: boolean;
+          max_active_limit: number;
+          game_match_required: boolean;
+          is_active: boolean;
+        };
+        Insert: {
+          id?: string;
+          source_entity_type: EntityType;
+          target_entity_type: EntityType;
+          relation_type: string;
+          requires_approval?: boolean;
+          max_active_limit?: number;
+          game_match_required?: boolean;
+          is_active?: boolean;
+        };
+        Update: {
+          id?: string;
+          source_entity_type?: EntityType;
+          target_entity_type?: EntityType;
+          relation_type?: string;
+          requires_approval?: boolean;
+          max_active_limit?: number;
+          game_match_required?: boolean;
+          is_active?: boolean;
+        };
+        Relationships: [];
+      };
+      entity_relations: {
+        Row: {
+          id: string;
+          source_profile_id: string;
+          target_profile_id: string;
+          relation_type: string;
+          game_id: string | null;
+          status: "pending" | "active" | "rejected" | "cancelled" | "expired" | "ended";
+          metadata_jsonb: Json;
+          expires_at: string | null;
+          started_at: string | null;
+          ended_at: string | null;
+          approved_by: string | null;
+          rejection_reason: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          source_profile_id: string;
+          target_profile_id: string;
+          relation_type: string;
+          game_id?: string | null;
+          status?: "pending" | "active" | "rejected" | "cancelled" | "expired" | "ended";
+          metadata_jsonb?: Json;
+          expires_at?: string | null;
+          started_at?: string | null;
+          ended_at?: string | null;
+          approved_by?: string | null;
+          rejection_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          source_profile_id?: string;
+          target_profile_id?: string;
+          relation_type?: string;
+          game_id?: string | null;
+          status?: "pending" | "active" | "rejected" | "cancelled" | "expired" | "ended";
+          metadata_jsonb?: Json;
+          expires_at?: string | null;
+          started_at?: string | null;
+          ended_at?: string | null;
+          approved_by?: string | null;
+          rejection_reason?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       achievements: {
         Row: {
           id: string;
