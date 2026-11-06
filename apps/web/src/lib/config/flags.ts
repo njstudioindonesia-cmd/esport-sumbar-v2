@@ -24,6 +24,17 @@ export const FLAGS = {
   },
 
   /**
+   * Layanan Notifikasi Terekstraksi (Sub-langkah 7.2 Microservices)
+   * Mengatur apakah pemrosesan notifikasi (konsumsi peristiwa, email, in-app,
+   * retry & dead-letter queue, dan preferensi pengguna) menggunakan Notification Service baru.
+   * Nilai default: true. Jika diset false (via env FEATURE_FLAG_NOTIFICATION_SERVICE=false),
+   * sistem seketika melakukan graceful rollback.
+   */
+  get USE_NOTIFICATION_SERVICE(): boolean {
+    return process.env.FEATURE_FLAG_NOTIFICATION_SERVICE !== "false";
+  },
+
+  /**
    * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
    */
   ENABLED_ENTITY_TYPES: [
