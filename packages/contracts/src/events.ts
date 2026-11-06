@@ -133,6 +133,33 @@ export const GameChangedEventSchema = z.object({
 });
 export type GameChangedEvent = z.infer<typeof GameChangedEventSchema>;
 
+// 7. Content & CMS Events
+export const ArticlePublishedEventSchema = z.object({
+  articleId: z.string().uuid(),
+  slug: z.string(),
+  title: z.string(),
+  category: z.string(),
+  authorId: z.string().nullable().optional(),
+  publishedAt: z.string().datetime(),
+});
+export type ArticlePublishedEvent = z.infer<typeof ArticlePublishedEventSchema>;
+
+export const ArticleUpdatedEventSchema = z.object({
+  articleId: z.string().uuid(),
+  slug: z.string(),
+  title: z.string(),
+  changedFields: z.array(z.string()),
+  updatedAt: z.string().datetime(),
+});
+export type ArticleUpdatedEvent = z.infer<typeof ArticleUpdatedEventSchema>;
+
+export const ArticleArchivedEventSchema = z.object({
+  articleId: z.string().uuid(),
+  slug: z.string(),
+  archivedAt: z.string().datetime(),
+});
+export type ArticleArchivedEvent = z.infer<typeof ArticleArchivedEventSchema>;
+
 /**
  * Katalog Resmi Peristiwa Domain V3 (Domain Event Catalog)
  * Mendefinisikan setiap peristiwa, produsen, dan layanan konsumen asinkronnya.
@@ -235,6 +262,27 @@ export const DOMAIN_EVENT_CATALOG: Record<string, EventCatalogEntry> = {
     aggregateType: "catalog",
     description: "Perubahan metadata game, role, atau rank pada katalog dinamis.",
     producers: ["catalog"],
+    consumers: ["directory", "audit"],
+  },
+  ArticlePublished: {
+    eventName: "ArticlePublished",
+    aggregateType: "content",
+    description: "Artikel berita atau pengumuman resmi berhasil dipublikasikan.",
+    producers: ["content"],
+    consumers: ["directory", "notification", "audit"],
+  },
+  ArticleUpdated: {
+    eventName: "ArticleUpdated",
+    aggregateType: "content",
+    description: "Konten atau metadata artikel berita diperbarui.",
+    producers: ["content"],
+    consumers: ["directory", "audit"],
+  },
+  ArticleArchived: {
+    eventName: "ArticleArchived",
+    aggregateType: "content",
+    description: "Artikel diarsipkan atau ditarik dari peredaran publik.",
+    producers: ["content"],
     consumers: ["directory", "audit"],
   },
 };

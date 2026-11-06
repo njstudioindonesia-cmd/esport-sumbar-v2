@@ -7,3 +7,4 @@ export * from "./schemas/profile";
 export * from "./schemas/media";
 export * from "./schemas/notification";
 export * from "./schemas/audit";
+export * from "./schemas/content";

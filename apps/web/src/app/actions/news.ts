@@ -2,6 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/server";
+import { FLAGS } from "@/lib/config/flags";
+import {
+  createArticle,
+  updateArticle,
+  deleteArticle,
+} from "@/lib/services/content";
 
 export interface ArticleInput {
   id?: string;
@@ -12,7 +18,7 @@ export interface ArticleInput {
   category: string;
   coverImageUrl?: string;
   regionId?: string | null;
-  status?: "draft" | "published" | "archived";
+  status?: "draft" | "editorial_review" | "published" | "archived";
 }
 
 function generateSlug(title: string): string {
@@ -30,13 +36,55 @@ function generateSlug(title: string): string {
  */
 export async function saveArticleAction(data: ArticleInput) {
   try {
-    const admin = createAdminClient();
     const slug = data.slug || generateSlug(data.title);
 
+    // Sub-langkah 7.5: Gunakan Layanan Konten jika Feature Flag aktif
+    if (FLAGS.USE_CONTENT_SERVICE) {
+      if (data.id) {
+        const updated = await updateArticle({
+          id: data.id,
+          title: data.title,
+          slug,
+          summary: data.summary,
+          content: data.content,
+          category: (data.category as any) || "umum",
+          coverImageUrl: data.coverImageUrl,
+          regionId: data.regionId,
+          status: data.status,
+        });
+
+        revalidatePath("/news");
+        revalidatePath(`/news/${updated.slug}`);
+        revalidatePath("/");
+        revalidatePath("/admin/news");
+
+        return { success: true, article: updated };
+      } else {
+        const created = await createArticle({
+          title: data.title,
+          slug,
+          summary: data.summary,
+          content: data.content,
+          category: (data.category as any) || "umum",
+          coverImageUrl: data.coverImageUrl,
+          regionId: data.regionId,
+          tags: [],
+          status: data.status || "published",
+        });
+
+        revalidatePath("/news");
+        revalidatePath(`/news/${created.slug}`);
+        revalidatePath("/");
+        revalidatePath("/admin/news");
+
+        return { success: true, article: created };
+      }
+    }
+
+    // Jalur Monolitik Warisan (Rollback Path)
+    const admin = createAdminClient();
     if (data.id) {
-      // Update
-      const { data: updated, error } = await admin
-        .from("articles")
+      const { data: updated, error } = await (admin.from("articles") as any)
         .update({
           title: data.title,
           slug,
@@ -47,7 +95,7 @@ export async function saveArticleAction(data: ArticleInput) {
           region_id: data.regionId || null,
           status: data.status || "published",
           updated_at: new Date().toISOString(),
-        } as any)
+        })
         .eq("id", data.id)
         .select()
         .single();
@@ -63,10 +111,8 @@ export async function saveArticleAction(data: ArticleInput) {
 
       return { success: true, article: updated };
     } else {
-      // Insert
       let finalSlug = slug;
-      let { data: inserted, error } = await admin
-        .from("articles")
+      let { data: inserted, error } = await (admin.from("articles") as any)
         .insert({
           title: data.title,
           slug: finalSlug,
@@ -77,15 +123,13 @@ export async function saveArticleAction(data: ArticleInput) {
           region_id: data.regionId || null,
           status: data.status || "published",
           published_at: data.status === "published" ? new Date().toISOString() : null,
-        } as any)
+        })
         .select()
         .single();
 
-      // Jika slug sudah pernah dipakai, tambahkan suffix unik secara otomatis
       if (error && (error as any).code === "23505") {
         finalSlug = `${slug}-${Date.now().toString().slice(-4)}`;
-        const retry = await admin
-          .from("articles")
+        const retry = await (admin.from("articles") as any)
           .insert({
             title: data.title,
             slug: finalSlug,
@@ -96,7 +140,7 @@ export async function saveArticleAction(data: ArticleInput) {
             region_id: data.regionId || null,
             status: data.status || "published",
             published_at: data.status === "published" ? new Date().toISOString() : null,
-          } as any)
+          })
           .select()
           .single();
         inserted = retry.data;
@@ -125,8 +169,16 @@ export async function saveArticleAction(data: ArticleInput) {
  */
 export async function deleteArticleAction(id: string) {
   try {
+    if (FLAGS.USE_CONTENT_SERVICE) {
+      await deleteArticle(id);
+      revalidatePath("/news");
+      revalidatePath("/");
+      revalidatePath("/admin/news");
+      return { success: true };
+    }
+
     const admin = createAdminClient();
-    const { error } = await admin.from("articles").delete().eq("id", id);
+    const { error } = await (admin.from("articles") as any).delete().eq("id", id);
 
     if (error) {
       return { success: false, error: error.message };

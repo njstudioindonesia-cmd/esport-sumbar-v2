@@ -57,6 +57,17 @@ export const FLAGS = {
   },
 
   /**
+   * Layanan Konten & CMS Terekstraksi (Sub-langkah 7.5 Microservices)
+   * Mengatur apakah pengelolaan artikel, alur editorial, taksonomi kategori,
+   * dan proyeksi berita publik menggunakan Content Service baru.
+   * Nilai default: true. Jika diset false (via env FEATURE_FLAG_CONTENT_SERVICE=false),
+   * sistem seketika melakukan graceful rollback ke kueri monolitik.
+   */
+  get USE_CONTENT_SERVICE(): boolean {
+    return process.env.FEATURE_FLAG_CONTENT_SERVICE !== "false";
+  },
+
+  /**
    * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
    */
   ENABLED_ENTITY_TYPES: [
