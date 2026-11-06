@@ -7,16 +7,16 @@
 INSERT INTO public.games (id, name, short_name, slug, publisher, category, genre, platform, is_active)
 VALUES
     ('game-hok', 'Honor of Kings', 'HOK', 'honor-of-kings', 'Level Infinite / TiMi Studio', 'MOBA Mobile', 'moba', 'mobile', TRUE),
-    ('game-mlbb', 'Mobile Legends: Bang Bang', 'MLBB', 'mobile-legends', 'Moonton', 'MOBA Mobile', 'moba', 'mobile', TRUE),
+    ('game-mlbb', 'Mobile Legends: Bang Bang', 'MLBB', 'mlbb', 'Moonton', 'MOBA Mobile', 'moba', 'mobile', TRUE),
     ('game-ff', 'Free Fire', 'FF', 'free-fire', 'Garena', 'Battle Royale', 'battle_royale', 'mobile', TRUE),
-    ('game-pubgm', 'PUBG Mobile', 'PUBGM', 'pubg-mobile', 'Krafton / Level Infinite', 'Battle Royale', 'battle_royale', 'mobile', TRUE),
+    ('game-pubgm', 'PUBG Mobile', 'PUBGM', 'pubgm', 'Krafton / Level Infinite', 'Battle Royale', 'battle_royale', 'mobile', TRUE),
     ('game-codm', 'Call of Duty: Mobile', 'CODM', 'call-of-duty-mobile', 'Activision / Garena', 'FPS Mobile', 'fps', 'mobile', TRUE),
     ('game-wildrift', 'League of Legends: Wild Rift', 'Wild Rift', 'wild-rift', 'Riot Games', 'MOBA Mobile', 'moba', 'mobile', TRUE),
     ('game-pokemon', 'Pokémon UNITE', 'Pokemon Unite', 'pokemon-unite', 'The Pokémon Company', 'MOBA', 'moba', 'cross_platform', TRUE),
-    ('game-valorant', 'Valorant', 'Valorant', 'valorant', 'Riot Games', 'Tactical FPS', 'fps', 'pc', TRUE),
+    ('game-val', 'Valorant', 'Valorant', 'valorant', 'Riot Games', 'Tactical FPS', 'fps', 'pc', TRUE),
     ('game-cs2', 'Counter-Strike 2', 'CS2', 'counter-strike-2', 'Valve', 'Tactical FPS', 'fps', 'pc', TRUE),
     ('game-dota2', 'Dota 2', 'Dota 2', 'dota-2', 'Valve', 'MOBA PC', 'moba', 'pc', TRUE),
-    ('game-efootball', 'eFootball', 'eFootball', 'efootball', 'Konami', 'Sports', 'sports', 'cross_platform', TRUE)
+    ('game-efootball', 'eFootball / FC Mobile', 'eFootball', 'efootball', 'Konami / EA Sports', 'Sports Simulation', 'sports', 'cross_platform', TRUE)
 ON CONFLICT (id) DO UPDATE SET
     name = EXCLUDED.name,
     short_name = EXCLUDED.short_name,
@@ -70,11 +70,11 @@ ON CONFLICT (game_id, role_name) DO NOTHING;
 -- Valorant
 INSERT INTO public.game_roles (game_id, role_name, description, sort_order)
 VALUES
-    ('game-valorant', 'Duelist', 'Pencari entry frag utama', 1),
-    ('game-valorant', 'Initiator', 'Pembuka ruang dan pengumpul informasi', 2),
-    ('game-valorant', 'Controller', 'Penyedia asap penutup pandangan', 3),
-    ('game-valorant', 'Sentinel', 'Pengunci area tapak bom dan pengintai', 4),
-    ('game-valorant', 'IGL', 'In-Game Leader taktik ronde', 5)
+    ('game-val', 'Duelist', 'Pencari entry frag utama', 1),
+    ('game-val', 'Initiator', 'Pembuka ruang dan pengumpul informasi', 2),
+    ('game-val', 'Controller', 'Penyedia asap penutup pandangan', 3),
+    ('game-val', 'Sentinel', 'Pengunci area tapak bom dan pengintai', 4),
+    ('game-val', 'IGL', 'In-Game Leader taktik ronde', 5)
 ON CONFLICT (game_id, role_name) DO NOTHING;
 
 -- Dota 2
