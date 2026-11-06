@@ -95,6 +95,31 @@ export async function getGamesCatalog(): Promise<DynamicGameWithDetails[]> {
 }
 
 /**
+ * Mengambil seluruh katalog game untuk panel admin (termasuk yang non-aktif).
+ */
+export async function getAllGamesForAdmin(): Promise<any[]> {
+  try {
+    const supabase = await createClient();
+    const { data: games, error } = await supabase
+      .from("games")
+      .select(`
+        id, name, short_name, slug, genre, platform, publisher, category, is_active,
+        game_roles(id, role_name, description, sort_order),
+        game_ranks(id, tier_name, tier_level, sort_order)
+      `)
+      .order("name", { ascending: true });
+
+    if (!error && games) {
+      return games;
+    }
+    return [];
+  } catch (err) {
+    console.warn("getAllGamesForAdmin fallback:", err);
+    return [];
+  }
+}
+
+/**
  * Mengambil detail game beserta role dan rank berdasarkan ID.
  */
 export async function getGameById(gameId: string): Promise<DynamicGameWithDetails | null> {

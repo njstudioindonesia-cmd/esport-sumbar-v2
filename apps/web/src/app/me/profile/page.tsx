@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getProfileByAccountId } from "@/lib/services/core/profile";
 
 export const instant = false;
 
 /**
  * Smart redirector untuk navigasi "Profil Saya" (SPEC 2.4).
- * Mengarahkan pengguna langsung ke profil publik resminya sendiri,
+ * Mengarahkan pengguna langsung ke profil resminya sendiri via Profile Service,
  * atau ke wizard pendaftaran jika belum memiliki profil.
  */
 export default async function MyProfileRedirectPage() {
@@ -16,16 +17,10 @@ export default async function MyProfileRedirectPage() {
     redirect("/login?redirect=/me/profile");
   }
 
-  // Cari profil yang dimiliki akun ini
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, entity_type, slug")
-    .eq("account_id", authData.user.id)
-    .order("created_at", { ascending: false })
-    .limit(1);
+  // Cari profil yang dimiliki akun ini via layanan core profile
+  const profile = await getProfileByAccountId(authData.user.id);
 
-  if (profiles && profiles.length > 0) {
-    const profile = profiles[0];
+  if (profile) {
     redirect(`/me/profile/${profile.id}/edit`);
   }
 

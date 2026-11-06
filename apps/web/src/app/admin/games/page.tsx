@@ -27,7 +27,6 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { createClient } from "@/lib/supabase/client";
 import {
   saveGameAction,
   toggleGameStatusAction,
@@ -91,22 +90,19 @@ export default function AdminGamesPage() {
   const fetchGames = useCallback(async () => {
     setIsLoading(true);
     try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("games")
-        .select(`
-          id, name, short_name, slug, genre, platform, publisher, category, is_active,
-          game_roles(id, role_name, description, sort_order),
-          game_ranks(id, tier_name, tier_level, sort_order)
-        `)
-        .order("name", { ascending: true });
-
-      if (!error && data) {
-        setGames(data as any);
-        if (detailGame) {
-          const updated = (data as any).find((g: any) => g.id === detailGame.id);
-          if (updated) setDetailGame(updated);
+      const res = await fetch("/api/admin/games");
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.games) {
+          setGames(json.games);
+          if (detailGame) {
+            const updated = json.games.find((g: any) => g.id === detailGame.id);
+            if (updated) setDetailGame(updated);
+          }
         }
+      } else {
+        const errJson = await res.json().catch(() => null);
+        showToast(errJson?.error || "Gagal memuat katalog game dari BFF", true);
       }
     } catch (err: any) {
       showToast("Gagal memuat katalog game: " + err.message, true);

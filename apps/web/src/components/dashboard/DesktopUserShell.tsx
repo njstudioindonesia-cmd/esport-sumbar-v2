@@ -20,7 +20,6 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { CommandPalette } from "@/components/shared/CommandPalette";
-import { createClient } from "@/lib/supabase/client";
 import { signOutAction } from "@/app/actions/auth";
 
 interface DesktopUserShellProps {
@@ -62,31 +61,25 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
     }
   }, []);
 
-  // Load real user session from Supabase
+  // Load user session & profile securely via BFF (/api/me/profiles)
   useEffect(() => {
-    const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      if (data?.user) {
-        Promise.all([
-          supabase.from("accounts").select("role").eq("id", data.user.id).maybeSingle(),
-          supabase
-            .from("profiles")
-            .select("display_name, entity_type, slug")
-            .eq("account_id", data.user.id)
-            .order("created_at", { ascending: false })
-            .limit(1),
-        ]).then(([accRes, profRes]) => {
-          const profile = profRes.data && profRes.data.length > 0 ? profRes.data[0] : null;
+    fetch("/api/me/profiles")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.user) {
+          const profile = data.profiles && data.profiles.length > 0 ? data.profiles[0] : null;
           setUserSession({
             email: data.user.email || "atlet@esportsumbar.id",
-            role: accRes.data?.role || "user",
-            displayName: profile?.display_name || data.user.user_metadata?.full_name || data.user.email?.split("@")[0],
-            entityType: profile?.entity_type || "player",
+            role: data.user.role || "user",
+            displayName: profile?.displayName || data.user.fullName || data.user.email?.split("@")[0],
+            entityType: profile?.entityType || "player",
             slug: profile?.slug || undefined,
           });
-        });
-      }
-    });
+        }
+      })
+      .catch((err) => {
+        console.warn("Gagal memuat profil pengguna dari BFF:", err);
+      });
   }, []);
 
   const handleSignOut = async () => {

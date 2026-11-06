@@ -43,7 +43,7 @@ export default function NewsIndexPage() {
               content: a.content ? [a.content] : [],
               category: a.category,
               region: a.regionName || "Sumatera Barat",
-              author: a.authorName || "Humas ESI Sumbar",
+              author: a.authorName || "Humas ESPORT SUMBAR",
               date: new Date(a.publishedAt).toLocaleDateString("id-ID", {
                 day: "numeric",
                 month: "short",
@@ -92,7 +92,7 @@ export default function NewsIndexPage() {
 
   const categories = [
     { id: "all", label: "Semua Kategori" },
-    { id: "Agenda Resmi ESI", label: "Agenda Mitra ESI" },
+    { id: "Agenda Resmi", label: "Agenda Resmi" },
     { id: "Turnamen Daerah", label: "Turnamen" },
     { id: "Tata Kelola", label: "Tata Kelola" },
     { id: "Prestasi Klub", label: "Prestasi" },

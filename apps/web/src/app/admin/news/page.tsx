@@ -264,7 +264,7 @@ export default function AdminNewsPage() {
               className="px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs text-white/80 focus:outline-none"
             >
               <option value="all">Semua Kategori</option>
-              <option value="Agenda Resmi ESI">Agenda Turnamen</option>
+              <option value="Agenda Resmi">Agenda Turnamen</option>
               <option value="Turnamen & Prestasi">Prestasi &amp; Turnamen</option>
               <option value="Profil Atlet">Profil Atlet</option>
               <option value="Komunitas">Komunitas</option>
@@ -377,7 +377,7 @@ export default function AdminNewsPage() {
                     onChange={(e) => setEditCategory(e.target.value as any)}
                     className="p-3 rounded-xl bg-black/40 border border-white/15 text-white focus:outline-none"
                   >
-                    <option value="Agenda Resmi ESI">Agenda Turnamen</option>
+                    <option value="Agenda Resmi">Agenda Turnamen</option>
                     <option value="Turnamen & Prestasi">Prestasi &amp; Turnamen</option>
                     <option value="Profil Atlet">Profil Atlet</option>
                     <option value="Komunitas">Komunitas</option>
