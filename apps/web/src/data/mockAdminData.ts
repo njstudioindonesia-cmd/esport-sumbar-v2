@@ -149,7 +149,7 @@ export const MOCK_REGIONAL_QUEUE: VerificationQueueItem[] = [
     documents: [
       {
         type: "akta_klub",
-        title: "Surat Keterangan Terdaftar Klub dari KONI Padang",
+        title: "Surat Keputusan Pengesahan Anggaran Dasar Klub ESPORT SUMBAR",
         url: "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600&auto=format&fit=crop",
         submittedAt: "14 Feb 2026",
         fileSize: "3.2 MB",
@@ -268,7 +268,7 @@ export const MOCK_REGIONAL_LOGS: ActivityLogItem[] = [
     targetId: "ESB-PDG-PL-000099",
     targetName: "Bambang Sudrajat (BAMBANG_BOY)",
     targetType: "Player",
-    reason: "Domisili KTP/identitas berlokasi di Pekanbaru, Riau. Diarahkan untuk mendaftar ke ESI Riau.",
+    reason: "Domisili identitas berlokasi di Pekanbaru, Riau. Wilayah pendaftaran di luar Sumatera Barat.",
     logHash: "sha256:3a4c11b0e922718efda38290a1b660233481f9b3b27b8862cfec031d36d4f91e",
   },
   {
@@ -281,7 +281,7 @@ export const MOCK_REGIONAL_LOGS: ActivityLogItem[] = [
     targetId: "ESB-PDG-TM-000005",
     targetName: "Khatib Squad Padang",
     targetType: "Team",
-    reason: "Surat rekomendasi klub terdaftar di KONI Padang lengkap dengan susunan pengurus.",
+    reason: "Dokumen legalitas dan struktur pengurus klub terverifikasi lengkap.",
     logHash: "sha256:1b920da87612f0e0ab395066491a329e7104b2a86377227e74cb2292f3e8f810",
   },
 ];
@@ -353,7 +353,7 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
     daysWaiting: 12,
     slaStatus: "warning",
     status: "submitted",
-    isFallback: true, // Wilayah tanpa Wilayah aktif -> ESI Provinsi bertindak langsung
+    isFallback: false,
     documents: [
       {
         type: "kartu_identitas",
@@ -406,8 +406,8 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
         fileSize: "4.2 MB",
       },
       {
-        type: "rekomendasi_koni",
-        title: "Surat Tanda Terdaftar Anggota KONI Padang",
+        type: "legalitas_organisasi",
+        title: "Sertifikat Registrasi Resmi ESPORT SUMBAR",
         url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
         submittedAt: "03 Mar 2026",
         fileSize: "1.3 MB",
@@ -498,14 +498,14 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
     targetId: "ESB-PDG-PL-000003",
     targetName: "Rizky 'Kaba' Ramadhan",
     targetType: "Player",
-    reason: "Pengesahan resmi verifikasi emas ESI Sumbar. Nomor Lencana: ESI-SB-VER-2026-0038 diterbitkan.",
+    reason: "Pengesahan resmi verifikasi ESPORT SUMBAR. Nomor Registrasi: ESP-SB-VER-2026-0038 diterbitkan.",
     logHash: "sha256:d89ef12ab34567890abcdef1234567890abcdef1234567890abcdef123456789",
   },
   {
     id: "log-prov-002",
     timestamp: "2026-03-03 15:40:00 WIB",
     actorRole: "Admin ESPORT SUMBAR",
-    actorName: "Komisi Disiplin ESI Sumbar",
+    actorName: "Komisi Disiplin ESPORT SUMBAR",
     regionCode: "SLK",
     action: "Tangguhkan",
     targetId: "ESB-SLK-PL-000077",
@@ -524,7 +524,7 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
     targetId: "ESB-BKT-TM-000002",
     targetName: "Bukittinggi Cyber Esports",
     targetType: "Team",
-    reason: "Pengesahan klub esport binaan ESI Kota Bukittinggi. Masa berlaku 12 bulan (Maret 2027).",
+    reason: "Pengesahan klub esport binaan ESPORT SUMBAR. Masa berlaku 12 bulan (Maret 2027).",
     logHash: "sha256:11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff",
   },
   {
@@ -577,7 +577,7 @@ export const MOCK_ADMIN_ACCOUNTS: AdminAccount[] = [
   {
     id: "adm-001",
     name: "Rizki Mahendra, S.Kom",
-    email: "admin.padang@esi-sumbar.id",
+    email: "admin.padang@esportsumbar.id",
     role: "admin_region",
     assignedRegionCode: "PDG",
     assignedRegionName: "Kota Padang",
@@ -588,7 +588,7 @@ export const MOCK_ADMIN_ACCOUNTS: AdminAccount[] = [
   {
     id: "adm-002",
     name: "Ahmad Fauzi, M.Pd",
-    email: "admin.bukittinggi@esi-sumbar.id",
+    email: "admin.bukittinggi@esportsumbar.id",
     role: "admin_region",
     assignedRegionCode: "BKT",
     assignedRegionName: "Kota Bukittinggi",
@@ -599,7 +599,7 @@ export const MOCK_ADMIN_ACCOUNTS: AdminAccount[] = [
   {
     id: "adm-003",
     name: "Drs. Hendri Chaniago",
-    email: "sekum@esi-sumbar.id",
+    email: "sekum@esportsumbar.id",
     role: "admin_province",
     assignedRegionCode: "SUMBAR",
     assignedRegionName: "Seluruh Sumatera Barat (ESPORT SUMBAR)",
@@ -610,7 +610,7 @@ export const MOCK_ADMIN_ACCOUNTS: AdminAccount[] = [
   {
     id: "adm-004",
     name: "Budi Santoso",
-    email: "admin.payakumbuh@esi-sumbar.id",
+    email: "admin.payakumbuh@esportsumbar.id",
     role: "admin_region",
     assignedRegionCode: "PYK",
     assignedRegionName: "Kota Payakumbuh",
@@ -621,7 +621,7 @@ export const MOCK_ADMIN_ACCOUNTS: AdminAccount[] = [
   {
     id: "adm-005",
     name: "Rahmat Hidayat",
-    email: "admin.solok@esi-sumbar.id",
+    email: "admin.solok@esportsumbar.id",
     role: "admin_region",
     assignedRegionCode: "SLK",
     assignedRegionName: "Kota Solok",

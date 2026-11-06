@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-11-06T16:28:48.460Z",
+  "environment": "development",
+  "mandate": "UU PDP No. 27/2022 & Mandat V3 Bagian 8.1",
+  "action": "dry_run",
+  "recordsAudited": 3,
+  "sensitiveAttributesRemoved": 0,
+  "storageFilesCleaned": 0,
+  "backupFileSha256": "1cd9d99b240b6ff1f77b47d26f49dd05ed55f98d320298073ca69bcdbe95702a"
+}

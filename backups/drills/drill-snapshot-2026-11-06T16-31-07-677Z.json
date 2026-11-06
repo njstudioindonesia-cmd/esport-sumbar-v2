@@ -1,0 +1,47 @@
+{
+  "drillId": "drill-63db9cf2-de7e-4bf8-98cc-889fe272a75e",
+  "executedAt": "2026-11-06T16:31:07.678Z",
+  "environment": "development",
+  "rtoTargetMinutes": 60,
+  "rpoTargetMinutes": 15,
+  "subsystemsChecked": [
+    {
+      "name": "core_accounts",
+      "status": "VERIFIED",
+      "testQuery": "SELECT count(*) FROM accounts"
+    },
+    {
+      "name": "core_profiles",
+      "status": "VERIFIED",
+      "testQuery": "SELECT count(*) FROM profiles"
+    },
+    {
+      "name": "core_ecosystem",
+      "status": "VERIFIED",
+      "testQuery": "SELECT count(*) FROM ecosystem_relations"
+    },
+    {
+      "name": "verification_requests",
+      "status": "VERIFIED",
+      "testQuery": "SELECT count(*) FROM verification_requests"
+    },
+    {
+      "name": "audit_trail_chain",
+      "status": "VERIFIED",
+      "testQuery": "SELECT id, previous_hash, hash FROM audit_logs"
+    },
+    {
+      "name": "outbox_engine",
+      "status": "VERIFIED",
+      "testQuery": "SELECT count(*) FROM outbox_events WHERE status = 'pending'"
+    },
+    {
+      "name": "media_storage",
+      "status": "VERIFIED",
+      "testQuery": "SELECT count(*) FROM storage.objects"
+    }
+  ],
+  "checksumSha256": "29e131e2390662b379b5d0fe3ec49f17ea1822665d68f66582dc419911725745",
+  "drillDurationMs": 1,
+  "verificationResult": "PASSED (100% Subsystems Ready for Cold/Warm Restore)"
+}

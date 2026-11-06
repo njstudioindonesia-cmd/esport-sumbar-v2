@@ -33,7 +33,7 @@ export interface TournamentItem {
   endDate: string;
   status: "pendaftaran" | "berlangsung" | "selesai";
   organizer: string;
-  isOfficialEsi: boolean;
+  isOfficial: boolean;
   rulesSummary: string;
   matches: TournamentMatch[];
 }
@@ -55,8 +55,8 @@ export interface CircuitLeaderboardEntry {
 export const MOCK_TOURNAMENTS: TournamentItem[] = [
   {
     id: "trn-01",
-    title: "Piala Gubernur ESI Sumatera Barat 2026",
-    slug: "piala-gubernur-esi-sumbar-2026",
+    title: "Piala Gubernur Esport Sumatera Barat 2026",
+    slug: "piala-gubernur-esport-sumbar-2026",
     tier: "Mayor (Provinsi)",
     game: "Mobile Legends: Bang Bang",
     gameShort: "MLBB",
@@ -67,8 +67,8 @@ export const MOCK_TOURNAMENTS: TournamentItem[] = [
     startDate: "20 Mei 2026",
     endDate: "24 Mei 2026",
     status: "berlangsung",
-    organizer: "Pengurus Provinsi ESI Sumatera Barat",
-    isOfficialEsi: true,
+    organizer: "ESPORT SUMBAR Official",
+    isOfficial: true,
     rulesSummary: "Sistem Single Elimination BO3 hingga Semifinal, Grand Finals BO5. Wajib menyertakan kartu verifikasi ESPORT ID aktif untuk seluruh roster.",
     matches: [
       {
@@ -160,7 +160,7 @@ export const MOCK_TOURNAMENTS: TournamentItem[] = [
     endDate: "14 Juni 2026",
     status: "pendaftaran",
     organizer: "Komunitas Esport Kota Padang x Dinas Pendidikan",
-    isOfficialEsi: true,
+    isOfficial: true,
     rulesSummary: "Khusus pelajar SMA/SMK se-Kota Padang dengan izin orang tua / wali sah sesuai UU PDP. Format Battle Royale 6 Match per Day.",
     matches: [],
   },
@@ -179,7 +179,7 @@ export const MOCK_TOURNAMENTS: TournamentItem[] = [
     endDate: "3 Juli 2026",
     status: "pendaftaran",
     organizer: "Komunitas Esport Bukittinggi",
-    isOfficialEsi: true,
+    isOfficial: true,
     rulesSummary: "Piala Bergilir Jam Gadang Cup divisi PUBG Mobile. Terbuka untuk klub berdomisili Bukittinggi, Agam, dan Tanah Datar.",
     matches: [],
   },

@@ -66,7 +66,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
             <span className="px-2.5 py-0.5 rounded bg-blue-950 border border-blue-800 text-[10px] font-mono text-blue-300 font-bold uppercase">
               {tournament.game}
             </span>
-            {tournament.isOfficialEsi && (
+            {tournament.isOfficial && (
               <span className="flex items-center gap-1 px-2.5 py-0.5 rounded bg-[#22C55E]/20 border border-[#22C55E]/40 text-[#22C55E] text-[10px] font-heading font-extrabold">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 Sertifikasi Resmi ESPORT SUMBAR

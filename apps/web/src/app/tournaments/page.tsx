@@ -116,10 +116,10 @@ export default function TournamentsPage() {
                     {t.gameShort}
                   </span>
 
-                  {t.isOfficialEsi && (
+                  {t.isOfficial && (
                     <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#22C55E]/20 border border-[#22C55E]/40 text-[#22C55E] text-[10px] font-heading font-extrabold">
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      Rekomendasi ESI
+                      Resmi ESPORT SUMBAR
                     </span>
                   )}
 

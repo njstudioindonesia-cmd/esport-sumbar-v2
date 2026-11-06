@@ -25,7 +25,7 @@ export interface VenueItem {
   pcCount?: number;
   mobileStations?: number;
   internetSpeedMbps: number;
-  verifiedByEsi: boolean;
+  isVerified: boolean;
   coordinates: {
     lat: number;
     lng: number;
@@ -43,7 +43,7 @@ export interface SchoolCampusItem {
   regionName: string;
   clubName: string;
   activePlayersCount: number;
-  supervisedByEsi: boolean;
+  isRegistered: boolean;
   coachName: string;
   achievementsCount: number;
   description: string;
@@ -124,7 +124,7 @@ export const MOCK_VENUES: VenueItem[] = [
     pcCount: 48,
     mobileStations: 20,
     internetSpeedMbps: 500,
-    verifiedByEsi: true,
+    isVerified: true,
     coordinates: { lat: -0.9471, lng: 100.3543 },
     contactPhone: "+62 751-897654",
     facilities: [
@@ -146,7 +146,7 @@ export const MOCK_VENUES: VenueItem[] = [
     pcCount: 32,
     mobileStations: 16,
     internetSpeedMbps: 300,
-    verifiedByEsi: true,
+    isVerified: true,
     coordinates: { lat: -0.3055, lng: 100.3692 },
     contactPhone: "+62 752-624119",
     facilities: [
@@ -167,7 +167,7 @@ export const MOCK_VENUES: VenueItem[] = [
     pcCount: 15,
     mobileStations: 25,
     internetSpeedMbps: 200,
-    verifiedByEsi: true,
+    isVerified: true,
     coordinates: { lat: -0.2248, lng: 100.6309 },
     contactPhone: "+62 812-7788-9900",
     facilities: [
@@ -188,7 +188,7 @@ export const MOCK_VENUES: VenueItem[] = [
     pcCount: 20,
     mobileStations: 40,
     internetSpeedMbps: 1000,
-    verifiedByEsi: true,
+    isVerified: true,
     coordinates: { lat: -0.9238, lng: 100.3601 },
     contactPhone: "+62 751-705123",
     facilities: [
@@ -210,7 +210,7 @@ export const MOCK_SCHOOLS: SchoolCampusItem[] = [
     regionName: "Kota Padang",
     clubName: "UNAND Titans Esports Association",
     activePlayersCount: 145,
-    supervisedByEsi: true,
+    isRegistered: true,
     coachName: "Fadli 'Tactician' Pratama",
     achievementsCount: 14,
     description: "UKM olahraga elektronik kampus terakreditasi dengan divisi Mobile Legends, PUBG Mobile, Valorant, dan eFootball.",
@@ -224,7 +224,7 @@ export const MOCK_SCHOOLS: SchoolCampusItem[] = [
     regionName: "Kota Padang",
     clubName: "UNP Cyber Warriors",
     activePlayersCount: 120,
-    supervisedByEsi: true,
+    isRegistered: true,
     coachName: "Romi Kurniawan, M.Pd",
     achievementsCount: 11,
     description: "Pusat riset dan pembinaan atlet mahasiswa dengan integrasi kurikulum kepelatihan Fakultas Ilmu Keolahragaan.",
@@ -238,7 +238,7 @@ export const MOCK_SCHOOLS: SchoolCampusItem[] = [
     regionName: "Kota Padang",
     clubName: "SMKN 2 Esports Pioneer",
     activePlayersCount: 65,
-    supervisedByEsi: true,
+    isRegistered: true,
     coachName: "Budi Satria, S.Kom",
     achievementsCount: 8,
     description: "Sekolah kejuruan teknologi pertama di Sumbar dengan ekstrakurikuler esport resmi di bawah bimbingan Komunitas Esport Padang.",
@@ -252,7 +252,7 @@ export const MOCK_SCHOOLS: SchoolCampusItem[] = [
     regionName: "Kota Bukittinggi",
     clubName: "Landbouw High Esports",
     activePlayersCount: 50,
-    supervisedByEsi: true,
+    isRegistered: true,
     coachName: "Dedi 'Analyst' Gunawan",
     achievementsCount: 6,
     description: "Sekolah menengah unggulan dengan tim PUBG Mobile peraih juara turnamen antar-pelajar tingkat provinsi.",
