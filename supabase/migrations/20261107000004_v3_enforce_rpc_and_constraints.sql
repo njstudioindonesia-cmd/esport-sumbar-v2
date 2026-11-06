@@ -136,9 +136,12 @@ BEGIN
     UPDATE public.verification_requests
     SET status = p_new_status,
         reviewer_id = v_actor_id,
+        current_reviewer_id = v_actor_id,
+        decided_at = CASE WHEN p_new_status IN ('verified', 'rejected', 'suspended') THEN NOW() ELSE decided_at END,
+        reviewed_at = NOW(),
         rejection_reason = CASE WHEN p_new_status IN ('rejected', 'revision_requested', 'suspended') THEN p_reason ELSE rejection_reason END,
         admin_notes = COALESCE(p_notes, admin_notes),
-        reviewed_at = NOW(),
+        notes = COALESCE(p_reason, p_notes, notes),
         updated_at = NOW()
     WHERE id = p_request_id;
 
@@ -153,26 +156,32 @@ BEGIN
 
     -- I. Tulis Audit Log Append-Only
     INSERT INTO public.audit_logs (
-        actor_id,
+        actor_account_id,
         actor_role,
+        region_id,
         action,
-        entity_type,
-        entity_id,
-        old_data,
-        new_data
+        target_type,
+        target_id,
+        previous_status,
+        new_status,
+        reason,
+        metadata_jsonb
     )
     VALUES (
         v_actor_id,
         v_actor_role,
+        v_profile.region_id,
         'VERIFICATION_TRANSITION_' || UPPER(p_new_status),
-        'verification_request',
-        p_request_id,
-        jsonb_build_object('status', v_old_status, 'profile_id', v_profile.id),
+        'profile',
+        v_profile.id::TEXT,
+        v_old_status,
+        p_new_status,
+        COALESCE(p_reason, 'Pembaruan status verifikasi'),
         jsonb_build_object(
-            'status', p_new_status,
-            'reason', p_reason,
+            'request_id', p_request_id,
             'badge_no', v_generated_badge_no,
-            'expires_at', v_expires_at
+            'expires_at', v_expires_at,
+            'admin_notes', p_notes
         )
     );
 

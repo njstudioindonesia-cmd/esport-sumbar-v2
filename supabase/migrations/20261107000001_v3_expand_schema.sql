@@ -40,6 +40,12 @@ ALTER TABLE public.verification_requests
         'rejected', 'suspended', 'expired'
     ));
 
+ALTER TABLE public.verification_requests 
+    ADD COLUMN IF NOT EXISTS reviewer_id UUID REFERENCES public.accounts(id) ON DELETE SET NULL,
+    ADD COLUMN IF NOT EXISTS rejection_reason TEXT,
+    ADD COLUMN IF NOT EXISTS admin_notes TEXT,
+    ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMPTZ;
+
 -- 4. Tambah kolom baru pada tabel games (genre, platform, icon_url)
 ALTER TABLE public.games 
     ADD COLUMN IF NOT EXISTS genre VARCHAR(50) DEFAULT 'other' CHECK (genre IN ('moba', 'battle_royale', 'fps', 'sports', 'fighting', 'racing', 'strategy', 'other')),
@@ -159,7 +165,7 @@ CREATE INDEX IF NOT EXISTS idx_outbox_events_status ON public.outbox_events(stat
 CREATE OR REPLACE VIEW public.audit_logs_view AS
 SELECT 
     id,
-    actor_id,
+    actor_account_id AS actor_id,
     CASE 
         WHEN actor_role = 'region_admin' THEN 'verifikator_daerah'
         WHEN actor_role = 'prov_admin' THEN 'verifikator_provinsi'
@@ -168,10 +174,12 @@ SELECT
     END AS display_role,
     actor_role AS raw_role,
     action,
-    entity_type,
-    entity_id,
-    old_data,
-    new_data,
-    ip_address,
-    created_at
+    target_type AS entity_type,
+    target_id AS entity_id,
+    previous_status AS old_status,
+    new_status,
+    reason,
+    metadata_jsonb,
+    actor_ip AS ip_address,
+    occurred_at AS created_at
 FROM public.audit_logs;

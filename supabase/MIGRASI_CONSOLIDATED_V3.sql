@@ -45,6 +45,12 @@ ALTER TABLE public.verification_requests
         'rejected', 'suspended', 'expired'
     ));
 
+ALTER TABLE public.verification_requests 
+    ADD COLUMN IF NOT EXISTS reviewer_id UUID REFERENCES public.accounts(id) ON DELETE SET NULL,
+    ADD COLUMN IF NOT EXISTS rejection_reason TEXT,
+    ADD COLUMN IF NOT EXISTS admin_notes TEXT,
+    ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMPTZ;
+
 -- 1.4 Tambah kolom baru pada tabel games
 ALTER TABLE public.games 
     ADD COLUMN IF NOT EXISTS genre VARCHAR(50) DEFAULT 'other' CHECK (genre IN ('moba', 'battle_royale', 'fps', 'sports', 'fighting', 'racing', 'strategy', 'other')),
@@ -163,7 +169,7 @@ CREATE INDEX IF NOT EXISTS idx_outbox_events_status ON public.outbox_events(stat
 CREATE OR REPLACE VIEW public.audit_logs_view AS
 SELECT 
     id,
-    actor_id,
+    actor_account_id AS actor_id,
     CASE 
         WHEN actor_role = 'region_admin' THEN 'verifikator_daerah'
         WHEN actor_role = 'prov_admin' THEN 'verifikator_provinsi'
@@ -172,12 +178,14 @@ SELECT
     END AS display_role,
     actor_role AS raw_role,
     action,
-    entity_type,
-    entity_id,
-    old_data,
-    new_data,
-    ip_address,
-    created_at
+    target_type AS entity_type,
+    target_id AS entity_id,
+    previous_status AS old_status,
+    new_status,
+    reason,
+    metadata_jsonb,
+    actor_ip AS ip_address,
+    occurred_at AS created_at
 FROM public.audit_logs;
 
 
@@ -499,9 +507,12 @@ BEGIN
     UPDATE public.verification_requests
     SET status = p_new_status,
         reviewer_id = v_actor_id,
+        current_reviewer_id = v_actor_id,
+        decided_at = CASE WHEN p_new_status IN ('verified', 'rejected', 'suspended') THEN NOW() ELSE decided_at END,
+        reviewed_at = NOW(),
         rejection_reason = CASE WHEN p_new_status IN ('rejected', 'revision_requested', 'suspended') THEN p_reason ELSE rejection_reason END,
         admin_notes = COALESCE(p_notes, admin_notes),
-        reviewed_at = NOW(),
+        notes = COALESCE(p_reason, p_notes, notes),
         updated_at = NOW()
     WHERE id = p_request_id;
 
@@ -514,16 +525,33 @@ BEGIN
     WHERE id = v_profile.id;
 
     INSERT INTO public.audit_logs (
-        actor_id, actor_role, action, entity_type, entity_id, old_data, new_data
+        actor_account_id,
+        actor_role,
+        region_id,
+        action,
+        target_type,
+        target_id,
+        previous_status,
+        new_status,
+        reason,
+        metadata_jsonb
     )
     VALUES (
         v_actor_id,
         v_actor_role,
+        v_profile.region_id,
         'VERIFICATION_TRANSITION_' || UPPER(p_new_status),
-        'verification_request',
-        p_request_id,
-        jsonb_build_object('status', v_old_status, 'profile_id', v_profile.id),
-        jsonb_build_object('status', p_new_status, 'reason', p_reason, 'badge_no', v_generated_badge_no, 'expires_at', v_expires_at)
+        'profile',
+        v_profile.id::TEXT,
+        v_old_status,
+        p_new_status,
+        COALESCE(p_reason, 'Pembaruan status verifikasi'),
+        jsonb_build_object(
+            'request_id', p_request_id,
+            'badge_no', v_generated_badge_no,
+            'expires_at', v_expires_at,
+            'admin_notes', p_notes
+        )
     );
 
     INSERT INTO public.outbox_events (event_name, aggregate_type, aggregate_id, payload)
