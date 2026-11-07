@@ -1,11 +1,11 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "version": "3.0.0",
-  "generatedAt": "2026-11-07T17:45:00.000Z",
+  "generatedAt": "2026-11-07T12:46:21.640Z",
   "summary": {
-    "totalRoutes": 52,
+    "totalRoutes": 66,
     "redesignCompleted": 0,
-    "redesignPending": 52
+    "redesignPending": 66
   },
   "routes": [
     {
@@ -14,11 +14,41 @@
       "name": "Beranda (Home)",
       "accessRole": "public",
       "template": "Hero + Stats + HowItWorks + Ecosystem + News + Featured + CTA",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/about", "/explore", "/news", "/login", "/register"],
-      "outboundLinks": ["/explore", "/players", "/teams", "/tournaments", "/how-it-works", "/about", "/login", "/register", "/news"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/about",
+        "/explore",
+        "/news",
+        "/login",
+        "/register"
+      ],
+      "outboundLinks": [
+        "/explore",
+        "/players",
+        "/teams",
+        "/tournaments",
+        "/how-it-works",
+        "/about",
+        "/login",
+        "/register",
+        "/news"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Hero sinematik kartu 3D di atas panggung liquid glass, scene prosedural"
     },
@@ -28,11 +58,37 @@
       "name": "Jelajah (Explore)",
       "accessRole": "public",
       "template": "Filter Kaca + Search + Grid Kartu 7 Bidang",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/players", "/teams"],
-      "outboundLinks": ["/player/[slug]", "/coach/[slug]", "/team/[slug]", "/community/[slug]", "/venue/[slug]", "/campus/[slug]", "/school/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/players",
+        "/teams"
+      ],
+      "outboundLinks": [
+        "/player/[slug]",
+        "/coach/[slug]",
+        "/team/[slug]",
+        "/community/[slug]",
+        "/venue/[slug]",
+        "/campus/[slug]",
+        "/school/[slug]"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Pencarian kaca, filter game dinamis, shared element transition"
     },
@@ -42,11 +98,30 @@
       "name": "Direktori Atlet (Players)",
       "accessRole": "public",
       "template": "Direktori Spesifik Atlet",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore"],
-      "outboundLinks": ["/player/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/player/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -55,11 +130,30 @@
       "name": "Direktori Pelatih (Coaches)",
       "accessRole": "public",
       "template": "Direktori Spesifik Pelatih",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore"],
-      "outboundLinks": ["/coach/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/coach/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -68,11 +162,30 @@
       "name": "Direktori Tim/Klub (Teams)",
       "accessRole": "public",
       "template": "Direktori Spesifik Tim",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore"],
-      "outboundLinks": ["/team/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/team/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -81,11 +194,30 @@
       "name": "Direktori Komunitas (Communities)",
       "accessRole": "public",
       "template": "Direktori Spesifik Komunitas",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore"],
-      "outboundLinks": ["/community/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/community/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -94,11 +226,31 @@
       "name": "Direktori Arena & Venue (Venues)",
       "accessRole": "public",
       "template": "Direktori Spesifik Venue",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore", "/map"],
-      "outboundLinks": ["/venue/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore",
+        "/map"
+      ],
+      "outboundLinks": [
+        "/venue/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -107,11 +259,30 @@
       "name": "Direktori Perguruan Tinggi (Campuses)",
       "accessRole": "public",
       "template": "Direktori Kampus & UKM Esport",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore"],
-      "outboundLinks": ["/campus/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/campus/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -120,11 +291,30 @@
       "name": "Direktori Sekolah (Schools)",
       "accessRole": "public",
       "template": "Direktori Sekolah & Ekstrakurikuler",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore"],
-      "outboundLinks": ["/school/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/school/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -133,11 +323,32 @@
       "name": "Profil Publik Atlet",
       "accessRole": "public",
       "template": "Stage Kaca + Kartu TCG Player + Ekosistem + Prestasi",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/players", "/explore", "/team/[slug]"],
-      "outboundLinks": ["/explore", "/team/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/players",
+        "/explore",
+        "/team/[slug]"
+      ],
+      "outboundLinks": [
+        "/explore",
+        "/team/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -146,11 +357,31 @@
       "name": "Profil Publik Pelatih",
       "accessRole": "public",
       "template": "Stage Kaca + Kartu TCG Coach + Ekosistem + Sertifikasi",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/coaches", "/explore"],
-      "outboundLinks": ["/explore", "/team/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/coaches",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/explore",
+        "/team/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -159,11 +390,31 @@
       "name": "Profil Publik Tim/Klub",
       "accessRole": "public",
       "template": "Stage Kaca + Kartu TCG Team + Roster + Divisi Game",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/teams", "/explore"],
-      "outboundLinks": ["/player/[slug]", "/coach/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/teams",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/player/[slug]",
+        "/coach/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -172,11 +423,30 @@
       "name": "Profil Publik Komunitas",
       "accessRole": "public",
       "template": "Stage Kaca + Kartu TCG Community + Event + Anggota",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/communities", "/explore"],
-      "outboundLinks": ["/explore"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/communities",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/explore"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -185,11 +455,32 @@
       "name": "Profil Publik Venue",
       "accessRole": "public",
       "template": "Stage Kaca + Kartu TCG Venue + Fasilitas + Lokasi",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/venues", "/explore", "/map"],
-      "outboundLinks": ["/explore", "/map"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/venues",
+        "/explore",
+        "/map"
+      ],
+      "outboundLinks": [
+        "/explore",
+        "/map"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -198,11 +489,30 @@
       "name": "Profil Publik Kampus",
       "accessRole": "public",
       "template": "Stage Kaca + Kartu TCG Campus + UKM Esport",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/campuses", "/explore"],
-      "outboundLinks": ["/explore"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/campuses",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/explore"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -211,11 +521,30 @@
       "name": "Profil Publik Sekolah",
       "accessRole": "public",
       "template": "Stage Kaca + Kartu TCG School + Proteksi Pelajar",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/schools", "/explore"],
-      "outboundLinks": ["/explore"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/schools",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/explore"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -224,11 +553,30 @@
       "name": "Wilayah Geografi 19 Kota/Kab",
       "accessRole": "public",
       "template": "Grid Bento 19 Wilayah Geografi Murni",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/map"],
-      "outboundLinks": ["/regions/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/map"
+      ],
+      "outboundLinks": [
+        "/regions/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -237,11 +585,29 @@
       "name": "Detail Wilayah Geografi",
       "accessRole": "public",
       "template": "Data Geografi + Distribusi Entitas Terdaftar",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/regions"],
-      "outboundLinks": ["/explore"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/regions"
+      ],
+      "outboundLinks": [
+        "/explore"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -250,11 +616,31 @@
       "name": "Peta Ekosistem Sumbar (7 Entitas)",
       "accessRole": "public",
       "template": "Graf Hubungan Interaktif + Diagram Entitas Terhubung",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/how-it-works"],
-      "outboundLinks": ["/explore", "/onboarding"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/how-it-works"
+      ],
+      "outboundLinks": [
+        "/explore",
+        "/onboarding"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -263,11 +649,30 @@
       "name": "Katalog Game Dinamis",
       "accessRole": "public",
       "template": "Daftar Cabang Game Terdaftar & Aturan Role/Tier",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/explore"],
-      "outboundLinks": ["/explore"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/explore"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -277,11 +682,29 @@
       "name": "Portal Warta & Artikel",
       "accessRole": "public",
       "template": "Feed Warta Esport Sumbar",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/"],
-      "outboundLinks": ["/news/[slug]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/"
+      ],
+      "outboundLinks": [
+        "/news/[slug]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -290,11 +713,29 @@
       "name": "Detail Artikel Warta",
       "accessRole": "public",
       "template": "QuietSurface Permukaan Baca Tenang",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/news"],
-      "outboundLinks": ["/news"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/news"
+      ],
+      "outboundLinks": [
+        "/news"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -303,11 +744,31 @@
       "name": "Tentang Kami (About)",
       "accessRole": "public",
       "template": "Tata Kelola Mandiri + Filosofi + Identitas",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "footer"],
-      "outboundLinks": ["/how-it-works", "/verification-standard"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "footer"
+      ],
+      "outboundLinks": [
+        "/how-it-works",
+        "/verification-standard"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -316,11 +777,31 @@
       "name": "Cara Kerja (5 Langkah)",
       "accessRole": "public",
       "template": "Alur 5 Langkah Transparan",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/about"],
-      "outboundLinks": ["/register", "/onboarding"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/about"
+      ],
+      "outboundLinks": [
+        "/register",
+        "/onboarding"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -329,11 +810,30 @@
       "name": "Standar Verifikasi Tunggal",
       "accessRole": "public",
       "template": "QuietSurface Regulasi Verifikasi Satu Tahap",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/about", "/how-it-works"],
-      "outboundLinks": ["/onboarding"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/about",
+        "/how-it-works"
+      ],
+      "outboundLinks": [
+        "/onboarding"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -343,11 +843,30 @@
       "name": "Pemeriksaan Publik Lencana & Identitas",
       "accessRole": "public",
       "template": "Kartu Verifikasi Publik Berdasarkan ESPORT ID / Badge No",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["QR Code Kartu", "/explore"],
-      "outboundLinks": ["/explore"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "QR Code Kartu",
+        "/explore"
+      ],
+      "outboundLinks": [
+        "/explore"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -357,11 +876,30 @@
       "name": "Kebijakan Pelindungan Data Pribadi",
       "accessRole": "public",
       "template": "QuietSurface Regulasi Data",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["footer"],
-      "outboundLinks": ["/terms", "/contact"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "footer"
+      ],
+      "outboundLinks": [
+        "/terms",
+        "/contact"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -370,11 +908,29 @@
       "name": "Syarat & Ketentuan Layanan",
       "accessRole": "public",
       "template": "QuietSurface Legal",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["footer"],
-      "outboundLinks": ["/privacy"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "footer"
+      ],
+      "outboundLinks": [
+        "/privacy"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -383,11 +939,29 @@
       "name": "Pedoman & Kebijakan Konten",
       "accessRole": "public",
       "template": "QuietSurface Pedoman Komunitas & UGC",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["footer"],
-      "outboundLinks": ["/terms"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "footer"
+      ],
+      "outboundLinks": [
+        "/terms"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -397,11 +971,29 @@
       "name": "Kontak & Narahubung",
       "accessRole": "public",
       "template": "QuietSurface Formulir Kontak Resmi Platform",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["footer"],
-      "outboundLinks": ["/faq"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "footer"
+      ],
+      "outboundLinks": [
+        "/faq"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -411,11 +1003,30 @@
       "name": "Tanya Jawab (FAQ)",
       "accessRole": "public",
       "template": "Akordion Kaca FAQ",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["footer", "/how-it-works"],
-      "outboundLinks": ["/contact"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "footer",
+        "/how-it-works"
+      ],
+      "outboundLinks": [
+        "/contact"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -425,11 +1036,32 @@
       "name": "Masuk Akun",
       "accessRole": "guest",
       "template": "Kartu Kaca di atas Scene Prosedural",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/", "/register"],
-      "outboundLinks": ["/register", "/forgot-password", "/dashboard"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/",
+        "/register"
+      ],
+      "outboundLinks": [
+        "/register",
+        "/forgot-password",
+        "/dashboard"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -438,11 +1070,30 @@
       "name": "Daftar Akun",
       "accessRole": "guest",
       "template": "Kartu Kaca di atas Scene Prosedural",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/login"],
-      "outboundLinks": ["/login", "/onboarding"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/login"
+      ],
+      "outboundLinks": [
+        "/login",
+        "/onboarding"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -451,11 +1102,29 @@
       "name": "Lupa Kata Sandi",
       "accessRole": "guest",
       "template": "Kartu Kaca Permintaan Reset",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/login"],
-      "outboundLinks": ["/login"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/login"
+      ],
+      "outboundLinks": [
+        "/login"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -465,11 +1134,30 @@
       "name": "Atur Ulang Kata Sandi",
       "accessRole": "guest",
       "template": "Kartu Kaca Input Kata Sandi Baru",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/forgot-password", "Email link"],
-      "outboundLinks": ["/login"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/forgot-password",
+        "Email link"
+      ],
+      "outboundLinks": [
+        "/login"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
@@ -479,11 +1167,30 @@
       "name": "Handler Callback Auth",
       "accessRole": "guest/user",
       "template": "Layar Peralihan Status Autentikasi",
-      "states": ["loading", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["Supabase Auth Redirect"],
-      "outboundLinks": ["/dashboard", "/onboarding", "/login"],
+      "states": [
+        "loading",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "Supabase Auth Redirect"
+      ],
+      "outboundLinks": [
+        "/dashboard",
+        "/onboarding",
+        "/login"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -492,11 +1199,31 @@
       "name": "Onboarding Pilih 1 Bidang",
       "accessRole": "authenticated",
       "template": "Wizard 7 Bidang Responsif Konsolidasi",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/register", "/dashboard"],
-      "outboundLinks": ["/me/card", "/dashboard"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/register",
+        "/dashboard"
+      ],
+      "outboundLinks": [
+        "/me/card",
+        "/dashboard"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Konsolidasi satu komponen responsif DesktopCardWizard + MobileCardWizard"
     },
@@ -506,11 +1233,33 @@
       "name": "Dashboard Pengguna",
       "accessRole": "authenticated",
       "template": "GlassSidebar + Kartu Stat + Ringkasan Ekosistem",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/login", "/onboarding"],
-      "outboundLinks": ["/me", "/me/card", "/me/verification", "/me/ecosystem"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/login",
+        "/onboarding"
+      ],
+      "outboundLinks": [
+        "/me",
+        "/me/card",
+        "/me/verification",
+        "/me/ecosystem"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -519,11 +1268,30 @@
       "name": "Profil Saya",
       "accessRole": "authenticated",
       "template": "Stage Kaca Profil Pemilik",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/dashboard"],
-      "outboundLinks": ["/me/edit", "/me/card"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/dashboard"
+      ],
+      "outboundLinks": [
+        "/me/edit",
+        "/me/card"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -532,11 +1300,29 @@
       "name": "Ubah Profil Saya",
       "accessRole": "authenticated",
       "template": "QuietSurface Formulir Edit Data",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/me"],
-      "outboundLinks": ["/me"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/me"
+      ],
+      "outboundLinks": [
+        "/me"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -545,11 +1331,30 @@
       "name": "Kartu & Identitas Digital Saya",
       "accessRole": "authenticated",
       "template": "Interaktif 3D Card Stage + Ekosistem + QR + Share/Download",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/dashboard", "/me"],
-      "outboundLinks": ["/me/verification"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/dashboard",
+        "/me"
+      ],
+      "outboundLinks": [
+        "/me/verification"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -558,11 +1363,30 @@
       "name": "Status & Pengajuan Verifikasi",
       "accessRole": "authenticated",
       "template": "Tracker Satu Tahap Mengalir + Upload Berkas",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/dashboard", "/me/card"],
-      "outboundLinks": ["/dashboard"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/dashboard",
+        "/me/card"
+      ],
+      "outboundLinks": [
+        "/dashboard"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -571,11 +1395,29 @@
       "name": "Ekosistem & Relasi Saya",
       "accessRole": "authenticated",
       "template": "Daftar Hubungan Aktif + Permintaan Masuk/Keluar",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/dashboard"],
-      "outboundLinks": ["/explore"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/dashboard"
+      ],
+      "outboundLinks": [
+        "/explore"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -584,11 +1426,30 @@
       "name": "Pengaturan Privasi Bidang",
       "accessRole": "authenticated",
       "template": "QuietSurface Toggle Privasi per Field",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/dashboard", "/me/settings"],
-      "outboundLinks": ["/dashboard"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/dashboard",
+        "/me/settings"
+      ],
+      "outboundLinks": [
+        "/dashboard"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -597,11 +1458,29 @@
       "name": "Pengaturan Akun & Efek Visual",
       "accessRole": "authenticated",
       "template": "QuietSurface Pengaturan + Efek Visual (Penuh/Standar/Hemat)",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/dashboard"],
-      "outboundLinks": ["/dashboard"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/dashboard"
+      ],
+      "outboundLinks": [
+        "/dashboard"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -610,11 +1489,33 @@
       "name": "Dashboard Admin Tunggal",
       "accessRole": "platform_admin",
       "template": "GlassNav/Sidebar + QuietSurface Ringkasan Metrik",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/login"],
-      "outboundLinks": ["/admin/verification", "/admin/users", "/admin/games", "/admin/settings", "/admin/system"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/login"
+      ],
+      "outboundLinks": [
+        "/admin/verification",
+        "/admin/users",
+        "/admin/games",
+        "/admin/settings",
+        "/admin/system"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -623,11 +1524,29 @@
       "name": "Antrean Verifikasi Admin",
       "accessRole": "platform_admin",
       "template": "QuietSurface Tabel Antrean + URL Singkat 60s",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/admin"],
-      "outboundLinks": ["/admin/verification/[id]"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin/verification/[id]"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -636,11 +1555,29 @@
       "name": "Manajemen Pengguna & Akun",
       "accessRole": "platform_admin",
       "template": "QuietSurface Tabel Akun & Profil",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/admin"],
-      "outboundLinks": ["/admin"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -649,11 +1586,29 @@
       "name": "Katalog Cabang Game Admin",
       "accessRole": "platform_admin",
       "template": "QuietSurface Manajemen Game & Role",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/admin"],
-      "outboundLinks": ["/admin"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -662,11 +1617,29 @@
       "name": "Pengaturan Platform & Teks",
       "accessRole": "platform_admin",
       "template": "QuietSurface Konfigurasi SLA & Brand",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/admin"],
-      "outboundLinks": ["/admin"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -675,11 +1648,29 @@
       "name": "Log Audit Append-Only",
       "accessRole": "platform_admin",
       "template": "QuietSurface Tabel Log Audit Kriptografis",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/admin"],
-      "outboundLinks": ["/admin"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
       "redesignStatus": "BELUM"
     },
     {
@@ -688,13 +1679,465 @@
       "name": "Kesehatan Sistem & Info Build",
       "accessRole": "platform_admin",
       "template": "QuietSurface Observabilitas, Kuota & Build Info",
-      "states": ["loading", "empty", "error", "success"],
-      "viewports": ["390px", "768px", "1440px", "1920px"],
-      "qualityModes": ["Penuh", "Standar", "Hemat"],
-      "inboundLinks": ["/admin"],
-      "outboundLinks": ["/admin"],
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
       "redesignStatus": "BELUM",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
+    },
+    {
+      "path": "/verify/[id]",
+      "category": "public",
+      "name": "Validasi QR Paspor Digital (Public Verifier)",
+      "accessRole": "public",
+      "template": "Pemeriksaan Keabsahan Satu Tahap & Status Lencana",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/me/card",
+        "/me/verification",
+        "QR Scan"
+      ],
+      "outboundLinks": [
+        "/",
+        "/explore"
+      ],
+      "redesignStatus": "BELUM",
+      "notes": "Halaman pendaratan pemindaian QR lencana verifikasi satu tahap"
+    },
+    {
+      "path": "/games/[slug]",
+      "category": "public",
+      "name": "Detail Cabang Game & Posisi Role",
+      "accessRole": "public",
+      "template": "Katalog Aturan Posisi, Tier Rank & Spesifikasi Game",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/games"
+      ],
+      "outboundLinks": [
+        "/games",
+        "/explore"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/auth/check-email",
+      "category": "auth",
+      "name": "Peralihan Konfirmasi Email",
+      "accessRole": "guest",
+      "template": "Layar Panduan Verifikasi Tautan Email & Tips Spam",
+      "states": [
+        "idle",
+        "resending",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/register",
+        "/forgot-password"
+      ],
+      "outboundLinks": [
+        "/login"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/403",
+      "category": "system",
+      "name": "Akses Ditolak (Forbidden)",
+      "accessRole": "public",
+      "template": "Layar Peringatan Batas Otorisasi & Peran",
+      "states": [
+        "idle"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "Semua Rute Terproteksi"
+      ],
+      "outboundLinks": [
+        "/",
+        "/dashboard",
+        "/login"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/500",
+      "category": "system",
+      "name": "Kendala Server Internal (Internal Error)",
+      "accessRole": "public",
+      "template": "Layar Degradasi Anggun & Muat Ulang",
+      "states": [
+        "idle"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "Sistem Error Boundary"
+      ],
+      "outboundLinks": [
+        "/",
+        "/contact"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/offline",
+      "category": "system",
+      "name": "Mode Offline PWA",
+      "accessRole": "public",
+      "template": "Layar Akses Terbatas Tanpa Jaringan & Paspor Tersimpan",
+      "states": [
+        "offline",
+        "reconnecting"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "Service Worker Fallback"
+      ],
+      "outboundLinks": [
+        "/me/card"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/maintenance",
+      "category": "system",
+      "name": "Pemeliharaan Sistem Terjadwal",
+      "accessRole": "public",
+      "template": "Layar Status Pemeliharaan Infrastruktur",
+      "states": [
+        "idle"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "Edge Middleware"
+      ],
+      "outboundLinks": [
+        "/"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/me/notifications",
+      "category": "user",
+      "name": "Notifikasi Pengguna",
+      "accessRole": "authenticated",
+      "template": "Daftar Pembaruan Verifikasi, Ekosistem & Sistem",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/me",
+        "/dashboard"
+      ],
+      "outboundLinks": [
+        "/me"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/admin/verification/[id]",
+      "category": "admin",
+      "name": "Tinjauan Verifikasi Tunggal",
+      "accessRole": "platform_admin",
+      "template": "QuietSurface Review Dokumen Digital Signed URL & Keputusan",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin/verification",
+        "/admin/system"
+      ],
+      "outboundLinks": [
+        "/admin/verification"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/admin/relation-rules",
+      "category": "admin",
+      "name": "Aturan Relasi Ekosistem Deklaratif (17 Rules)",
+      "accessRole": "platform_admin",
+      "template": "QuietSurface Matriks Pasangan 7 Entitas & Batas Aktif",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/admin/reports",
+      "category": "admin",
+      "name": "Antrean Laporan & Moderasi Konten",
+      "accessRole": "platform_admin",
+      "template": "QuietSurface Tinjauan Laporan Pelanggaran Kebijakan",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/admin/content",
+      "category": "admin",
+      "name": "Manajemen Konten & Publikasi Warta",
+      "accessRole": "platform_admin",
+      "template": "QuietSurface Manajemen Berita, Pengumuman & Panduan",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin",
+        "/admin/news"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/admin/users/[id]",
+      "category": "admin",
+      "name": "Inspektur Akun Pengguna",
+      "accessRole": "platform_admin",
+      "template": "QuietSurface Rincian Profil, Status Verifikasi & Audit Log",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin/users"
+      ],
+      "outboundLinks": [
+        "/admin/users"
+      ],
+      "redesignStatus": "BELUM"
+    },
+    {
+      "path": "/admin/achievements",
+      "category": "admin",
+      "name": "Validasi Prestasi & Turnamen",
+      "accessRole": "platform_admin",
+      "template": "QuietSurface Verifikasi Riwayat Prestasi & Penentuan Tier",
+      "states": [
+        "loading",
+        "empty",
+        "error",
+        "success"
+      ],
+      "viewports": [
+        "390px",
+        "768px",
+        "1440px",
+        "1920px"
+      ],
+      "qualityModes": [
+        "Penuh",
+        "Standar",
+        "Hemat"
+      ],
+      "inboundLinks": [
+        "/admin"
+      ],
+      "outboundLinks": [
+        "/admin"
+      ],
+      "redesignStatus": "BELUM"
     }
   ]
 }

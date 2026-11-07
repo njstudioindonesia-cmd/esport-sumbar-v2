@@ -24,7 +24,7 @@ import { GALLERY_CARDS } from "@/data/mockCards";
 import { MOCK_NEWS } from "@/data/mockNews";
 import { MobileBottomBar } from "./MobileBottomBar";
 import { EsportCard } from "@/components/card/EsportCard";
-import { BrandLogo, BrandWatermark, IssuedBy, PartnerStrip } from "@/components/brand";
+import { BrandLogo, BrandWatermark, IssuedBy, OwnershipNote } from "@/components/brand";
 import type { PlatformStats } from "@/lib/services/stats";
 import type { PublicArticle } from "@/lib/services/news";
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
@@ -389,9 +389,9 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           )}
         </section>
 
-        {/* ==================== BLOK 7: MITRA STRIP ==================== */}
+        {/* ==================== BLOK 7: KETERANGAN KEPEMILIKAN ==================== */}
         <section className="w-full pt-1">
-          <PartnerStrip variant="compact" />
+          <OwnershipNote />
         </section>
       </div>
 

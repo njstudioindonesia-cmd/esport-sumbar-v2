@@ -193,3 +193,4 @@ export const PLATFORM_COPY = {
 } as const;
 
 export type PlatformCopy = typeof PLATFORM_COPY;
+export const copy = PLATFORM_COPY;

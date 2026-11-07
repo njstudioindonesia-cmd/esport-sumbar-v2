@@ -37,21 +37,24 @@ export function MobileBottomBar() {
     },
     {
       label: "Kartu",
-      href: "/me/cards",
+      href: "/me/card",
       icon: Layers,
       isCenter: true,
       match: (p: string) =>
-        p.startsWith("/me/cards") || p.startsWith("/me/profile/new"),
+        p.startsWith("/me/card") || p.startsWith("/me/cards") || p.startsWith("/me/profile/new"),
     },
     {
       label: "Profil",
-      href: "/me/profile",
+      href: "/me",
       icon: User,
       match: (p: string) =>
+        p === "/me" ||
+        p.startsWith("/me/edit") ||
         p.startsWith("/me/profile") ||
         p.startsWith("/me/settings") ||
         p.startsWith("/me/privacy") ||
-        p.startsWith("/me/verification"),
+        p.startsWith("/me/verification") ||
+        p.startsWith("/me/ecosystem"),
     },
   ];
 

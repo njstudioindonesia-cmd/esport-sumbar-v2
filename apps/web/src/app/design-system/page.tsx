@@ -37,7 +37,6 @@ import {
   BrandWatermark,
   BrandBar,
   OwnershipNote,
-  PartnerStrip,
   IssuedBy,
   BrandLoader,
   BrandPattern,
@@ -303,15 +302,12 @@ export default function ComponentCatalogPage() {
               </div>
             </div>
 
-            {/* PartnerStrip */}
+            {/* Ownership Note */}
             <div className="flex flex-col gap-2">
               <span className="text-xs font-mono uppercase text-white/50 font-bold">
-                &lt;PartnerStrip /&gt; (Horizontal & Cards)
+                &lt;OwnershipNote /&gt;
               </span>
-              <PartnerStrip variant="horizontal" />
-              <div className="mt-2">
-                <PartnerStrip variant="cards" />
-              </div>
+              <OwnershipNote />
             </div>
           </section>
 

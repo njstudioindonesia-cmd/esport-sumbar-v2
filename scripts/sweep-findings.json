@@ -1,326 +1,119 @@
 [
   {
-    "file": "apps\\web\\src\\__tests__\\bff-security.test.ts",
+    "file": "apps\\web\\src\\app\\admin\\content\\page.tsx",
     "line": 51,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "title: \"Ekosistem Esport Sumatera Barat V3 Resmi Mengudara\","
+  },
+  {
+    "file": "apps\\web\\src\\app\\admin\\content\\page.tsx",
+    "line": 52,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "slug: \"esport-sumbar-v3-resmi-mengudara\","
+  },
+  {
+    "file": "apps\\web\\src\\app\\content-policy\\page.tsx",
+    "line": 58,
+    "rule": "FEDERASI_TERM",
+    "matches": [
+      "federasi"
+    ],
+    "snippet": "Pengguna dilarang keras mengaku mewakili, mengatasnamakan, atau menyematkan sebutan organisasi luar,"
+  },
+  {
+    "file": "apps\\web\\src\\app\\content-policy\\page.tsx",
+    "line": 58,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Pengguna dilarang keras mengaku mewakili, mengatasnamakan, atau menyematkan sebutan organisasi luar,"
+  },
+  {
+    "file": "apps\\web\\src\\app\\content-policy\\page.tsx",
+    "line": 58,
     "rule": "KLAIM_SAH",
     "matches": [
       "sah"
     ],
-    "snippet": "expect(result.error).toMatch(/tidak sah|signature mismatch|rusak/i);"
+    "snippet": "Pengguna dilarang keras mengaku mewakili, mengatasnamakan, atau menyematkan sebutan organisasi luar,"
   },
   {
-    "file": "apps\\web\\src\\__tests__\\bff-security.test.ts",
-    "line": 66,
+    "file": "apps\\web\\src\\app\\faq\\page.tsx",
+    "line": 24,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "a: \"Prinsip 1 Akun = 1 Profil diterapkan untuk menjamin integritas data keatletan, mencegah akun gan"
+  },
+  {
+    "file": "apps\\web\\src\\app\\faq\\page.tsx",
+    "line": 34,
     "rule": "KLAIM_SAH",
     "matches": [
-      "sah"
+      "pengesahan"
     ],
-    "snippet": "expect(result.error).toMatch(/tidak sah|signature mismatch/i);"
+    "snippet": "a: \"Tier Rarity (Rookie, Contender, Elite, Master, Legend) ditentukan secara dinamis berdasarkan sko"
   },
   {
-    "file": "apps\\web\\src\\__tests__\\bff-security.test.ts",
-    "line": 125,
-    "rule": "KLAIM_SAH",
+    "file": "apps\\web\\src\\app\\games\\page.tsx",
+    "line": 11,
+    "rule": "KLAIM_RESMI",
     "matches": [
-      "sah"
+      "resmi"
     ],
-    "snippet": "it(\"mengenali origin yang sah dan menolak origin sembarangan\", () => {"
+    "snippet": "description: \"Daftar cabang game kompetitif resmi Sumatera Barat: aturan peran, pembagian tier rank,"
   },
   {
-    "file": "apps\\web\\src\\__tests__\\bff-security.test.ts",
-    "line": 132,
-    "rule": "KLAIM_SAH",
+    "file": "apps\\web\\src\\app\\games\\page.tsx",
+    "line": 39,
+    "rule": "KLAIM_RESMI",
     "matches": [
-      "sah"
+      "resmi"
     ],
-    "snippet": "it(\"menerapkan header CORS khusus origin sah tanpa menggunakan wildcard '*'\", () => {"
+    "snippet": "Daftar 11 nomor game resmi yang diakui dan terintegrasi dalam sistem paspor digital, turnamen daerah"
   },
   {
-    "file": "apps\\web\\src\\__tests__\\bff-security.test.ts",
-    "line": 154,
-    "rule": "KLAIM_SAH",
+    "file": "apps\\web\\src\\app\\games\\page.tsx",
+    "line": 74,
+    "rule": "KLAIM_RESMI",
     "matches": [
-      "sah"
+      "resmi"
     ],
-    "snippet": "it(\"menangani preflight OPTIONS dengan status 204 No Content untuk origin sah\", () => {"
+    "snippet": "Kategori kompetitif resmi {game.category || game.genre} di Sumatera Barat."
   },
   {
-    "file": "apps\\web\\src\\__tests__\\content-service.test.ts",
-    "line": 27,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "sah"
-    ],
-    "snippet": "it(\"harus mengizinkan transisi status editorial yang sah\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\content-service.test.ts",
+    "file": "apps\\web\\src\\app\\games\\[slug]\\page.tsx",
     "line": 80,
     "rule": "KLAIM_RESMI",
     "matches": [
       "resmi"
     ],
-    "snippet": "content: \"ESPORT SUMBAR secara resmi membuka pendaftaran kualifikasi terbuka bagi seluruh atlet dan "
+    "snippet": "Kategori kompetitif resmi {game.category || game.genre} di Sumatera Barat."
   },
   {
-    "file": "apps\\web\\src\\__tests__\\content-service.test.ts",
-    "line": 245,
+    "file": "apps\\web\\src\\app\\games\\[slug]\\page.tsx",
+    "line": 86,
     "rule": "KLAIM_RESMI",
     "matches": [
       "Resmi"
     ],
-    "snippet": "title: \"Panduan Regulasi Turnamen Resmi\","
+    "snippet": "<span className=\"text-white font-semibold\">{game.publisher || \"Penerbit Resmi\"}</span>"
   },
   {
-    "file": "apps\\web\\src\\__tests__\\content-service.test.ts",
-    "line": 246,
+    "file": "apps\\web\\src\\app\\me\\page.tsx",
+    "line": 98,
     "rule": "KLAIM_RESMI",
     "matches": [
       "resmi"
     ],
-    "snippet": "content: \"Regulasi kompetisi resmi yang disusun secara profesional oleh ESPORT SUMBAR.\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\e2e-all-entities-flow.test.ts",
-    "line": 77,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "sah"
-    ],
-    "snippet": "if (!rule) return { valid: false, error: \"Pasangan tidak sah\" };"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\e2e-all-entities-flow.test.ts",
-    "line": 171,
-    "rule": "VERIFIKASI_BERTAHAP",
-    "matches": [
-      "TAHAP 1"
-    ],
-    "snippet": "// TAHAP 1: Registrasi Akun & Verifikasi Email (Mock)"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\e2e-all-entities-flow.test.ts",
-    "line": 183,
-    "rule": "VERIFIKASI_BERTAHAP",
-    "matches": [
-      "TAHAP 2"
-    ],
-    "snippet": "// TAHAP 2: Pemilihan Bidang Tunggal (Final & Immutable: 1 Akun = 1 Profil)"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\e2e-all-entities-flow.test.ts",
-    "line": 324,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "name: `${entity.slug}-sk-resmi.pdf`,"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\e2e-all-entities-flow.test.ts",
-    "line": 348,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "notes: \"Telah diperbarui dengan SK/bukti keaktifan resmi.\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\e2e-all-entities-flow.test.ts",
-    "line": 352,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "name: `${entity.slug}-sk-resmi.pdf`,"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\ecosystem-rules.test.ts",
-    "line": 68,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "sah"
-    ],
-    "snippet": "error: `Pasangan relasi ${params.sourceType} -> ${params.targetType} [${params.relationType}] tidak "
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\ecosystem-rules.test.ts",
-    "line": 94,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "Sah"
-    ],
-    "snippet": "describe(\"1. Matriks 17 Aturan Pasangan Sah (Mandat 6.1 & 6.6)\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\ecosystem-rules.test.ts",
-    "line": 99,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "sah"
-    ],
-    "snippet": "it(\"semua 17 pasangan sah harus lolos validasi saat parameter terpenuhi\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\ecosystem-rules.test.ts",
-    "line": 117,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "Sah"
-    ],
-    "snippet": "describe(\"2. Penolakan Pasangan Tidak Sah (Invalid Pairs Rejected)\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\ecosystem-rules.test.ts",
-    "line": 130,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "sah"
-    ],
-    "snippet": "it(`harus menolak pasangan tidak sah: ${source} -> ${target} [${type}]`, () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\ecosystem-rules.test.ts",
-    "line": 141,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "sah"
-    ],
-    "snippet": "expect(result.error).toContain(\"tidak sah dalam aturan ekosistem\");"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\ecosystem-rules.test.ts",
-    "line": 216,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "it(\"harus menolak tim yang sudah memiliki 1 basecamp resmi (max 1)\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\games-catalog.test.ts",
-    "line": 5,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "it(\"harus menyertakan Honor of Kings (HOK) sebagai game resmi aktif\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\games-catalog.test.ts",
-    "line": 14,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "// Verifikasi 5 role resmi HOK"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\games-catalog.test.ts",
-    "line": 30,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "it(\"harus memiliki 11 game resmi aktif sesuai Bagian 3.5 & Mandat 7\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\modular-core.test.ts",
-    "line": 89,
-    "rule": "KLAIM_KEPATUHAN_HUKUM",
-    "matches": [
-      "kepatuhan UU PDP"
-    ],
-    "snippet": "it(\"harus mengecualikan seluruh data sensitif (NIK/KK/KTP) demi kepatuhan UU PDP\", async () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\notification-service.test.ts",
-    "line": 29,
-    "rule": "PENGPROV_TERM",
-    "matches": [
-      "pengprov"
-    ],
-    "snippet": "\"pengprov esi\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\notification-service.test.ts",
-    "line": 30,
-    "rule": "PBESI_TERM",
-    "matches": [
-      "pbesi"
-    ],
-    "snippet": "\"pbesi\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\notification-service.test.ts",
-    "line": 31,
-    "rule": "PENGCAB_TERM",
-    "matches": [
-      "pengcab"
-    ],
-    "snippet": "\"pengcab\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\notification-service.test.ts",
-    "line": 32,
-    "rule": "PENGCAB_TERM",
-    "matches": [
-      "pengurus cabang"
-    ],
-    "snippet": "\"pengurus cabang\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\notification-service.test.ts",
-    "line": 33,
-    "rule": "PENGPROV_TERM",
-    "matches": [
-      "pengurus daerah"
-    ],
-    "snippet": "\"pengurus daerah\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\notification-service.test.ts",
-    "line": 35,
-    "rule": "DISPORA_TERM",
-    "matches": [
-      "dispora"
-    ],
-    "snippet": "\"dispora\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\verification-audit-service.test.ts",
-    "line": 33,
-    "rule": "KLAIM_SAH",
-    "matches": [
-      "sah"
-    ],
-    "snippet": "it(\"harus mengizinkan transisi status yang sah dalam siklus hidup verifikasi\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\verification-audit-service.test.ts",
-    "line": 100,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "it(\"harus menghasilkan nomor registrasi resmi ESP-SB-VER-YYYY-XXXX\", () => {"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\verification-audit-service.test.ts",
-    "line": 355,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "notes: \"Pengajuan verifikasi atlet resmi.\","
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\verification-audit-service.test.ts",
-    "line": 376,
-    "rule": "KLAIM_RESMI",
-    "matches": [
-      "resmi"
-    ],
-    "snippet": "it(\"harus memproses keputusan persetujuan verifikasi dan menerbitkan lencana resmi\", async () => {"
+    "snippet": "Tampilkan kartu digital, bagikan QR code, atau unduh paspor resmi Anda."
   }
 ]
