@@ -14,13 +14,18 @@ import {
   ShieldCheck,
   Shield,
   Clock,
-  Lock,
   Building,
   GraduationCap,
   ExternalLink,
+  Flame,
+  Award,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { GlassSurface } from "@/components/glass/GlassSurface";
+import { GlassCard } from "@/components/glass/GlassCard";
+import { GlassBadge, GlassStatusBadge, GlassRarityBadge } from "@/components/glass/GlassBadge";
+import { GlassButton } from "@/components/glass/GlassButton";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { OFFICIAL_GAMES } from "@/data/games";
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
@@ -43,6 +48,7 @@ export function EntityDirectoryView({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedGame, setSelectedGame] = useState("all");
+  const [selectedVerif, setSelectedVerif] = useState<"all" | "verified" | "pending" | "unverified">("all");
 
   const filteredProfiles = useMemo(() => {
     return initialProfiles.filter((p) => {
@@ -53,10 +59,16 @@ export function EntityDirectoryView({
 
       const matchRegion = selectedRegion === "all" || p.regionCode === selectedRegion || p.regionId === selectedRegion;
       const matchGame = selectedGame === "all" || p.mainGameId === selectedGame || p.mainGameShort === selectedGame;
+      const isPending = p.verificationStatus === "submitted" || p.verificationStatus === "under_review";
+      const isVerified = p.verificationStatus === "verified";
+      const matchVerif = selectedVerif === "all" || 
+        (selectedVerif === "verified" && isVerified) ||
+        (selectedVerif === "pending" && isPending) ||
+        (selectedVerif === "unverified" && !isVerified && !isPending);
 
-      return matchSearch && matchRegion && matchGame;
+      return matchSearch && matchRegion && matchGame && matchVerif;
     });
-  }, [initialProfiles, searchQuery, selectedRegion, selectedGame]);
+  }, [initialProfiles, searchQuery, selectedRegion, selectedGame, selectedVerif]);
 
   const getProfilePath = (slug: string) => {
     switch (entityType) {
@@ -79,6 +91,21 @@ export function EntityDirectoryView({
     }
   };
 
+  const getEntityIcon = () => {
+    switch (entityType) {
+      case "player": return Gamepad2;
+      case "coach": return Award;
+      case "team": return Users;
+      case "community": return Flame;
+      case "venue": return Building;
+      case "campus": return GraduationCap;
+      case "school": return GraduationCap;
+      default: return Users;
+    }
+  };
+
+  const EntityIcon = getEntityIcon();
+
   return (
     <div className="min-h-screen bg-[var(--bg-base)] text-[#FFFFFF] flex flex-col font-sans selection:bg-[#FF1752]/30 selection:text-white">
       <Navbar />
@@ -90,222 +117,170 @@ export function EntityDirectoryView({
             <span className="px-3 py-1 rounded-full bg-[#FF1752]/15 border border-[#FF1752]/30 text-[#FF4D77] text-xs font-heading font-black uppercase tracking-wider">
               DIREKTORI ESPORT SUMBAR™
             </span>
-            <span className="text-xs font-mono text-white/40">
+            <span className="text-xs font-mono text-white/50">
               {filteredProfiles.length} Terdaftar
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight">
-            {title}
+          <h1 className="text-2xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight flex items-center gap-3">
+            <EntityIcon className="w-7 h-7 sm:w-9 sm:h-9 text-[#FF1752]" />
+            <span>{title}</span>
           </h1>
-          <p className="text-xs sm:text-sm text-white/50 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-white/60 max-w-2xl leading-relaxed">
             {subtitle}
           </p>
         </div>
 
-        {/* SEARCH & FILTERS BAR */}
-        <div className="p-4 rounded-2xl bg-[#0D1017] border border-white/[0.08] mb-8 flex flex-col sm:flex-row gap-3 items-center justify-between shadow-xl">
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
+        {/* SEARCH & FILTERS BAR (LIQUID GLASS BAR) */}
+        <GlassSurface
+          variant="standard"
+          elevation="glass"
+          radius="2xl"
+          className="p-4 mb-8 flex flex-col md:flex-row gap-3 items-center justify-between border-white/10 shadow-xl"
+        >
+          {/* Text Search Input */}
+          <div className="relative w-full md:w-80">
+            <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari nama, IGN, atau ESPORT ID..."
-              className="w-full bg-[#161A24] border border-white/10 focus:border-[#D4AF37] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-white/30 outline-none transition-colors"
+              className="w-full bg-white/[0.06] border border-white/10 focus:border-[#FF1752]/50 focus:ring-1 focus:ring-[#FF1752]/30 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-white/40 outline-none transition-all"
             />
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Filter className="w-4 h-4 text-[#D4AF37] shrink-0" />
+          {/* Filter Selects */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 w-full md:w-auto">
+            <div className="flex items-center gap-1.5 text-xs text-white/60 font-mono shrink-0">
+              <Filter className="w-3.5 h-3.5 text-[#FF1752]" />
+              <span className="hidden sm:inline">Filter:</span>
+            </div>
+
+            {/* Region Select */}
             <select
               value={selectedRegion}
               onChange={(e) => setSelectedRegion(e.target.value)}
-              className="w-full sm:w-48 bg-[#161A24] border border-white/10 text-xs text-white rounded-xl px-3 py-2.5 outline-none focus:border-[#D4AF37]"
+              className="flex-1 sm:w-44 bg-white/[0.06] border border-white/10 text-xs text-white rounded-xl px-3 py-2.5 outline-none focus:border-[#FF1752]/50"
             >
-              <option value="all">Semua Wilayah</option>
+              <option value="all" className="bg-[#0A0D15]">Semua Wilayah (19)</option>
               {REGIONS_DETAIL.map((r) => (
-                <option key={r.code} value={r.code}>
+                <option key={r.code} value={r.code} className="bg-[#0A0D15]">
                   {r.name} ({r.code})
                 </option>
               ))}
             </select>
 
+            {/* Game Select */}
             <select
               value={selectedGame}
               onChange={(e) => setSelectedGame(e.target.value)}
-              className="w-full sm:w-44 bg-[#161A24] border border-white/10 text-xs text-white rounded-xl px-3 py-2.5 outline-none focus:border-[#D4AF37]"
+              className="flex-1 sm:w-40 bg-white/[0.06] border border-white/10 text-xs text-white rounded-xl px-3 py-2.5 outline-none focus:border-[#FF1752]/50"
             >
-              <option value="all">Semua Game</option>
+              <option value="all" className="bg-[#0A0D15]">Semua Game</option>
               {OFFICIAL_GAMES.map((g) => (
-                <option key={g.id} value={g.id}>
+                <option key={g.id} value={g.id} className="bg-[#0A0D15]">
                   {g.shortName}
                 </option>
               ))}
             </select>
+
+            {/* Verification Status Filter */}
+            <select
+              value={selectedVerif}
+              onChange={(e) => setSelectedVerif(e.target.value as any)}
+              className="flex-1 sm:w-36 bg-white/[0.06] border border-white/10 text-xs text-white rounded-xl px-3 py-2.5 outline-none focus:border-[#FF1752]/50"
+            >
+              <option value="all" className="bg-[#0A0D15]">Semua Status</option>
+              <option value="verified" className="bg-[#0A0D15]">Terverifikasi</option>
+              <option value="pending" className="bg-[#0A0D15]">Menunggu</option>
+              <option value="unverified" className="bg-[#0A0D15]">Belum Mengajukan</option>
+            </select>
           </div>
-        </div>
+        </GlassSurface>
 
         {/* PROFILES GRID */}
         {filteredProfiles.length === 0 ? (
-          <div className="p-12 text-center rounded-2xl bg-[#0D1017] border border-white/[0.06]">
-            <Users className="w-10 h-10 text-white/30 mx-auto mb-2" />
-            <p className="text-sm font-heading text-white/70">Tidak ada profil yang cocok dengan kriteria pencarian.</p>
-          </div>
+          <GlassSurface
+            variant="subtle"
+            elevation="flat"
+            radius="2xl"
+            className="p-12 text-center border-white/[0.08]"
+          >
+            <Users className="w-10 h-10 text-white/30 mx-auto mb-3" />
+            <h3 className="text-base font-heading font-black text-white mb-1">
+              Tidak Ada Profil Ditemukan
+            </h3>
+            <p className="text-xs font-mono text-white/50 max-w-md mx-auto">
+              Tidak ada profil yang cocok dengan kriteria pencarian atau filter yang dipilih. Coba reset filter.
+            </p>
+          </GlassSurface>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {filteredProfiles.map((p) => {
               const path = getProfilePath(p.slug);
+              const isVerified = p.verificationStatus === "verified";
 
-              // 1. KARTU ATLET (PLAYER)
-              if (entityType === "player") {
-                return (
-                  <Link
-                    key={p.id}
-                    href={path}
-                    className="p-4 rounded-2xl bg-[#0D1017] border border-white/[0.08] hover:border-[#D4AF37]/50 transition-all flex flex-col justify-between group shadow-lg"
-                  >
-                    <div>
-                      <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-black/40 border border-white/10 mb-3">
-                        {p.avatarUrl ? (
-                          /* eslint-disable-next-line @next/next/no-img-element */
-                          <img src={p.avatarUrl} alt={p.displayName} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                        ) : (
-                          <InitialsAvatar name={p.displayName} entityType="player" size="full" />
-                        )}
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/15 text-[8px] font-mono font-bold text-amber-300 uppercase">
-                          {p.rarityTier}
-                        </span>
-                        {p.verificationStatus === "verified" && (
-                          <span className="absolute top-2 right-2 p-1 rounded-full bg-[#D4AF37] text-black">
-                            <ShieldCheck className="w-3 h-3 stroke-[3]" />
-                          </span>
-                        )}
-                      </div>
-
-                      <h2 className="text-sm font-heading font-black text-white group-hover:text-[#D4AF37] transition-colors truncate">
-                        {p.displayName}
-                      </h2>
-                      <div className="text-xs font-mono text-[#D4AF37] font-semibold truncate">
-                        {p.ign ? `@${p.ign}` : `@${p.esportId}`}
-                      </div>
-                    </div>
-
-                    <div className="pt-3 mt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-white/60">
-                      <span className="truncate max-w-[120px]">{p.mainGameName}</span>
-                      <span className="px-1.5 py-0.5 rounded bg-white/[0.06] font-bold text-[#D4AF37]">{p.regionCode}</span>
-                    </div>
-                  </Link>
-                );
-              }
-
-              // 2. KARTU TIM (TEAM)
-              if (entityType === "team") {
-                return (
-                  <Link
-                    key={p.id}
-                    href={path}
-                    className="p-4 rounded-2xl bg-[#0D1017] border border-white/[0.08] hover:border-amber-500/50 transition-all flex flex-col justify-between group shadow-lg"
-                  >
-                    <div>
-                      <div className="w-full aspect-square rounded-xl overflow-hidden bg-black/40 border border-white/10 mb-3 p-4 flex items-center justify-center">
-                        {p.avatarUrl ? (
-                          /* eslint-disable-next-line @next/next/no-img-element */
-                          <img src={p.avatarUrl} alt={p.displayName} className="w-full h-full object-contain group-hover:scale-105 transition-transform" />
-                        ) : (
-                          <InitialsAvatar name={p.displayName} entityType="team" size="full" />
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono text-[9px] font-bold">
-                          [{p.attributes.team_tag || "TM"}]
-                        </span>
-                        <span className="text-[10px] font-mono text-white/40">{p.regionCode}</span>
-                      </div>
-
-                      <h2 className="text-sm font-heading font-black text-white group-hover:text-amber-400 transition-colors truncate">
-                        {p.displayName}
-                      </h2>
-                      <p className="text-[11px] font-mono text-white/60 truncate mt-0.5">
-                        {p.attributes.game_division || p.mainGameName}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 mt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-white/60">
-                      <span>Roster: {p.relations?.length || 5}/7</span>
-                      <span className="text-amber-400 font-bold">Lihat Roster →</span>
-                    </div>
-                  </Link>
-                );
-              }
-
-              // 3. KARTU VENUE
-              if (entityType === "venue") {
-                return (
-                  <Link
-                    key={p.id}
-                    href={path}
-                    className="p-4 rounded-2xl bg-[#0D1017] border border-white/[0.08] hover:border-fuchsia-500/50 transition-all flex flex-col justify-between group shadow-lg"
-                  >
-                    <div>
-                      <div className="relative aspect-video rounded-xl overflow-hidden bg-black/40 border border-white/10 mb-3">
-                        {p.coverUrl ? (
-                          /* eslint-disable-next-line @next/next/no-img-element */
-                          <img src={p.coverUrl} alt={p.displayName} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                        ) : (
-                          <InitialsAvatar name={p.displayName} entityType="venue" size="full" />
-                        )}
-                        <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-black/70 backdrop-blur-md text-[9px] font-mono text-fuchsia-300">
-                          {p.attributes.capacity_units || 20} Unit Gaming
-                        </span>
-                      </div>
-
-                      <h2 className="text-sm font-heading font-black text-white group-hover:text-fuchsia-400 transition-colors truncate">
-                        {p.displayName}
-                      </h2>
-                      <p className="text-[11px] font-mono text-white/60 truncate mt-0.5">
-                        {p.attributes.business_address || p.regionName}
-                      </p>
-                    </div>
-
-                    <div className="pt-3 mt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-white/60">
-                      <span className="text-emerald-400 font-bold">Buka Hari Ini</span>
-                      <span className="text-white/40">{p.regionCode}</span>
-                    </div>
-                  </Link>
-                );
-              }
-
-              // 4. KARTU DEFAULT (Pelatih, Komunitas, Kampus, Sekolah)
               return (
                 <Link
                   key={p.id}
                   href={path}
-                  className="p-4 rounded-2xl bg-[#0D1017] border border-white/[0.08] hover:border-[#D4AF37]/50 transition-all flex flex-col justify-between group shadow-lg"
+                  className="group block"
                 >
-                  <div>
-                    <div className="w-full aspect-square rounded-xl overflow-hidden bg-black/40 border border-white/10 mb-3 p-3 flex items-center justify-center">
-                      {p.avatarUrl ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={p.avatarUrl} alt={p.displayName} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                      ) : (
-                        <InitialsAvatar name={p.displayName} entityType={p.entityType} size="full" />
-                      )}
+                  <GlassCard
+                    variant="standard"
+                    elevation="glass"
+                    radius="2xl"
+                    specular={true}
+                    className="p-4 h-full flex flex-col justify-between group-hover:border-[#FF1752]/50 transition-colors"
+                  >
+                    <div>
+                      {/* Avatar Media Container with Concentric Radius */}
+                      <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-black/40 border border-white/10 mb-3">
+                        {p.avatarUrl ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={p.avatarUrl}
+                            alt={p.displayName}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <InitialsAvatar name={p.displayName} entityType={entityType} size="full" />
+                        )}
+
+                        {/* Top Badges: Rarity & Verification */}
+                        <div className="absolute top-2 left-2 z-10">
+                          <GlassRarityBadge tier={(p.rarityTier as any) || "rookie"} size="sm" />
+                        </div>
+
+                        {isVerified && (
+                          <div className="absolute top-2 right-2 z-10">
+                            <span className="p-1 rounded-full bg-[#D4AF37] text-black shadow-sm flex items-center justify-center">
+                              <ShieldCheck className="w-3.5 h-3.5 stroke-[2.5]" />
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Bottom Gradient Scrim */}
+                        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+                      </div>
+
+                      {/* Display Name & Identifier */}
+                      <h2 className="text-sm font-heading font-black text-white group-hover:text-pink-300 transition-colors truncate">
+                        {p.displayName}
+                      </h2>
+                      <div className="text-xs font-mono text-[#D4AF37] font-semibold truncate mt-0.5">
+                        {p.ign ? `@${p.ign}` : `@${p.esportId}`}
+                      </div>
                     </div>
 
-                    <div className="text-[10px] font-mono text-white/40 mb-1">{p.esportId}</div>
-                    <h2 className="text-sm font-heading font-black text-white group-hover:text-[#D4AF37] transition-colors truncate">
-                      {p.displayName}
-                    </h2>
-                    <p className="text-[11px] text-white/60 truncate mt-0.5">
-                      {p.regionName}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 mt-3 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-white/60">
-                    <span>{p.mainGameName}</span>
-                    <span className="text-[#D4AF37]">Detail →</span>
-                  </div>
+                    {/* Meta Footer */}
+                    <div className="pt-3 mt-3 border-t border-white/[0.08] flex items-center justify-between text-[10px] font-mono text-white/60">
+                      <span className="truncate max-w-[130px]">{p.mainGameName || "Esport"}</span>
+                      <span className="px-1.5 py-0.5 rounded bg-white/[0.08] font-bold text-white/80">
+                        {p.regionCode}
+                      </span>
+                    </div>
+                  </GlassCard>
                 </Link>
               );
             })}

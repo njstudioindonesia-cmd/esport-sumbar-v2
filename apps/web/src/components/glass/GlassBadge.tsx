@@ -122,15 +122,16 @@ GlassStatusBadge.displayName = "GlassStatusBadge";
  */
 export interface GlassRarityBadgeProps
   extends React.HTMLAttributes<HTMLSpanElement> {
-  rarity: "rookie" | "rising" | "contender" | "elite" | "master" | "legendary";
+  rarity?: "rookie" | "rising" | "contender" | "elite" | "master" | "legendary" | string;
+  tier?: string;
   size?: "sm" | "md";
 }
 
 export const GlassRarityBadge = forwardRef<
   HTMLSpanElement,
   GlassRarityBadgeProps
->(({ className, rarity, size = "md", ...props }, ref) => {
-  const configs = {
+>(({ className, rarity, tier, size = "md", ...props }, ref) => {
+  const configs: Record<string, { label: string; classes: string }> = {
     rookie: {
       label: "Rookie",
       classes: "bg-slate-500/20 text-slate-300 border-slate-500/30",
@@ -157,9 +158,15 @@ export const GlassRarityBadge = forwardRef<
       classes:
         "bg-gradient-to-r from-rose-500/25 to-pink-500/25 text-pink-200 border-pink-400/50 shadow-sm shadow-pink-500/30",
     },
+    legend: {
+      label: "Legend",
+      classes:
+        "bg-gradient-to-r from-rose-500/25 to-pink-500/25 text-pink-200 border-pink-400/50 shadow-sm shadow-pink-500/30",
+    },
   };
 
-  const current = configs[rarity] || configs.rookie;
+  const rawRarity = (tier || rarity || "rookie").toLowerCase();
+  const current = configs[rawRarity] || configs.rookie;
 
   const sizeClasses = {
     sm: "px-2 py-0.5 text-[11px] rounded-lg gap-1",

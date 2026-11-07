@@ -2,14 +2,14 @@
 
 import React, { forwardRef } from "react";
 import { cn } from "@/lib/utils";
-import { GlassSurface, type GlassSurfaceProps } from "./GlassSurface";
+import { GlassSurface, type GlassSurfaceProps, type GlassVariant } from "./GlassSurface";
 
 export interface GlassCardProps extends Omit<GlassSurfaceProps, "variant"> {
-  variant?: "regular" | "thin" | "thick" | "tinted";
-  material?: "regular" | "thin" | "thick" | "tinted";
+  variant?: GlassVariant;
+  material?: GlassVariant;
   interactive?: boolean;
   paddingLevel?: "none" | "sm" | "md" | "lg";
-  radius?: number;
+  radius?: number | string;
 }
 
 export const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
@@ -40,14 +40,14 @@ export const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
       <GlassSurface
         ref={ref}
         variant={effectiveVariant}
-        parentRadius={radius}
+        radius={radius}
         interactive={interactive}
         scrim={scrim}
         className={cn(
           "transition-all duration-300",
           interactive &&
             "hover:-translate-y-1 hover:shadow-2xl hover:shadow-pink-500/10 cursor-pointer",
-          paddingClasses[paddingLevel],
+          paddingLevel ? paddingClasses[paddingLevel] : "",
           className
         )}
         {...props}
@@ -59,63 +59,60 @@ export const GlassCard = forwardRef<HTMLDivElement, GlassCardProps>(
 );
 GlassCard.displayName = "GlassCard";
 
-export const GlassCardHeader = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex flex-col space-y-1.5 pb-4", className)}
-    {...props}
-  />
-));
-GlassCardHeader.displayName = "GlassCardHeader";
+export function GlassCardHeader({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("flex flex-col space-y-1.5 pb-4 border-b border-white/[0.08]", className)}
+      {...props}
+    />
+  );
+}
 
-export const GlassCardTitle = forwardRef<
-  HTMLHeadingElement,
-  React.HTMLAttributes<HTMLHeadingElement>
->(({ className, children, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn(
-      "text-lg font-bold leading-tight tracking-tight text-white",
-      className
-    )}
-    {...props}
-  >
-    {children}
-  </h3>
-));
-GlassCardTitle.displayName = "GlassCardTitle";
+export function GlassCardTitle({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3
+      className={cn(
+        "text-lg font-heading font-black tracking-tight text-slate-100",
+        className
+      )}
+      {...props}
+    />
+  );
+}
 
-export const GlassCardDescription = forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn("text-xs sm:text-sm text-slate-400 font-normal", className)}
-    {...props}
-  />
-));
-GlassCardDescription.displayName = "GlassCardDescription";
+export function GlassCardDescription({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p
+      className={cn("text-xs text-slate-400 font-sans leading-relaxed", className)}
+      {...props}
+    />
+  );
+}
 
-export const GlassCardContent = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("pt-0 text-slate-200", className)} {...props} />
-));
-GlassCardContent.displayName = "GlassCardContent";
+export function GlassCardContent({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn("pt-4 text-slate-200", className)} {...props} />;
+}
 
-export const GlassCardFooter = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center pt-4 border-t border-white/10", className)}
-    {...props}
-  />
-));
-GlassCardFooter.displayName = "GlassCardFooter";
+export function GlassCardFooter({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("flex items-center pt-4 border-t border-white/[0.08]", className)}
+      {...props}
+    />
+  );
+}

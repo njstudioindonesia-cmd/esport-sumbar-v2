@@ -33,7 +33,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
   const [reportSuccess, setReportSuccess] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const profileUrl = typeof window !== "undefined" ? window.location.href : `https://esport-sumbar-v2.vercel.app/profile/${profile.slug}`;
+  const profileUrl = typeof window !== "undefined" ? window.location.href : `/profile/${profile.slug}`;
 
   const handleShare = () => {
     if (typeof navigator !== "undefined" && navigator.share) {

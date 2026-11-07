@@ -106,7 +106,7 @@ export default async function EcosystemPublicPage() {
       border: "border-sky-500/30",
       textColor: "text-sky-400",
       count: stats.totalSchools,
-      desc: "Ekskul esport binaan pelajar dengan perlindungan UU PDP dan kewajiban izin wali untuk siswa di bawah 18 tahun.",
+      desc: "Ekskul esport binaan pelajar dengan pelindungan data pribadi dan kewajiban izin wali untuk siswa di bawah 18 tahun.",
       canConnectTo: "Tim Pelajar, Pembina Pelatih, Tempat Latihan Venue",
     },
   ];

@@ -57,12 +57,12 @@ export function SchoolProfileTemplate({ profile }: { profile: UnifiedProfileDeta
         <SharedProfileActions profile={profile} isOwner={profile.isOwner} />
       </div>
 
-      {/* 2. BANNER PERLINDUNGAN DATA PELAJAR (UU PDP NO. 27/2022) */}
+      {/* 2. BANNER PERLINDUNGAN DATA PELAJAR */}
       <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
         <Lock className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
         <div>
           <span className="text-xs font-heading font-black text-amber-300 block mb-0.5">
-            Data Siswa Dilindungi (UU Perlindungan Data Pribadi No. 27/2022)
+            Kebijakan Privasi Pelajar
           </span>
           <p className="text-[11px] text-white/70 leading-relaxed">
             Sistem ESPORT SUMBAR tidak mempublikasikan daftar nama, foto wajah, maupun kontak siswa di bawah umur untuk publik. Hanya statistik binaan dan prestasi terverifikasi yang ditampilkan.

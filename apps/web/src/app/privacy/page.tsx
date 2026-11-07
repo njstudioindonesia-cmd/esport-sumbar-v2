@@ -33,7 +33,7 @@ export default function PrivacyPolicyPage() {
         <div className="mb-10 pb-8 border-b border-white/[0.08]">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30 text-[11px] font-mono text-[#FF4D77] mb-4">
             <Lock className="w-3.5 h-3.5" />
-            <span>Kepatuhan UU No. 27 Tahun 2022 (UU PDP)</span>
+            <span>Tata Kelola Pelindungan Data Pribadi</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-heading font-black text-white uppercase tracking-tight">
             Kebijakan Privasi &amp; Perlindungan Data

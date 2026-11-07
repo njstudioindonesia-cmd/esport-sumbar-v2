@@ -16,20 +16,23 @@ import {
   Sparkles,
   MapPin,
   ChevronRight,
-  Lock,
   ExternalLink,
-  User,
   Users,
   Trophy,
-  ArrowUpDown,
   Filter,
+  Gamepad2,
+  Building,
+  GraduationCap,
+  Flame,
 } from "lucide-react";
-import { GALLERY_CARDS, MockCardVariant } from "@/data/mockCards";
+import { MockCardVariant } from "@/data/mockCards";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { OFFICIAL_GAMES } from "@/data/games";
 import { EsportCard } from "@/components/card/EsportCard";
-import { StatusBadge } from "@/components/shared/StatusBadge";
-import { RarityTag } from "@/components/shared/RarityTag";
+import { GlassSurface } from "@/components/glass/GlassSurface";
+import { GlassCard } from "@/components/glass/GlassCard";
+import { GlassBadge, GlassStatusBadge, GlassRarityBadge } from "@/components/glass/GlassBadge";
+import { GlassButton } from "@/components/glass/GlassButton";
 
 export function DesktopExplore() {
   const searchParams = useSearchParams();
@@ -37,24 +40,17 @@ export function DesktopExplore() {
 
   // State Filters
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedEntity, setSelectedEntity] = useState<"all" | "player" | "coach" | "team">(
-    initialTab === "player" || initialTab === "coach" || initialTab === "team"
-      ? initialTab
-      : "all"
-  );
+  const [selectedEntity, setSelectedEntity] = useState<string>(initialTab || "all");
   const [selectedGame, setSelectedGame] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [selectedVerif, setSelectedVerif] = useState<string>("all");
   const [selectedRarity, setSelectedRarity] = useState<string>("all");
   const [sortBy, setSortBy] = useState<"recent" | "rarity" | "name">("recent");
 
-  // View mode: 4-col card grid vs compact table
+  // View mode & mobile filter sheet
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
-
-  // Quick Preview Drawer card
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [previewCard, setPreviewCard] = useState<MockCardVariant | null>(null);
-
-  // Region filter search within sidebar
   const [regionFilterSearch, setRegionFilterSearch] = useState("");
   const [dbCards, setDbCards] = useState<MockCardVariant[] | null>(null);
 
@@ -99,7 +95,7 @@ export function DesktopExplore() {
 
   // Sync initialTab if url changes
   useEffect(() => {
-    if (initialTab === "player" || initialTab === "coach" || initialTab === "team") {
+    if (initialTab) {
       setSelectedEntity(initialTab);
     }
   }, [initialTab]);
@@ -115,7 +111,6 @@ export function DesktopExplore() {
     setSortBy("recent");
   };
 
-  // Has active filters
   const hasActiveFilters =
     searchQuery.trim() !== "" ||
     selectedEntity !== "all" ||
@@ -133,8 +128,12 @@ export function DesktopExplore() {
       if (selectedGame !== "all" && card.data.game !== selectedGame) return false;
       // Region filter
       if (selectedRegion !== "all" && card.data.region.code !== selectedRegion) return false;
-      // Verification filter
-      if (selectedVerif !== "all" && card.verification !== selectedVerif) return false;
+      // Single-tier verification filter
+      if (selectedVerif !== "all") {
+        if (selectedVerif === "verified" && card.verification !== "verified") return false;
+        if (selectedVerif === "pending" && card.verification !== "reverify") return false;
+        if (selectedVerif === "unverified" && card.verification === "verified") return false;
+      }
       // Rarity filter
       if (selectedRarity !== "all" && card.rarity !== selectedRarity) return false;
 
@@ -169,6 +168,7 @@ export function DesktopExplore() {
 
     return list;
   }, [
+    dbCards,
     selectedEntity,
     selectedGame,
     selectedRegion,
@@ -178,7 +178,6 @@ export function DesktopExplore() {
     sortBy,
   ]);
 
-  // Filtered regions for the sidebar list
   const filteredRegionsList = useMemo(() => {
     if (!regionFilterSearch.trim()) return REGIONS_DETAIL;
     return REGIONS_DETAIL.filter((r) =>
@@ -189,262 +188,254 @@ export function DesktopExplore() {
   const getProfileSlug = (card: MockCardVariant) => {
     const name = card.data.ign || card.data.displayName;
     const slug = name.toLowerCase().replace(/\s+/g, "-");
-    if (card.type === "player") return `/player/${slug}`;
-    if (card.type === "coach") return `/coach/${slug}`;
-    return `/team/${slug}`;
+    switch (card.type) {
+      case "player": return `/player/${slug}`;
+      case "coach": return `/coach/${slug}`;
+      case "team": return `/team/${slug}`;
+      case "community": return `/community/${slug}`;
+      case "venue": return `/venue/${slug}`;
+      case "campus": return `/campus/${slug}`;
+      case "school": return `/school/${slug}`;
+      default: return `/player/${slug}`;
+    }
   };
 
+  const entityTabs = [
+    { id: "all", label: "Semua", icon: Users },
+    { id: "player", label: "Pemain", icon: Gamepad2 },
+    { id: "coach", label: "Pelatih", icon: Award },
+    { id: "team", label: "Tim", icon: Trophy },
+    { id: "community", label: "Komunitas", icon: Flame },
+    { id: "venue", label: "Venue", icon: Building },
+    { id: "campus", label: "Kampus", icon: GraduationCap },
+    { id: "school", label: "Sekolah", icon: Building },
+  ];
+
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-10">
-      {/* 1. TOP CENTER LARGE GLASS SEARCH BAR */}
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      {/* 1. TOP LARGE LIQUID GLASS SEARCH BAR */}
       <div className="max-w-2xl mx-auto mb-8 flex flex-col items-center">
-        <div className="relative w-full">
-          <Search className="w-5 h-5 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <GlassSurface
+          variant="standard"
+          elevation="glass"
+          radius="full"
+          className="relative w-full p-1.5 flex items-center border-white/15 shadow-xl"
+        >
+          <Search className="w-5 h-5 text-[#FF1752] ml-3.5 shrink-0" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari nama atlet, IGN, klub, nomor ID, atau game..."
-            className="w-full pl-12 pr-12 py-3.5 rounded-full bg-[#0F1118]/90 border border-white/[0.08] text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/40 shadow-xl backdrop-blur-xl transition-all"
+            placeholder="Cari nama atlet, IGN, klub, nomor ESPORT ID, atau game..."
+            className="w-full bg-transparent px-3 py-2 text-sm text-white placeholder-white/40 focus:outline-none"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
+              className="mr-3 text-white/50 hover:text-white transition-colors"
+              aria-label="Hapus pencarian"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-        </div>
+        </GlassSurface>
       </div>
 
-      {/* 2. ENTITY SEGMENTED TABS (ALL, PLAYER, COACH, TEAM + PHASE 2 LOCKED) */}
-      <div className="flex items-center justify-center gap-2 mb-10 overflow-x-auto no-scrollbar pb-2">
-        <button
-          onClick={() => setSelectedEntity("all")}
-          className={`px-5 py-2 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all ${
-            selectedEntity === "all"
-              ? "bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-black shadow-md shadow-amber-950/20"
-              : "bg-[#0F1118] text-gray-400 hover:text-white border border-white/[0.08]"
-          }`}
-        >
-          Semua Entitas
-        </button>
-        <button
-          onClick={() => setSelectedEntity("player")}
-          className={`px-5 py-2 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all ${
-            selectedEntity === "player"
-              ? "bg-[#D4AF37] text-black shadow-md"
-              : "bg-[#0F1118] text-gray-400 hover:text-white border border-white/[0.08]"
-          }`}
-        >
-          Pemain
-        </button>
-        <button
-          onClick={() => setSelectedEntity("coach")}
-          className={`px-5 py-2 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all ${
-            selectedEntity === "coach"
-              ? "bg-[#D4AF37] text-black shadow-md"
-              : "bg-[#0F1118] text-gray-400 hover:text-white border border-white/[0.08]"
-          }`}
-        >
-          Pelatih
-        </button>
-        <button
-          onClick={() => setSelectedEntity("team")}
-          className={`px-5 py-2 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all ${
-            selectedEntity === "team"
-              ? "bg-[#D4AF37] text-black shadow-md"
-              : "bg-[#0F1118] text-gray-400 hover:text-white border border-white/[0.08]"
-          }`}
-        >
-          Klub / Tim
-        </button>
-
-        {/* Phase 2 Disabled Entity Chips */}
-        <div className="hidden xl:flex items-center gap-2 opacity-50 cursor-not-allowed">
-          <div className="px-4 py-2 rounded-full bg-white/[0.02] border border-white/[0.05] text-xs font-heading font-medium text-gray-500 flex items-center gap-1.5">
-            <Lock className="w-3 h-3" />
-            <span>Komunitas</span>
-          </div>
-          <div className="px-4 py-2 rounded-full bg-white/[0.02] border border-white/[0.05] text-xs font-heading font-medium text-gray-500 flex items-center gap-1.5">
-            <Lock className="w-3 h-3" />
-            <span>Wasit Terdaftar</span>
-          </div>
-        </div>
+      {/* 2. 7-ENTITY SEGMENTED TABS */}
+      <div className="flex items-center justify-start sm:justify-center gap-1.5 mb-8 overflow-x-auto pb-2 scrollbar-none">
+        {entityTabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = selectedEntity === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setSelectedEntity(tab.id)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-heading font-black uppercase tracking-wider transition-all whitespace-nowrap ${
+                isActive
+                  ? "bg-[#FF1752] text-white shadow-md shadow-[#FF1752]/20 border border-white/20"
+                  : "bg-white/[0.05] text-white/60 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]"
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* 3. TWO-COLUMN LAYOUT: STICKY SIDEBAR (280px) + MAIN RESULTS */}
-      <div className="grid grid-cols-12 gap-8 items-start">
-        {/* LEFT COLUMN: STICKY FILTERS SIDEBAR (280px) */}
-        <aside className="col-span-3 sticky top-24 space-y-6 p-5 rounded-2xl bg-[#0F1118] border border-white/[0.08]">
-          <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
-            <div className="flex items-center gap-2 text-white font-heading font-black text-sm uppercase tracking-wide">
-              <SlidersHorizontal className="w-4 h-4 text-[#D4AF37]" />
-              <span>Filter Data</span>
+      {/* MOBILE FILTER TRIGGER BUTTON (< 1024px) */}
+      <div className="flex lg:hidden items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <span className="font-heading font-black text-sm uppercase text-white">
+            {filteredCards.length} Profil Terdata
+          </span>
+          {hasActiveFilters && (
+            <span className="text-[10px] font-mono text-[#FF4D77] bg-[#FF1752]/10 px-2 py-0.5 rounded-full border border-[#FF1752]/30">
+              Filter Aktif
+            </span>
+          )}
+        </div>
+
+        <GlassButton
+          variant="secondary"
+          size="sm"
+          onClick={() => setMobileFilterOpen(true)}
+          className="font-mono text-xs flex items-center gap-1.5"
+        >
+          <Filter className="w-3.5 h-3.5 text-[#FF1752]" />
+          <span>Filter &amp; Opsi</span>
+        </GlassButton>
+      </div>
+
+      {/* MAIN TWO-COLUMN LAYOUT (DESKTOP) / STACK (MOBILE) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* LEFT COLUMN: FILTERS SIDEBAR (3 COLS ON DESKTOP, HIDDEN ON MOBILE) */}
+        <aside className="hidden lg:block lg:col-span-3 space-y-6">
+          <GlassSurface
+            variant="standard"
+            elevation="glass"
+            radius="2xl"
+            className="p-5 space-y-6 border-white/10"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <span className="text-xs font-heading font-black uppercase tracking-wider text-white">
+                Filter Pencarian
+              </span>
+              {hasActiveFilters && (
+                <button
+                  onClick={handleResetFilters}
+                  className="text-[10px] font-mono text-[#FF4D77] hover:underline flex items-center gap-1"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span>Reset</span>
+                </button>
+              )}
             </div>
-            {hasActiveFilters && (
-              <button
-                onClick={handleResetFilters}
-                className="text-[11px] font-mono text-[#D4AF37] hover:underline flex items-center gap-1"
+
+            {/* GAME FILTER */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-heading font-bold uppercase text-white/50 tracking-wider">
+                Divisi Game
+              </label>
+              <select
+                value={selectedGame}
+                onChange={(e) => setSelectedGame(e.target.value)}
+                className="w-full bg-white/[0.06] border border-white/10 text-xs text-white rounded-xl px-3 py-2 outline-none focus:border-[#FF1752]/50"
               >
-                <RotateCcw className="w-3 h-3" />
-                <span>Reset</span>
-              </button>
-            )}
-          </div>
+                <option value="all" className="bg-[#0A0D15]">Semua Game</option>
+                {OFFICIAL_GAMES.map((g) => (
+                  <option key={g.id} value={g.name} className="bg-[#0A0D15]">
+                    {g.shortName}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          {/* GAME FILTER */}
-          <div className="space-y-2">
-            <label className="text-[11px] font-heading font-bold uppercase text-gray-400 tracking-wider">
-              Divisi Game
-            </label>
-            <div className="space-y-1 text-xs">
-              <button
-                onClick={() => setSelectedGame("all")}
-                className={`w-full text-left px-3 py-1.5 rounded-lg transition-all ${
-                  selectedGame === "all"
-                    ? "bg-[#D4AF37]/20 text-[#D4AF37] font-bold"
-                    : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
-                }`}
+            {/* REGION FILTER */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-heading font-bold uppercase text-white/50 tracking-wider">
+                Wilayah Geografis (19)
+              </label>
+              <select
+                value={selectedRegion}
+                onChange={(e) => setSelectedRegion(e.target.value)}
+                className="w-full bg-white/[0.06] border border-white/10 text-xs text-white rounded-xl px-3 py-2 outline-none focus:border-[#FF1752]/50"
               >
-                Semua Game
-              </button>
-              {OFFICIAL_GAMES.map((g) => (
-                <button
-                  key={g.id}
-                  onClick={() => setSelectedGame(g.name)}
-                  className={`w-full text-left px-3 py-1.5 rounded-lg transition-all ${
-                    selectedGame === g.name
-                      ? "bg-[#D4AF37]/20 text-[#D4AF37] font-bold"
-                      : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
-                  }`}
-                >
-                  {g.shortName}
-                </button>
-              ))}
+                <option value="all" className="bg-[#0A0D15]">Semua Wilayah</option>
+                {REGIONS_DETAIL.map((r) => (
+                  <option key={r.code} value={r.code} className="bg-[#0A0D15]">
+                    {r.name} ({r.code})
+                  </option>
+                ))}
+              </select>
             </div>
-          </div>
 
-          {/* WILAYAH DOMISILI FILTER (SEARCHABLE LIST) */}
-          <div className="space-y-2">
-            <label className="text-[11px] font-heading font-bold uppercase text-gray-400 tracking-wider">
-              19 Wilayah ESPORT SUMBAR
-            </label>
-            <input
-              type="text"
-              placeholder="Cari kota / kab..."
-              value={regionFilterSearch}
-              onChange={(e) => setRegionFilterSearch(e.target.value)}
-              className="w-full px-2.5 py-1.5 rounded-lg bg-black/40 border border-white/10 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37]/40"
-            />
-            <div className="max-h-36 overflow-y-auto space-y-1 text-xs pr-1">
-              <button
-                onClick={() => setSelectedRegion("all")}
-                className={`w-full text-left px-3 py-1 rounded-lg transition-all ${
-                  selectedRegion === "all"
-                    ? "bg-[#D4AF37]/20 text-[#D4AF37] font-bold"
-                    : "text-gray-400 hover:text-white"
-                }`}
-              >
-                Semua Wilayah
-              </button>
-              {filteredRegionsList.map((r) => (
-                <button
-                  key={r.id}
-                  onClick={() => setSelectedRegion(r.code)}
-                  className={`w-full text-left px-3 py-1 rounded-lg transition-all truncate ${
-                    selectedRegion === r.code
-                      ? "bg-[#D4AF37]/20 text-[#D4AF37] font-bold"
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  {r.name}
-                </button>
-              ))}
+            {/* VERIFICATION FILTER */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-heading font-bold uppercase text-white/50 tracking-wider">
+                Verifikasi Standar
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { id: "all", label: "Semua" },
+                  { id: "verified", label: "Terverifikasi" },
+                  { id: "pending", label: "Menunggu" },
+                  { id: "unverified", label: "Belum" },
+                ].map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => setSelectedVerif(v.id)}
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-all ${
+                      selectedVerif === v.id
+                        ? "bg-[#D4AF37] text-black shadow-sm"
+                        : "bg-white/[0.05] text-white/60 hover:text-white border border-white/10"
+                    }`}
+                  >
+                    {v.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* VERIFIKASI STATUS FILTER CHIPS */}
-          <div className="space-y-2">
-            <label className="text-[11px] font-heading font-bold uppercase text-gray-400 tracking-wider">
-              Status Verifikasi
-            </label>
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                { id: "all", label: "Semua" },
-                { id: "verified", label: "Verified" },
-                { id: "regional", label: "Daerah" },
-                { id: "unverified", label: "Draft" },
-              ].map((v) => (
-                <button
-                  key={v.id}
-                  onClick={() => setSelectedVerif(v.id)}
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-all ${
-                    selectedVerif === v.id
-                      ? "bg-[#D4AF37] text-black"
-                      : "bg-white/[0.04] text-gray-400 hover:text-white border border-white/10"
-                  }`}
-                >
-                  {v.label}
-                </button>
-              ))}
+            {/* RARITY TIER FILTER */}
+            <div className="space-y-2">
+              <label className="text-[11px] font-heading font-bold uppercase text-white/50 tracking-wider">
+                Tier Rarity
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { id: "all", label: "Semua" },
+                  { id: "legend", label: "Legend" },
+                  { id: "elite", label: "Elite" },
+                  { id: "contender", label: "Contender" },
+                  { id: "rookie", label: "Rookie" },
+                ].map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => setSelectedRarity(r.id)}
+                    className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-all ${
+                      selectedRarity === r.id
+                        ? "bg-[#FF1752] text-white shadow-sm"
+                        : "bg-white/[0.05] text-white/60 hover:text-white border border-white/10"
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* RARITY TIER FILTER CHIPS */}
-          <div className="space-y-2">
-            <label className="text-[11px] font-heading font-bold uppercase text-gray-400 tracking-wider">
-              Tier Rarity
-            </label>
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                { id: "all", label: "Semua" },
-                { id: "legend", label: "Legend" },
-                { id: "elite", label: "Elite" },
-                { id: "contender", label: "Contender" },
-                { id: "rookie", label: "Rookie" },
-              ].map((r) => (
-                <button
-                  key={r.id}
-                  onClick={() => setSelectedRarity(r.id)}
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-all ${
-                    selectedRarity === r.id
-                      ? "bg-purple-500 text-white"
-                      : "bg-white/[0.04] text-gray-400 hover:text-white border border-white/10"
-                  }`}
-                >
-                  {r.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          </GlassSurface>
         </aside>
 
-        {/* RIGHT COLUMN: RESULTS AREA (9 COLS) */}
-        <section className="col-span-9 space-y-6">
-          {/* HEADER BAR: RESULT COUNT, SORT, VIEW TOGGLE */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-[#0F1118] border border-white/[0.08]">
+        {/* RIGHT COLUMN: RESULTS AREA (9 COLS ON DESKTOP, 12 ON MOBILE) */}
+        <section className="col-span-1 lg:col-span-9 space-y-6">
+          {/* HEADER BAR: RESULT COUNT, SORT, VIEW TOGGLE (DESKTOP) */}
+          <GlassSurface
+            variant="standard"
+            elevation="glass"
+            radius="2xl"
+            className="hidden lg:flex items-center justify-between p-4 border-white/10"
+          >
             <div className="flex items-center gap-3">
               <span className="font-heading font-black text-sm uppercase text-white">
                 {filteredCards.length} Profil Terdata
               </span>
               {hasActiveFilters && (
-                <span className="text-[10px] font-mono text-[#D4AF37] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                <span className="text-[10px] font-mono text-[#FF4D77] bg-[#FF1752]/10 px-2 py-0.5 rounded-full border border-[#FF1752]/30">
                   Filter Aktif
                 </span>
               )}
             </div>
 
             <div className="flex items-center gap-4">
-              {/* SORT SEGMENTED CONTROL */}
+              {/* SORT CONTROL */}
               <div className="flex items-center bg-black/40 border border-white/10 rounded-full p-0.5 text-xs">
                 <button
                   onClick={() => setSortBy("recent")}
                   className={`px-3 py-1 rounded-full transition-all ${
                     sortBy === "recent"
-                      ? "bg-white/[0.08] text-white font-bold"
-                      : "text-gray-400 hover:text-white"
+                      ? "bg-white/15 text-white font-bold"
+                      : "text-white/50 hover:text-white"
                   }`}
                 >
                   Terbaru
@@ -453,8 +444,8 @@ export function DesktopExplore() {
                   onClick={() => setSortBy("rarity")}
                   className={`px-3 py-1 rounded-full transition-all ${
                     sortBy === "rarity"
-                      ? "bg-white/[0.08] text-white font-bold"
-                      : "text-gray-400 hover:text-white"
+                      ? "bg-white/15 text-white font-bold"
+                      : "text-white/50 hover:text-white"
                   }`}
                 >
                   Rarity
@@ -463,129 +454,87 @@ export function DesktopExplore() {
                   onClick={() => setSortBy("name")}
                   className={`px-3 py-1 rounded-full transition-all ${
                     sortBy === "name"
-                      ? "bg-white/[0.08] text-white font-bold"
-                      : "text-gray-400 hover:text-white"
+                      ? "bg-white/15 text-white font-bold"
+                      : "text-white/50 hover:text-white"
                   }`}
                 >
                   Nama
                 </button>
               </div>
 
-              {/* VIEW MODE TOGGLE (CARDS / TABLE) */}
-              <div className="flex items-center bg-black/40 border border-white/10 rounded-full p-0.5 text-gray-400">
+              {/* VIEW MODE TOGGLE */}
+              <div className="flex items-center bg-black/40 border border-white/10 rounded-full p-0.5 text-white/50">
                 <button
                   onClick={() => setViewMode("grid")}
                   className={`p-1.5 rounded-full transition-all ${
-                    viewMode === "grid" ? "bg-[#D4AF37] text-black" : "hover:text-white"
+                    viewMode === "grid" ? "bg-[#FF1752] text-white" : "hover:text-white"
                   }`}
                   title="Tampilan Kartu"
+                  aria-label="Tampilan Kartu"
                 >
                   <LayoutGrid className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewMode("table")}
                   className={`p-1.5 rounded-full transition-all ${
-                    viewMode === "table" ? "bg-[#D4AF37] text-black" : "hover:text-white"
+                    viewMode === "table" ? "bg-[#FF1752] text-white" : "hover:text-white"
                   }`}
                   title="Tampilan Tabel"
+                  aria-label="Tampilan Tabel"
                 >
                   <ListIcon className="w-4 h-4" />
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* ACTIVE FILTER PILLS */}
-          {hasActiveFilters && (
-            <div className="flex items-center gap-2 flex-wrap text-xs">
-              {selectedEntity !== "all" && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-gray-300">
-                  <span>Entitas: {selectedEntity}</span>
-                  <X
-                    className="w-3 h-3 cursor-pointer text-gray-400 hover:text-white"
-                    onClick={() => setSelectedEntity("all")}
-                  />
-                </span>
-              )}
-              {selectedGame !== "all" && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-gray-300">
-                  <span>Game: {selectedGame}</span>
-                  <X
-                    className="w-3 h-3 cursor-pointer text-gray-400 hover:text-white"
-                    onClick={() => setSelectedGame("all")}
-                  />
-                </span>
-              )}
-              {selectedRegion !== "all" && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-gray-300">
-                  <span>Wilayah: {selectedRegion}</span>
-                  <X
-                    className="w-3 h-3 cursor-pointer text-gray-400 hover:text-white"
-                    onClick={() => setSelectedRegion("all")}
-                  />
-                </span>
-              )}
-              {selectedVerif !== "all" && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-gray-300">
-                  <span>Verifikasi: {selectedVerif}</span>
-                  <X
-                    className="w-3 h-3 cursor-pointer text-gray-400 hover:text-white"
-                    onClick={() => setSelectedVerif("all")}
-                  />
-                </span>
-              )}
-              {selectedRarity !== "all" && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-gray-300">
-                  <span>Rarity: {selectedRarity}</span>
-                  <X
-                    className="w-3 h-3 cursor-pointer text-gray-400 hover:text-white"
-                    onClick={() => setSelectedRarity("all")}
-                  />
-                </span>
-              )}
-            </div>
-          )}
+          </GlassSurface>
 
           {/* EMPTY STATE */}
           {filteredCards.length === 0 && (
-            <div className="p-16 rounded-3xl bg-[#0F1118] border border-white/[0.08] text-center flex flex-col items-center">
-              <div className="w-16 h-16 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-gray-500 mb-4">
-                <Search className="w-8 h-8 opacity-40" />
+            <GlassSurface
+              variant="subtle"
+              elevation="flat"
+              radius="2xl"
+              className="p-14 text-center flex flex-col items-center border-white/10"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-white/40 mb-3">
+                <Search className="w-7 h-7" />
               </div>
-              <h3 className="text-lg font-heading font-black uppercase text-white">
+              <h3 className="text-base font-heading font-black uppercase text-white">
                 Tidak Ada Profil Ditemukan
               </h3>
-              <p className="text-xs text-gray-400 mt-1 max-w-sm">
+              <p className="text-xs text-white/50 mt-1 max-w-sm">
                 Coba sesuaikan kata kunci pencarian atau reset pilihan filter.
               </p>
-              <button
+              <GlassButton
+                variant="primary"
+                size="sm"
                 onClick={handleResetFilters}
-                className="mt-6 px-6 py-2.5 rounded-full bg-[#D4AF37] text-black text-xs font-heading font-black uppercase tracking-wider shadow-lg active:scale-95 transition-all"
+                className="mt-5 text-xs font-heading font-black uppercase"
               >
                 Reset Filter
-              </button>
-            </div>
+              </GlassButton>
+            </GlassSurface>
           )}
 
-          {/* VIEW 1: 4-COLUMN TCG CARD GRID */}
+          {/* VIEW 1: GRID MODE */}
           {viewMode === "grid" && filteredCards.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredCards.map((card) => (
                 <div
                   key={card.id}
                   onClick={() => setPreviewCard(card)}
-                  className="group flex flex-col items-center cursor-pointer transition-all duration-300 hover:-translate-y-2 shadow-xl"
+                  className="group flex flex-col items-center cursor-pointer transition-all duration-300 hover:-translate-y-1"
                 >
                   <EsportCard
                     type={card.type}
                     rarity={card.rarity}
                     verification={card.verification}
                     data={card.data}
-                    size="sm"
+                    size="fluid"
                     interactive={true}
                   />
-                  <div className="mt-3 flex items-center justify-between w-full px-2 text-xs">
-                    <span className="font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors truncate">
+                  <div className="mt-2.5 flex items-center justify-between w-full max-w-[280px] px-2 text-xs">
+                    <span className="font-heading font-bold text-white group-hover:text-pink-300 transition-colors truncate">
                       {card.data.ign || card.data.displayName}
                     </span>
                     <span className="text-[10px] font-mono text-[#D4AF37] group-hover:translate-x-1 transition-transform">
@@ -597,14 +546,19 @@ export function DesktopExplore() {
             </div>
           )}
 
-          {/* VIEW 2: COMPACT TABLE VIEW */}
+          {/* VIEW 2: TABLE MODE */}
           {viewMode === "table" && filteredCards.length > 0 && (
-            <div className="rounded-2xl bg-[#0F1118] border border-white/[0.08] overflow-hidden">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-black/40 border-b border-white/[0.08] text-gray-400 font-mono text-[11px] uppercase tracking-wider">
+            <GlassSurface
+              variant="standard"
+              elevation="glass"
+              radius="2xl"
+              className="border-white/10 overflow-x-auto"
+            >
+              <table className="w-full text-left text-xs min-w-[600px]">
+                <thead className="bg-black/40 border-b border-white/10 text-white/50 font-mono text-[11px] uppercase tracking-wider">
                   <tr>
                     <th className="py-3 px-4">Profil / Atlet</th>
-                    <th className="py-3 px-4">Game & Peran</th>
+                    <th className="py-3 px-4">Game &amp; Peran</th>
                     <th className="py-3 px-4">Wilayah</th>
                     <th className="py-3 px-4">Tier Rarity</th>
                     <th className="py-3 px-4">Verifikasi</th>
@@ -615,42 +569,45 @@ export function DesktopExplore() {
                   {filteredCards.map((card) => (
                     <tr
                       key={card.id}
-                      className="hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                      className="hover:bg-white/[0.04] transition-colors cursor-pointer group"
                       onClick={() => setPreviewCard(card)}
                     >
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-[#1A1E28] border border-white/10 flex items-center justify-center font-heading font-black text-[#D4AF37] shrink-0">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center font-heading font-black text-pink-300 text-xs shrink-0">
                             {(card.data.ign || card.data.displayName).slice(0, 2).toUpperCase()}
                           </div>
                           <div>
-                            <span className="font-heading font-bold text-white group-hover:text-[#D4AF37] block">
+                            <span className="font-heading font-bold text-white group-hover:text-pink-300 block truncate max-w-[140px]">
                               {card.data.ign || card.data.displayName}
                             </span>
-                            <span className="text-[10px] text-gray-400 font-mono">
+                            <span className="text-[10px] text-white/40 font-mono">
                               {card.data.displayName}
                             </span>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <span className="font-bold text-gray-200 block">{card.data.game}</span>
-                        <span className="text-[10px] text-gray-400">{card.data.role || "Member"}</span>
+                      <td className="py-3 px-4">
+                        <span className="font-bold text-white/90 block">{card.data.game}</span>
+                        <span className="text-[10px] text-white/50">{card.data.role || "Member"}</span>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-gray-300">
+                      <td className="py-3 px-4 font-mono text-white/70">
                         {card.data.region.name}
                       </td>
-                      <td className="py-3.5 px-4">
-                        <RarityTag rarity={card.rarity} />
+                      <td className="py-3 px-4">
+                        <GlassRarityBadge tier={card.rarity} size="sm" />
                       </td>
-                      <td className="py-3.5 px-4">
-                        <StatusBadge status={card.verification} size="sm" />
+                      <td className="py-3 px-4">
+                        <GlassStatusBadge
+                          status={card.verification === "verified" ? "verified" : card.verification === "regional" ? "verified" : "unregistered"}
+                          size="sm"
+                        />
                       </td>
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-3 px-4 text-right">
                         <Link
                           href={getProfileSlug(card)}
                           onClick={(e) => e.stopPropagation()}
-                          className="px-3 py-1.5 rounded-full bg-white/[0.04] hover:bg-[#D4AF37] hover:text-black border border-white/10 text-[10px] font-heading font-bold uppercase tracking-wider text-gray-300 transition-all inline-flex items-center gap-1"
+                          className="px-2.5 py-1 rounded-lg bg-white/[0.06] hover:bg-[#FF1752] hover:text-white border border-white/10 text-[10px] font-heading font-bold uppercase tracking-wider text-white/70 transition-all inline-flex items-center gap-1"
                         >
                           <span>Buka</span>
                           <ExternalLink className="w-3 h-3" />
@@ -660,16 +617,15 @@ export function DesktopExplore() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </GlassSurface>
           )}
         </section>
       </div>
 
-      {/* QUICK PREVIEW SIDE DRAWER */}
+      {/* QUICK PREVIEW DRAWER (BOTH MOBILE & DESKTOP) */}
       <AnimatePresence>
         {previewCard && (
           <div className="fixed inset-0 z-50 flex justify-end">
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -678,70 +634,160 @@ export function DesktopExplore() {
               className="fixed inset-0 bg-black/70 backdrop-blur-sm"
             />
 
-            {/* Side Drawer Panel */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 280 }}
-              className="relative w-full max-w-md bg-[#0D1017] border-l border-white/[0.08] h-full shadow-2xl z-10 flex flex-col p-6 overflow-y-auto"
+              className="relative w-full max-w-md bg-[#0A0D15] border-l border-white/15 h-full shadow-2xl z-10 flex flex-col p-6 overflow-y-auto"
             >
-              {/* Top Close Bar */}
-              <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
+              <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
                 <span className="text-xs font-mono text-[#D4AF37] font-bold">
-                  Pratinjau Cepat Profil
+                  Pratinjau Paspor Digital
                 </span>
                 <button
                   onClick={() => setPreviewCard(null)}
-                  className="w-8 h-8 rounded-full bg-white/[0.04] hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white"
+                  className="w-8 h-8 rounded-full bg-white/[0.05] hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white"
+                  aria-label="Tutup pratinjau"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Centered TCG Card Preview */}
-              <div className="flex justify-center mb-8">
+              <div className="flex justify-center mb-6">
                 <EsportCard
                   type={previewCard.type}
                   rarity={previewCard.rarity}
                   verification={previewCard.verification}
                   data={previewCard.data}
-                  size="md"
+                  size="fluid"
                   interactive={true}
                 />
               </div>
 
-              {/* Bio & Details */}
-              <div className="space-y-4 text-xs flex-1">
-                <div className="p-4 rounded-xl bg-[#0F1118] border border-white/[0.08] space-y-2.5">
+              <div className="space-y-3 text-xs flex-1">
+                <GlassSurface variant="subtle" radius="xl" className="p-4 space-y-2 border-white/10">
                   <div className="flex justify-between">
-                    <span className="text-gray-400">ESPORT ID:</span>
-                    <span className="font-mono text-white font-bold">
+                    <span className="text-white/50">ESPORT ID:</span>
+                    <span className="font-mono text-[#D4AF37] font-bold">
                       {previewCard.data.esportId}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Divisi Game:</span>
+                    <span className="text-white/50">Divisi Game:</span>
                     <span className="font-bold text-white">{previewCard.data.game}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Wilayah ESPORT SUMBAR:</span>
+                    <span className="text-white/50">Wilayah:</span>
                     <span className="font-bold text-white">
                       {previewCard.data.region.name} ({previewCard.data.region.code})
                     </span>
                   </div>
-                </div>
+                </GlassSurface>
               </div>
 
-              {/* Bottom Action: Open Full Profile */}
-              <div className="pt-6 border-t border-white/[0.08]">
+              <div className="pt-6 border-t border-white/10">
                 <Link
                   href={getProfileSlug(previewCard)}
-                  className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] hover:brightness-110 text-black text-xs font-heading font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-950/30 active:scale-[0.98] transition-all"
+                  className="w-full"
                 >
-                  <span>Buka Profil Lengkap</span>
-                  <ExternalLink className="w-4 h-4" />
+                  <GlassButton variant="primary" size="md" className="w-full text-xs font-heading font-black uppercase tracking-wider">
+                    <span>Buka Profil Lengkap</span>
+                    <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
+                  </GlassButton>
                 </Link>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* MOBILE FILTER MODAL SHEET */}
+      <AnimatePresence>
+        {mobileFilterOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center lg:hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileFilterOpen(false)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            />
+
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 280 }}
+              className="relative w-full max-w-lg bg-[#0A0D15] border-t sm:border border-white/15 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 max-h-[85vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+                <span className="text-sm font-heading font-black uppercase text-white">
+                  Opsi Filter
+                </span>
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white"
+                  aria-label="Tutup filter"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                {/* GAME */}
+                <div>
+                  <label className="text-xs font-mono text-white/50 block mb-1">Divisi Game</label>
+                  <select
+                    value={selectedGame}
+                    onChange={(e) => setSelectedGame(e.target.value)}
+                    className="w-full bg-white/[0.06] border border-white/10 text-xs text-white rounded-xl px-3 py-2.5 outline-none"
+                  >
+                    <option value="all" className="bg-[#0A0D15]">Semua Game</option>
+                    {OFFICIAL_GAMES.map((g) => (
+                      <option key={g.id} value={g.name} className="bg-[#0A0D15]">
+                        {g.shortName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* REGION */}
+                <div>
+                  <label className="text-xs font-mono text-white/50 block mb-1">Wilayah Geografis</label>
+                  <select
+                    value={selectedRegion}
+                    onChange={(e) => setSelectedRegion(e.target.value)}
+                    className="w-full bg-white/[0.06] border border-white/10 text-xs text-white rounded-xl px-3 py-2.5 outline-none"
+                  >
+                    <option value="all" className="bg-[#0A0D15]">Semua Wilayah (19)</option>
+                    {REGIONS_DETAIL.map((r) => (
+                      <option key={r.code} value={r.code} className="bg-[#0A0D15]">
+                        {r.name} ({r.code})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* ACTIONS */}
+                <div className="pt-4 flex gap-3">
+                  <GlassButton
+                    variant="secondary"
+                    size="md"
+                    onClick={handleResetFilters}
+                    className="flex-1 font-mono text-xs"
+                  >
+                    Reset
+                  </GlassButton>
+                  <GlassButton
+                    variant="primary"
+                    size="md"
+                    onClick={() => setMobileFilterOpen(false)}
+                    className="flex-1 font-mono text-xs font-bold"
+                  >
+                    Terapkan ({filteredCards.length})
+                  </GlassButton>
+                </div>
               </div>
             </motion.div>
           </div>

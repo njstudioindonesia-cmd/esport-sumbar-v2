@@ -14,8 +14,13 @@ import {
   Users,
   Compass,
   ArrowRight,
+  Map,
 } from "lucide-react";
 import { REGIONS_DETAIL, RegionDetail } from "@/data/regions";
+import { GlassSurface } from "@/components/glass/GlassSurface";
+import { GlassCard } from "@/components/glass/GlassCard";
+import { GlassBadge } from "@/components/glass/GlassBadge";
+import { GlassButton } from "@/components/glass/GlassButton";
 
 // Schematic coordinates for 19 regions of West Sumatra
 const REGION_COORDINATES: Record<string, { x: number; y: number }> = {
@@ -78,53 +83,55 @@ export function DesktopRegionsView() {
   return (
     <div className="w-full flex flex-col gap-8 select-none">
       {/* Top Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#D4AF37] uppercase mb-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-            <span>Struktur Administratif ESPORT SUMBAR</span>
+          <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#FF4D77] uppercase mb-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF1752]" />
+            <span>Peta Geografis Sumatera Barat</span>
           </div>
-          <h1 className="text-3xl font-heading font-black text-white tracking-tight">
-            19 Wilayah Sumatera Barat
+          <h1 className="text-2xl sm:text-4xl font-heading font-black text-white tracking-tight">
+            19 Wilayah Ranah Minang
           </h1>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-white/60">
+          <GlassSurface variant="subtle" radius="xl" className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono text-white/70 border-white/10">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>19 Wilayah Terpetakan</span>
-          </div>
+            <span>19 Wilayah Terdata</span>
+          </GlassSurface>
         </div>
       </div>
 
-      {/* ========================================================= */}
       {/* TWO COLUMNS: KIRI PETA SVG INTERAKTIF, KANAN GRID EMBLEM */}
-      {/* ========================================================= */}
-      <div className="grid grid-cols-12 gap-8 items-start">
-        {/* ======================================================= */}
-        {/* KOLOM KIRI (5/12): PETA SVG INTERAKTIF BERCAMPUR CAHAYA */}
-        {/* ======================================================= */}
-        <div className="col-span-12 lg:col-span-5 sticky top-24 flex flex-col gap-4">
-          <div className="relative w-full h-[540px] rounded-3xl bg-[#0F1118]/90 border border-white/[0.08] shadow-2xl p-4 flex flex-col justify-between overflow-hidden backdrop-blur-xl">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* KOLOM KIRI (5/12): PETA SVG INTERAKTIF */}
+        <div className="col-span-1 lg:col-span-5 lg:sticky lg:top-24 flex flex-col gap-4">
+          <GlassSurface
+            variant="elevated"
+            elevation="glass"
+            radius="3xl"
+            specular={true}
+            className="relative w-full h-[480px] sm:h-[520px] p-4 flex flex-col justify-between overflow-hidden border-white/15 shadow-2xl"
+          >
             {/* Ambient map glows */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF1752]/10 blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#4C7DFF]/10 blur-3xl pointer-events-none" />
 
             {/* Top map bar */}
             <div className="relative z-10 flex items-center justify-between px-2 pt-1">
-              <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
+              <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest">
                 PETA INTERAKTIF SEBARAN
               </span>
               <span className="text-[10px] font-mono text-[#D4AF37]">
-                Klik daerah untuk membuka
+                Pilih wilayah untuk detail
               </span>
             </div>
 
             {/* SVG MAP */}
-            <div className="relative flex-1 flex items-center justify-center">
-              <svg viewBox="0 0 620 520" className="w-full h-full max-h-[460px]">
+            <div className="relative flex-1 flex items-center justify-center py-2">
+              <svg viewBox="0 0 620 520" className="w-full h-full max-h-[420px]">
                 {/* Connecting Lines */}
-                <g stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" strokeDasharray="3 3">
+                <g stroke="rgba(255,255,255,0.12)" strokeWidth="1.2" strokeDasharray="3 3">
                   <line x1="320" y1="80" x2="230" y2="120" />
                   <line x1="320" y1="80" x2="300" y2="160" />
                   <line x1="300" y1="160" x2="345" y2="165" />
@@ -159,7 +166,6 @@ export function DesktopRegionsView() {
                       onMouseEnter={() => setHoveredRegion(region)}
                       onMouseLeave={() => setHoveredRegion(null)}
                     >
-                      {/* Pulse Glow */}
                       {(isHovered || region.isPilot) && (
                         <circle
                           cx={coords.x}
@@ -168,32 +174,30 @@ export function DesktopRegionsView() {
                           fill={
                             region.isPilot
                               ? "rgba(212, 175, 55, 0.3)"
-                              : "rgba(76, 125, 255, 0.25)"
+                              : "rgba(255, 23, 82, 0.25)"
                           }
                           className="animate-pulse"
                         />
                       )}
 
-                      {/* Main Node Circle */}
                       <circle
                         cx={coords.x}
                         cy={coords.y}
                         r={isCity ? 10 : 8}
-                        fill={isHovered ? "#D4AF37" : "#10B981"}
+                        fill={isHovered ? "#FF1752" : "#10B981"}
                         stroke="#07080C"
                         strokeWidth="2.5"
                         className="transition-colors duration-150"
                       />
 
-                      {/* Region Label */}
                       <text
                         x={coords.x}
                         y={coords.y - 12}
                         textAnchor="middle"
                         className={`text-[9px] font-mono font-bold transition-all ${
                           isHovered
-                            ? "fill-[#D4AF37] text-[11px]"
-                            : "fill-white/60"
+                            ? "fill-[#FF4D77] text-[11px]"
+                            : "fill-white/70"
                         }`}
                       >
                         {region.code}
@@ -205,7 +209,7 @@ export function DesktopRegionsView() {
 
               {/* FLOATING HOVER TOOLTIP */}
               {hoveredRegion && (
-                <div className="absolute bottom-4 left-4 right-4 z-20 p-4 rounded-2xl bg-[#161A24]/95 border border-[#D4AF37]/40 shadow-2xl backdrop-blur-md flex items-center justify-between animate-in fade-in slide-in-from-bottom-2">
+                <div className="absolute bottom-4 left-4 right-4 z-20 p-4 rounded-2xl bg-[#0A0D15]/95 border border-[#FF1752]/40 shadow-2xl backdrop-blur-md flex items-center justify-between animate-in fade-in slide-in-from-bottom-2">
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2">
                       <span className="font-heading font-black text-sm text-white">
@@ -216,7 +220,7 @@ export function DesktopRegionsView() {
                       </span>
                     </div>
                     <span className="text-[11px] text-white/50">
-                      {hoveredRegion.type === "kota" ? "Kota Otonom" : "Kabupaten"} • Direktori Terdaftar
+                      {hoveredRegion.type === "kota" ? "Kota Otonom" : "Kabupaten"} • Direktori Wilayah
                     </span>
                   </div>
 
@@ -229,35 +233,38 @@ export function DesktopRegionsView() {
                         Terverifikasi
                       </span>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#D4AF37]" />
+                    <ArrowRight className="w-4 h-4 text-pink-400" />
                   </div>
                 </div>
               )}
             </div>
 
             {/* Bottom Legend */}
-            <div className="relative z-10 flex items-center justify-between pt-2 border-t border-white/[0.06] text-[10px] font-mono text-white/50 px-2">
+            <div className="relative z-10 flex items-center justify-between pt-2 border-t border-white/[0.08] text-[10px] font-mono text-white/50 px-2">
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400" /> Aktif
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-400" /> Ditangani Provinsi
+                <span className="w-2 h-2 rounded-full bg-amber-400" /> Terhubung Langsung
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#D4AF37]" /> Wilayah Pilot
               </span>
             </div>
-          </div>
+          </GlassSurface>
         </div>
 
-        {/* ======================================================= */}
-        {/* KOLOM KANAN (7/12): DAFTAR 19 WILAYAH DALAM GRID EMBLEM */}
-        {/* ======================================================= */}
-        <div className="col-span-12 lg:col-span-7 flex flex-col gap-6">
+        {/* KOLOM KANAN (7/12): DAFTAR 19 WILAYAH */}
+        <div className="col-span-1 lg:col-span-7 flex flex-col gap-6">
           {/* Controls Bar: Filter Chips & Search */}
-          <div className="p-4 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] flex items-center justify-between gap-4">
+          <GlassSurface
+            variant="standard"
+            elevation="glass"
+            radius="2xl"
+            className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-white/10"
+          >
             {/* Filter Chips */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               {[
                 { id: "all", label: "Semua (19)" },
                 { id: "kota", label: "7 Kota" },
@@ -267,10 +274,10 @@ export function DesktopRegionsView() {
                   key={tab.id}
                   type="button"
                   onClick={() => setFilterType(tab.id as any)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-heading font-bold transition-all ${
+                  className={`flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl text-xs font-heading font-bold transition-all ${
                     filterType === tab.id
-                      ? "bg-[#D4AF37] text-[#07080C] shadow-sm"
-                      : "bg-[#161A24] text-white/60 hover:text-white"
+                      ? "bg-[#FF1752] text-white shadow-sm"
+                      : "bg-white/[0.06] text-white/60 hover:text-white"
                   }`}
                 >
                   {tab.label}
@@ -279,20 +286,20 @@ export function DesktopRegionsView() {
             </div>
 
             {/* Search Input */}
-            <div className="relative w-52">
+            <div className="relative w-full sm:w-56">
               <Search className="w-3.5 h-3.5 text-white/40 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari wilayah..."
-                className="w-full h-9 bg-[#161A24] border border-white/[0.08] rounded-xl pl-8 pr-3 text-xs text-white placeholder-white/30 outline-none focus:border-[#D4AF37]"
+                className="w-full h-9 bg-white/[0.06] border border-white/10 rounded-xl pl-8 pr-3 text-xs text-white placeholder-white/40 outline-none focus:border-[#FF1752]/50"
               />
             </div>
-          </div>
+          </GlassSurface>
 
-          {/* 19 Regions Emblem Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {/* 19 Regions Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {filteredRegions.map((region) => {
               return (
                 <Link
@@ -300,33 +307,41 @@ export function DesktopRegionsView() {
                   href={`/regions/${region.slug}`}
                   onMouseEnter={() => setHoveredRegion(region)}
                   onMouseLeave={() => setHoveredRegion(null)}
-                  className="p-5 rounded-2xl bg-[#0F1118]/80 hover:bg-[#161A24] border border-white/[0.08] hover:border-[#D4AF37]/50 flex flex-col justify-between min-h-[140px] transition-all group"
+                  className="group block"
                 >
-                  {/* Top row: Code + Status Badge */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono text-[#D4AF37] font-bold">
-                      {region.code}
-                    </span>
-                    <span className="px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                      {region.isPilot ? "Pilot" : (region.type === "kota" ? "Kota" : "Kabupaten")}
-                    </span>
-                  </div>
-
-                  {/* Center Name */}
-                  <div className="my-2">
-                    <div className="text-sm font-heading font-black text-white group-hover:text-[#D4AF37] transition-colors truncate">
-                      {region.name}
+                  <GlassCard
+                    variant="standard"
+                    elevation="glass"
+                    radius="2xl"
+                    specular={true}
+                    className="p-5 flex flex-col justify-between min-h-[140px] group-hover:border-[#FF1752]/40 transition-colors"
+                  >
+                    {/* Top row: Code + Status Badge */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono text-[#D4AF37] font-bold">
+                        {region.code}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[8px] font-mono font-bold uppercase bg-white/10 text-white/80 border border-white/10">
+                        {region.isPilot ? "Pilot" : (region.type === "kota" ? "Kota" : "Kabupaten")}
+                      </span>
                     </div>
-                    <div className="text-[10px] font-mono text-white/40 uppercase">
-                      {region.type === "kota" ? "Kota" : "Kabupaten"}
-                    </div>
-                  </div>
 
-                  {/* Bottom strip: Verified count */}
-                  <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-white/50">
-                    <span>{liveMapStats[region.code]?.verified ?? region.verifiedCount ?? 0} Terverifikasi</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-white/30 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
-                  </div>
+                    {/* Center Name */}
+                    <div className="my-2">
+                      <div className="text-sm font-heading font-black text-white group-hover:text-pink-300 transition-colors truncate">
+                        {region.name}
+                      </div>
+                      <div className="text-[10px] font-mono text-white/40 uppercase">
+                        {region.type === "kota" ? "Kota" : "Kabupaten"}
+                      </div>
+                    </div>
+
+                    {/* Bottom strip: Verified count */}
+                    <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-white/50">
+                      <span>{liveMapStats[region.code]?.verified ?? region.verifiedCount ?? 0} Terverifikasi</span>
+                      <ChevronRight className="w-3.5 h-3.5 text-white/30 group-hover:text-[#FF1752] group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                  </GlassCard>
                 </Link>
               );
             })}

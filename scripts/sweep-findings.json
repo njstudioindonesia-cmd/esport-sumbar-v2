@@ -1,11 +1,110 @@
 [
   {
-    "file": "apps\\web\\src\\app\\dev\\glass\\GlassLaboratoryClient.tsx",
-    "line": 114,
+    "file": "apps\\web\\src\\app\\about\\page.tsx",
+    "line": 129,
     "rule": "KLAIM_RESMI",
     "matches": [
-      "RESMI"
+      "official"
     ],
-    "snippet": "{/* MODUL 1: EMPAT MATERIAL KACA RESMI                        */}"
+    "snippet": "Layanan kurasi bukti mandiri satu pintu berstandar ketat guna memvalidasi data atlet, tim, dan offic"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 146,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI|KONI|Dispora)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 146,
+    "rule": "PBESI_TERM",
+    "matches": [
+      "PBESI"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI|KONI|Dispora)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 146,
+    "rule": "PENGCAB_TERM",
+    "matches": [
+      "Pengcab"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI|KONI|Dispora)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 146,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI|KONI|Dispora)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 146,
+    "rule": "KONI_TERM",
+    "matches": [
+      "KONI"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI|KONI|Dispora)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 146,
+    "rule": "DISPORA_TERM",
+    "matches": [
+      "Dispora"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI|KONI|Dispora)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 147,
+    "rule": "KLAIM_BERDAULAT",
+    "matches": [
+      "berdaulat"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(kepatuhan\\s+UU\\s+PDP|patuh\\s+100%|berdaulat)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 228,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 228,
+    "rule": "PBESI_TERM",
+    "matches": [
+      "PBESI"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 228,
+    "rule": "PENGCAB_TERM",
+    "matches": [
+      "Pengcab"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI)\\b/i);"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 228,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "expect(html).not.toMatch(/\\b(ESI|Pengprov|Pengcab|PBESI)\\b/i);"
   }
 ]
