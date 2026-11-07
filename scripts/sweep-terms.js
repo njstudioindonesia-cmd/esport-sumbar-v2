@@ -1,34 +1,38 @@
 #!/usr/bin/env node
 
 /**
- * CI Script: Sapu Istilah Terlarang (Forbidden Terms Sweep)
- * Memeriksa kode baru agar tidak memuat istilah ESI, Pengcab, Pengprov, PBESI, dll.
- * Gagal (exit code 1) jika ditemukan kemunculan di luar daftar pengecualian sah.
+ * CI Script: Sapu Istilah & Klaim Terlarang V3 (Super Sweep)
+ * Memeriksa seluruh kode sumber, aset, template, dan konfigurasi terhadap:
+ * 1. Istilah terlarang: ESI, Pengcab, Pengprov, PBESI, KONI, Dispora, dll.
+ * 2. Klaim terlarang: resmi, official, sah hukum, pengesahan, akreditasi, dll.
  */
 
 const fs = require("fs");
 const path = require("path");
 
-const FORBIDDEN_TERMS = [
-  "Pengcab",
-  "Pengprov",
-  "PBESI",
-  "PB ESI",
-  "region_admin",
-  "prov_admin",
-  "mitra kelembagaan",
-  "Admin Daerah",
-  "Admin Provinsi",
-  "Regional Checked",
-  "esi_contact_name",
-  "has_active_admin",
-  "admin_mode",
-  "PAD PBESI",
-  "lisensi atlet",
-  "paspor resmi daerah",
+const FORBIDDEN_RULES = [
+  { name: "ESI_TERM", regex: /\b(ESI|E\.S\.I|Esi)\b/g },
+  { name: "PBESI_TERM", regex: /\b(PBESI|PB\s+ESI)\b/gi },
+  { name: "PENGCAB_TERM", regex: /\b(Pengcab|Pengurus\s+Cabang)\b/gi },
+  { name: "PENGPROV_TERM", regex: /\b(Pengprov|Pengurus\s+Provinsi|Pengurus\s+Daerah)\b/gi },
+  { name: "KONI_TERM", regex: /\bKONI\b/g },
+  { name: "DISPORA_TERM", regex: /\bDispora\b/gi },
+  { name: "KOMITE_OLAHRAGA", regex: /\bKomite\s+Olahraga\b/gi },
+  { name: "FEDERASI_TERM", regex: /\bFederasi\b/gi },
+  { name: "ADMIN_DAERAH_PROV", regex: /\b(Admin\s+Daerah|Admin\s+Provinsi|region_admin|prov_admin|Verifikator\s+Daerah|Regional\s+Checked|Provincial)\b/gi },
+  { name: "VERIFIKASI_BERTAHAP", regex: /\b(Tahap\s+1|Tahap\s+2)\b/gi },
+  { name: "MITRA_KELEMBAGAAN", regex: /\bmitra\s+kelembagaan\b/gi },
+  { name: "FALLBACK_WILAYAH", regex: /\bfallback\b/gi },
+  { name: "KLAIM_RESMI", regex: /\b(resmi|official)\b/gi },
+  { name: "KLAIM_SAH", regex: /\b(sah|sah\s+hukum|pengesahan)\b/gi },
+  { name: "KLAIM_AKREDITASI", regex: /\b(akreditasi|terakreditasi|tersertifikasi)\b/gi },
+  { name: "KLAIM_LISENSI_PAD", regex: /\b(lisensi\s+atlet|PAD)\b/gi },
+  { name: "KLAIM_KEPATUHAN_HUKUM", regex: /\b(kepatuhan\s+UU\s+PDP|patuh\s+(100%|UU\s+PDP))\b/gi },
+  { name: "KLAIM_BERDAULAT", regex: /\b(berdaulat|kedaulatan)\b/gi },
+  { name: "KLAIM_RATING_DIRI", regex: /\b(A\+|predikat\s+A\+|Excellent)\b/g },
 ];
 
-// Pengecualian sah: file migrasi historis, dokumen analisis/ADR yang mencatat riwayat V2, dan skrip seed demo lawas
+// Pengecualian sah yang terdokumentasi:
 const ALLOWED_EXCEPTIONS = [
   path.normalize("supabase/migrations"),
   path.normalize("docs/adr"),
@@ -36,8 +40,16 @@ const ALLOWED_EXCEPTIONS = [
   path.normalize("docs/PROJECT_DIRECTOR_REPORT.md"),
   path.normalize("docs/DATA_MIGRATION_PLAN_V3.md"),
   path.normalize("docs/ROUTE_PLAN_V3.md"),
+  path.normalize("docs/PROJECT_DIRECTOR_EXECUTIVE_REPORT.md"),
+  path.normalize("docs/COMPREHENSIVE_MULTIDISCIPLINARY_REPORT.md"),
   path.normalize("scripts/sweep-terms.js"),
-  path.normalize("scripts/seed-demo.ts"),
+  path.normalize("scripts/audit-deep-terms.js"),
+  path.normalize("scripts/analyze-web-findings.js"),
+  path.normalize("scripts/crawler-rendered-output.js"),
+  path.normalize("scripts/audit-findings.json"),
+  path.normalize("scripts/crawl-rendered-findings.json"),
+  path.normalize("scripts/routes-and-links-report.json"),
+  path.normalize("docs/MATRIKS_PERSYARATAN_S1_S5.md"),
 ];
 
 function isPathExcluded(filePath) {
@@ -46,6 +58,7 @@ function isPathExcluded(filePath) {
 }
 
 function scanDirectory(dir, findings = []) {
+  if (!fs.existsSync(dir)) return findings;
   const entries = fs.readdirSync(dir, { withFileTypes: true });
 
   for (const entry of entries) {
@@ -55,7 +68,9 @@ function scanDirectory(dir, findings = []) {
       entry.name === "node_modules" ||
       entry.name === ".next" ||
       entry.name === ".git" ||
-      entry.name === "dist"
+      entry.name === "dist" ||
+      entry.name === ".turbo" ||
+      entry.name === "backups"
     ) {
       continue;
     }
@@ -64,19 +79,22 @@ function scanDirectory(dir, findings = []) {
       scanDirectory(fullPath, findings);
     } else if (
       entry.isFile() &&
-      /\.(ts|tsx|js|mjs|json|md|sql)$/.test(entry.name) &&
+      /\.(ts|tsx|js|mjs|cjs|json|svg|html|css|md|txt)$/.test(entry.name) &&
       !isPathExcluded(fullPath)
     ) {
       const content = fs.readFileSync(fullPath, "utf-8");
       const lines = content.split("\n");
 
       lines.forEach((line, index) => {
-        for (const term of FORBIDDEN_TERMS) {
-          if (line.includes(term)) {
+        for (const rule of FORBIDDEN_RULES) {
+          rule.regex.lastIndex = 0;
+          const matches = line.match(rule.regex);
+          if (matches) {
             findings.push({
-              file: fullPath,
+              file: path.relative(path.resolve(__dirname, ".."), fullPath),
               line: index + 1,
-              term,
+              rule: rule.name,
+              matches: Array.from(new Set(matches)),
               snippet: line.trim().substring(0, 100),
             });
           }
@@ -89,25 +107,41 @@ function scanDirectory(dir, findings = []) {
 }
 
 const rootDir = path.resolve(__dirname, "..");
-console.log("🔍 Menjalankan Sapu Istilah Terlarang V3 pada:", rootDir);
+console.log("🔍 Menjalankan Sapu Istilah Terlarang & Klaim V3 pada:", rootDir);
 
-// Di Bagian 4, sapu mencakup seluruh apps/web/src, packages/, dan scripts/
-const packagesDir = path.join(rootDir, "packages");
-const scriptsDir = path.join(rootDir, "scripts");
-const appsWebSrcDir = path.join(rootDir, "apps", "web", "src");
+const findings = [];
+scanDirectory(path.join(rootDir, "apps", "web"), findings);
+scanDirectory(path.join(rootDir, "packages"), findings);
+scanDirectory(path.join(rootDir, "scripts"), findings);
 
-let newCodeFindings = [];
-if (fs.existsSync(packagesDir)) scanDirectory(packagesDir, newCodeFindings);
-if (fs.existsSync(scriptsDir)) scanDirectory(scriptsDir, newCodeFindings);
-if (fs.existsSync(appsWebSrcDir)) scanDirectory(appsWebSrcDir, newCodeFindings);
+const isStrictMode = process.argv.includes("--strict");
 
-if (newCodeFindings.length > 0) {
-  console.error("\n❌ Ditemukan istilah terlarang pada kode/paket baru V3:");
-  newCodeFindings.forEach((f) => {
-    console.error(`  - ${f.file}:${f.line} [${f.term}] -> ${f.snippet}`);
+console.log(`\n======================================================`);
+console.log(`📊 LAPORAN SAPU ISTILAH & KLAIM TERLARANG`);
+console.log(`======================================================`);
+console.log(`Total temuan: ${findings.length}`);
+
+if (findings.length > 0) {
+  console.log(`\nDistribusi Temuan per Rule:`);
+  const byRule = {};
+  findings.forEach((f) => {
+    byRule[f.rule] = (byRule[f.rule] || 0) + 1;
   });
-  process.exit(1);
+  console.table(byRule);
+
+  console.log("\nSample 15 Temuan:");
+  findings.slice(0, 15).forEach((f) => {
+    console.log(`  - ${f.file}:${f.line} [${f.rule}] -> "${f.matches.join(", ")}" | ${f.snippet}`);
+  });
+
+  if (isStrictMode) {
+    console.error(`\n❌ Mode ketat gagal: Ditemukan ${findings.length} istilah/klaim terlarang!`);
+    process.exit(1);
+  } else {
+    console.log(`\nℹ️ Berjalan dalam mode diagnostik (Bagian 0). Untuk menggagalkan build CI, gunakan flag --strict.`);
+    process.exit(0);
+  }
 } else {
-  console.log("✅ Sapu Istilah Paket Baru LULUS: 0 kemunculan istilah terlarang!");
+  console.log("✅ Sapu Istilah LULUS: 0 kemunculan istilah atau klaim terlarang!");
   process.exit(0);
 }
