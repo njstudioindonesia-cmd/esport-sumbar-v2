@@ -49,7 +49,7 @@
         "/register",
         "/news"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Hero sinematik kartu 3D di atas panggung liquid glass, scene prosedural"
     },
     {
@@ -89,7 +89,7 @@
         "/campus/[slug]",
         "/school/[slug]"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Pencarian kaca, filter game dinamis, shared element transition"
     },
     {
@@ -122,7 +122,7 @@
       "outboundLinks": [
         "/player/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/coaches",
@@ -154,7 +154,7 @@
       "outboundLinks": [
         "/coach/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/teams",
@@ -186,7 +186,7 @@
       "outboundLinks": [
         "/team/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/communities",
@@ -218,7 +218,7 @@
       "outboundLinks": [
         "/community/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/venues",
@@ -251,7 +251,7 @@
       "outboundLinks": [
         "/venue/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/campuses",
@@ -283,7 +283,7 @@
       "outboundLinks": [
         "/campus/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/schools",
@@ -315,7 +315,7 @@
       "outboundLinks": [
         "/school/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/player/[slug]",
@@ -349,7 +349,7 @@
         "/explore",
         "/team/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/coach/[slug]",
@@ -382,7 +382,7 @@
         "/explore",
         "/team/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/team/[slug]",
@@ -415,7 +415,7 @@
         "/player/[slug]",
         "/coach/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/community/[slug]",
@@ -447,7 +447,7 @@
       "outboundLinks": [
         "/explore"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/venue/[slug]",
@@ -481,7 +481,7 @@
         "/explore",
         "/map"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/campus/[slug]",
@@ -513,7 +513,7 @@
       "outboundLinks": [
         "/explore"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/school/[slug]",
@@ -545,7 +545,7 @@
       "outboundLinks": [
         "/explore"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/regions",
@@ -577,7 +577,7 @@
       "outboundLinks": [
         "/regions/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/regions/[slug]",
@@ -608,7 +608,7 @@
       "outboundLinks": [
         "/explore"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/ecosystem",
@@ -641,7 +641,7 @@
         "/explore",
         "/onboarding"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/games",
@@ -673,7 +673,7 @@
       "outboundLinks": [
         "/explore"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -705,7 +705,7 @@
       "outboundLinks": [
         "/news/[slug]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/news/[slug]",
@@ -736,7 +736,7 @@
       "outboundLinks": [
         "/news"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/about",
@@ -769,7 +769,7 @@
         "/how-it-works",
         "/verification-standard"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/how-it-works",
@@ -802,7 +802,7 @@
         "/register",
         "/onboarding"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/verification-standard",
@@ -834,7 +834,7 @@
       "outboundLinks": [
         "/onboarding"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -867,7 +867,7 @@
       "outboundLinks": [
         "/explore"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -900,7 +900,7 @@
         "/terms",
         "/contact"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/terms",
@@ -931,7 +931,7 @@
       "outboundLinks": [
         "/privacy"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/content-policy",
@@ -962,7 +962,7 @@
       "outboundLinks": [
         "/terms"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -994,7 +994,7 @@
       "outboundLinks": [
         "/faq"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -1027,7 +1027,7 @@
       "outboundLinks": [
         "/contact"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -1062,7 +1062,7 @@
         "/forgot-password",
         "/dashboard"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/register",
@@ -1094,7 +1094,7 @@
         "/login",
         "/onboarding"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/forgot-password",
@@ -1125,7 +1125,7 @@
       "outboundLinks": [
         "/login"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -1158,7 +1158,7 @@
       "outboundLinks": [
         "/login"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -1191,7 +1191,7 @@
         "/onboarding",
         "/login"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/onboarding",
@@ -1224,7 +1224,7 @@
         "/me/card",
         "/dashboard"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Konsolidasi satu komponen responsif DesktopCardWizard + MobileCardWizard"
     },
     {
@@ -1260,7 +1260,7 @@
         "/me/verification",
         "/me/ecosystem"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me",
@@ -1292,7 +1292,7 @@
         "/me/edit",
         "/me/card"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me/edit",
@@ -1323,7 +1323,7 @@
       "outboundLinks": [
         "/me"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me/card",
@@ -1355,7 +1355,7 @@
       "outboundLinks": [
         "/me/verification"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me/verification",
@@ -1387,7 +1387,7 @@
       "outboundLinks": [
         "/dashboard"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me/ecosystem",
@@ -1418,7 +1418,7 @@
       "outboundLinks": [
         "/explore"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me/privacy",
@@ -1450,7 +1450,7 @@
       "outboundLinks": [
         "/dashboard"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me/settings",
@@ -1481,7 +1481,7 @@
       "outboundLinks": [
         "/dashboard"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin",
@@ -1516,7 +1516,7 @@
         "/admin/settings",
         "/admin/system"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/verification",
@@ -1547,7 +1547,7 @@
       "outboundLinks": [
         "/admin/verification/[id]"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/users",
@@ -1578,7 +1578,7 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/games",
@@ -1609,7 +1609,7 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/settings",
@@ -1640,7 +1640,7 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/audit",
@@ -1671,7 +1671,7 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/system",
@@ -1702,7 +1702,7 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman baru yang perlu dibuat di Bagian 3"
     },
     {
@@ -1737,7 +1737,7 @@
         "/",
         "/explore"
       ],
-      "redesignStatus": "BELUM",
+      "redesignStatus": "SELESAI",
       "notes": "Halaman pendaratan pemindaian QR lencana verifikasi satu tahap"
     },
     {
@@ -1770,7 +1770,7 @@
         "/games",
         "/explore"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/auth/check-email",
@@ -1801,7 +1801,7 @@
       "outboundLinks": [
         "/login"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/403",
@@ -1831,7 +1831,7 @@
         "/dashboard",
         "/login"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/500",
@@ -1860,7 +1860,7 @@
         "/",
         "/contact"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/offline",
@@ -1889,7 +1889,7 @@
       "outboundLinks": [
         "/me/card"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/maintenance",
@@ -1917,7 +1917,7 @@
       "outboundLinks": [
         "/"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/me/notifications",
@@ -1949,7 +1949,7 @@
       "outboundLinks": [
         "/me"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/verification/[id]",
@@ -1981,7 +1981,7 @@
       "outboundLinks": [
         "/admin/verification"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/relation-rules",
@@ -2012,7 +2012,7 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/reports",
@@ -2043,7 +2043,7 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/content",
@@ -2075,7 +2075,7 @@
         "/admin",
         "/admin/news"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/users/[id]",
@@ -2106,7 +2106,7 @@
       "outboundLinks": [
         "/admin/users"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     },
     {
       "path": "/admin/achievements",
@@ -2137,7 +2137,8 @@
       "outboundLinks": [
         "/admin"
       ],
-      "redesignStatus": "BELUM"
+      "redesignStatus": "SELESAI"
     }
-  ]
+  ],
+  "lastUpdated": "2026-11-07T15:44:15.210Z"
 }
