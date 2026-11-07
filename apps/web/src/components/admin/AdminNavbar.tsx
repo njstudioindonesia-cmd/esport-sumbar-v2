@@ -6,15 +6,16 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   ShieldCheck,
-  Newspaper,
-  Users2,
+  Users,
   Gamepad2,
-  MapPin,
   Flag,
   History,
   Settings,
   ExternalLink,
   Sparkles,
+  Activity,
+  Network,
+  FileText,
 } from "lucide-react";
 import { BrandBar, BrandLogo } from "@/components/brand";
 
@@ -29,9 +30,12 @@ export function AdminNavbar() {
         const res = await fetch("/api/admin/metrics");
         if (res.ok) {
           const json = await res.json();
-          if (typeof json.province?.pendingGold === "number" || typeof json.region?.pending === "number") {
-            const total = (json.province?.pendingGold || 0) + (json.region?.pending || 0);
-            setPendingVerifications(total);
+          const pending =
+            json.platform?.pendingVerification ||
+            json.verification?.pending ||
+            (json.province?.pendingGold || 0) + (json.region?.pending || 0);
+          if (typeof pending === "number") {
+            setPendingVerifications(pending);
           }
           if (typeof json.platform?.totalReports === "number") {
             setReportsCount(json.platform.totalReports);
@@ -53,41 +57,46 @@ export function AdminNavbar() {
     },
     {
       href: "/admin/verification",
-      label: "Antrean Verifikasi",
+      label: "Verifikasi",
       icon: ShieldCheck,
       badge: pendingVerifications > 0 ? String(pendingVerifications) : undefined,
-      badgeColor: "bg-[#D4AF37] text-black font-bold",
+      badgeColor: "bg-amber-400 text-slate-950 font-bold",
     },
     {
       href: "/admin/users",
-      label: "Pengguna & Akun",
-      icon: Users2,
+      label: "Pengguna",
+      icon: Users,
+    },
+    {
+      href: "/admin/relation-rules",
+      label: "Aturan Relasi",
+      icon: Network,
+    },
+    {
+      href: "/admin/content",
+      label: "Konten",
+      icon: FileText,
     },
     {
       href: "/admin/games",
-      label: "Katalog Game",
+      label: "Game",
       icon: Gamepad2,
     },
     {
-      href: "/admin/regions",
-      label: "Wilayah",
-      icon: MapPin,
-    },
-    {
-      href: "/admin/news",
-      label: "CMS Berita",
-      icon: Newspaper,
-    },
-    {
-      href: "/admin/moderation",
-      label: "Moderasi Laporan",
+      href: "/admin/reports",
+      label: "Laporan",
       icon: Flag,
       badge: reportsCount > 0 ? String(reportsCount) : undefined,
-      badgeColor: "bg-red-500 text-white",
+      badgeColor: "bg-rose-500 text-white font-bold",
+    },
+    {
+      href: "/admin/system",
+      label: "Sistem",
+      icon: Activity,
     },
     {
       href: "/admin/audit",
-      label: "Audit Log",
+      label: "Audit",
       icon: History,
     },
     {
@@ -98,7 +107,7 @@ export function AdminNavbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#03031A]/95 backdrop-blur-md border-b border-white/10 select-none">
+    <header className="sticky top-0 z-40 w-full bg-slate-950/85 backdrop-blur-2xl border-b border-white/10 select-none font-sans">
       <BrandBar glow={true} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,9 +115,9 @@ export function AdminNavbar() {
           {/* SISI KIRI: BRAND LOCKUP & PERAN */}
           <div className="flex items-center gap-4 shrink-0">
             <BrandLogo variant="lockup" size="sm" withLink={false} />
-            <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF1752] animate-pulse" />
-              <span className="text-[10px] font-mono tracking-widest text-[#FF4D77] uppercase font-bold">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/30">
+              <span className="w-2 h-2 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50" />
+              <span className="text-[10px] font-mono tracking-widest text-pink-300 uppercase font-bold">
                 PANEL ADMIN PLATFORM
               </span>
             </div>
@@ -116,44 +125,53 @@ export function AdminNavbar() {
 
           {/* SISI KANAN: STATUS KONEKSI & KE SITUS */}
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-lg bg-white/[0.04] border border-white/10 text-xs text-white/60">
-              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
-              <span>Satu Admin Tunggal (V3)</span>
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-xs text-slate-300">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span className="font-mono text-[11px]">V3 Liquid Glass</span>
             </div>
 
             <Link
-              href="/dashboard"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/10 border border-white/10 text-xs font-heading font-medium text-white transition-colors"
+              href="/"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/15 text-xs text-slate-200 hover:text-white transition-colors"
             >
-              <span>Ke Situs</span>
-              <ExternalLink className="w-3.5 h-3.5 text-white/50" />
+              <span>Ke Situs Publik</span>
+              <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
             </Link>
           </div>
         </div>
 
-        {/* BARIS KEDUA: TAB NAVIGASI TUNGGAL */}
-        <nav className="flex items-center gap-1 overflow-x-auto py-2 border-t border-white/5 scrollbar-none">
+        {/* BARIS KEDUA: TAB NAVIGASI HORIZONTAL */}
+        <nav
+          aria-label="Navigasi Panel Admin"
+          className="flex items-center gap-1 overflow-x-auto py-2 border-t border-white/[0.06] scrollbar-none"
+        >
           {navLinks.map((link) => {
+            const Icon = link.icon;
             const isActive = link.exact
               ? pathname === link.href
-              : pathname === link.href || pathname?.startsWith(`${link.href}/`);
-            const Icon = link.icon;
+              : pathname.startsWith(link.href);
 
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all whitespace-nowrap shrink-0 ${
+                className={`relative flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                   isActive
-                    ? "bg-[#FF1752] text-white shadow-md shadow-[#FF1752]/20"
-                    : "text-white/60 hover:text-white hover:bg-white/[0.04]"
+                    ? "bg-white/15 text-white shadow-sm border border-white/20"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.05]"
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon
+                  className={`w-3.5 h-3.5 ${
+                    isActive ? "text-pink-400" : "text-slate-500"
+                  }`}
+                />
                 <span>{link.label}</span>
                 {link.badge && (
                   <span
-                    className={`ml-1 px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold ${link.badgeColor}`}
+                    className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono leading-none ${
+                      link.badgeColor || "bg-pink-500 text-white"
+                    }`}
                   >
                     {link.badge}
                   </span>
@@ -166,6 +184,3 @@ export function AdminNavbar() {
     </header>
   );
 }
-
-// Backward-compatibility export alias
-export const AdminPlatformNavbar = AdminNavbar;

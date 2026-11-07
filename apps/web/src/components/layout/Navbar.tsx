@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   X,
@@ -13,16 +14,15 @@ import {
   LogIn,
   UserPlus,
   Search,
-  LayoutDashboard,
-  LogOut,
-  User,
-  Shield,
+  Network,
+  Trophy,
 } from "lucide-react";
 import { BrandLogo, BrandBar, OwnershipNote } from "@/components/brand";
 import { CommandPalette } from "@/components/shared/CommandPalette";
 import { UserProfileDropdown } from "@/components/layout/UserProfileDropdown";
+import { GlassButton } from "@/components/glass/GlassButton";
+import { MOTION_SPRINGS } from "@/components/glass/MotionPresets";
 import { createClient } from "@/lib/supabase/client";
-import { signOutAction } from "@/app/actions/auth";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,11 +30,13 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentUser, setCurrentUser] = useState<{ id: string; email: string } | null>(null);
   const pathname = usePathname();
-  const router = useRouter();
 
-  // 4 Core Navigation Links (Prompt B5 specification: Jelajah, Berita, Daerah, Tentang)
+  // Navigation Links V3
   const navLinks = [
+    { href: "/", label: "Beranda" },
     { href: "/explore", label: "Jelajah", icon: Compass },
+    { href: "/ecosystem", label: "Ekosistem", icon: Network },
+    { href: "/tournaments", label: "Turnamen", icon: Trophy },
     { href: "/news", label: "Berita", icon: Newspaper },
     { href: "/regions", label: "Daerah", icon: MapPin },
     { href: "/about", label: "Tentang", icon: Info },
@@ -49,7 +51,19 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Real Supabase User Session Listener
+  // Keyboard shortcut Cmd/Ctrl + K for search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Supabase Auth Session Listener
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
@@ -79,28 +93,22 @@ export function Navbar() {
     };
   }, []);
 
-  const handleSignOut = async () => {
-    await signOutAction();
-    setCurrentUser(null);
-    router.push("/");
-    router.refresh();
-  };
-
   return (
     <>
       <header className="sticky top-0 z-40 w-full select-none">
         {/* Brand Bar Glowing Top Line */}
         <BrandBar glow={true} />
 
+        {/* Floating Glass Bar Container */}
         <div
           className={`w-full transition-all duration-300 ${
             isScrolled
-              ? "bg-[#03031A]/95 backdrop-blur-xl border-b border-white/[0.08] shadow-lg shadow-black/40 py-2.5"
-              : "bg-[#03031A]/80 backdrop-blur-md border-b border-white/[0.05] py-3.5"
+              ? "py-2 bg-slate-950/85 backdrop-blur-2xl border-b border-white/15 shadow-xl shadow-black/50"
+              : "py-3.5 bg-slate-950/60 backdrop-blur-md border-b border-white/10"
           }`}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-all duration-300">
-            {/* BRAND LOGO (Lockup desktop, Mark mobile) */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            {/* BRAND LOGO */}
             <div className="flex items-center gap-3">
               <BrandLogo
                 variant="responsive"
@@ -109,46 +117,52 @@ export function Navbar() {
               />
             </div>
 
-            {/* DESKTOP 4 CORE NAVIGATION LINKS */}
-            <nav className="hidden lg:flex items-center gap-1 bg-[#0A0A2E]/80 border border-white/[0.08] px-2.5 py-1 rounded-full shadow-inner">
+            {/* DESKTOP NAVIGATION LINKS */}
+            <nav
+              aria-label="Navigasi Utama"
+              className="hidden lg:flex items-center gap-1 bg-white/[0.04] border border-white/10 p-1.5 rounded-2xl shadow-inner backdrop-blur-md"
+            >
               {navLinks.map((link) => {
-                const Icon = link.icon;
                 const isActive =
                   link.href === "/"
                     ? pathname === "/"
                     : pathname.startsWith(link.href);
+
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-wider transition-all duration-200 ${
+                    className={`relative px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-colors duration-150 select-none ${
                       isActive
-                        ? "bg-[#FF1752] text-white pink-glow-sm"
-                        : "text-white/70 hover:text-white hover:bg-white/[0.06]"
+                        ? "text-white"
+                        : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]"
                     }`}
                   >
-                    <Icon
-                      className={`w-3.5 h-3.5 ${
-                        isActive ? "text-white" : "text-white/50"
-                      }`}
-                    />
+                    {isActive && (
+                      <motion.div
+                        layoutId="navbar-active-pill"
+                        transition={MOTION_SPRINGS.snappy}
+                        className="absolute inset-0 bg-white/15 border border-white/20 rounded-xl shadow-sm -z-10"
+                      />
+                    )}
                     <span>{link.label}</span>
                   </Link>
                 );
               })}
             </nav>
 
-            {/* DESKTOP RIGHT ACTIONS: Cmd+K, Masuk/Daftar OR User Menu */}
-            <div className="hidden lg:flex items-center gap-2.5">
-              {/* Command Palette Trigger Pill */}
+            {/* DESKTOP RIGHT ACTIONS */}
+            <div className="hidden lg:flex items-center gap-3">
+              {/* Command Palette Trigger */}
               <button
+                type="button"
                 onClick={() => setIsCommandOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0A0A2E] hover:bg-[#12123F] border border-white/[0.08] hover:border-white/20 text-xs text-white/60 hover:text-white transition-all shadow-sm group"
-                aria-label="Cari atlet, tim, atau turnamen"
+                className="flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs text-slate-300 hover:text-white transition-all min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 cursor-pointer"
+                aria-label="Cari profil atlet, tim, atau warta (Ctrl+K)"
               >
-                <Search className="w-3.5 h-3.5 text-[#FF4D77] group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-sans">Cari...</span>
-                <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-white/[0.06] border border-white/10 text-[9px] font-mono text-white/50">
+                <Search className="w-3.5 h-3.5 text-pink-400" />
+                <span className="font-medium">Cari...</span>
+                <kbd className="inline-flex items-center px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-[10px] font-mono text-slate-400">
                   ⌘K
                 </kbd>
               </button>
@@ -157,22 +171,18 @@ export function Navbar() {
                 <UserProfileDropdown />
               ) : (
                 <div className="flex items-center gap-2">
-                  {/* Masuk */}
-                  <Link
-                    href="/login"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-heading font-bold uppercase tracking-wider text-white/70 hover:text-white hover:bg-white/[0.06] transition-colors"
-                  >
-                    <LogIn className="w-3.5 h-3.5 text-white/50" />
-                    <span>Masuk</span>
+                  <Link href="/login">
+                    <GlassButton variant="ghost" size="sm">
+                      <LogIn className="w-3.5 h-3.5 mr-1 text-slate-400" />
+                      Masuk
+                    </GlassButton>
                   </Link>
 
-                  {/* Daftar (Pink Slanted Button) */}
-                  <Link
-                    href="/register"
-                    className="btn-brand-primary text-xs py-1.5 px-4"
-                  >
-                    <UserPlus className="w-3.5 h-3.5" />
-                    <span>Daftar</span>
+                  <Link href="/register">
+                    <GlassButton variant="primary" size="sm">
+                      <UserPlus className="w-3.5 h-3.5 mr-1" />
+                      Daftar
+                    </GlassButton>
                   </Link>
                 </div>
               )}
@@ -181,86 +191,108 @@ export function Navbar() {
             {/* MOBILE RIGHT CONTROLS: SEARCH + HAMBURGER */}
             <div className="flex lg:hidden items-center gap-2">
               <button
+                type="button"
                 onClick={() => setIsCommandOpen(true)}
-                className="p-2 rounded-full bg-[#0A0A2E] border border-white/[0.08] text-white/70 hover:text-white transition-colors"
+                className="p-2.5 rounded-2xl bg-white/[0.06] border border-white/10 text-slate-300 hover:text-white transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
                 aria-label="Pencarian"
               >
-                <Search className="w-4 h-4 text-[#FF4D77]" />
+                <Search className="w-4 h-4 text-pink-400" />
               </button>
 
               <button
+                type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-full bg-[#0A0A2E] border border-white/[0.08] text-white/80 hover:text-white focus:outline-none transition-colors"
+                className="p-2.5 rounded-2xl bg-white/[0.06] border border-white/10 text-slate-300 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Buka menu navigasi"
+                aria-expanded={mobileMenuOpen}
               >
-                {mobileMenuOpen ? <X className="w-5 h-5 text-[#FF1752]" /> : <Menu className="w-5 h-5" />}
+                {mobileMenuOpen ? (
+                  <X className="w-5 h-5 text-pink-500" />
+                ) : (
+                  <Menu className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
         </div>
 
         {/* MOBILE MENU DROPDOWN */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden w-full bg-[#03031A]/95 border-b border-white/[0.08] backdrop-blur-2xl px-5 py-6 flex flex-col gap-5 shadow-2xl animate-in slide-in-from-top-4 duration-200">
-            {/* Nav Links */}
-            <nav className="flex flex-col gap-1.5">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                const isActive =
-                  link.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-heading font-bold uppercase tracking-wider transition-all ${
-                      isActive
-                        ? "bg-[#FF1752] text-white pink-glow-sm"
-                        : "text-white/70 hover:bg-white/[0.04] hover:text-white"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4 text-inherit" />
-                    <span>{link.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={MOTION_SPRINGS.snappy}
+              className="lg:hidden w-full bg-slate-950/95 border-b border-white/15 backdrop-blur-2xl px-5 py-6 flex flex-col gap-5 shadow-2xl"
+            >
+              <nav aria-label="Menu Navigasi Mobile" className="flex flex-col gap-1.5">
+                {navLinks.map((link) => {
+                  const isActive =
+                    link.href === "/"
+                      ? pathname === "/"
+                      : pathname.startsWith(link.href);
+                  const Icon = link.icon;
 
-            {/* Auth Buttons / Profile on Mobile */}
-            <div className="pt-4 border-t border-white/[0.08] flex flex-col gap-2.5">
-              {currentUser ? (
-                <UserProfileDropdown isMobileDrawer={true} onClose={() => setMobileMenuOpen(false)} />
-              ) : (
-                <div className="grid grid-cols-2 gap-2.5">
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="btn-brand-secondary text-xs py-2.5 text-center flex items-center justify-center gap-2"
-                  >
-                    <LogIn className="w-3.5 h-3.5 text-white/60" />
-                    <span>Masuk</span>
-                  </Link>
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all min-h-[44px] ${
+                        isActive
+                          ? "bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md shadow-pink-500/20"
+                          : "text-slate-300 hover:bg-white/[0.06] hover:text-white"
+                      }`}
+                    >
+                      {Icon && <Icon className="w-4 h-4 text-inherit shrink-0" />}
+                      <span>{link.label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
 
-                  <Link
-                    href="/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="btn-brand-primary text-xs py-2.5 text-center flex items-center justify-center gap-2"
-                  >
-                    <UserPlus className="w-3.5 h-3.5" />
-                    <span>Daftar</span>
-                  </Link>
-                </div>
-              )}
-            </div>
+              {/* Auth Buttons / Profile on Mobile */}
+              <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+                {currentUser ? (
+                  <UserProfileDropdown
+                    isMobileDrawer={true}
+                    onClose={() => setMobileMenuOpen(false)}
+                  />
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full"
+                    >
+                      <GlassButton variant="secondary" className="w-full">
+                        <LogIn className="w-4 h-4 mr-1.5 text-slate-400" />
+                        Masuk
+                      </GlassButton>
+                    </Link>
 
-            {/* Ownership Note Footer in Mobile Drawer */}
-            <div className="pt-2">
-              <OwnershipNote variant="short" />
-            </div>
-          </div>
-        )}
+                    <Link
+                      href="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full"
+                    >
+                      <GlassButton variant="primary" className="w-full">
+                        <UserPlus className="w-4 h-4 mr-1.5" />
+                        Daftar
+                      </GlassButton>
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Ownership Note Footer in Mobile Drawer */}
+              <div className="pt-2">
+                <OwnershipNote variant="short" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Global Cmd+K Search Command Palette */}

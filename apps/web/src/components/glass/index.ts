@@ -22,4 +22,5 @@ export * from "./GlassToast";
 export * from "./GlassNav";
 export * from "./GlassTabBar";
 export * from "./GlassSidebar";
+export * from "./GlassBreadcrumb";
 export * from "./PageTransition";

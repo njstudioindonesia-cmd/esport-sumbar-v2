@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Saira_Condensed, Inter } from "next/font/google";
 import "./globals.css";
+import { SceneBackground } from "@/components/glass/SceneBackground";
 
 const sairaCondensed = Saira_Condensed({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -122,7 +123,8 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
       </head>
-      <body className="min-h-screen bg-[var(--bg-base)] text-[#FFFFFF] font-sans antialiased selection:bg-[#FF1752]/30 selection:text-white">
+      <body className="min-h-screen bg-[var(--bg-base)] text-[#FFFFFF] font-sans antialiased selection:bg-[#FF1752]/30 selection:text-white relative">
+        <SceneBackground />
         {children}
       </body>
     </html>

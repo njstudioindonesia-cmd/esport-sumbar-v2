@@ -3,34 +3,60 @@
 import React from "react";
 import Link from "next/link";
 import { BrandLogo, BrandWatermark, OwnershipNote } from "@/components/brand";
-import { Mail } from "lucide-react";
+import { GlassSegmented, useQualityMode, type QualityMode } from "@/components/glass";
+import { Mail, ShieldCheck, Sparkles, Sliders } from "lucide-react";
 
 const CURRENT_YEAR = 2026;
 
 export function Footer() {
-  return (
-    <footer className="relative w-full bg-[#00004F]/90 border-t border-white/[0.08] pt-14 pb-10 text-white/60 overflow-hidden select-none">
-      {/* Background Watermark Mark (Opacity ~4%) */}
-      <BrandWatermark opacity={0.04} size={600} position="bottom-right" />
+  const { quality, setQualityMode, fps } = useQualityMode();
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-10">
+  return (
+    <footer className="relative w-full bg-slate-950/80 backdrop-blur-2xl border-t border-white/10 pt-16 pb-12 text-slate-400 overflow-hidden select-none font-sans">
+      {/* Background Watermark */}
+      <BrandWatermark opacity={0.03} size={560} position="bottom-right" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
         {/* TOP ROW: BRAND LOCKUP & COLUMNS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10">
           {/* Brand Col (2 cols on large screen) */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <BrandLogo variant="lockup" size="md" withLink={true} />
 
-            <p className="text-xs text-white/70 max-w-sm leading-relaxed">
-              Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem turnamen esport Sumatera Barat oleh <strong className="text-white">ESPORT SUMBAR™</strong>.
+            <p className="text-xs text-slate-300 max-w-sm leading-relaxed">
+              Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem esports Sumatera Barat oleh <strong className="text-white">ESPORT SUMBAR™</strong>.
             </p>
 
+            {/* Visual Quality Mode Switcher */}
+            <div className="pt-2 flex flex-col gap-2 max-w-xs">
+              <div className="flex items-center justify-between text-xs text-slate-400">
+                <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+                  <Sliders className="w-3.5 h-3.5 text-pink-400" />
+                  Efek Visual Liquid Glass:
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400 font-semibold">
+                  {fps} FPS
+                </span>
+              </div>
+              <GlassSegmented<QualityMode>
+                size="sm"
+                value={quality}
+                onChange={(mode) => setQualityMode(mode, true)}
+                options={[
+                  { value: "full", label: "Penuh" },
+                  { value: "standard", label: "Standar" },
+                  { value: "eco", label: "Hemat" },
+                ]}
+              />
+            </div>
+
             {/* Social Links */}
-            <div className="flex items-center gap-3 pt-1">
+            <div className="flex items-center gap-3 pt-2">
               <a
                 href="https://instagram.com/esportsumbar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-[#0A0A2E] border border-white/10 flex items-center justify-center text-white/60 hover:text-[#FF4D77] hover:border-[#FF1752]/40 transition-colors"
+                className="w-9 h-9 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center justify-center text-slate-400 hover:text-pink-400 hover:border-pink-500/40 transition-colors"
                 aria-label="Instagram ESPORT SUMBAR"
               >
                 <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
@@ -41,7 +67,7 @@ export function Footer() {
                 href="https://youtube.com/@esportsumbar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-[#0A0A2E] border border-white/10 flex items-center justify-center text-white/60 hover:text-[#FF4D77] hover:border-[#FF1752]/40 transition-colors"
+                className="w-9 h-9 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center justify-center text-slate-400 hover:text-pink-400 hover:border-pink-500/40 transition-colors"
                 aria-label="YouTube ESPORT SUMBAR"
               >
                 <svg className="w-4 h-4 fill-currentColor" viewBox="0 0 24 24">
@@ -49,8 +75,8 @@ export function Footer() {
                 </svg>
               </a>
               <a
-                href="mailto:halo@esportsumbar.com"
-                className="w-8 h-8 rounded-full bg-[#0A0A2E] border border-white/10 flex items-center justify-center text-white/60 hover:text-[#FF4D77] hover:border-[#FF1752]/40 transition-colors"
+                href="mailto:kontak@esportsumbar.com"
+                className="w-9 h-9 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center justify-center text-slate-400 hover:text-pink-400 hover:border-pink-500/40 transition-colors"
                 aria-label="Email Kontak ESPORT SUMBAR"
               >
                 <Mail className="w-4 h-4" />
@@ -58,41 +84,76 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Col 1: Direktori */}
+          {/* Col 1: Direktori 7 Bidang */}
           <div className="flex flex-col gap-2.5 text-xs">
-            <span className="font-heading font-black text-white uppercase tracking-wider text-xs mb-1">
-              Direktori &amp; Data
+            <span className="font-bold text-white uppercase tracking-wider text-xs mb-1">
+              Direktori 7 Bidang
             </span>
-            <Link href="/explore" className="hover:text-white transition-colors">
-              Jelajah Roster Atlet
+            <Link href="/players" className="hover:text-white transition-colors">
+              Pemain / Atlet
             </Link>
-            <Link href="/explore?tab=teams" className="hover:text-white transition-colors">
-              Klub &amp; Tim Esport
+            <Link href="/teams" className="hover:text-white transition-colors">
+              Tim Esports
             </Link>
-            <Link href="/explore?tab=communities" className="hover:text-white transition-colors">
-              Komunitas &amp; Komunitas Game
+            <Link href="/coaches" className="hover:text-white transition-colors">
+              Pelatih
+            </Link>
+            <Link href="/communities" className="hover:text-white transition-colors">
+              Komunitas
+            </Link>
+            <Link href="/venues" className="hover:text-white transition-colors">
+              Venue / Arena
+            </Link>
+            <Link href="/campuses" className="hover:text-white transition-colors">
+              Kampus
+            </Link>
+            <Link href="/schools" className="hover:text-white transition-colors">
+              Sekolah
             </Link>
             <Link href="/regions" className="hover:text-white transition-colors">
-              19 Kota / Kabupaten
-            </Link>
-            <Link href="/me/profile/new" className="text-[#FF4D77] hover:text-white transition-colors font-semibold">
-              Buat Kartu Atlet &rarr;
+              19 Wilayah Sumbar
             </Link>
           </div>
 
-          {/* Col 2: Ekosistem & Informasi */}
+          {/* Col 2: Ekosistem & Regulasi */}
           <div className="flex flex-col gap-2.5 text-xs">
-            <span className="font-heading font-black text-white uppercase tracking-wider text-xs mb-1">
-              Ekosistem
+            <span className="font-bold text-white uppercase tracking-wider text-xs mb-1">
+              Ekosistem & Warta
             </span>
+            <Link href="/ecosystem" className="hover:text-white transition-colors">
+              Peta Ekosistem
+            </Link>
+            <Link href="/tournaments" className="hover:text-white transition-colors">
+              Turnamen
+            </Link>
+            <Link href="/games" className="hover:text-white transition-colors">
+              Katalog Game
+            </Link>
             <Link href="/news" className="hover:text-white transition-colors">
-              Warta &amp; Berita
+              Warta & Berita
+            </Link>
+            <Link href="/verification-standard" className="text-amber-300 hover:text-amber-200 transition-colors flex items-center gap-1 font-semibold">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Standar Verifikasi
             </Link>
             <Link href="/how-it-works" className="hover:text-white transition-colors">
-              Cara Kerja Sistem
+              Cara Kerja
             </Link>
+          </div>
+
+          {/* Col 3: Legal & Bantuan */}
+          <div className="flex flex-col gap-2.5 text-xs">
+            <span className="font-bold text-white uppercase tracking-wider text-xs mb-1">
+              Bantuan & Legal
+            </span>
             <Link href="/about" className="hover:text-white transition-colors">
               Tentang ESPORT SUMBAR
+            </Link>
+            <Link href="/contact" className="hover:text-white transition-colors">
+              Kontak
+            </Link>
+            <Link href="/faq" className="hover:text-white transition-colors">
+              Pertanyaan Umum (FAQ)
             </Link>
             <Link href="/privacy" className="hover:text-white transition-colors">
               Kebijakan Privasi
@@ -100,44 +161,19 @@ export function Footer() {
             <Link href="/terms" className="hover:text-white transition-colors">
               Syarat &amp; Ketentuan
             </Link>
-          </div>
-
-          {/* Col 3: Verifikasi Mandiri */}
-          <div className="flex flex-col gap-2.5 text-xs">
-            <span className="font-heading font-black text-white uppercase tracking-wider text-xs mb-1">
-              Verifikasi Tunggal
-            </span>
-            <p className="text-[11px] text-white/50 leading-relaxed">
-              Standar sertifikasi paspor atlet dan profil entitas tunggal langsung diverifikasi oleh tim kurasi ESPORT SUMBAR.
-            </p>
-            <div className="pt-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono text-[10px] font-bold">
-                ESP-SB-VER-2026
-              </span>
-            </div>
+            <Link href="/content-policy" className="hover:text-white transition-colors">
+              Kebijakan Konten
+            </Link>
           </div>
         </div>
 
-        {/* BOTTOM ROW: COPYRIGHT & OWNERSHIP NOTE */}
-        <div className="pt-6 border-t border-white/[0.08] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[11px] text-white/50">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <p className="font-medium text-white/70">
-              © {CURRENT_YEAR} ESPORT SUMBAR. Hak cipta dilindungi undang-undang.
-            </p>
-            <span className="hidden sm:inline text-white/20">•</span>
-            <OwnershipNote variant="short" withAboutLink={true} />
-          </div>
-
-          <div className="flex items-center gap-4 text-white/50">
-            <Link href="/privacy" className="hover:text-white transition-colors">
-              Privasi
-            </Link>
-            <Link href="/terms" className="hover:text-white transition-colors">
-              Syarat
-            </Link>
-            <Link href="/about" className="hover:text-white transition-colors">
-              Tentang
-            </Link>
+        {/* BOTTOM ROW: OWNERSHIP STATEMENT & COPYRIGHT */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+          <p>
+            {`© ${CURRENT_YEAR} ESPORT SUMBAR™. Seluruh hak cipta dilindungi.`}
+          </p>
+          <div>
+            <OwnershipNote variant="short" />
           </div>
         </div>
       </div>
