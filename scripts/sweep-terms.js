@@ -145,6 +145,7 @@ if (findings.length > 0) {
     process.exit(0);
   }
 } else {
+  fs.writeFileSync(path.join(rootDir, "scripts", "sweep-findings.json"), JSON.stringify([], null, 2));
   console.log("✅ Sapu Istilah LULUS: 0 kemunculan istilah atau klaim terlarang!");
   process.exit(0);
 }

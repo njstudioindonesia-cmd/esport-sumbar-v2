@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   Trophy,
   Medal,
@@ -21,6 +22,10 @@ import { MOCK_CIRCUIT_LEADERBOARD } from "@/data/tournaments";
 import { FLAGS } from "@/lib/config/flags";
 
 export default function LeaderboardPage() {
+  if (!FLAGS.ENABLE_LEADERBOARD) {
+    notFound();
+  }
+
   const [selectedGame, setSelectedGame] = useState("all");
 
   const circuitList = FLAGS.SHOW_DEMO_DATA ? MOCK_CIRCUIT_LEADERBOARD : [];

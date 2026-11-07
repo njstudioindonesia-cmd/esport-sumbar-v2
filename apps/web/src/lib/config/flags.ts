@@ -13,6 +13,38 @@ export const FLAGS = {
   },
 
   /**
+   * Visibilitas Halaman Turnamen (Keputusan P9)
+   * Disembunyikan (false) hingga data riil kejuaraan terisi dan lolos sapu klaim.
+   */
+  get ENABLE_TOURNAMENTS(): boolean {
+    return process.env.NEXT_PUBLIC_ENABLE_TOURNAMENTS === "true";
+  },
+
+  /**
+   * Visibilitas Halaman Papan Peringkat / Leaderboard (Keputusan P9)
+   * Disembunyikan (false) hingga data riil statistik aktif.
+   */
+  get ENABLE_LEADERBOARD(): boolean {
+    return process.env.NEXT_PUBLIC_ENABLE_LEADERBOARD === "true";
+  },
+
+  /**
+   * Visibilitas Halaman Galeri Dokumentasi (Keputusan P9)
+   * Disembunyikan (false) hingga berkas media terkurasi diunggah.
+   */
+  get ENABLE_GALLERY(): boolean {
+    return process.env.NEXT_PUBLIC_ENABLE_GALLERY === "true";
+  },
+
+  /**
+   * Visibilitas Halaman Peta Wilayah Interaktif (Keputusan P9)
+   * Disembunyikan (false) hingga peta geojson tervalidasi.
+   */
+  get ENABLE_MAP(): boolean {
+    return process.env.NEXT_PUBLIC_ENABLE_MAP === "true";
+  },
+
+  /**
    * Layanan Media Terekstraksi (Sub-langkah 7.1 Microservices)
    * Mengatur apakah pemrosesan media (tanda tangan unggah, validasi biner, kompresi Sharp,
    * pembersihan berkas lama & yatim, dan kuota) menggunakan Media Service baru.

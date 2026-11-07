@@ -23,6 +23,7 @@ import { UserProfileDropdown } from "@/components/layout/UserProfileDropdown";
 import { GlassButton } from "@/components/glass/GlassButton";
 import { MOTION_SPRINGS } from "@/components/glass/MotionPresets";
 import { createClient } from "@/lib/supabase/client";
+import { FLAGS } from "@/lib/config/flags";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,12 +32,12 @@ export function Navbar() {
   const [currentUser, setCurrentUser] = useState<{ id: string; email: string } | null>(null);
   const pathname = usePathname();
 
-  // Navigation Links V3
+  // Navigation Links V3 (Sesuai P9: Sembunyikan turnamen jika data riil belum siap)
   const navLinks = [
     { href: "/", label: "Beranda" },
     { href: "/explore", label: "Jelajah", icon: Compass },
     { href: "/ecosystem", label: "Ekosistem", icon: Network },
-    { href: "/tournaments", label: "Turnamen", icon: Trophy },
+    ...(FLAGS.ENABLE_TOURNAMENTS ? [{ href: "/tournaments", label: "Turnamen", icon: Trophy }] : []),
     { href: "/news", label: "Berita", icon: Newspaper },
     { href: "/regions", label: "Daerah", icon: MapPin },
     { href: "/about", label: "Tentang", icon: Info },

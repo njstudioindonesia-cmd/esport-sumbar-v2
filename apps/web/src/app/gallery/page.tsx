@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { notFound } from "next/navigation";
 import {
   Sparkles,
   ShieldCheck,
@@ -31,6 +32,10 @@ import {
 import { FLAGS } from "@/lib/config/flags";
 
 export default function GaleriKartuPage() {
+  if (!FLAGS.ENABLE_GALLERY) {
+    notFound();
+  }
+
   const [cards, setCards] = useState<MockCardVariant[]>(FLAGS.SHOW_DEMO_DATA ? GALLERY_CARDS : []);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfileByAccountId } from "@/lib/services/core/profile";
 import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
-import { EditProfileClientForm } from "@/app/me/profile/[id]/edit/EditProfileClientForm";
+import { EditProfileClientForm } from "./EditProfileClientForm";
 import { QuietSurface } from "@/components/glass/QuietSurface";
 import type { Metadata } from "next";
 

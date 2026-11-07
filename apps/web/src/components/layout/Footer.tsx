@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BrandLogo, BrandWatermark, OwnershipNote } from "@/components/brand";
 import { GlassSegmented, useQualityMode, type QualityMode } from "@/components/glass";
 import { Mail, ShieldCheck, Sparkles, Sliders } from "lucide-react";
+import { FLAGS } from "@/lib/config/flags";
 
 const CURRENT_YEAR = 2026;
 
@@ -123,9 +124,11 @@ export function Footer() {
             <Link href="/ecosystem" className="hover:text-white transition-colors">
               Peta Ekosistem
             </Link>
-            <Link href="/tournaments" className="hover:text-white transition-colors">
-              Turnamen
-            </Link>
+            {FLAGS.ENABLE_TOURNAMENTS && (
+              <Link href="/tournaments" className="hover:text-white transition-colors">
+                Turnamen
+              </Link>
+            )}
             <Link href="/games" className="hover:text-white transition-colors">
               Katalog Game
             </Link>

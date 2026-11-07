@@ -1,15 +1,9 @@
-"use client";
+import { permanentRedirect } from "next/navigation";
 
-import React from "react";
-import { UserShell } from "@/components/dashboard/DesktopUserShell";
-import { DesktopMembershipsView } from "@/components/dashboard/DesktopMembershipsView";
-
+/**
+ * Pengalihan Rute Relasi Multi-Profil Warisan (Keputusan P10)
+ * Seluruh relasi ekosistem tunggal dikelola di /me/ecosystem.
+ */
 export default function MembershipsPage() {
-  return (
-    <main className="min-h-screen w-full bg-[#07080C]">
-      <UserShell breadcrumb="Relasi Ekosistem">
-        <DesktopMembershipsView />
-      </UserShell>
-    </main>
-  );
+  permanentRedirect("/me/ecosystem");
 }

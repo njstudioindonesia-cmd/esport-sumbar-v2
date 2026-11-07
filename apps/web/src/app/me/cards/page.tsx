@@ -1,15 +1,9 @@
-"use client";
+import { permanentRedirect } from "next/navigation";
 
-import React from "react";
-import { UserShell } from "@/components/dashboard/DesktopUserShell";
-import { DesktopCardsView } from "@/components/dashboard/DesktopCardsView";
-
+/**
+ * Pengalihan Rute Multi-Profil Warisan (Keputusan P10)
+ * Setiap akun hanya memiliki 1 profil dan 1 kartu digital aktif (/me/card).
+ */
 export default function MyCardsPage() {
-  return (
-    <main className="min-h-screen w-full bg-[#07080C]">
-      <UserShell breadcrumb="Kartu Digital">
-        <DesktopCardsView />
-      </UserShell>
-    </main>
-  );
+  permanentRedirect("/me/card");
 }

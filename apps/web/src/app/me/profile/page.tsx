@@ -21,9 +21,9 @@ export default async function MyProfileRedirectPage() {
   const profile = await getProfileByAccountId(authData.user.id);
 
   if (profile) {
-    redirect(`/me/profile/${profile.id}/edit`);
+    redirect("/me/edit");
   }
 
-  // Jika belum punya profil sama sekali, arahkan untuk buat kartu pertama
-  redirect("/me/profile/new");
+  // Jika belum punya profil sama sekali, arahkan untuk buat kartu pertama via alur onboarding terpadu
+  redirect("/onboarding");
 }

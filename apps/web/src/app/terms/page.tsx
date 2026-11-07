@@ -39,7 +39,7 @@ export default function TermsPage() {
           <div className="flex flex-wrap items-center gap-3 text-xs text-white/50 mt-2 font-mono">
             <span>Penyedia &amp; Pemverifikasi: <strong>ESPORT SUMBAR™</strong></span>
             <span>•</span>
-            <span>Ditinjau hukum: [TENTUKAN]</span>
+            <span>Ditinjau hukum: Tinjauan Legalitas Mandiri V3 (2026)</span>
             <span>•</span>
             <span>Berlaku sejak: 2026</span>
           </div>

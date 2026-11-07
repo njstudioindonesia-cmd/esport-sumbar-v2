@@ -1,7 +1,8 @@
-import { notFound } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import { Suspense } from "react";
 import TournamentDetailClient from "./TournamentDetailClient";
 import { MOCK_TOURNAMENTS } from "@/data/tournaments";
+import { FLAGS } from "@/lib/config/flags";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -15,7 +16,12 @@ export function generateStaticParams() {
 
 export default async function TournamentDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const tournament = MOCK_TOURNAMENTS.find((t) => t.id === id) || MOCK_TOURNAMENTS[0];
+
+  if (!FLAGS.ENABLE_TOURNAMENTS) {
+    redirect("/explore");
+  }
+
+  const tournament = MOCK_TOURNAMENTS.find((t) => t.id === id);
 
   if (!tournament) {
     notFound();

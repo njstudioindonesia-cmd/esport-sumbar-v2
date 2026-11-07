@@ -73,10 +73,30 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
-      // 301 Pengalihan rute lama ke padanan V3 (Bagian 3.2 & Keputusan D5)
+      // 301 Pengalihan rute lama ke padanan V3 (Bagian 3.2 & Keputusan D5/P10)
       {
         source: "/partners",
         destination: "/ecosystem",
+        permanent: true,
+      },
+      {
+        source: "/me/cards",
+        destination: "/me/card",
+        permanent: true,
+      },
+      {
+        source: "/me/memberships",
+        destination: "/me/ecosystem",
+        permanent: true,
+      },
+      {
+        source: "/me/profile/new",
+        destination: "/onboarding",
+        permanent: true,
+      },
+      {
+        source: "/me/profile/:id/edit",
+        destination: "/me/edit",
         permanent: true,
       },
       {

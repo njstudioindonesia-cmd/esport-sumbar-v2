@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import {
   Trophy,
   Search,
@@ -20,6 +21,10 @@ import { MOCK_TOURNAMENTS } from "@/data/tournaments";
 import { FLAGS } from "@/lib/config/flags";
 
 export default function TournamentsPage() {
+  if (!FLAGS.ENABLE_TOURNAMENTS) {
+    notFound();
+  }
+
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
 

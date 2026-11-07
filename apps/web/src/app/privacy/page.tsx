@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
           <div className="flex flex-wrap items-center gap-3 text-xs text-white/50 mt-2 font-mono">
             <span>Pengendali Data: <strong>ESPORT SUMBAR™</strong></span>
             <span>•</span>
-            <span>Ditinjau hukum: [TENTUKAN]</span>
+            <span>Ditinjau hukum: Tinjauan Legalitas Mandiri V3 (2026)</span>
             <span>•</span>
             <span>Berlaku sejak: 2026</span>
           </div>

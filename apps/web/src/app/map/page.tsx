@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { FLAGS } from "@/lib/config/flags";
 import {
   Map,
   MapPin,
@@ -19,6 +21,10 @@ import { MOCK_VENUES } from "@/data/ecosystem";
 import { REGIONS_DETAIL } from "@/data/regions";
 
 export default function EsportsMapPage() {
+  if (!FLAGS.ENABLE_MAP) {
+    notFound();
+  }
+
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [dbVenues, setDbVenues] = useState<any[]>([]);
 

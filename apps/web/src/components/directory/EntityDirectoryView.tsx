@@ -19,6 +19,7 @@ import {
   ExternalLink,
   Flame,
   Award,
+  UserPlus,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -208,11 +209,18 @@ export function EntityDirectoryView({
           >
             <Users className="w-10 h-10 text-white/30 mx-auto mb-3" />
             <h3 className="text-base font-heading font-black text-white mb-1">
-              Tidak Ada Profil Ditemukan
+              Belum Ada Profil Terdaftar
             </h3>
-            <p className="text-xs font-mono text-white/50 max-w-md mx-auto">
-              Tidak ada profil yang cocok dengan kriteria pencarian atau filter yang dipilih. Coba reset filter.
+            <p className="text-xs font-mono text-white/50 max-w-md mx-auto mb-5 leading-relaxed">
+              Jadilah pelopor! Daftarkan identitas digital Anda sekarang untuk tampil di direktori ekosistem ESPORT SUMBAR.
             </p>
+            <Link
+              href="/onboarding"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FF1752] hover:bg-[#FF3366] text-white text-xs font-heading font-bold uppercase tracking-wider transition-colors shadow-lg shadow-[#FF1752]/20"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Daftarkan Profil Anda</span>
+            </Link>
           </GlassSurface>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">

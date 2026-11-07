@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { GlassBreadcrumb } from "@/components/glass/GlassBreadcrumb";
+import { FLAGS } from "@/lib/config/flags";
 
 // Mock Supabase client
 vi.mock("@/lib/supabase/client", () => ({
@@ -33,7 +34,9 @@ describe("Kerangka Aplikasi dan Navigasi V3 (Bagian 6)", () => {
       expect(html).toContain("Beranda");
       expect(html).toContain("Jelajah");
       expect(html).toContain("Ekosistem");
-      expect(html).toContain("Turnamen");
+      if (FLAGS.ENABLE_TOURNAMENTS) {
+        expect(html).toContain("Turnamen");
+      }
       expect(html).toContain("Berita");
       expect(html).toContain("Daerah");
       expect(html).toContain("Tentang");

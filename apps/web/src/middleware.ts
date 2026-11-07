@@ -80,6 +80,15 @@ export async function middleware(request: NextRequest) {
       dashboardUrl.searchParams.set("error", "unauthorized_admin");
       return NextResponse.redirect(dashboardUrl);
     }
+
+    // 3b. Penegakan MFA (AAL2): Admin wajib menyelesaikan tantangan MFA jika terdaftar
+    const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aalData && aalData.nextLevel === "aal2" && aalData.currentLevel !== "aal2") {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("mfa", "required");
+      loginUrl.searchParams.set("redirectTo", path);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   // 4. Proteksi Rute Member / Autentikasi Pengguna UI
