@@ -69,7 +69,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
             {tournament.isOfficial && (
               <span className="flex items-center gap-1 px-2.5 py-0.5 rounded bg-[#22C55E]/20 border border-[#22C55E]/40 text-[#22C55E] text-[10px] font-heading font-extrabold">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                Sertifikasi Resmi ESPORT SUMBAR
+                Terverifikasi ESPORT SUMBAR
               </span>
             )}
           </div>
@@ -132,7 +132,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
                     Bagan Knockout Single Elimination
                   </h2>
                 </div>
-                <span className="text-xs font-mono text-gray-400">Status Pertandingan Terverifikasi Wasit ESI</span>
+                <span className="text-xs font-mono text-gray-400">Status Pertandingan Terdata</span>
               </div>
 
               {/* STAGES GRID */}
@@ -303,7 +303,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
               Regulasi Standar Pertandingan ESPORT SUMBAR
             </h2>
             <p className="text-xs text-[#9AA3B2] leading-relaxed">
-              Seluruh peserta wajib membaca dan menaati kode etik dan regulasi resmi keolahragaan elektronik ESPORT SUMBAR:
+              Seluruh peserta wajib membaca dan menaati kode etik dan regulasi keolahragaan elektronik ESPORT SUMBAR:
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
@@ -321,7 +321,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
                   2. Ketentuan Usia & Persetujuan Wali
                 </h3>
                 <p className="text-xs text-gray-300 leading-relaxed">
-                  Atlet di bawah usia 18 tahun wajib melampirkan persetujuan orang tua/wali sah sesuai undang-undang perlindungan data pribadi dan ketentuan KONI Sumbar.
+                  Atlet di bawah usia 18 tahun wajib melampirkan persetujuan orang tua atau wali sesuai prinsip perlindungan data pribadi.
                 </p>
               </div>
 
@@ -330,7 +330,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
                   3. Perangkat & Jaringan
                 </h3>
                 <p className="text-xs text-gray-300 leading-relaxed">
-                  Pertandingan offline dilaksanakan pada venue terakreditasi dengan dedicated leased line minimal 300 Mbps dan switch LAN resmi turnamen.
+                  Pertandingan offline dilaksanakan pada venue terdaftar dengan dedicated leased line minimal 300 Mbps dan switch LAN turnamen.
                 </p>
               </div>
 
@@ -339,7 +339,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
                   4. Akumulasi Poin Sirkuit
                 </h3>
                 <p className="text-xs text-gray-300 leading-relaxed">
-                  Pemenang turnamen Mayor memperoleh 500 Circuit Points, Juara 2 memperoleh 300 poin, dan Juara 3 memperoleh 150 poin untuk penetapan ranking PON.
+                  Pemenang turnamen Mayor memperoleh 500 Circuit Points, Juara 2 memperoleh 300 poin, dan Juara 3 memperoleh 150 poin untuk penetapan ranking turnamen.
                 </p>
               </div>
             </div>
@@ -350,7 +350,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
         {activeTab === "register" && (
           <div className="max-w-xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#12151C] border border-[#262B38] shadow-xl">
             <h2 className="text-xl font-heading font-bold text-white uppercase text-center mb-1">
-              Pendaftaran Tim Resmi
+              Pendaftaran Tim Turnamen
             </h2>
             <p className="text-xs text-[#9AA3B2] text-center mb-6">
               Daftarkan skuad klub Anda ke turnamen {tournament.title}.

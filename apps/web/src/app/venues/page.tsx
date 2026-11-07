@@ -17,7 +17,7 @@ export default async function VenuesDirectoryPage() {
     <EntityDirectoryView
       entityType="venue"
       title="Direktori Venue & iCafe Gaming Sumbar"
-      subtitle="Lokasi gaming station, iCafe, dan arena turnamen resmi di 19 Kota dan Kabupaten Sumatera Barat."
+      subtitle="Lokasi gaming station, iCafe, dan arena turnamen di 19 Kota dan Kabupaten Sumatera Barat."
       initialProfiles={profiles}
     />
   );

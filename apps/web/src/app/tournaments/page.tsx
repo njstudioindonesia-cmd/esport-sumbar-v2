@@ -47,14 +47,14 @@ export default function TournamentsPage() {
           <div className="flex items-center gap-2">
             <span className="px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] text-xs font-heading font-extrabold uppercase tracking-wider flex items-center gap-1.5">
               <Trophy className="w-3.5 h-3.5" />
-              Sirkuit Kejuaraan Resmi
+              Sirkuit Kejuaraan Sumbar
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight">
             Jadwal <span className="text-[#D4AF37]">Turnamen Esport</span> Sumbar
           </h1>
           <p className="text-sm text-[#9AA3B2] max-w-2xl leading-relaxed">
-            Kompetisi resmi terakreditasi ESPORT SUMBAR. Raih Circuit Points resmi untuk kualifikasi Kejurda dan PON.
+            Kompetisi sirkuit ESPORT SUMBAR. Raih Circuit Points untuk kualifikasi Kejurda.
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function TournamentsPage() {
               Belum Ada Kejuaraan Aktif
             </h3>
             <p className="text-xs text-white/50 max-w-md mt-1 leading-relaxed">
-              Kalender Sirkuit Kejuaraan Resmi ESPORT SUMBAR musim kompetisi 2026 sedang dalam tahap penyusunan teknis bersama Wilayah 19 Kota/Kabupaten.
+              Kalender Sirkuit Kejuaraan ESPORT SUMBAR musim kompetisi 2026 sedang dalam tahap penyusunan teknis bersama perwakilan 19 Kota/Kabupaten.
             </p>
           </div>
         ) : (
@@ -119,7 +119,7 @@ export default function TournamentsPage() {
                   {t.isOfficial && (
                     <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-[#22C55E]/20 border border-[#22C55E]/40 text-[#22C55E] text-[10px] font-heading font-extrabold">
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      Resmi ESPORT SUMBAR
+                      Terverifikasi ESPORT SUMBAR
                     </span>
                   )}
 

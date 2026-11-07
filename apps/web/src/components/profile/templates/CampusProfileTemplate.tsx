@@ -78,7 +78,7 @@ export function CampusProfileTemplate({ profile }: { profile: UnifiedProfileDeta
         <div>
           <span className="font-semibold text-white block mb-1">Pembinaan UKM:</span>
           <p className="leading-relaxed">
-            Wadah resmi pengembangan bakat atlet esport mahasiswa {campusName} di bawah bimbingan kemahasiswaan dan ESPORT SUMBAR.
+            Wadah pengembangan bakat atlet esport mahasiswa {campusName} di bawah bimbingan kemahasiswaan dan ESPORT SUMBAR.
           </p>
         </div>
 

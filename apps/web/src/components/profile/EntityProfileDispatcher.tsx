@@ -84,7 +84,7 @@ export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProp
     type: profile.entityType as any,
     rarity: (profile.rarityTier as any) || "rookie",
     verification: mapVerificationToCard(profile.verificationStatus),
-    tagline: profile.bio || `Profil resmi ${profile.displayName} ESPORT SUMBAR`,
+    tagline: profile.bio || `Profil ${profile.displayName} ESPORT SUMBAR`,
     slug: profile.slug,
     data: {
       displayName: profile.displayName,
@@ -137,7 +137,7 @@ export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProp
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <p className="text-xs font-heading font-black text-white uppercase tracking-wider">Ini Profil Resmi Anda</p>
+                    <p className="text-xs font-heading font-black text-white uppercase tracking-wider">Ini Profil Anda</p>
                     <span className="px-1.5 py-0.5 rounded bg-[#FF1752]/20 text-[9px] font-mono text-[#FF4D77] font-bold">PEMILIK KARTU</span>
                   </div>
                   <p className="text-[11px] text-white/60 mt-0.5">Anda sedang melihat tampilan publik kartu paspor digital Anda.</p>

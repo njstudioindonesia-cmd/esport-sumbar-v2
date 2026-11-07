@@ -8,7 +8,7 @@ export const OPENAPI_V1_SPEC = {
     title: "ESPORT SUMBAR Platform API",
     version: "1.0.0",
     description:
-      "Spesifikasi Kontrak Resmi API V3 ESPORT SUMBAR. Melayani komunikasi BFF, antarmuka web, dan pertukaran data antar-layanan independen.",
+      "Spesifikasi Kontrak Baku API V3 ESPORT SUMBAR. Melayani komunikasi BFF, antarmuka web, dan pertukaran data antar-layanan independen.",
     contact: {
       name: "Tim Engineering ESPORT SUMBAR",
       url: "https://esportsumbar.com",
@@ -63,7 +63,7 @@ export const OPENAPI_V1_SPEC = {
     },
     "/games": {
       get: {
-        summary: "Katalog game resmi",
+        summary: "Katalog cabang game",
         description: "Mengambil daftar game dinamis aktif beserta role dan rank.",
         responses: {
           "200": { description: "Sukses mengambil katalog game" },

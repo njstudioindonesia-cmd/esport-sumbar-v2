@@ -155,7 +155,7 @@ export function PlayerProfileTemplate({ profile }: { profile: UnifiedProfileDeta
           {/* Media Sosial Publik */}
           {social && (social.instagram || social.youtube || social.tiktok) && (
             <div className="flex items-center gap-3 pt-1">
-              <span className="text-[11px] font-mono text-white/40">Sosial Resmi:</span>
+              <span className="text-[11px] font-mono text-white/40">Media Sosial:</span>
               {social.instagram && (
                 <span className="inline-flex items-center gap-1 text-xs text-white/80 font-mono">
                   <Globe className="w-3.5 h-3.5 text-pink-400" />

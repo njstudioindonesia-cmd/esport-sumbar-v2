@@ -23,7 +23,7 @@ export function ConfirmationDialog({
   riskLevel = "danger",
   confirmButtonText = "Konfirmasi Tindakan",
   requireReason = false,
-  reasonPlaceholder = "Tuliskan alasan resmi tindakan ini...",
+  reasonPlaceholder = "Tuliskan alasan tindakan ini...",
   isLoading = false,
 }: ConfirmationDialogProps) {
   const [reason, setReason] = useState("");

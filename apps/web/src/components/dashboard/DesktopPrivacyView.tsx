@@ -122,7 +122,7 @@ export function DesktopPrivacyView() {
                     <div className="text-[11px] text-white/40">
                       {privacySettings.contact
                         ? "Publik dapat melihat nomor kontak Anda"
-                        : "Terkunci: Hanya Pengurus ESI yang dapat menghubungi"}
+                        : "Terkunci: Hanya Admin Platform yang dapat menghubungi"}
                     </div>
                   </div>
                 </div>
@@ -262,7 +262,7 @@ export function DesktopPrivacyView() {
                       Kontak Pribadi &amp; Tanggal Lahir
                     </div>
                     <div className="text-[11px] text-white/40">
-                      Selalu Terlindungi (Kepatuhan UU PDP No. 27/2022)
+                      Selalu Terlindungi (Privasi Akun &amp; Data Pribadi)
                     </div>
                   </div>
                 </div>

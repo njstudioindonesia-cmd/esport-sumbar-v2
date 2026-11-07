@@ -58,7 +58,7 @@ export default function AdminSettingsPage() {
               Pengaturan Platform &amp; Identitas Brand
             </h1>
             <p className="text-xs sm:text-sm text-white/60 mt-1 max-w-2xl leading-relaxed">
-              Konfigurasi teks brand tunggal, informasi kontak resmi, dan pengumuman banner global.
+              Konfigurasi teks brand tunggal, informasi kontak platform, dan pengumuman banner global.
             </p>
           </div>
 
@@ -75,7 +75,7 @@ export default function AdminSettingsPage() {
           <div className="p-6 rounded-3xl bg-[#0B0E17] border border-white/10 flex flex-col gap-4">
             <h3 className="font-heading font-bold text-base text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#FF4D77]" />
-              <span>Identitas Resmi ESPORT SUMBAR</span>
+              <span>Identitas Platform ESPORT SUMBAR</span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -100,7 +100,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="flex flex-col gap-1.5 md:col-span-2">
-                <label className="font-mono uppercase text-white/60">Tagline Resmi</label>
+                <label className="font-mono uppercase text-white/60">Tagline Platform</label>
                 <input
                   type="text"
                   value={form.tagline}

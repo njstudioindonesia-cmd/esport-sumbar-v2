@@ -9,7 +9,7 @@ import { BrandWatermark } from "@/components/brand";
 export const metadata: Metadata = {
   title: "Syarat & Ketentuan Layanan",
   description:
-    "Syarat dan ketentuan resmi penggunaan platform, penerbitan paspor digital ESPORT ID, serta lisensi konten ESPORT SUMBAR™.",
+    "Ketentuan penggunaan platform, penerbitan kartu digital ESPORT ID, serta lisensi konten ESPORT SUMBAR™.",
 };
 
 export default function TermsPage() {
@@ -79,7 +79,7 @@ export default function TermsPage() {
                 Nama <strong>ESPORT SUMBAR™</strong>, logo mark, logo lockup, tata letak visual kartu TCG digital, dan kode sistem dilindungi oleh hukum hak kekayaan intelektual Republik Indonesia.
               </p>
               <p>
-                Dengan mengunggah foto profil, logo tim, dan riwayat prestasi ke platform ini, pengguna memberikan lisensi terbatas, non-eksklusif, dan bebas royalti kepada ESPORT SUMBAR™ untuk menampilkan konten tersebut pada kartu identitas publik, direktori ekosistem, dan materi publikasi resmi.
+                Dengan mengunggah foto profil, logo tim, dan riwayat prestasi ke platform ini, pengguna memberikan lisensi terbatas, non-eksklusif, dan bebas royalti kepada ESPORT SUMBAR™ untuk menampilkan konten tersebut pada kartu identitas publik, direktori ekosistem, dan materi publikasi platform.
               </p>
             </div>
           </section>
@@ -91,7 +91,7 @@ export default function TermsPage() {
               Standar Verifikasi Tunggal ESPORT SUMBAR
             </h2>
             <p className="text-white/70">
-              Verifikasi keabsahan profil entitas dilakukan langsung dalam satu tahap oleh kurator ESPORT SUMBAR. Profil yang memenuhi syarat bukti kepemilikan in-game dan piagam kompetisi akan memperoleh lencana resmi dengan nomor registrasi <strong>ESP-SB-VER-YYYY-XXXX</strong>. Verifikasi ulang dapat dipicu secara berkala atau ketika terjadi perubahan data kunci profil.
+              Verifikasi keabsahan profil entitas dilakukan langsung dalam satu tahap oleh kurator ESPORT SUMBAR. Profil yang memenuhi syarat bukti kepemilikan in-game dan piagam kompetisi akan memperoleh lencana terverifikasi dengan nomor registrasi <strong>ESP-SB-VER-YYYY-XXXX</strong>. Verifikasi ulang dapat dipicu secara berkala atau ketika terjadi perubahan data kunci profil.
             </p>
           </section>
 

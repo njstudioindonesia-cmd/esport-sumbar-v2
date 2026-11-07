@@ -315,7 +315,7 @@ export async function respondRelationAction(
       region_id: null,
       previous_status: "pending",
       new_status: "active",
-      reason: `Relasi ${relation.relation_type} disetujui secara resmi oleh ${tgt?.display_name}`,
+      reason: `Relasi ${relation.relation_type} disetujui oleh ${tgt?.display_name}`,
       metadata_jsonb: {
         relation_id: relationId,
         source_profile_id: relation.source_profile_id,
@@ -327,7 +327,7 @@ export async function respondRelationAction(
     revalidatePath("/dashboard");
     return {
       success: true,
-      message: `Relasi dengan ${src?.display_name} telah resmi aktif.`,
+      message: `Relasi dengan ${src?.display_name} telah aktif.`,
     };
   } catch (err: any) {
     return { success: false, error: err.message || "Gagal menyetujui permohonan relasi" };
@@ -398,7 +398,7 @@ export async function endRelationAction(
     });
 
     revalidatePath("/me/memberships");
-    return { success: true, message: "Relasi telah resmi diakhiri dan dipindahkan ke riwayat." };
+    return { success: true, message: "Relasi telah diakhiri dan dipindahkan ke riwayat." };
   } catch (err: any) {
     return { success: false, error: err.message || "Gagal mengakhiri relasi" };
   }

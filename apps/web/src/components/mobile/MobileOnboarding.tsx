@@ -157,7 +157,7 @@ export function MobileOnboarding() {
             </motion.div>
           )}
 
-          {/* SLIDE 3: Diverifikasi Mitra ESI (Maks 6 kata) */}
+          {/* SLIDE 3: Diverifikasi Mitra Platform (Maks 6 kata) */}
           {currentSlide === 2 && (
             <motion.div
               key="slide-3"

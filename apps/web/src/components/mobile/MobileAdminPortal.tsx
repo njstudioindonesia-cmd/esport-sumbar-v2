@@ -162,7 +162,7 @@ export function MobileAdminPortal({
     setQueueItems(updated);
     const successTitle =
       role === "province"
-        ? `Lencana Emas ESI-SB-VER-2026-${selectedReviewItem.id.slice(-4).toUpperCase()} terbit!`
+        ? `Lencana Emas ESP-SB-VER-2026-${selectedReviewItem.id.slice(-4).toUpperCase()} terbit!`
         : "Lolos Verifikasi Daerah Padang!";
     showToast(successTitle);
     setSelectedReviewItem(null);
@@ -310,7 +310,7 @@ export function MobileAdminPortal({
           <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
           <div className="leading-relaxed">
             <strong className="text-white">Tata Kelola ESPORT SUMBAR: </strong>
-            Operator Platform berfokus pada infrastruktur. Tombol verifikasi resmi dinonaktifkan permanen demi independensi kelembagaan ESI.
+            Operator Platform berfokus pada infrastruktur teknis. Tombol verifikasi dikelola oleh tim verifikasi ESPORT SUMBAR.
           </div>
         </div>
       )}
@@ -727,7 +727,7 @@ export function MobileAdminPortal({
             <div className="p-3.5 rounded-2xl bg-blue-950/20 border border-blue-500/20 flex items-start gap-2.5 text-[11px] text-blue-200">
               <Lock className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
               <div className="leading-relaxed">
-                <span className="font-bold text-white">Log Audit Tersertifikasi: </span>
+                <span className="font-bold text-white">Log Audit Kriptografis: </span>
                 Semua tindakan verifikasi tersimpan append-only dengan hash kriptografis untuk mencegah manipulasi data keatletan.
               </div>
             </div>
@@ -917,7 +917,7 @@ export function MobileAdminPortal({
                           defaultChecked={selectedReviewItem.checklist?.domicileVerified ?? false}
                           className="w-4 h-4 rounded accent-[#D4AF37]"
                         />
-                        <span>Domisili sah di wilayah Sumatera Barat</span>
+                        <span>Domisili terverifikasi di wilayah Sumatera Barat</span>
                       </label>
                       <label className="flex items-center gap-2.5 text-xs text-gray-300">
                         <input
@@ -998,7 +998,7 @@ export function MobileAdminPortal({
                 {role === "platform" ? (
                   /* OPERATOR GUARD: NO VERIFICATION BUTTONS */
                   <div className="text-center py-2 text-xs text-gray-400">
-                    Mode Pengawasan Platform — Tindakan verifikasi resmi didelegasikan ke ESPORT SUMBAR.
+                    Mode Pengawasan Platform — Tindakan verifikasi didelegasikan ke tim penelaah wilayah.
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">

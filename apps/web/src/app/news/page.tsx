@@ -92,7 +92,7 @@ export default function NewsIndexPage() {
 
   const categories = [
     { id: "all", label: "Semua Kategori" },
-    { id: "Agenda Resmi", label: "Agenda Resmi" },
+    { id: "Agenda Platform", label: "Agenda Platform" },
     { id: "Turnamen Daerah", label: "Turnamen" },
     { id: "Tata Kelola", label: "Tata Kelola" },
     { id: "Prestasi Klub", label: "Prestasi" },
@@ -197,7 +197,7 @@ export default function NewsIndexPage() {
           <div className="py-20 flex flex-col items-center justify-center text-center">
             <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin mb-3" />
             <p className="text-xs font-mono text-white/40 tracking-wider uppercase">
-              Memuat Warta Resmi ESPORT SUMBAR...
+              Memuat Warta ESPORT SUMBAR...
             </p>
           </div>
         )}
@@ -211,13 +211,13 @@ export default function NewsIndexPage() {
               <Newspaper className="w-8 h-8" />
             </div>
             <span className="text-[11px] font-mono uppercase tracking-widest text-[#D4AF37] font-semibold mb-2">
-              Portal Publikasi Resmi ESPORT SUMBAR
+              Portal Publikasi Warta ESPORT SUMBAR
             </span>
             <h2 className="text-2xl lg:text-3xl font-heading font-black text-white uppercase tracking-tight mb-3">
               Belum Ada Warta Diterbitkan
             </h2>
             <p className="text-sm text-white/50 max-w-lg mb-8 leading-relaxed font-sans">
-              Seluruh siaran pers, artikel editorial, dan agenda kejuaraan resmi ESPORT SUMBAR sedang dipersiapkan dan dikurasi oleh tim sekretariat &amp; humas pengurus.
+              Seluruh siaran pers, artikel editorial, dan agenda kejuaraan ESPORT SUMBAR sedang dipersiapkan dan dikurasi oleh tim redaksi.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link

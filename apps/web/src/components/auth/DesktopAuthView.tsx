@@ -248,7 +248,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
 
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-[10px] font-mono text-white/60">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            SISTEM RESMI V2
+            SISTEM TERPADU V3
           </div>
         </div>
 
@@ -279,14 +279,14 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
               {/* Holographic Subtle Glare */}
               <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.05] to-transparent pointer-events-none" />
 
-              {/* Top Row: Rarity Badge + ESPORT SUMBAR Official Verification */}
+              {/* Top Row: Rarity Badge + ESPORT SUMBAR Verification */}
               <div className="w-full flex items-center justify-between z-10">
                 <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37] text-[9px] font-mono font-black text-[#D4AF37] uppercase tracking-wider">
                   TIER 3 • ELITE
                 </span>
                 <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#4C7DFF]/20 border border-[#4C7DFF]/60 text-[9px] font-mono font-bold text-[#4C7DFF]">
                   <ShieldCheck className="w-3 h-3 text-[#4C7DFF]" />
-                  <span>VERIFIED PROV</span>
+                  <span>TERVERIFIKASI</span>
                 </div>
               </div>
 
@@ -339,7 +339,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
         {/* Bottom Panel Text: Slogan Maks 6 Kata */}
         <div className="relative z-10">
           <h2 className="text-2xl font-heading font-black text-white tracking-tight leading-snug">
-            Identitas Resmi Atlet Ranah Minang
+            Identitas Digital Atlet Ranah Minang
           </h2>
           <p className="mt-1 text-xs font-sans text-white/50 leading-relaxed max-w-sm">
             Paspor esport digital berbasis verifikasi ESPORT SUMBAR. Terlindungi UU PDP No. 27/2022.
@@ -381,7 +381,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             <p className="text-xs text-white/50 font-sans mt-1">
               {mode === "login"
                 ? "Akses paspor esport digital kamu."
-                : "Mulai perjalanan atlet esport resmi kamu."}
+                : "Mulai perjalanan atlet esport kamu."}
             </p>
           </div>
 
@@ -410,7 +410,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
               <div className="flex flex-col gap-1.5">
                 <h3 className="text-lg font-heading font-black text-white">Periksa Email Anda</h3>
                 <p className="text-xs text-white/70 leading-relaxed">
-                  Kami telah mengirimkan tautan aktivasi ke <span className="text-[#D4AF37] font-semibold">{email}</span>. Silakan klik tautan di email untuk mengaktifkan akun resmi dan mulai membuat kartu identitas atlet Anda.
+                  Kami telah mengirimkan tautan aktivasi ke <span className="text-[#D4AF37] font-semibold">{email}</span>. Silakan klik tautan di email untuk mengaktifkan akun dan mulai membuat kartu identitas atlet Anda.
                 </p>
               </div>
               <Link
@@ -645,7 +645,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
           {/* FOOTER KECIL KEPATUHAN PDP */}
           <div className="mt-8 pt-4 border-t border-white/[0.06] text-center text-[10px] font-mono text-white/30 flex items-center justify-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
-            <span>Kepatuhan UU PDP No. 27/2022 • ESPORT SUMBAR</span>
+            <span>Perlindungan Data Pribadi • ESPORT SUMBAR</span>
           </div>
         </div>
       </div>

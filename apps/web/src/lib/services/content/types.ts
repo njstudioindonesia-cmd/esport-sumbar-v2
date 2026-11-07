@@ -1,7 +1,7 @@
 /**
  * Tipe dan Kontrak Layanan Konten & Berita V3 (Sub-langkah 7.5)
  * Mendefinisikan model artikel berita, alur kerja editorial,
- * taksonomi kategori, dan proyeksi baca publik resmi ESPORT SUMBAR.
+ * taksonomi kategori, dan proyeksi baca publik platform ESPORT SUMBAR.
  */
 
 import { ArticleCategory, ArticleStatus } from "@esport-sumbar/contracts";

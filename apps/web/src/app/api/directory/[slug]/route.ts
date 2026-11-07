@@ -20,7 +20,7 @@ export async function GET(
     const profile = await getDirectoryProfileBySlug(slug);
     if (!profile) {
       return NextResponse.json(
-        { error: "Profil tidak ditemukan dalam direktori resmi." },
+        { error: "Profil tidak ditemukan dalam direktori publik." },
         { status: 404, headers: { [CORRELATION_HEADER]: correlationId } }
       );
     }

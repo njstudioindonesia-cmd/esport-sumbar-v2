@@ -266,11 +266,11 @@ export function DesktopCardWizard() {
     if (step === 2 && (entityType === "player" || entityType === "coach")) {
       if (isUnder18) {
         if (!guardianName.trim() || !guardianContact.trim()) {
-          setErrorMessage("Nama dan kontak wali sah wajib diisi untuk pendaftar di bawah 18 tahun.");
+          setErrorMessage("Nama dan kontak wali wajib diisi untuk pendaftar di bawah 18 tahun.");
           return;
         }
         if (!guardianConsent) {
-          setErrorMessage("Persetujuan tertulis orang tua/wali wajib dicentang sesuai UU PDP.");
+          setErrorMessage("Persetujuan tertulis orang tua/wali wajib dicentang.");
           return;
         }
       }
@@ -278,7 +278,7 @@ export function DesktopCardWizard() {
 
     // Validasi Langkah 3: Identitas Dasar
     if (step === 3 && !displayName.trim()) {
-      setErrorMessage("Nama resmi / tampilan wajib diisi.");
+      setErrorMessage("Nama tampilan wajib diisi.");
       return;
     }
 
@@ -497,7 +497,7 @@ export function DesktopCardWizard() {
               <div className="min-h-[420px]">
                 <AnimatePresence mode="wait">
                   {/* =================================================== */}
-                  {/* LANGKAH 1: PILIH BIDANG (7 PILIHAN RESMI)           */}
+                  {/* LANGKAH 1: PILIH BIDANG (7 PILIHAN)                 */}
                   {/* =================================================== */}
                   {step === 1 && (
                     <motion.div
@@ -584,7 +584,7 @@ export function DesktopCardWizard() {
                             Tanggal Lahir
                           </h2>
                           <p className="text-xs text-white/50 mb-6">
-                            Diperlukan untuk pembagian divisi usia kompetisi resmi (Senior / Junior) dan kepatuhan UU PDP.
+                            Diperlukan untuk pembagian divisi usia kompetisi (Senior / Junior) dan perlindungan data pribadi.
                           </p>
 
                           <div className="p-5 rounded-2xl bg-[#161A24] border border-white/[0.08] mb-5">
@@ -608,10 +608,10 @@ export function DesktopCardWizard() {
                             >
                               <div className="flex items-center gap-2 text-xs font-heading font-black text-amber-300">
                                 <ShieldCheck className="w-4 h-4 text-amber-400" />
-                                <span>Persetujuan Orang Tua / Wali Sah (Usia &lt; 18 Tahun)</span>
+                                <span>Persetujuan Orang Tua / Wali (Usia &lt; 18 Tahun)</span>
                               </div>
                               <p className="text-[11px] text-white/70 leading-relaxed">
-                                Sesuai UU No. 27 Tahun 2022 tentang Perlindungan Data Pribadi, pendaftaran atlet anak wajib menyertakan izin tertulis wali. Foto profil akan disembunyikan secara default.
+                                Untuk perlindungan data pribadi pendaftar di bawah usia 18 tahun, pendaftaran atlet wajib menyertakan izin tertulis wali. Foto profil akan disembunyikan secara default.
                               </p>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1">
@@ -649,7 +649,7 @@ export function DesktopCardWizard() {
                                   className="w-4 h-4 mt-0.5 rounded border-white/20 accent-[#D4AF37]"
                                 />
                                 <span className="text-[11px] text-white/80 leading-normal">
-                                  Saya menyatakan bahwa orang tua/wali telah memberikan persetujuan tertulis resmi untuk pendaftaran profil identitas atlet digital ini (Syarat &amp; Ketentuan v1.0-2026).
+                                  Saya menyatakan bahwa orang tua/wali telah memberikan persetujuan tertulis untuk pendaftaran profil identitas atlet digital ini (Syarat &amp; Ketentuan v1.0-2026).
                                 </span>
                               </label>
                             </motion.div>
@@ -704,14 +704,14 @@ export function DesktopCardWizard() {
                         Identitas &amp; Atribut
                       </h2>
                       <p className="text-xs text-white/50 mb-5">
-                        Isi data resmi {entityDef.singularLabel.toLowerCase()} Anda untuk pembuatan kartu digital.
+                        Isi data {entityDef.singularLabel.toLowerCase()} Anda untuk pembuatan kartu digital.
                       </p>
 
                       {/* Nama Tampil & Wilayah */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
                         <div>
                           <label className="block text-[11px] font-mono uppercase tracking-wider text-white/60 mb-1.5">
-                            Nama Lengkap / Resmi <span className="text-red-400">*</span>
+                            Nama Lengkap / Tampilan <span className="text-red-400">*</span>
                           </label>
                           <input
                             type="text"
@@ -781,13 +781,13 @@ export function DesktopCardWizard() {
                     >
                       <h2 className="text-2xl font-heading font-black text-white tracking-tight mb-1">
                         {entityType === "team" || entityType === "community" || entityType === "campus" || entityType === "school"
-                          ? "Unggah Logo Resmi"
+                          ? "Unggah Logo"
                           : entityType === "venue"
                           ? "Unggah Foto Sampul & Logo"
                           : "Foto Profil Atlet"}
                       </h2>
                       <p className="text-xs text-white/50 mb-5">
-                        Potong dan sesuaikan foto dengan rasio paspor resmi. Gambar akan dikonversi ke WebP otomatis tanpa metadata lokasi.
+                        Potong dan sesuaikan foto dengan rasio paspor digital. Gambar akan dikonversi ke WebP otomatis tanpa metadata lokasi.
                       </p>
 
                       {/* Area Unggah & Tampilan Foto Saat Ini */}
@@ -986,7 +986,7 @@ export function DesktopCardWizard() {
                         Tinjau &amp; Terbitkan
                       </h2>
                       <p className="text-xs text-white/50 mb-5">
-                        Pastikan seluruh identitas sudah benar. ESPORT ID resmi akan diterbitkan seketika ke database.
+                        Pastikan seluruh identitas sudah benar. ESPORT ID akan diterbitkan seketika ke database.
                       </p>
 
                       {/* Skor Kelengkapan & Rarity Tier Live */}
@@ -1013,7 +1013,7 @@ export function DesktopCardWizard() {
                       {/* Summary Data Box */}
                       <div className="grid grid-cols-2 gap-3 text-xs mb-5">
                         <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
-                          <span className="text-[10px] font-mono text-white/40 block">Nama Resmi</span>
+                          <span className="text-[10px] font-mono text-white/40 block">Nama Tampilan</span>
                           <span className="font-semibold text-white truncate block">{displayName}</span>
                         </div>
                         <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
@@ -1042,7 +1042,7 @@ export function DesktopCardWizard() {
                           </div>
                           <div>
                             <span className="text-base font-heading font-black text-white block">
-                              ESPORT ID Resmi Berhasil Diterbitkan!
+                              ESPORT ID Berhasil Diterbitkan!
                             </span>
                             <span className="text-sm font-mono font-bold text-[#D4AF37] block mt-1">
                               {issuedResult.esportId}
@@ -1072,7 +1072,7 @@ export function DesktopCardWizard() {
                                 if (navigator.share) {
                                   navigator.share({
                                     title: displayName,
-                                    text: `Kartu Atlet Esport Sumbar resmi: ${displayName}`,
+                                    text: `Kartu Atlet Esport Sumbar: ${displayName}`,
                                     url: `${window.location.origin}/profile/${issuedResult.slug}`,
                                   }).catch(() => {});
                                 } else {

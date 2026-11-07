@@ -65,7 +65,7 @@ export function SchoolProfileTemplate({ profile }: { profile: UnifiedProfileDeta
             Data Siswa Dilindungi (UU Perlindungan Data Pribadi No. 27/2022)
           </span>
           <p className="text-[11px] text-white/70 leading-relaxed">
-            Sistem ESPORT SUMBAR tidak mempublikasikan daftar nama, foto wajah, maupun kontak siswa di bawah umur untuk publik. Hanya statistik binaan dan prestasi resmi yang ditampilkan.
+            Sistem ESPORT SUMBAR tidak mempublikasikan daftar nama, foto wajah, maupun kontak siswa di bawah umur untuk publik. Hanya statistik binaan dan prestasi terverifikasi yang ditampilkan.
           </p>
         </div>
       </div>

@@ -84,7 +84,7 @@ export function OwnershipNote({
           <strong className="text-white font-medium">ESPORT SUMBAR™</strong> adalah merek, produk, dan platform teknologi data esport yang dimiliki serta dikelola sepenuhnya oleh <strong className="text-white">ESPORT SUMBAR™</strong>. Seluruh basis data pengguna, pemrosesan paspor atlet (ESPORT ID), dan operasional sistem berjalan di bawah kendali teknis ESPORT SUMBAR™.
         </p>
         <p>
-          ESPORT SUMBAR mengoperasikan standar verifikasi satu tahap tunggal berstandar industri dengan kode pengesahan resmi <strong className="text-white font-medium">ESP-SB-VER-YYYY-XXXX</strong> bagi seluruh insan esport di 19 kota dan kabupaten se-Sumatera Barat.
+          ESPORT SUMBAR mengoperasikan standar verifikasi satu tahap tunggal berstandar industri dengan kode registrasi verifikasi <strong className="text-white font-medium">ESP-SB-VER-YYYY-XXXX</strong> bagi seluruh insan esport di 19 kota dan kabupaten se-Sumatera Barat.
         </p>
       </div>
 

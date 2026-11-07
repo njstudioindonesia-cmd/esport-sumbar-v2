@@ -118,7 +118,7 @@ export function calculateCompletenessScore(
  *
  * 1. ROOKIE: Profil terdaftar dan terisi field dasar (default).
  * 2. CONTENDER: Kelengkapan profil >= 80% DAN memiliki >= 1 relasi aktif terkonfirmasi.
- * 3. ELITE: Memiliki >= 1 prestasi resmi yang telah divalidasi oleh admin ESPORT SUMBAR.
+ * 3. ELITE: Memiliki >= 1 prestasi yang telah divalidasi oleh admin ESPORT SUMBAR.
  * 4. LEGEND: Memiliki prestasi tingkat provinsi / nasional tervalidasi atau medali PON.
  */
 export function calculateRarityTier(params: {

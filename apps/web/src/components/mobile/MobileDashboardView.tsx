@@ -234,7 +234,7 @@ export function MobileDashboardView() {
               <ShieldCheck className="w-10 h-10 text-[#FF1752]" />
               <h4 className="font-heading font-bold text-white text-sm">Belum Ada Kartu Paspor</h4>
               <p className="text-[11px] text-white/50 max-w-xs">
-                Buat paspor digital Anda untuk mendapatkan kartu resmi berstandar ESPORT SUMBAR.
+                Buat paspor digital Anda untuk mendapatkan kartu identitas berstandar ESPORT SUMBAR.
               </p>
               <Link href="/me/profile/new" className="btn-brand-primary text-xs py-2 px-4 mt-2">
                 <span>Buat Kartu Baru</span>
@@ -247,7 +247,7 @@ export function MobileDashboardView() {
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3.5 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col justify-between">
             <span className="text-[9px] font-mono uppercase tracking-wider text-white/40">
-              STATUS RESMI
+              STATUS VERIFIKASI
             </span>
             <div className="my-1.5 flex items-center gap-2">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${isVerified ? "bg-emerald-500/15 text-emerald-400" : "bg-amber-500/15 text-amber-400"}`}>
@@ -337,7 +337,7 @@ export function MobileDashboardView() {
             <div className="flex items-center gap-3">
               <Trophy className="w-5 h-5 text-[#D4AF37]" />
               <div className="flex flex-col">
-                <span className="text-xs font-heading font-bold text-white">Kompetisi Resmi</span>
+                <span className="text-xs font-heading font-bold text-white">Kompetisi Daerah</span>
                 <span className="text-[10px] text-white/50">Sirkuit & Kejuaraan ESPORT SUMBAR</span>
               </div>
             </div>

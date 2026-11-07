@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { OFFICIAL_GAMES, findGameByIdOrSlug, getGenreLabel } from "@/data/games";
 
 describe("Katalog Game Dinamis V3 & Integrasi Honor of Kings (Mandat 5)", () => {
-  it("harus menyertakan Honor of Kings (HOK) sebagai game resmi aktif", () => {
+  it("harus menyertakan Honor of Kings (HOK) sebagai game kompetitif aktif", () => {
     const hok = OFFICIAL_GAMES.find((g) => g.id === "game-hok");
     expect(hok).toBeDefined();
     expect(hok?.name).toBe("Honor of Kings");
@@ -11,7 +11,7 @@ describe("Katalog Game Dinamis V3 & Integrasi Honor of Kings (Mandat 5)", () => 
     expect(hok?.platform).toBe("mobile");
     expect(hok?.isActive).toBe(true);
 
-    // Verifikasi 5 role resmi HOK
+    // Verifikasi 5 role kompetitif HOK
     expect(hok?.roles).toEqual([
       "Clash Lane",
       "Jungle",
@@ -27,7 +27,7 @@ describe("Katalog Game Dinamis V3 & Integrasi Honor of Kings (Mandat 5)", () => 
     expect(hok?.ranks).toContain("Mythic");
   });
 
-  it("harus memiliki 11 game resmi aktif sesuai Bagian 3.5 & Mandat 7", () => {
+  it("harus memiliki 11 game kompetitif aktif sesuai Bagian 3.5 & Mandat 7", () => {
     expect(OFFICIAL_GAMES.length).toBe(11);
     const activeGames = OFFICIAL_GAMES.filter((g) => g.isActive);
     expect(activeGames.length).toBe(11);

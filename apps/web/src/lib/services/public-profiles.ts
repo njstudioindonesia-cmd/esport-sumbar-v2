@@ -205,7 +205,7 @@ export async function getPublicProfileBySlug(
     roleName: mockCard.data.role,
     avatarUrl: mockCard.data.avatarUrl || null,
     coverUrl: undefined,
-    bio: (mockCard.data as any).bio || "Identitas resmi ESPORT SUMBAR.",
+    bio: (mockCard.data as any).bio || "Identitas terdaftar ESPORT SUMBAR.",
     attributes: {
       team_name: mockCard.data.team?.name || mockCard.data.teamName,
       social_media: {
@@ -484,7 +484,7 @@ export async function getPublicProfilesList(
     roleName: c.data.role,
     avatarUrl: c.data.avatarUrl || null,
     coverUrl: undefined,
-    bio: (c.data as any).bio || "Identitas resmi ESPORT SUMBAR.",
+    bio: (c.data as any).bio || "Identitas terdaftar ESPORT SUMBAR.",
     attributes: {
       team_name: c.data.team?.name || c.data.teamName,
     },

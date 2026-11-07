@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { EntityType, RarityTier, VerificationStatus } from "@/lib/supabase/database.types";
 
 // ==============================================================================
-// 1. TIPE ATRIBUT KHUSUS UNTUK KE-7 BIDANG RESMI
+// 1. TIPE ATRIBUT KHUSUS UNTUK KE-7 BIDANG ENTITAS
 // ==============================================================================
 
 export interface PlayerAttributes {

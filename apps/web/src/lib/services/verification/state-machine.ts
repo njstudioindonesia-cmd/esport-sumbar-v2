@@ -8,7 +8,7 @@
 import { VerificationState } from "./types";
 
 /**
- * Matriks Transisi Status yang Sah
+ * Matriks Transisi Status yang Valid
  */
 export const VALID_VERIFICATION_TRANSITIONS: Record<VerificationState, VerificationState[]> = {
   unverified: ["submitted"],
@@ -22,7 +22,7 @@ export const VALID_VERIFICATION_TRANSITIONS: Record<VerificationState, Verificat
 };
 
 /**
- * Memeriksa apakah transisi dari status lama ke status baru sah menurut aturan V3
+ * Memeriksa apakah transisi dari status lama ke status baru valid menurut aturan V3
  */
 export function canTransitionVerification(
   from: VerificationState,
@@ -65,7 +65,7 @@ export function validateVerificationTransition(params: TransitionValidationParam
   // 3. Validasi transisi status
   if (!canTransitionVerification(currentStatus, newStatus)) {
     throw new Error(
-      `Transisi status tidak sah: Tidak dapat mengubah status dari "${currentStatus}" menjadi "${newStatus}".`
+      `Transisi status tidak valid: Tidak dapat mengubah status dari "${currentStatus}" menjadi "${newStatus}".`
     );
   }
 
@@ -80,7 +80,7 @@ export function validateVerificationTransition(params: TransitionValidationParam
 }
 
 /**
- * Menghasilkan Nomor Registrasi Verifikasi Tunggal Resmi ESPORT SUMBAR
+ * Menghasilkan Nomor Registrasi Verifikasi Tunggal ESPORT SUMBAR
  * Pola Standar: ESP-SB-VER-YYYY-XXXX (contoh: ESP-SB-VER-2026-4821)
  */
 export function generateVerificationBadgeNo(

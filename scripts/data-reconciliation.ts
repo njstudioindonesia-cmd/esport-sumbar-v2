@@ -42,7 +42,7 @@ export async function runDataReconciliation(): Promise<ReconciliationSummary> {
   console.log("\n2. Memeriksa Integritas Kemitraan Ekosistem (relation_rules)...");
   let orphanRelations = 0;
   let invalidRules = 0;
-  let totalRelations = 17; // 17 aturan resmi
+  let totalRelations = 17; // 17 aturan baku ekosistem
 
   console.log(`   -> Total relasi terperiksa: ${totalRelations}`);
   console.log(`   -> Relasi yatim (source/target hilang): ${orphanRelations}`);

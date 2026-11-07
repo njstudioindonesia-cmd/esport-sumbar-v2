@@ -64,12 +64,12 @@ const REASON_TEMPLATES = {
   revision_requested: [
     "Screenshot UID game tidak jelas atau terpotong; unggah tangkapan layar penuh profil in-game.",
     "Bukti sertifikat turnamen tidak menyertakan nama atlet atau IGN yang cocok.",
-    "Data domisili atau nama lengkap profil perlu diperbaiki sebelum pengesahan.",
-    "Format surat rekomendasi klub belum ditandatangani oleh manajer tim resmi.",
+    "Data domisili atau nama lengkap profil perlu diperbaiki sebelum verifikasi disetujui.",
+    "Format surat rekomendasi klub belum ditandatangani oleh manajer tim.",
   ],
   rejected: [
     "Bukti akun game terindikasi milik orang lain atau menggunakan jasa joki.",
-    "Berkas pengajuan tidak sah atau terdeteksi manipulasi visual / pemalsuan dokumen.",
+    "Berkas pengajuan tidak valid atau terdeteksi manipulasi visual / pemalsuan dokumen.",
     "Tidak memenuhi kriteria domisili atau yurisdiksi ekosistem Sumatera Barat.",
   ],
   suspended: [
@@ -182,7 +182,7 @@ export default function AdminVerificationQueuePage() {
       const res = await transitionVerificationAction({
         requestId: selectedItem.id,
         newStatus: reviewDecision,
-        reason: reviewReason.trim() || "Verifikasi dokumen dan keabsahan disetujui resmi oleh ESPORT SUMBAR.",
+        reason: reviewReason.trim() || "Verifikasi berkas dan keabsahan data disetujui oleh ESPORT SUMBAR.",
         notes: adminNotes.trim() || undefined,
       });
 
@@ -243,7 +243,7 @@ export default function AdminVerificationQueuePage() {
               Antrean Verifikasi Profil
             </h1>
             <p className="text-xs sm:text-sm text-white/60">
-              Pengesahan keabsahan profil entitas, verifikasi akun in-game, dan penerbitan lencana tunggal ESPORT SUMBAR.
+              Pemeriksaan profil entitas, verifikasi akun in-game, dan penerbitan lencana tunggal ESPORT SUMBAR.
             </p>
           </div>
 

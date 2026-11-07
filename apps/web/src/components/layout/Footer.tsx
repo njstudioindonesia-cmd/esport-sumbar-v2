@@ -51,7 +51,7 @@ export function Footer() {
               <a
                 href="mailto:halo@esportsumbar.com"
                 className="w-8 h-8 rounded-full bg-[#0A0A2E] border border-white/10 flex items-center justify-center text-white/60 hover:text-[#FF4D77] hover:border-[#FF1752]/40 transition-colors"
-                aria-label="Email Resmi ESPORT SUMBAR"
+                aria-label="Email Kontak ESPORT SUMBAR"
               >
                 <Mail className="w-4 h-4" />
               </a>

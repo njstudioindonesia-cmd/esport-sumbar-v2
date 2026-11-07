@@ -75,7 +75,7 @@ export async function verifyAuthContext(
         return {
           auth: null,
           errorResponse: NextResponse.json(
-            { success: false, error: `Unauthorized: Token layanan tidak sah (${res.error || "invalid"})` },
+            { success: false, error: `Unauthorized: Token layanan tidak valid (${res.error || "invalid"})` },
             { status: 401 }
           ),
         };

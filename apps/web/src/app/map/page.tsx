@@ -49,14 +49,14 @@ export default function EsportsMapPage() {
   } | null>({
     id: "pin-init",
     title: "Minang Cyber Arena Padang",
-    subtitle: "Arena Turnamen Resmi & Broadcasting Booth",
+    subtitle: "Arena Turnamen & Broadcasting Booth",
     type: "Esports Arena",
     address: "Jl. Veteran No. 45, Padang Barat (Dekat Pantai Padang)",
     phone: "+62 751-897654",
     coords: { lat: -0.9471, lng: 100.3543 },
   });
 
-  // Map markers from registered database venues (or fallback to ecosystem mock) + ESI secretariats
+  // Map markers from registered database venues (or mock venues) + community hubs
   const venueSource = dbVenues.length > 0
     ? dbVenues.map((v) => ({
         id: v.id,
@@ -86,12 +86,12 @@ export default function EsportsMapPage() {
       svgX: v.regionId === "pdg" || v.regionId === "reg-pdg" ? 220 : v.regionId === "bkt" || v.regionId === "reg-bkt" ? 310 : 390,
       svgY: v.regionId === "pdg" || v.regionId === "reg-pdg" ? 350 : v.regionId === "bkt" || v.regionId === "reg-bkt" ? 240 : 200,
     })),
-    // Sekretariat Wilayah Utama
+    // Sentra Komunitas Wilayah Utama
     {
-      id: "esi-pdg",
-      title: "Sekretariat Komunitas Esport Kota Padang",
-      subtitle: "Pusat Pelatihan Daerah & Verifikasi Berkas",
-      type: "Sekretariat ESI",
+      id: "hub-pdg",
+      title: "Sentra Komunitas Esport Padang",
+      subtitle: "Pusat Pelatihan Daerah & Koordinasi Komunitas",
+      type: "Community Hub",
       address: "Kompleks GOR H. Agus Salim, Padang Barat",
       phone: "+62 812-7001-2026",
       coords: { lat: -0.9238, lng: 100.3601 },
@@ -99,10 +99,10 @@ export default function EsportsMapPage() {
       svgY: 330,
     },
     {
-      id: "esi-bkt",
-      title: "Sekretariat Komunitas Esport Bukittinggi",
+      id: "hub-bkt",
+      title: "Sentra Komunitas Esport Bukittinggi",
       subtitle: "Gedung Pemuda & Olahraga Gulai Bancah",
-      type: "Sekretariat ESI",
+      type: "Community Hub",
       address: "Gedung Pemuda & Olahraga, Gulai Bancah, Bukittinggi",
       phone: "+62 821-6200-2026",
       coords: { lat: -0.3055, lng: 100.3692 },
@@ -132,7 +132,7 @@ export default function EsportsMapPage() {
             Esports Map <span className="text-[#D4AF37]">Sumatera Barat</span>
           </h1>
           <p className="text-sm text-[#9AA3B2] max-w-2xl leading-relaxed">
-            Peta interaktif persebaran fasilitas arena esport, gaming house terakreditasi, dan kantor sekretariat ESI di seluruh Ranah Minang.
+            Peta interaktif persebaran fasilitas arena esport, gaming house, dan sentra komunitas di seluruh Ranah Minang.
           </p>
         </div>
 
@@ -215,7 +215,7 @@ export default function EsportsMapPage() {
                 {/* Render Filtered Markers */}
                 {filteredMarkers.map((m) => {
                   const isSelected = selectedPin?.id === m.id;
-                  const isEsi = m.type === "Sekretariat ESI";
+                  const isHub = m.type === "Community Hub";
                   return (
                     <g
                       key={m.id}
@@ -226,7 +226,7 @@ export default function EsportsMapPage() {
                         cx={m.svgX}
                         cy={m.svgY}
                         r={isSelected ? "14" : "9"}
-                        fill={isEsi ? "#C8102E" : "#D4AF37"}
+                        fill={isHub ? "#FF1752" : "#D4AF37"}
                         fillOpacity={isSelected ? "1" : "0.85"}
                         stroke="#0B0D12"
                         strokeWidth="2"
@@ -237,7 +237,7 @@ export default function EsportsMapPage() {
                           cy={m.svgY}
                           r="20"
                           fill="none"
-                          stroke={isEsi ? "#C8102E" : "#D4AF37"}
+                          stroke={isHub ? "#FF1752" : "#D4AF37"}
                           strokeWidth="2"
                           strokeDasharray="3 3"
                           className="animate-spin origin-center"
@@ -256,8 +256,8 @@ export default function EsportsMapPage() {
                   Gaming Venue & Arena
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#C8102E]" />
-                  Sekretariat ESI Kota/Kab
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FF1752]" />
+                  Sentra Komunitas Esport
                 </span>
               </div>
               <span>Klik pada pin untuk meninjau detail titik lokasi</span>

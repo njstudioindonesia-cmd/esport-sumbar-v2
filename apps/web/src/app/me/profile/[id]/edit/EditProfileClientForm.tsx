@@ -62,7 +62,7 @@ export function EditProfileClientForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!displayName.trim()) {
-      setErrorMessage("Nama resmi profil wajib diisi.");
+      setErrorMessage("Nama tampilan profil wajib diisi.");
       return;
     }
 
@@ -132,9 +132,9 @@ export function EditProfileClientForm({
         <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 text-xs text-amber-200">
           <ShieldAlert className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
           <div>
-            <div className="font-bold text-amber-300">Profil Sudah Terverifikasi Resmi ESI</div>
+            <div className="font-bold text-amber-300">Profil Sudah Terverifikasi</div>
             <p className="text-[11px] text-amber-200/70 mt-0.5 leading-relaxed">
-              Jika Anda mengubah nama tampilan resmi atau In-Game Name (IGN), sistem akan otomatis mengalihkan status verifikasi ke <strong>peninjauan ulang</strong> demi menjaga integritas data kejuaraan ESPORT SUMBAR.
+              Jika Anda mengubah nama tampilan atau In-Game Name (IGN), sistem akan otomatis mengalihkan status verifikasi ke <strong>peninjauan ulang</strong> demi menjaga integritas data kejuaraan ESPORT SUMBAR.
             </p>
           </div>
         </div>
@@ -160,13 +160,13 @@ export function EditProfileClientForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-[11px] font-mono uppercase tracking-wider text-white/70 mb-1.5">
-              Nama Tampilan Resmi <span className="text-red-400">*</span>
+              Nama Tampilan <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Nama profil resmi"
+              placeholder="Nama tampilan profil"
               maxLength={100}
               className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none"
             />

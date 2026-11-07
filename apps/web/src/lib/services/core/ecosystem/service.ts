@@ -1,7 +1,7 @@
 /**
  * Layanan Subdomain Core: Ecosystem
  * Menegakkan aturan relasi kemitraan ekosistem (relation_rules):
- * 1. Validasi pasangan entitas yang sah.
+ * 1. Validasi pasangan entitas yang valid.
  * 2. Batas maksimum relasi aktif (maxActiveLimit).
  * 3. Kesesuaian game jika gameMatchRequired = true.
  * 4. Kaskade pengakhiran relasi saat profil dinonaktifkan.

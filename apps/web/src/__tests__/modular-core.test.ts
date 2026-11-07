@@ -86,7 +86,7 @@ describe("Sub-langkah 7.6: Modularisasi Subdomain Core (Identity, Profile, Ecosy
       ).rejects.toThrow(/Jenis entitas profil \(player\) bersifat permanen dan tidak dapat diubah/);
     });
 
-    it("harus mengecualikan seluruh data sensitif (NIK/KK/KTP) demi kepatuhan UU PDP", async () => {
+    it("harus mengecualikan seluruh data sensitif (NIK/KK/KTP) demi perlindungan data pribadi", async () => {
       const prof = await ProfileModule.createProfile({
         accountId: "acc-player-3",
         entityType: "player",

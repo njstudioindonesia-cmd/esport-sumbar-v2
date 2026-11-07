@@ -74,7 +74,7 @@ function validateRelation(params: {
       r.targetEntityType === params.targetType &&
       r.relationType === params.relationType
   );
-  if (!rule) return { valid: false, error: "Pasangan tidak sah" };
+  if (!rule) return { valid: false, error: "Pasangan tidak valid" };
   if (rule.gameMatchRequired && params.sourceGame !== params.targetGame) {
     return { valid: false, error: "Game tidak cocok" };
   }
@@ -168,7 +168,7 @@ describe("Mandat 9.1: Uji E2E Seluruh Alur untuk 7 Entitas Bidang (Complete Life
 
       it("menjalankan 10 tahapan siklus hidup penuh (end-to-end lifecycle)", async () => {
         // --------------------------------------------------------------------
-        // TAHAP 1: Registrasi Akun & Verifikasi Email (Mock)
+        // LANGKAH 1: Registrasi Akun & Verifikasi Email (Mock)
         // --------------------------------------------------------------------
         const userAccount = {
           id: accountId,
@@ -180,7 +180,7 @@ describe("Mandat 9.1: Uji E2E Seluruh Alur untuk 7 Entitas Bidang (Complete Life
         expect(userAccount.role).toBe("user");
 
         // --------------------------------------------------------------------
-        // TAHAP 2: Pemilihan Bidang Tunggal (Final & Immutable: 1 Akun = 1 Profil)
+        // LANGKAH 2: Pemilihan Bidang Tunggal (Final & Immutable: 1 Akun = 1 Profil)
         // --------------------------------------------------------------------
         const userSelection = {
           accountId,
@@ -321,7 +321,7 @@ describe("Mandat 9.1: Uji E2E Seluruh Alur untuk 7 Entitas Bidang (Complete Life
           evidenceFiles: [
             {
               id: "ev-01",
-              name: `${entity.slug}-sk-resmi.pdf`,
+              name: `${entity.slug}-sk-dokumen.pdf`,
               url: "https://placeholder.supabase.co/storage/v1/object/public/evidence/doc.pdf",
             },
           ],
@@ -345,11 +345,11 @@ describe("Mandat 9.1: Uji E2E Seluruh Alur untuk 7 Entitas Bidang (Complete Life
           accountId,
           entityType: entity.type,
           regionId: "reg-01",
-          notes: "Telah diperbarui dengan SK/bukti keaktifan resmi.",
+          notes: "Telah diperbarui dengan SK/bukti keaktifan terlampir.",
           evidenceFiles: [
             {
               id: "ev-01",
-              name: `${entity.slug}-sk-resmi.pdf`,
+              name: `${entity.slug}-sk-dokumen.pdf`,
               url: "https://placeholder.supabase.co/storage/v1/object/public/evidence/doc.pdf",
             },
             {

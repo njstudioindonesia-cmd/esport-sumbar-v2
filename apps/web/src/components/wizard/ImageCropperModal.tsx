@@ -230,7 +230,7 @@ export function ImageCropperModal({
                 {aspectRatioType === "cover"
                   ? "Atur Foto Sampul"
                   : aspectRatioType === "logo"
-                  ? "Atur Logo Resmi"
+                  ? "Atur Logo"
                   : "Atur Foto Profil"}
               </h3>
               <p className="text-[11px] font-mono text-white/50">

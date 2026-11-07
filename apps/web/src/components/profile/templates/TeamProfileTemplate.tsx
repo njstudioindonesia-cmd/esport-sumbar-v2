@@ -163,7 +163,7 @@ export function TeamProfileTemplate({ profile }: { profile: UnifiedProfileDetail
           <div>
             <span className="font-semibold text-white block mb-1">Profil Tim:</span>
             <p className="leading-relaxed">
-              {profile.bio || "Organisasi esport kompetitif resmi Sumatera Barat yang berkomitmen membina talenta atlet daerah."}
+              {profile.bio || "Organisasi esport kompetitif Sumatera Barat yang berkomitmen membina talenta atlet daerah."}
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">

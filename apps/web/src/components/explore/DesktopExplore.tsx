@@ -269,7 +269,7 @@ export function DesktopExplore() {
           </div>
           <div className="px-4 py-2 rounded-full bg-white/[0.02] border border-white/[0.05] text-xs font-heading font-medium text-gray-500 flex items-center gap-1.5">
             <Lock className="w-3 h-3" />
-            <span>Wasit ESI</span>
+            <span>Wasit Terdaftar</span>
           </div>
         </div>
       </div>

@@ -137,7 +137,7 @@ export default function GaleriKartuPage() {
           Galeri & Ekspor Kartu <span className="text-[#D4AF37]">ESPORT ID</span>
         </h1>
         <p className="text-sm md:text-base text-[#9AA3B2] leading-relaxed max-w-2xl mx-auto">
-          Identitas digital resmi untuk <strong className="text-white">Player</strong>,{" "}
+          Identitas digital untuk <strong className="text-white">Player</strong>,{" "}
           <strong className="text-[#3B82F6]">Coach</strong>, dan{" "}
           <strong className="text-[#22C55E]">Team</strong>. Dilengkapi efek 3D Tilt, flip rekam jejak, dan fitur unduh format Story (9:16) & Feed (1:1).
         </p>
@@ -401,7 +401,7 @@ export default function GaleriKartuPage() {
               Prinsip P1: Pemisahan Frame (Rarity) vs Lencana (Verifikasi)
             </h2>
             <p className="text-xs text-[#9AA3B2]">
-              Aturan fundamental tata kelola kartu ESPORT SUMBAR untuk menjaga integritas kelembagaan ESI.
+              Aturan fundamental tata kelola kartu ESPORT SUMBAR untuk menjaga integritas data ekosistem.
             </p>
           </div>
         </div>
@@ -416,7 +416,7 @@ export default function GaleriKartuPage() {
               </h3>
             </div>
             <p className="text-xs text-[#9AA3B2] leading-relaxed">
-              Frame kartu berfokus pada <strong>prestasi dan kelengkapan profil</strong> atlet/klub. Ini merupakan sistem gamifikasi visual dan <em>bukan</em> pengesahan legal.
+              Frame kartu berfokus pada <strong>prestasi dan kelengkapan profil</strong> atlet/klub. Ini merupakan sistem penanda visual kecakapan profil.
             </p>
 
             <div className="space-y-2 mt-2">
@@ -456,11 +456,11 @@ export default function GaleriKartuPage() {
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-[#D4AF37]" />
               <h3 className="font-heading font-bold text-sm uppercase text-gray-100">
-                2. Lencana Verifikasi (Kelembagaan ESI)
+                2. Lencana Verifikasi (ESPORT SUMBAR)
               </h3>
             </div>
             <p className="text-xs text-[#9AA3B2] leading-relaxed">
-              Lencana perisai di sudut kanan atas merupakan <strong>otoritas kelembagaan ESI</strong>. Hanya diberikan setelah melalui proses verifikasi berjenjang.
+              Lencana perisai di sudut kanan atas merupakan <strong>tanda verifikasi ESPORT SUMBAR</strong>. Diterbitkan setelah melalui proses verifikasi berkas dan akun in-game.
             </p>
 
             <div className="space-y-2 mt-2">
@@ -475,14 +475,14 @@ export default function GaleriKartuPage() {
                 <ShieldCheck className="w-3.5 h-3.5 text-[#22C55E] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-[#22C55E]">Terverifikasi:</strong>
-                  <p className="text-[11px] text-[#9AA3B2]">Telah diperiksa dan disetujui oleh Komunitas Esport Kota/Kabupaten.</p>
+                  <p className="text-[11px] text-[#9AA3B2]">Telah diperiksa dan disetujui oleh tim verifikasi.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2 text-xs p-2 rounded bg-[#12151C] border border-[#D4AF37]/40">
                 <Award className="w-3.5 h-3.5 text-[#D4AF37] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-[#D4AF37]">Verified (ESI Sumbar):</strong>
-                  <p className="text-[11px] text-[#9AA3B2]">Verifikasi resmi ESPORT SUMBAR + Nomor Register Lencana.</p>
+                  <strong className="text-[#D4AF37]">Verified (ESPORT SUMBAR):</strong>
+                  <p className="text-[11px] text-[#9AA3B2]">Verifikasi identitas ESPORT SUMBAR + Nomor Register Lencana.</p>
                 </div>
               </div>
               <div className="flex items-start gap-2 text-xs p-2 rounded bg-[#12151C] border border-[#F59E0B]/40">

@@ -169,16 +169,16 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F121C]/80 border border-white/10 w-fit backdrop-blur-md">
             <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
             <span className="text-[10px] font-mono uppercase tracking-wider text-white/80">
-              Platform Resmi ESPORT SUMBAR
+              Platform Digital ESPORT SUMBAR
             </span>
           </div>
 
           <h1 className="text-3xl font-heading font-black uppercase text-white tracking-tight leading-none">
-            PASPOR ATLET RESMI <span className="text-[#D4AF37] display-skew">SUMATERA BARAT</span>
+            PASPOR ATLET DIGITAL <span className="text-[#D4AF37] display-skew">SUMATERA BARAT</span>
           </h1>
 
           <p className="text-xs text-white/60 leading-relaxed">
-            Identitas digital atlet, rekam jejak turnamen, dan lisensi resmi berstandar Wilayah & ESPORT SUMBAR.
+            Identitas digital atlet, rekam jejak turnamen, dan lisensi terverifikasi berstandar Wilayah &amp; ESPORT SUMBAR.
           </p>
 
           <Link
@@ -225,7 +225,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
               className="flex-1 h-10 rounded-xl bg-[#0F121C]/80 border border-white/10 hover:border-[#22C55E]/40 flex items-center justify-center gap-1.5 text-[#22C55E] backdrop-blur-md transition-all shadow-sm"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Verifikasi ESI</span>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider">Verifikasi ID</span>
             </Link>
 
             <Link
@@ -285,7 +285,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
               </div>
             </div>
 
-            {/* Card 2: Diverifikasi Mitra ESI */}
+            {/* Card 2: Diverifikasi Tim Kurasi */}
             <div className="flex-shrink-0 w-64 p-4 rounded-2xl bg-[#0F121C]/80 border border-white/10 backdrop-blur-md snap-start flex flex-col justify-between shadow-lg">
               <div>
                 <div className="flex items-center gap-2 mb-2 text-[#22C55E]">
@@ -298,7 +298,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
                   Diverifikasi Mitra
                 </span>
                 <p className="text-[11px] text-white/60 leading-relaxed">
-                  Pemeriksaan keabsahan domisili atlet oleh ESI Kota/Kabupaten dan verifikasi provinsi oleh ESPORT SUMBAR.
+                  Pemeriksaan validitas data profil dan keabsahan domisili atlet oleh tim kurasi ESPORT SUMBAR.
                 </p>
               </div>
               <div className="mt-3 pt-2 border-t border-white/5 text-[9px] font-mono text-white/40">
@@ -384,7 +384,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
             <div className="p-6 rounded-2xl bg-[#0F121C]/80 border border-white/10 text-center flex flex-col items-center">
               <Newspaper className="w-6 h-6 text-white/30 mb-2" />
               <p className="text-xs font-heading font-bold text-white uppercase">Belum Ada Warta Berita</p>
-              <p className="text-[10px] text-white/40 mt-1">Siaran pers resmi akan tampil di sini setelah diterbitkan.</p>
+              <p className="text-[10px] text-white/40 mt-1">Siaran warta akan tampil di sini setelah diterbitkan.</p>
             </div>
           )}
         </section>

@@ -1,6 +1,6 @@
 /**
  * Subdomain Core: Catalog (Sub-langkah 7.6)
- * Mengelola katalog game resmi, role, dan tier rank dinamis
+ * Mengelola katalog cabang game, role, dan tier rank dinamis
  * dengan dukungan penuh Honor of Kings (HOK) tanpa logika ter-hardcode.
  */
 

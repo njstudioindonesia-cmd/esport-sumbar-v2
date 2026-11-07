@@ -198,7 +198,7 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
 }
 
 /**
- * Masuk Pengguna Resmi dengan Rate Limiting Sederhana
+ * Masuk Pengguna dengan Rate Limiting Sederhana
  */
 export async function signInAction(formData: FormData): Promise<AuthActionResult> {
   const rawEmail = formData.get("email")?.toString();
@@ -231,7 +231,7 @@ export async function signInAction(formData: FormData): Promise<AuthActionResult
   try {
     const supabase = await createClient();
 
-    // 3. Otentikasi resmi via Supabase Auth
+    // 3. Otentikasi pengguna via Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -262,7 +262,7 @@ export async function signInAction(formData: FormData): Promise<AuthActionResult
 
     const userId = authData.user.id;
 
-    // 4. Ambil peran resmi pengguna dari tabel accounts di database
+    // 4. Ambil peran pengguna dari tabel accounts di database
     const { data: accountData } = await supabase
       .from("accounts")
       .select("role, assigned_region_id")
@@ -293,7 +293,7 @@ export async function signInAction(formData: FormData): Promise<AuthActionResult
 }
 
 /**
- * Permintaan Reset Kata Sandi Resmi
+ * Permintaan Reset Kata Sandi
  */
 export async function resetPasswordAction(formData: FormData): Promise<{ success: boolean; message?: string; error?: string }> {
   const rawEmail = formData.get("email")?.toString();

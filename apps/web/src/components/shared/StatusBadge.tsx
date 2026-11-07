@@ -37,7 +37,7 @@ export function StatusBadge({ status, size = "md", className = "" }: StatusBadge
       text: "text-[#22C55E]",
     },
     verified: {
-      label: "Verified (Resmi)",
+      label: "Terverifikasi",
       icon: Award,
       bg: "bg-gradient-to-r from-[#D4AF37]/20 to-[#E5C358]/20",
       border: "border-[#D4AF37]/60",

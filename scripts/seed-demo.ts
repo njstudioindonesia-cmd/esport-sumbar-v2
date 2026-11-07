@@ -1,7 +1,7 @@
 /**
  * ESPORT SUMBAR V2 - Realistic Demo Data Seeder
  * Mengisi database Supabase dengan 8 Akun Uji Coba, 80 Atlet, 10 Pelatih, 16 Tim,
- * 8 Komunitas, 8 Venue, 6 Kampus, 6 Sekolah, Prestasi, Keanggotaan, dan 8 Berita Resmi.
+ * 8 Komunitas, 8 Venue, 6 Kampus, 6 Sekolah, Prestasi, Keanggotaan, dan 8 Berita Terkini.
  *
  * Semua record ditandai secara ketat dengan `is_demo = true` untuk kepatuhan tata kelola.
  */
@@ -44,7 +44,7 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-// 19 Wilayah Resmi Sumatera Barat
+// 19 Wilayah Sumatera Barat
 interface RegionConfig {
   id: string;
   code: string;
@@ -148,11 +148,11 @@ async function runSeed() {
   const demoAccountsConfig = [
     { email: "user.dewasa@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "2003-05-12", label: "User Biasa Dewasa (Padang)" },
     { email: "user.pelajar@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "2010-08-20", label: "User Pelajar 15 Tahun (Wali Disetujui)" },
-    { email: "admin.padang@demo.esportsumbar.id", role: "region_admin", regionId: "reg-pdg", birthDate: "1994-02-14", label: "Admin Pengcab Padang" },
-    { email: "admin.bukittinggi@demo.esportsumbar.id", role: "region_admin", regionId: "reg-bkt", birthDate: "1991-09-08", label: "Admin Pengcab Bukittinggi" },
-    { email: "admin.provinsi@demo.esportsumbar.id", role: "prov_admin", regionId: null, birthDate: "1988-11-25", label: "Admin Pengprov PBESI Sumbar" },
-    { email: "operator@demo.esportsumbar.id", role: "platform_operator", regionId: null, birthDate: "1995-04-18", label: "Platform Operator PBESI" },
-    { email: "pelatih.demo@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "1990-07-30", label: "Pelatih Berlisensi PBESI" },
+    { email: "admin.padang@demo.esportsumbar.id", role: "platform_admin", regionId: "reg-pdg", birthDate: "1994-02-14", label: "Admin Platform Padang" },
+    { email: "admin.bukittinggi@demo.esportsumbar.id", role: "platform_admin", regionId: "reg-bkt", birthDate: "1991-09-08", label: "Admin Platform Bukittinggi" },
+    { email: "admin.provinsi@demo.esportsumbar.id", role: "platform_admin", regionId: null, birthDate: "1988-11-25", label: "Super Admin ESPORT SUMBAR" },
+    { email: "operator@demo.esportsumbar.id", role: "platform_admin", regionId: null, birthDate: "1995-04-18", label: "Platform Operator" },
+    { email: "pelatih.demo@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "1990-07-30", label: "Pelatih Terdaftar ESPORT SUMBAR" },
     { email: "manajer.tim@demo.esportsumbar.id", role: "user", regionId: "reg-pdg", birthDate: "1996-12-05", label: "Manajer Tim Silek Minang" },
   ];
 
@@ -214,7 +214,7 @@ async function runSeed() {
     if (consent?.id) {
       await supabase.from("accounts").update({ guardian_consent_id: consent.id }).eq("id", pelajarUserId);
     }
-    console.log("   ✓ Persetujuan wali sah (UU PDP) untuk atlet pelajar berhasil disinkronkan.");
+    console.log("   ✓ Persetujuan orang tua/wali untuk atlet pelajar berhasil disinkronkan.");
   }
 
   const defaultOwnerId = createdAccountMap["user.dewasa@demo.esportsumbar.id"] || Object.values(createdAccountMap)[0];
@@ -240,15 +240,12 @@ async function runSeed() {
     let badgeNo: string | null = null;
     let verifiedAt: string | null = null;
 
-    if (randStatus < 0.25) {
+    if (randStatus < 0.35) {
       status = "verified";
       rarity = Math.random() > 0.4 ? "elite" : "contender";
-      badgeNo = `PBESI-SB-${reg.code}-2026-${String(getRandomInt(100, 999))}`;
+      badgeNo = `ESP-SB-VER-2026-${String(getRandomInt(1000, 9999))}`;
       verifiedAt = new Date(Date.now() - getRandomInt(10, 90) * 86400000).toISOString();
-    } else if (randStatus < 0.55) {
-      status = "regional_checked";
-      rarity = "contender";
-    } else if (randStatus < 0.90) {
+    } else if (randStatus < 0.85) {
       status = "unverified";
       rarity = "rookie";
     } else {
@@ -268,7 +265,7 @@ async function runSeed() {
       region_id: reg.id,
       main_game_id: game.id,
       role_name: role,
-      bio: `Atlet kompetitif ${game.name} asal ${reg.name}. Berfokus pada kejuaraan daerah dan seleksi PON PBESI Sumbar.`,
+      bio: `Atlet kompetitif ${game.name} asal ${reg.name}. Berfokus pada turnamen daerah dan pengembangan bakat esport.`,
       attributes: {
         game_id: game.id,
         in_game_id: String(getRandomInt(10000000, 99999999)),
@@ -332,9 +329,9 @@ async function runSeed() {
         is_available: Math.random() > 0.3,
       },
       visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
-      verification_status: isVerif ? "verified" : "regional_checked",
+      verification_status: isVerif ? "verified" : "unverified",
       verified_at: isVerif ? new Date().toISOString() : null,
-      verified_badge_no: isVerif ? `PBESI-SB-CO-${String(getRandomInt(10, 99))}` : null,
+      verified_badge_no: isVerif ? `ESP-SB-VER-2026-${String(getRandomInt(1000, 9999))}` : null,
       rarity_tier: isVerif ? "elite" : "contender",
       completeness_score: getRandomInt(80, 100),
       is_published: true,
@@ -364,8 +361,8 @@ async function runSeed() {
       display_name: teamName,
       region_id: reg.id,
       main_game_id: game.id,
-      role_name: "Tim Resmi",
-      bio: `Klub esport asal ${reg.name} yang berkompetisi di divisi ${game.name} dan turnamen resmi PBESI Sumbar.`,
+      role_name: "Tim Esport",
+      bio: `Klub esport asal ${reg.name} yang berkompetisi di divisi ${game.name} dan kejuaraan ESPORT SUMBAR.`,
       attributes: {
         tag: teamName.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 4),
         founded_year: getRandomInt(2022, 2025),
@@ -375,9 +372,9 @@ async function runSeed() {
         open_roles: ["Roamer", "Jungler"],
       },
       visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
-      verification_status: isVerif ? "verified" : "regional_checked",
+      verification_status: isVerif ? "verified" : "unverified",
       verified_at: isVerif ? new Date().toISOString() : null,
-      verified_badge_no: isVerif ? `PBESI-SB-TM-${String(getRandomInt(10, 99))}` : null,
+      verified_badge_no: isVerif ? `ESP-SB-VER-2026-${String(getRandomInt(1000, 9999))}` : null,
       rarity_tier: isVerif ? "elite" : "contender",
       completeness_score: getRandomInt(85, 100),
       is_published: true,
@@ -427,7 +424,7 @@ async function runSeed() {
     region_id: idx < 4 ? "reg-pdg" : "reg-bkt",
     main_game_id: "game-pubgm",
     role_name: "Esports Arena",
-    bio: `Arena latihan dan kompetisi esport resmi berfasilitas lengkap dengan koneksi gigabit di Sumatera Barat.`,
+    bio: `Arena latihan dan kompetisi esport berfasilitas lengkap dengan koneksi gigabit di Sumatera Barat.`,
     attributes: {
       address: `Jl. Khatib Sulaiman No. ${20 + idx}, Sumatera Barat`,
       venue_type: "Esports Arena",
@@ -442,7 +439,7 @@ async function runSeed() {
     visibility_jsonb: { email: false, phone: false, realName: true, history: true, achievements: true },
     verification_status: "verified",
     verified_at: new Date().toISOString(),
-    verified_badge_no: `PBESI-SB-VN-${String(getRandomInt(10, 99))}`,
+    verified_badge_no: `ESP-SB-VER-2026-${String(getRandomInt(1000, 9999))}`,
     rarity_tier: "elite",
     completeness_score: 95,
     is_published: true,
@@ -460,7 +457,7 @@ async function runSeed() {
     region_id: "reg-pdg",
     main_game_id: "game-mlbb",
     role_name: "UKM Perguruan Tinggi",
-    bio: `Unit Kegiatan Mahasiswa pembinaan atlet dan turnamen resmi perguruan tinggi Sumatera Barat.`,
+    bio: `Unit Kegiatan Mahasiswa pembinaan atlet dan turnamen perguruan tinggi Sumatera Barat.`,
     attributes: {
       campus_name: name.replace("UKM Esport ", "").replace("UKM Gamers ", "").replace("UKM Digital ", "").replace("UKM Cyber ", ""),
       student_member_count: getRandomInt(40, 150),
@@ -505,25 +502,25 @@ async function runSeed() {
   console.log(`   ✓ 6 Sekolah berhasil disimpan.`);
 
   // 6. Data Berita Contoh Realistis (8 Artikel)
-  console.log("\n📰 [6/9] Menyimpan 8 Artikel Berita Lokal PBESI Sumbar...");
+  console.log("\n📰 [6/9] Menyimpan 8 Artikel Berita Lokal ESPORT SUMBAR...");
   const articles = [
     {
-      title: "PBESI Sumbar Buka Pemusatan Latihan Terpadu Atlet Menuju Kejurnas 2026",
-      slug: "pbesi-sumbar-pemusatan-latihan-kejurnas-2026",
-      summary: "Program pembinaan intensif untuk atlet peraih medali Porprov diselenggarakan di GOR H. Agus Salim Padang.",
-      category: "Agenda Resmi ESI",
+      title: "ESPORT SUMBAR Buka Pemusatan Latihan Terpadu Atlet Menuju Kejurnas 2026",
+      slug: "esport-sumbar-pemusatan-latihan-kejurnas-2026",
+      summary: "Program pembinaan intensif untuk atlet peraih medali diselenggarakan di GOR H. Agus Salim Padang.",
+      category: "Agenda Platform",
       published_at: "2026-02-15T08:00:00Z",
     },
     {
       title: "Piala Walikota Padang Esport Pelajar: 48 Tim Sekolah Berebut Juara",
       slug: "piala-walikota-padang-esport-pelajar-2026",
-      summary: "Turnamen resmi khusus tingkat SMA/SMK se-Kota Padang resmi dibuka dengan dukungan penuh Dinas Pemuda dan Olahraga.",
+      summary: "Turnamen esport tingkat SMA/SMK se-Kota Padang dibuka untuk wadah talenta muda berprestasi.",
       category: "Turnamen Daerah",
       published_at: "2026-02-10T10:00:00Z",
     },
     {
-      title: "Pengcab ESI Bukittinggi Rampungkan Standarisasi 8 Gaming Arena Resmi",
-      slug: "pengcab-esi-bukittinggi-standarisasi-gaming-arena",
+      title: "Komunitas Bukittinggi Rampungkan Standarisasi 8 Gaming Arena",
+      slug: "bukittinggi-standarisasi-gaming-arena",
       summary: "Langkah penataan arena kompetisi untuk memastikan jaringan gigabit dan kenyamanan pelatihan atlet daerah.",
       category: "Tata Kelola",
       published_at: "2026-02-05T09:30:00Z",
@@ -536,28 +533,28 @@ async function runSeed() {
       published_at: "2026-01-28T14:00:00Z",
     },
     {
-      title: "PBESI Sumbar Berlakukan Paspor Atlet Digital Berbasis UU Perlindungan Data Pribadi",
-      slug: "pbesi-sumbar-terapkan-paspor-atlet-digital-uu-pdp",
-      summary: "Setiap kartu digital atlet dilengkapi enkripsi data, pembatasan data publik anak di bawah umur, dan tanda verifikasi instansi.",
+      title: "ESPORT SUMBAR Berlakukan Paspor Atlet Digital Berbasis Perlindungan Privasi",
+      slug: "esport-sumbar-terapkan-paspor-atlet-digital-privasi",
+      summary: "Setiap kartu digital atlet dilengkapi enkripsi data, pembatasan data publik anak di bawah umur, dan tanda verifikasi platform.",
       category: "Tata Kelola",
       published_at: "2026-01-20T11:00:00Z",
     },
     {
       title: "Universitas Andalas Luncurkan Beasiswa Atlet Esport Berprestasi Ranah Minang",
       slug: "unand-luncurkan-beasiswa-atlet-esport-2026",
-      summary: "Apresiasi akademis diberikan kepada mahasiswa yang berhasil meraih gelar di turnamen tingkat provinsi dan nasional.",
+      summary: "Apresiasi akademis diberikan kepada mahasiswa yang berhasil meraih gelar di turnamen tingkat daerah dan nasional.",
       category: "Prestasi Klub",
       published_at: "2026-01-14T08:00:00Z",
     },
     {
-      title: "Pengcab ESI Payakumbuh Sosialisasi Etika Digital dan Anti-Kecurangan Pemain",
-      slug: "pengcab-payakumbuh-sosialisasi-etika-digital",
-      summary: "Pendidikan karakter dan sportivitas digital menjadi syarat wajib dalam kepemilikan lisensi kompetisi resmi.",
-      category: "Agenda Resmi ESI",
+      title: "Komunitas Payakumbuh Sosialisasi Etika Digital dan Anti-Kecurangan Pemain",
+      slug: "payakumbuh-sosialisasi-etika-digital",
+      summary: "Pendidikan karakter dan sportivitas digital menjadi syarat penting dalam pembinaan talenta kompetitif.",
+      category: "Agenda Platform",
       published_at: "2026-01-08T13:00:00Z",
     },
     {
-      title: "Pendaftaran Kejuaraan Daerah Free Fire Sumbar Seri 1 Resmi Dibuka",
+      title: "Pendaftaran Kejuaraan Daerah Free Fire Sumbar Seri 1 Dibuka",
       slug: "pendaftaran-kejurda-free-fire-sumbar-seri-1",
       summary: "Total 128 slot tim dibuka dengan sistem gugur online sebelum babak playoff 16 besar offline di Padang.",
       category: "Turnamen Daerah",
@@ -570,7 +567,7 @@ async function runSeed() {
       title: art.title,
       slug: art.slug,
       summary: art.summary,
-      content: `${art.summary}\n\nSiaran pers resmi Pengurus Provinsi Esports Indonesia (PBESI) Sumatera Barat. Hak cipta dilindungi undang-undang.`,
+      content: `${art.summary}\n\nSiaran pers ESPORT SUMBAR. Hak cipta dilindungi undang-undang.`,
       category: art.category,
       status: "published",
       published_at: art.published_at,
@@ -593,7 +590,7 @@ async function runSeed() {
         title: "Juara 1 Kejurda Esport Sumbar 2025",
         level: "provinsi",
         placement: "Juara 1 (Medali Emas)",
-        event_name: "Kejuaraan Daerah Esports PBESI Sumbar 2025",
+        event_name: "Kejuaraan Daerah Esport Sumbar 2025",
         event_date: "2025-11-20",
         validation_status: "validated",
         is_demo: true,
@@ -654,7 +651,7 @@ async function runSeed() {
     }))
   );
   console.log("========================================================");
-  console.log("💡 CARA PEMBERSIHAN SEBELUM GO-LIVE RESMI:");
+  console.log("💡 CARA PEMBERSIHAN SEBELUM GO-LIVE:");
   console.log("   Jalankan: npx tsx scripts/purge-demo.ts --confirm");
   console.log("========================================================\n");
 }

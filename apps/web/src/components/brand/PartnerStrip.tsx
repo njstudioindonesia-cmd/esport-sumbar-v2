@@ -8,7 +8,7 @@ interface PartnerStripProps {
 }
 
 /**
- * PartnerStrip V3: Dikosongkan sesuai Mandat 1 & 2 (penghapusan mitra ESI).
+ * PartnerStrip V3: Dikosongkan sesuai Mandat 1 & 2 (penghapusan mitra lama).
  * Dipertahankan sebagai komponen kosong untuk backward compatibility ekspor.
  */
 export function PartnerStrip({

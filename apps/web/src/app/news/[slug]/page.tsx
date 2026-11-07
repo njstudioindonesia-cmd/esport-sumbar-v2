@@ -44,7 +44,7 @@ export default async function NewsDetailPage({
         content: dbArticle.content ? [dbArticle.content] : [],
         category: dbArticle.category,
         region: dbArticle.regionName || "Sumatera Barat",
-        author: dbArticle.authorName || "Humas ESI Sumbar",
+        author: dbArticle.authorName || "Tim Redaksi ESPORT SUMBAR",
         date: new Date(dbArticle.publishedAt).toLocaleDateString("id-ID", {
           day: "numeric",
           month: "short",
@@ -70,7 +70,7 @@ export default async function NewsDetailPage({
           content: [r.content],
           category: r.category,
           region: r.regionName || "Sumatera Barat",
-          author: "Humas ESI",
+          author: "Tim Redaksi ESPORT SUMBAR",
           date: new Date(r.publishedAt).toLocaleDateString("id-ID", {
             day: "numeric",
             month: "short",

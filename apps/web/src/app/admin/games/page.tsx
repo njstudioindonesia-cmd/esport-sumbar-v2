@@ -303,7 +303,7 @@ export default function AdminGamesPage() {
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-400 text-[10px] font-mono uppercase font-bold tracking-wider">
-                KATALOG RESMI V3
+                KATALOG GAME V3
               </span>
               <span className="text-white/40 text-xs font-mono">• DIBACA DINAMIS DARI DATABASE</span>
             </div>
@@ -311,7 +311,7 @@ export default function AdminGamesPage() {
               Katalog Game &amp; Role-Rank
             </h1>
             <p className="text-xs sm:text-sm text-white/60">
-              Pengelolaan cabang game resmi, penetapan role pertandingan, tier rank, dan proteksi integritas profil (Mandat 5).
+              Pengelolaan cabang game, penetapan role pertandingan, tier rank, dan proteksi integritas profil (Mandat 5).
             </p>
           </div>
 
@@ -320,7 +320,7 @@ export default function AdminGamesPage() {
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA7C11] text-[#07080C] font-heading font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg hover:brightness-110 transition-all self-start sm:self-auto"
           >
             <Plus className="w-4 h-4" />
-            <span>Tambah Game Resmi</span>
+            <span>Tambah Cabang Game</span>
           </button>
         </div>
 
@@ -422,7 +422,7 @@ export default function AdminGamesPage() {
                     {game.name}
                   </h3>
                   <p className="text-xs text-white/50 mt-1 line-clamp-1">
-                    {game.publisher || game.category || "Game Resmi ESPORT SUMBAR"}
+                    {game.publisher || game.category || "Cabang Game ESPORT SUMBAR"}
                   </p>
 
                   <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/[0.08] text-xs font-mono">
@@ -490,7 +490,7 @@ export default function AdminGamesPage() {
                 </div>
                 <div>
                   <h3 className="font-heading font-bold text-base text-white">
-                    {editingGame ? "Ubah Game Resmi" : "Tambah Game Resmi"}
+                    {editingGame ? "Ubah Cabang Game" : "Tambah Cabang Game"}
                   </h3>
                   <span className="text-xs font-mono text-white/50">Katalog Pangkalan Data Terpadu</span>
                 </div>
@@ -588,7 +588,7 @@ export default function AdminGamesPage() {
                   <label className="text-white/60 mb-1 block uppercase text-[10px]">Label Kategori</label>
                   <input
                     type="text"
-                    placeholder="e.g. MOBA Mobile Resmi"
+                    placeholder="e.g. MOBA Mobile"
                     value={gameForm.category}
                     onChange={(e) => setGameForm({ ...gameForm, category: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs focus:outline-none focus:border-[#D4AF37]"

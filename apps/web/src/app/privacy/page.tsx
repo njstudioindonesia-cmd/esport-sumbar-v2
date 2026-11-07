@@ -111,14 +111,14 @@ export default function PrivacyPolicyPage() {
               Perlindungan Khusus Atlet di Bawah Umur (&lt;18 Tahun)
             </h2>
             <p className="mb-3 text-white/70">
-              Sesuai Pasal 25 UU PDP, pemrosesan data anak memerlukan persetujuan orang tua atau wali yang sah:
+              Sesuai ketentuan perlindungan data anak, pemrosesan data memerlukan persetujuan orang tua atau wali:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-white/60">
               <li>
-                Pendaftar berusia di bawah 18 tahun wajib menyertakan nama dan kontak orang tua/wali sah sebelum profil aktif.
+                Pendaftar berusia di bawah 18 tahun wajib menyertakan nama dan kontak orang tua atau wali sebelum profil aktif.
               </li>
               <li>
-                Wali sah berhak meminta penutupan atau penarikan data publik anak kapan saja melalui kanal kontak resmi kami.
+                Orang tua atau wali berhak meminta penutupan atau penarikan data publik anak kapan saja melalui kanal kontak platform kami.
               </li>
             </ul>
           </section>

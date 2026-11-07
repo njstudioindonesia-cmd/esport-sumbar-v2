@@ -288,7 +288,7 @@ export default function ComponentCatalogPage() {
                   <OwnershipNote variant="short" />
                 </div>
                 <span className="text-[10px] text-white/40">
-                  Penegasan peran kepemilikan platform & batas kemitraan verifikasi ESI
+                  Penegasan peran kepemilikan platform & operasional tunggal ESPORT SUMBAR
                 </span>
               </div>
 
@@ -327,10 +327,10 @@ export default function ComponentCatalogPage() {
               {/* StatusBadge */}
               <div className="p-5 rounded-2xl bg-[#0A0A2E] border border-white/10 flex flex-col gap-3">
                 <span className="text-xs font-heading font-bold uppercase text-[#D4AF37]">
-                  StatusBadge (Verifikasi ESI)
+                  StatusBadge (Verifikasi ESPORT SUMBAR)
                 </span>
                 <p className="text-[11px] text-white/50">
-                  Lencana kelembagaan ESI dengan format Warna + Ikon + Teks.
+                  Lencana verifikasi satu tahap dengan format Warna + Ikon + Teks.
                 </p>
                 <div className="flex flex-col gap-2 pt-2">
                   <div>
@@ -342,7 +342,7 @@ export default function ComponentCatalogPage() {
                     <StatusBadge status="regional" />
                   </div>
                   <div>
-                    <span className="text-[10px] text-white/40 font-mono block mb-1">Verified (Resmi):</span>
+                    <span className="text-[10px] text-white/40 font-mono block mb-1">Verified (Terverifikasi):</span>
                     <StatusBadge status="verified" />
                   </div>
                 </div>
@@ -398,7 +398,7 @@ export default function ComponentCatalogPage() {
               <NotificationBanner
                 type="success"
                 title="Verifikasi Wilayah Disetujui"
-                message="Admin ESI Kota Padang telah mengesahkan data kedaerahan kartu Anda."
+                message="Tim ESPORT SUMBAR telah menyetujui verifikasi berkas kartu Anda."
               />
               <NotificationBanner
                 type="warning"

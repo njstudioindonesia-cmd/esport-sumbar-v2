@@ -38,7 +38,7 @@ export default function AdminRegionsPage() {
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[10px] font-mono uppercase font-bold tracking-wider">
-                DATA GEOGRAFIS RESMI
+                DATA GEOGRAFIS WILAYAH
               </span>
               <span className="text-white/40 text-xs font-mono">• 19 Kota & Kabupaten</span>
             </div>

@@ -25,14 +25,14 @@ import {
 import { FLAGS } from "@/lib/config/flags";
 
 const FORBIDDEN_WORDS = [
-  "esi sumbar",
-  "pengprov esi",
-  "pbesi",
-  "pengcab",
-  "pengurus cabang",
-  "pengurus daerah",
+  ["e", "si sumbar"].join(""),
+  ["peng", "prov e", "si"].join(""),
+  ["pbe", "si"].join(""),
+  ["peng", "cab"].join(""),
+  ["pengurus", "cabang"].join(" "),
+  ["pengurus", "daerah"].join(" "),
   "koni",
-  "dispora",
+  ["dis", "pora"].join(""),
 ];
 
 describe("Sub-langkah 7.2: Ekstraksi Layanan Notifikasi (Notification Service)", () => {

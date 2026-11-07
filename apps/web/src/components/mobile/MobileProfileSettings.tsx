@@ -554,7 +554,7 @@ export function MobileProfileSettings() {
               {deleteStep === 1 ? (
                 <>
                   <p className="text-xs text-white/80 leading-snug">
-                    Seluruh kartu identitas digital, lencana verifikasi resmi, dan rekam jejak turnamen akan dihapus permanen.
+                    Seluruh kartu identitas digital, lencana verifikasi, dan rekam jejak turnamen akan dihapus permanen.
                   </p>
                   <div className="grid grid-cols-2 gap-3 mt-2">
                     <button

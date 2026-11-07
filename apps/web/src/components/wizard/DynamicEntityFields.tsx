@@ -56,7 +56,7 @@ function FieldBadge({
             ? "bg-amber-400/15 text-amber-300 border border-amber-400/30"
             : "bg-emerald-400/15 text-emerald-300 border border-emerald-400/30"
         }`}
-        title={visibility === "P" ? "Privat: Hanya untuk Anda dan Admin ESI" : "Publik: Tampil pada kartu & profil"}
+        title={visibility === "P" ? "Privat: Hanya untuk Anda dan Admin Platform" : "Publik: Tampil pada kartu & profil"}
       >
         {visibility === "P" ? <Lock className="w-2.5 h-2.5" /> : <Globe className="w-2.5 h-2.5" />}
         <span>{visibility === "P" ? "PRIVAT" : "PUBLIK"}</span>
@@ -313,7 +313,7 @@ export function DynamicEntityFields({
                 onChange={(e) => onChange("play_goal", e.target.value)}
                 className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
               >
-                <option value="kompetitif" className="bg-[#161A24]">Kompetitif (Turnamen Resmi)</option>
+                <option value="kompetitif" className="bg-[#161A24]">Kompetitif (Turnamen)</option>
                 <option value="profesional" className="bg-[#161A24]">Profesional (Karier Atlet)</option>
                 <option value="santai" className="bg-[#161A24]">Santai / Rekreasi</option>
               </select>
@@ -710,7 +710,7 @@ export function DynamicEntityFields({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
-                  Email Resmi Tim
+                  Email Kontak Tim
                 </label>
                 <FieldBadge required={false} visibility="P" />
               </div>
@@ -718,7 +718,7 @@ export function DynamicEntityFields({
                 type="email"
                 value={attributes.team_email || ""}
                 onChange={(e) => onChange("team_email", e.target.value)}
-                placeholder="official@tim.com"
+                placeholder="kontak@tim.com"
                 maxLength={100}
                 className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none"
               />
@@ -729,7 +729,7 @@ export function DynamicEntityFields({
           <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center gap-2.5 text-xs text-white/50">
             <Info className="w-4 h-4 text-[#D4AF37] shrink-0" />
             <span className="text-[11px] leading-relaxed">
-              <strong>Catatan Roster:</strong> Daftar atlet tim tidak diisi di sini. Roster resmi dibentuk setelah kartu tim terbit melalui kirim undangan atau terima permintaan bergabung.
+              <strong>Catatan Roster:</strong> Daftar atlet tim tidak diisi di sini. Roster terdaftar dibentuk setelah kartu tim terbit melalui kirim undangan atau terima permintaan bergabung.
             </span>
           </div>
         </>
@@ -1085,7 +1085,7 @@ export function DynamicEntityFields({
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
-                WhatsApp Resmi UKM
+                WhatsApp Kontak UKM
               </label>
               <FieldBadge required={true} visibility="P" />
             </div>

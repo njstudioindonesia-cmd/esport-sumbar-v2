@@ -149,7 +149,7 @@ export const MOCK_REGIONAL_QUEUE: VerificationQueueItem[] = [
     documents: [
       {
         type: "akta_klub",
-        title: "Surat Keputusan Pengesahan Anggaran Dasar Klub ESPORT SUMBAR",
+        title: "Surat Keputusan Anggaran Dasar Klub ESPORT SUMBAR",
         url: "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=600&auto=format&fit=crop",
         submittedAt: "14 Feb 2026",
         fileSize: "3.2 MB",
@@ -395,7 +395,7 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
       name: "Admin Wilayah Padang #01",
       role: "Komunitas Esport Wilayah Kota Padang",
       approvedAt: "03 Mar 2026, 17:00 WIB",
-      notes: "Akta pendirian klub, domisili sekretariat di Padang Barat, dan daftar 5 pemain inti lengkap. Siap pengesahan emas.",
+      notes: "Akta pendirian klub, domisili sekretariat di Padang Barat, dan daftar 5 pemain inti lengkap. Siap verifikasi tier emas.",
     },
     documents: [
       {
@@ -407,7 +407,7 @@ export const MOCK_PROVINCE_QUEUE: VerificationQueueItem[] = [
       },
       {
         type: "legalitas_organisasi",
-        title: "Sertifikat Registrasi Resmi ESPORT SUMBAR",
+        title: "Sertifikat Registrasi Terverifikasi ESPORT SUMBAR",
         url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=600&auto=format&fit=crop",
         submittedAt: "03 Mar 2026",
         fileSize: "1.3 MB",
@@ -498,7 +498,7 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
     targetId: "ESB-PDG-PL-000003",
     targetName: "Rizky 'Kaba' Ramadhan",
     targetType: "Player",
-    reason: "Pengesahan resmi verifikasi ESPORT SUMBAR. Nomor Registrasi: ESP-SB-VER-2026-0038 diterbitkan.",
+    reason: "Persetujuan verifikasi profil ESPORT SUMBAR. Nomor Registrasi: ESP-SB-VER-2026-0038 diterbitkan.",
     logHash: "sha256:d89ef12ab34567890abcdef1234567890abcdef1234567890abcdef123456789",
   },
   {
@@ -524,7 +524,7 @@ export const MOCK_PROVINCE_LOGS: ActivityLogItem[] = [
     targetId: "ESB-BKT-TM-000002",
     targetName: "Bukittinggi Cyber Esports",
     targetType: "Team",
-    reason: "Pengesahan klub esport binaan ESPORT SUMBAR. Masa berlaku 12 bulan (Maret 2027).",
+    reason: "Pendaftaran klub esport binaan ESPORT SUMBAR. Masa berlaku 12 bulan (Maret 2027).",
     logHash: "sha256:11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff",
   },
   {

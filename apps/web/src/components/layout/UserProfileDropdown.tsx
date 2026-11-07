@@ -51,7 +51,7 @@ export function UserProfileDropdown({ isMobileDrawer = false, onClose }: UserPro
   const [activeProfileId, setActiveProfileId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Muat data profil resmi dari endpoint /api/me/profiles
+  // Muat data profil pengguna dari endpoint /api/me/profiles
   useEffect(() => {
     let isMounted = true;
     async function loadData() {

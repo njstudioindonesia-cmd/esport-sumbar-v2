@@ -26,7 +26,7 @@ const BRAND_HEADER = `
 const BRAND_FOOTER = `
 <div style="background-color: #0b0f17; padding: 20px; text-align: center; border-top: 1px solid #1e293b; margin-top: 32px;">
   <p style="color: #64748b; font-size: 12px; margin: 0; line-height: 1.6;">
-    Pemberitahuan resmi dikirim secara otomatis oleh sistem <strong>ESPORT SUMBAR</strong>.<br />
+    Pemberitahuan dikirim secara otomatis oleh sistem <strong>ESPORT SUMBAR</strong>.<br />
     ESPORT SUMBAR merupakan pemilik dan pengelola tunggal platform ini.<br />
     Hak Cipta &copy; 2026 ESPORT SUMBAR. Seluruh hak cipta dilindungi undang-undang.
   </p>
@@ -64,7 +64,7 @@ export function renderVerificationApprovedEmail(params: {
   profileUrl: string;
 }): EmailTemplateResult {
   const subject = `Selamat! Verifikasi Profil Anda Disetujui - ESPORT SUMBAR`;
-  const text = `Halo ${params.recipientName},\n\nSelamat! Pengajuan verifikasi profil Anda telah resmi DISETUJUI oleh Tim Verifikator ESPORT SUMBAR.\n\nNomor Verifikasi Resmi: ${params.badgeNo}\nID ESPORT SUMBAR: ${params.esportId}\n\nProfil Anda kini bertanda Centang Biru Resmi (Verified) di direktori publik ESPORT SUMBAR.\nLihat profil: ${params.profileUrl}\n\nSalam hormat,\nTim ESPORT SUMBAR`;
+  const text = `Halo ${params.recipientName},\n\nSelamat! Pengajuan verifikasi profil Anda telah DISETUJUI oleh Tim Verifikator ESPORT SUMBAR.\n\nNomor Registrasi Verifikasi: ${params.badgeNo}\nID ESPORT SUMBAR: ${params.esportId}\n\nProfil Anda kini bertanda Terverifikasi (Verified) di direktori publik ESPORT SUMBAR.\nLihat profil: ${params.profileUrl}\n\nSalam hormat,\nTim ESPORT SUMBAR`;
 
   const html = wrapEmailBody(`
     <div style="text-align: center; margin-bottom: 24px;">
@@ -78,15 +78,15 @@ export function renderVerificationApprovedEmail(params: {
     <div style="background-color: #1e293b; padding: 20px; border-radius: 6px; margin: 24px 0; border-left: 4px solid #D4AF37;">
       <p style="margin: 0 0 8px 0; font-size: 13px; color: #94a3b8;">Nomor Registrasi Verifikasi:</p>
       <p style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #D4AF37; font-family: monospace;">${params.badgeNo}</p>
-      <p style="margin: 0 0 8px 0; font-size: 13px; color: #94a3b8;">ID Resmi Atlet/Entitas:</p>
+      <p style="margin: 0 0 8px 0; font-size: 13px; color: #94a3b8;">ID ESPORT SUMBAR:</p>
       <p style="margin: 0; font-size: 16px; font-weight: 600; color: #ffffff; font-family: monospace;">${params.esportId}</p>
     </div>
 
-    <p style="color: #cbd5e1;">Lencana verifikasi resmi kini aktif pada kartu dan profil publik Anda di seluruh jaringan ekosistem Sumatera Barat.</p>
+    <p style="color: #cbd5e1;">Lencana verifikasi kini aktif pada kartu dan profil publik Anda di seluruh jaringan ekosistem Sumatera Barat.</p>
     
     <div style="text-align: center; margin-top: 32px;">
       <a href="${params.profileUrl}" style="background-color: #D4AF37; color: #000000; padding: 12px 28px; text-decoration: none; font-weight: 700; border-radius: 6px; display: inline-block;">
-        Lihat Kartu & Profil Resmi
+        Lihat Kartu & Profil
       </a>
     </div>
   `);
@@ -154,7 +154,7 @@ export function renderRelationRequestedEmail(params: {
       <p style="margin: 0; font-size: 14px; font-weight: 600; color: #D4AF37;">${params.relationType}</p>
     </div>
 
-    <p style="color: #cbd5e1;">Kemitraan ini akan tampil pada profil kedua entitas di direktori resmi setelah Anda memberikan persetujuan.</p>
+    <p style="color: #cbd5e1;">Kemitraan ini akan tampil pada profil kedua entitas di direktori publik setelah Anda memberikan persetujuan.</p>
     
     <div style="text-align: center; margin-top: 32px;">
       <a href="${params.confirmUrl}" style="background-color: #D4AF37; color: #000000; padding: 12px 28px; text-decoration: none; font-weight: 700; border-radius: 6px; display: inline-block;">
@@ -176,11 +176,11 @@ export function renderRelationApprovedEmail(params: {
   profileUrl: string;
 }): EmailTemplateResult {
   const subject = `Kemitraan Ekosistem dengan ${params.partnerName} Telah Aktif - ESPORT SUMBAR`;
-  const text = `Halo ${params.recipientName},\n\nKemitraan ekosistem Anda dengan ${params.partnerName} (${params.relationType}) telah resmi DISETUJUI dan aktif.\n\nLihat profil ekosistem: ${params.profileUrl}\n\nSalam hormat,\nTim ESPORT SUMBAR`;
+  const text = `Halo ${params.recipientName},\n\nKemitraan ekosistem Anda dengan ${params.partnerName} (${params.relationType}) telah DISETUJUI dan aktif.\n\nLihat profil ekosistem: ${params.profileUrl}\n\nSalam hormat,\nTim ESPORT SUMBAR`;
 
   const html = wrapEmailBody(`
     <h2 style="color: #ffffff; font-size: 18px; margin-top: 0;">Halo ${params.recipientName},</h2>
-    <p style="color: #cbd5e1;">Kemitraan ekosistem Anda telah resmi terhubung:</p>
+    <p style="color: #cbd5e1;">Kemitraan ekosistem Anda telah terhubung:</p>
     
     <div style="background-color: #1e293b; padding: 20px; border-radius: 6px; margin: 24px 0; border-left: 4px solid #22c55e;">
       <p style="margin: 0 0 6px 0; font-size: 13px; color: #94a3b8;">Mitra Ekosistem:</p>
@@ -189,7 +189,7 @@ export function renderRelationApprovedEmail(params: {
       <p style="margin: 0; font-size: 14px; font-weight: 600; color: #22c55e;">AKTIF & TERHUBUNG</p>
     </div>
 
-    <p style="color: #cbd5e1;">Hubungan resmi ini kini memperkuat reputasi dan keterhubungan Anda dalam ekosistem Sumatera Barat.</p>
+    <p style="color: #cbd5e1;">Kemitraan ini kini memperkuat reputasi dan keterhubungan Anda dalam ekosistem Sumatera Barat.</p>
     
     <div style="text-align: center; margin-top: 32px;">
       <a href="${params.profileUrl}" style="background-color: #D4AF37; color: #000000; padding: 12px 28px; text-decoration: none; font-weight: 700; border-radius: 6px; display: inline-block;">
@@ -237,7 +237,7 @@ export function buildInAppNotification(
     case "verification_approved":
       return {
         title: "Verifikasi Profil Disetujui!",
-        body: `Selamat! Profil Anda telah resmi diverifikasi oleh Tim ESPORT SUMBAR dengan nomor ${data.badgeNo || ""}.`,
+        body: `Selamat! Profil Anda telah diverifikasi oleh Tim ESPORT SUMBAR dengan nomor ${data.badgeNo || ""}.`,
         actionUrl: data.profileUrl || "/me/cards",
       };
     case "verification_revision":

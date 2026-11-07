@@ -39,7 +39,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
     if (typeof navigator !== "undefined" && navigator.share) {
       navigator.share({
         title: `${profile.displayName} - ESPORT SUMBAR`,
-        text: `Lihat kartu identitas esport resmi: ${profile.displayName} (${profile.esportId})`,
+        text: `Lihat kartu identitas esport: ${profile.displayName} (${profile.esportId})`,
         url: profileUrl,
       }).catch(() => {});
     } else {
@@ -144,7 +144,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
             </div>
 
             <p className="text-[11px] text-white/60 mb-4">
-              Pindai kode QR untuk membuka verifikasi kartu resmi di portal esport Sumatera Barat.
+              Pindai kode QR untuk membuka verifikasi kartu di portal ESPORT SUMBAR.
             </p>
 
             <button
@@ -249,7 +249,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
 }
 
 /**
- * Status Lencana Verifikasi Resmi ESPORT SUMBAR (Terpisah dari Tier Rarity)
+ * Status Lencana Verifikasi ESPORT SUMBAR (Terpisah dari Tier Rarity)
  */
 export function VerificationStatusBadge({ status, badgeNo }: { status: string; badgeNo?: string | null }) {
   if (status === "verified") {

@@ -152,12 +152,12 @@ export function ProfileEcosystemSection({
 
     return (
       <div className="flex flex-col gap-6">
-        {/* Tim Resmi */}
+        {/* Tim Terdaftar */}
         <div>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xs font-heading font-black uppercase text-amber-300 flex items-center gap-2">
               <Users className="w-4 h-4 text-amber-400" />
-              <span>Klub / Tim Resmi ({teams.length}/3)</span>
+              <span>Klub / Tim ({teams.length}/3)</span>
             </h3>
             {isOwner && (
               <Link
@@ -170,11 +170,11 @@ export function ProfileEcosystemSection({
           </div>
           {teams.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {teams.map((t) => renderRelationCard(t, "Roster Resmi Tim"))}
+              {teams.map((t) => renderRelationCard(t, "Roster Tim"))}
             </div>
           ) : (
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] text-xs text-white/40">
-              Saat ini berstatus <strong className="text-white">Free Agent</strong> (Belum terdaftar di tim resmi).
+              Saat ini berstatus <strong className="text-white">Free Agent</strong> (Belum terdaftar di tim).
             </div>
           )}
         </div>
@@ -261,7 +261,7 @@ export function ProfileEcosystemSection({
           )}
         </div>
 
-        {/* Pelatih Resmi */}
+        {/* Pelatih */}
         <div>
           <h3 className="text-xs font-heading font-black uppercase text-purple-300 flex items-center gap-2 mb-3">
             <Award className="w-4 h-4 text-purple-400" />
@@ -269,7 +269,7 @@ export function ProfileEcosystemSection({
           </h3>
           {coaches.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {coaches.map((c) => renderRelationCard(c, "Pelatih Resmi"))}
+              {coaches.map((c) => renderRelationCard(c, "Pelatih Tim"))}
             </div>
           ) : (
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] text-xs text-white/40">
@@ -343,7 +343,7 @@ export function ProfileEcosystemSection({
             </div>
           ) : (
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] text-xs text-white/40">
-              Belum terhubung dengan klub resmi.
+              Belum terhubung dengan klub binaan.
             </div>
           )}
         </div>
@@ -398,13 +398,13 @@ export function ProfileEcosystemSection({
           <div>
             <h3 className="text-xs font-heading font-black uppercase text-fuchsia-300 flex items-center gap-2 mb-3">
               <Building2 className="w-4 h-4 text-fuchsia-400" />
-              <span>Markas Resmi ({markas.length}/3)</span>
+              <span>Markas ({markas.length}/3)</span>
             </h3>
             {markas.length > 0 ? (
               markas.map((m) => renderRelationCard(m, "Sentra Latihan & Kumpul"))
             ) : (
               <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] text-xs text-white/40">
-                Belum menentukan venue markas resmi.
+                Belum menentukan venue markas.
               </div>
             )}
           </div>
@@ -463,7 +463,7 @@ export function ProfileEcosystemSection({
             </div>
           ) : (
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.05] text-xs text-white/40">
-              Belum ada tim yang mendaftarkan venue ini sebagai basecamp resmi.
+              Belum ada tim yang mendaftarkan venue ini sebagai basecamp.
             </div>
           )}
         </div>
@@ -526,7 +526,7 @@ export function ProfileEcosystemSection({
       <div>
         <h3 className="text-xs font-heading font-black uppercase text-amber-300 flex items-center gap-2 mb-3">
           <Gamepad2 className="w-4 h-4 text-amber-400" />
-          <span>Tim Perwakilan Resmi ({teams.length})</span>
+          <span>Tim Perwakilan ({teams.length})</span>
         </h3>
         {teams.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -544,7 +544,7 @@ export function ProfileEcosystemSection({
         <div>
           <h3 className="text-xs font-heading font-black uppercase text-purple-300 flex items-center gap-2 mb-3">
             <Award className="w-4 h-4 text-purple-400" />
-            <span>Pelatih & Pembina Resmi ({coaches.length})</span>
+            <span>Pelatih & Pembina ({coaches.length})</span>
           </h3>
           {coaches.length > 0 ? (
             coaches.map((c) => renderRelationCard(c, "Pembina Terverifikasi"))

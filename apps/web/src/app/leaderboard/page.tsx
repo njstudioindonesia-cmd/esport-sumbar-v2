@@ -58,7 +58,7 @@ export default function LeaderboardPage() {
               Klasemen Sirkuit Belum Berjalan
             </h3>
             <p className="text-xs text-white/50 max-w-md mt-1 leading-relaxed">
-              Akumulasi poin sirkuit tim se-Sumatera Barat akan diperbarui secara otomatis setelah turnamen resmi perdana musim kompetisi 2026 selesai diselenggarakan oleh ESPORT SUMBAR &amp; Wilayah daerah.
+              Akumulasi poin sirkuit tim se-Sumatera Barat akan diperbarui secara otomatis setelah turnamen perdana musim kompetisi 2026 selesai diselenggarakan oleh ESPORT SUMBAR &amp; komunitas daerah.
             </p>
           </div>
         ) : (
@@ -145,10 +145,10 @@ export default function LeaderboardPage() {
                 <tr className="border-b border-[#262B38] bg-[#161B24] text-[10px] font-mono text-[#9AA3B2] uppercase tracking-wider">
                   <th className="py-3 px-4 text-center w-16">Rank</th>
                   <th className="py-3 px-4">Nama Tim / Klub</th>
-                  <th className="py-3 px-4">Wilayah ESI</th>
+                  <th className="py-3 px-4">Wilayah Asal</th>
                   <th className="py-3 px-4">Divisi Utama</th>
                   <th className="py-3 px-4 text-center">Medali (E / P / P)</th>
-                  <th className="py-3 px-4 text-right">Poin Resmi</th>
+                  <th className="py-3 px-4 text-right">Poin Sirkuit</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#262B38] text-xs">

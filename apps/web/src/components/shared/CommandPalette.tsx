@@ -81,7 +81,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       id: "nav-how",
       category: "Navigasi",
       title: "Cara Kerja & Regulasi",
-      subtitle: "Panduan tier rarity & verifikasi resmi",
+      subtitle: "Panduan tier rarity & verifikasi platform",
       href: "/how-it-works",
       icon: HelpCircle,
     },

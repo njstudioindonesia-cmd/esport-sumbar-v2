@@ -67,7 +67,7 @@ export const MOCK_TOURNAMENTS: TournamentItem[] = [
     startDate: "20 Mei 2026",
     endDate: "24 Mei 2026",
     status: "berlangsung",
-    organizer: "ESPORT SUMBAR Official",
+    organizer: "ESPORT SUMBAR",
     isOfficial: true,
     rulesSummary: "Sistem Single Elimination BO3 hingga Semifinal, Grand Finals BO5. Wajib menyertakan kartu verifikasi ESPORT ID aktif untuk seluruh roster.",
     matches: [
@@ -161,7 +161,7 @@ export const MOCK_TOURNAMENTS: TournamentItem[] = [
     status: "pendaftaran",
     organizer: "Komunitas Esport Kota Padang x Dinas Pendidikan",
     isOfficial: true,
-    rulesSummary: "Khusus pelajar SMA/SMK se-Kota Padang dengan izin orang tua / wali sah sesuai UU PDP. Format Battle Royale 6 Match per Day.",
+    rulesSummary: "Khusus pelajar SMA/SMK se-Kota Padang dengan izin orang tua / wali. Format Battle Royale 6 Match per Day.",
     matches: [],
   },
   {

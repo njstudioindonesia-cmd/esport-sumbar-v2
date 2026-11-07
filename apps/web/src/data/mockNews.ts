@@ -27,12 +27,12 @@ export const MOCK_NEWS: Article[] = [
     title:
       "ESPORT SUMBAR Umumkan Pemusatan Latihan Terpusat Atlet Menuju Kualifikasi Nasional 2026",
     excerpt:
-      "ESPORT SUMBAR secara resmi membuka agenda pemusatan latihan atlet esports terverifikasi dari 19 Kota dan Kabupaten, mengintegrasikan data rekam jejak digital ESPORT ID sebagai tolok ukur pembinaan mandiri.",
+      "ESPORT SUMBAR membuka agenda pemusatan latihan atlet esports terverifikasi dari 19 Kota dan Kabupaten, mengintegrasikan data rekam jejak digital ESPORT ID sebagai tolok ukur pembinaan mandiri.",
     content: [
-      "PADANG — ESPORT SUMBAR secara resmi mengumumkan pembukaan Pemusatan Latihan Terpusat (Puslatda) atlet esports dalam rangka persiapan menghadapi babak kualifikasi kejuaraan tingkat nasional 2026.",
-      "Langkah strategis ini menandai era baru tata kelola olahraga elektronik mandiri di Ranah Minang, di mana seluruh atlet yang dipanggil merupakan talenta yang telah memiliki identitas digital resmi (ESPORT ID) dan lolos verifikasi satu tahap langsung dari ESPORT SUMBAR.",
+      "PADANG — ESPORT SUMBAR mengumumkan pembukaan Pemusatan Latihan Terpusat (Puslatda) atlet esports dalam rangka persiapan menghadapi babak kualifikasi kejuaraan tingkat nasional 2026.",
+      "Langkah strategis ini menandai era baru tata kelola olahraga elektronik mandiri di Ranah Minang, di mana seluruh atlet yang dipanggil merupakan talenta yang telah memiliki identitas digital mandiri (ESPORT ID) dan lolos verifikasi satu tahap langsung dari ESPORT SUMBAR.",
       "Manajemen ESPORT SUMBAR menegaskan bahwa transparansi data menjadi kunci objektivitas pemilihan kontingen. 'Kita tidak lagi memilih atlet berdasarkan rekomendasi subjektif semata. Setiap atlet yang dipanggil memiliki rekam jejak prestasi digital yang terdata, tervalidasi, dan memiliki integritas rekam jejak yang jelas,' ungkap tim di Padang.",
-      "Pemusatan latihan ini mencakup nomor game resmi yang dipertandingkan, yaitu Honor of Kings (HOK), Mobile Legends: Bang Bang (MLBB), Free Fire, PUBG Mobile, Valorant, dan eFootball. Selain pelatihan mekanik dan taktik permainan, tim pelatih juga membekali atlet dengan analisis mental kompetisi, nutrisi, dan pemahaman regulasi anti-doping elektronik.",
+      "Pemusatan latihan ini mencakup cabang game yang dipertandingkan, yaitu Honor of Kings (HOK), Mobile Legends: Bang Bang (MLBB), Free Fire, PUBG Mobile, Valorant, dan eFootball. Selain pelatihan mekanik dan taktik permainan, tim pelatih juga membekali atlet dengan analisis mental kompetisi, nutrisi, dan pemahaman regulasi anti-doping elektronik.",
       "Diharapkan dengan pemanfaatan platform ESPORT SUMBAR sebagai satu sumber data tunggal (single source of truth), ekosistem esports di 19 kota dan kabupaten dapat terus melahirkan bibit-bibit juara yang siap mengharumkan nama Sumatera Barat di kancah nasional maupun internasional.",
     ],
     category: "Prestasi & Atlet",
@@ -50,9 +50,9 @@ export const MOCK_NEWS: Article[] = [
     title:
       "Piala Walikota Padang Esport: 64 Roster Pelajar Bertanding di GOR H. Agus Salim",
     excerpt:
-      "Ajang kompetisi pelajar tingkat SMP/SMA sederajat se-Kota Padang resmi dibuka dengan standar verifikasi atlet muda dan persetujuan wali.",
+      "Ajang kompetisi pelajar tingkat SMP/SMA sederajat se-Kota Padang dibuka dengan standar verifikasi atlet muda dan persetujuan wali.",
     content: [
-      "PADANG — Sebanyak 64 tim pelajar tingkat sekolah menengah pertama dan atas se-Kota Padang resmi berlaga dalam kejuaraan Piala Walikota Padang Esport 2026 yang berlangsung di kawasan GOR H. Agus Salim.",
+      "PADANG — Sebanyak 64 tim pelajar tingkat sekolah menengah pertama dan atas se-Kota Padang mulai berlaga dalam kejuaraan Piala Walikota Padang Esport 2026 yang berlangsung di kawasan GOR H. Agus Salim.",
       "Turnamen ini menarik perhatian luas karena menjadi kompetisi pelajar pertama di Sumatera Barat yang mengadopsi regulasi ketat perlindungan anak sesuai UU PDP. Setiap peserta di bawah usia 18 tahun diwajibkan menyertakan surat persetujuan orang tua/wali serta rekomendasi sekolah.",
       "Kategori yang dipertandingkan meliputi Honor of Kings, Free Fire, dan Mobile Legends. Selain memperebutkan piala bergilir dan beasiswa pembinaan, para juara turnamen ini secara otomatis mendapatkan peningkatan tier rarity ke Contender/Elite pada kartu identitas digital ESPORT ID mereka.",
     ],
@@ -70,11 +70,11 @@ export const MOCK_NEWS: Article[] = [
     title:
       "Sosialisasi Registrasi ESPORT ID Digelar di Bukittinggi & Payakumbuh",
     excerpt:
-      "Komunitas esport wilayah Bukittinggi dan Payakumbuh berkumpul untuk mendata atlet dan pelatih agar terdaftar secara resmi di pangkalan data terpusat ESPORT SUMBAR.",
+      "Komunitas esport wilayah Bukittinggi dan Payakumbuh berkumpul untuk mendata atlet dan pelatih agar terdaftar di pangkalan data terpusat ESPORT SUMBAR.",
     content: [
       "BUKITTINGGI — Komunitas Esport Wilayah Kota Bukittinggi dan Kota Payakumbuh menggelar lokakarya sosialisasi sistem registrasi ESPORT ID di Balai Sidang Bung Hatta.",
       "Kegiatan ini dihadiri oleh puluhan manajer tim, pemilik game house, pembina ekskul sekolah, serta perwakilan komunitas gamer dari kawasan Luak Agam dan Luak Limopuluah.",
-      "Perwakilan pengelola memaparkan alur pemeriksaan satu tahap langsung oleh ESPORT SUMBAR, di mana tim dan atlet yang terdata akan mendapatkan kartu digital resmi berstandar satu akun satu profil.",
+      "Perwakilan pengelola memaparkan alur pemeriksaan satu tahap langsung oleh ESPORT SUMBAR, di mana tim dan atlet yang terdata akan mendapatkan kartu digital berstandar satu akun satu profil.",
     ],
     category: "Tata Kelola",
     region: "Kota Bukittinggi",
@@ -112,8 +112,8 @@ export const MOCK_NEWS: Article[] = [
     excerpt:
       "Sebanyak 24 calon pelatih taktis dari berbagai daerah di Sumatera Barat dinyatakan lulus uji kompetensi kepelatihan.",
     content: [
-      "PADANG — ESPORT SUMBAR resmi menutup rangkaian program sertifikasi kepelatihan esport mandiri yang berlangsung selama tiga hari.",
-      "Para pelatih yang lulus kini tercatat secara resmi di database direktori ESPORT SUMBAR dengan kartu profil khusus Coach berlisensi.",
+      "PADANG — ESPORT SUMBAR menutup rangkaian program sertifikasi kepelatihan esport mandiri yang berlangsung selama tiga hari.",
+      "Para pelatih yang lulus kini tercatat di database direktori ESPORT SUMBAR dengan kartu profil khusus Coach berlisensi.",
     ],
     category: "Tata Kelola",
     region: "Sumatera Barat",

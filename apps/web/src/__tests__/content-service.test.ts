@@ -24,7 +24,7 @@ describe("Sub-langkah 7.5: Ekstraksi Layanan Konten & Berita (Content Service / 
   });
 
   describe("1. Alur Kerja Editorial (Editorial Workflow V3)", () => {
-    it("harus mengizinkan transisi status editorial yang sah", () => {
+    it("harus mengizinkan transisi status editorial yang valid", () => {
       expect(canTransitionArticle("draft", "editorial_review")).toBe(true);
       expect(canTransitionArticle("editorial_review", "published")).toBe(true);
       expect(canTransitionArticle("published", "archived")).toBe(true);
@@ -77,7 +77,7 @@ describe("Sub-langkah 7.5: Ekstraksi Layanan Konten & Berita (Content Service / 
         {
           title: "Pengumuman Pembukaan Pendaftaran Turnamen Valorant Sumbar",
           summary: "Informasi lengkap mengenai jadwal dan tata cara pendaftaran kualifikasi.",
-          content: "ESPORT SUMBAR secara resmi membuka pendaftaran kualifikasi terbuka bagi seluruh atlet dan tim.",
+          content: "ESPORT SUMBAR membuka pendaftaran kualifikasi terbuka bagi seluruh atlet dan tim.",
           category: "turnamen",
           tags: ["valorant", "turnamen", "padang"],
           status: "draft",
@@ -242,8 +242,8 @@ describe("Sub-langkah 7.5: Ekstraksi Layanan Konten & Berita (Content Service / 
     it("harus mempublikasikan artikel draft dan menetapkan publishedAt secara otomatis", async () => {
       const created = await createArticle(
         {
-          title: "Panduan Regulasi Turnamen Resmi",
-          content: "Regulasi kompetisi resmi yang disusun secara profesional oleh ESPORT SUMBAR.",
+          title: "Panduan Regulasi Turnamen",
+          content: "Regulasi kompetisi yang disusun secara profesional oleh ESPORT SUMBAR.",
           category: "pengumuman",
           status: "draft",
         },

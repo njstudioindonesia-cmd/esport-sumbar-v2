@@ -163,12 +163,12 @@ export function DesktopMembershipsView() {
   };
 
   const handleEndRelation = async (relationId: string, partnerName: string) => {
-    if (!confirm(`Apakah Anda yakin ingin mengakhiri relasi resmi dengan "${partnerName}"?`)) {
+    if (!confirm(`Apakah Anda yakin ingin mengakhiri relasi dengan "${partnerName}"?`)) {
       return;
     }
     const res = await endRelationAction(relationId);
     if (res.success) {
-      showToast(res.message || "Relasi telah resmi diakhiri.");
+      showToast(res.message || "Relasi telah diakhiri.");
       loadEcosystemData();
     } else {
       showToast(res.error || "Gagal mengakhiri relasi", true);
@@ -235,7 +235,7 @@ export function DesktopMembershipsView() {
             Ekosistem &amp; Keterhubungan Saya
           </h1>
           <p className="text-xs text-white/50 mt-1">
-            Kelola hubungan resmi profil Anda dengan Tim, Komunitas, Pelatih, Venue, Kampus, dan Sekolah.
+            Kelola hubungan profil Anda dengan Tim, Komunitas, Pelatih, Venue, Kampus, dan Sekolah.
           </p>
         </div>
 
@@ -329,7 +329,7 @@ export function DesktopMembershipsView() {
                     Belum ada hubungan ekosistem yang aktif.
                   </p>
                   <p className="text-xs text-white/40 max-w-md">
-                    Hubungkan profil Anda dengan Tim resmi, Komunitas binaan, atau Institusi pendidikan untuk meningkatkan tier rarity ke Contender.
+                    Hubungkan profil Anda dengan Tim terdaftar, Komunitas binaan, atau Institusi pendidikan untuk meningkatkan tier rarity ke Contender.
                   </p>
                   <button
                     onClick={handleOpenConnectModal}
@@ -554,7 +554,7 @@ export function DesktopMembershipsView() {
                     Hubungkan Profil ke Ekosistem
                   </h3>
                   <span className="text-xs font-mono text-white/50">
-                    Target hanya yang sah menurut aturan ekosistem
+                    Target sesuai matriks aturan ekosistem
                   </span>
                 </div>
               </div>
@@ -567,10 +567,10 @@ export function DesktopMembershipsView() {
             </div>
 
             <form onSubmit={handleSubmitConnect} className="p-6 overflow-y-auto flex-1 flex flex-col gap-4 text-xs font-mono">
-              {/* 1. PILIH ATURAN TARGET YANG SAH */}
+              {/* 1. PILIH ATURAN TARGET EKOSISTEM */}
               <div>
                 <label className="text-white/60 mb-1.5 block uppercase text-[10px]">
-                  1. Pilih Jenis Hubungan Sah *
+                  1. Pilih Jenis Hubungan Ekosistem *
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {rules.map((rule) => {

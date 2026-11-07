@@ -199,7 +199,7 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
               <div className="flex flex-col gap-1.5">
                 <h3 className="text-lg font-heading font-black text-white">Periksa Email Anda</h3>
                 <p className="text-xs text-white/70 leading-relaxed">
-                  Kami telah mengirimkan tautan aktivasi ke <span className="text-[#D4AF37] font-semibold">{email}</span>. Silakan buka email Anda dan klik tautan aktivasi untuk membuat kartu atlet resmi.
+                  Kami telah mengirimkan tautan aktivasi ke <span className="text-[#D4AF37] font-semibold">{email}</span>. Silakan buka email Anda dan klik tautan aktivasi untuk membuat kartu atlet digital.
                 </p>
               </div>
               <button
@@ -433,7 +433,7 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
                     <UserCheck className="w-4 h-4" />
                   </div>
                   <span className="text-xs text-white/80 font-medium">
-                    ESPORT ID Resmi Non-KTP
+                    ESPORT ID Digital Non-KTP
                   </span>
                 </div>
 

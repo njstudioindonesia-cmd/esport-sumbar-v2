@@ -1,7 +1,7 @@
 /**
  * Alur Kerja Editorial Berita & Pengumuman (Editorial Workflow V3)
  * Menegakkan transisi status editorial (draft -> editorial_review -> published -> archived)
- * dan otorisasi platform_admin untuk publikasi resmi ESPORT SUMBAR.
+ * dan otorisasi platform_admin untuk publikasi artikel ESPORT SUMBAR.
  */
 
 import { ArticleStatus } from "@esport-sumbar/contracts";
@@ -15,7 +15,7 @@ export const VALID_EDITORIAL_TRANSITIONS: Record<ArticleStatus, ArticleStatus[]>
 };
 
 /**
- * Memeriksa apakah transisi editorial dari status lama ke status baru sah
+ * Memeriksa apakah transisi editorial dari status lama ke status baru valid
  */
 export function canTransitionArticle(
   from: ArticleStatus,

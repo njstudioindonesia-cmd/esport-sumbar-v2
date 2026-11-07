@@ -174,9 +174,9 @@ export function CoachProfileTemplate({ profile }: { profile: UnifiedProfileDetai
           <div className="min-h-[160px]">
             {activeTab === "summary" && (
               <div className="p-4 rounded-2xl bg-[#12151F] border border-white/[0.06] text-xs text-white/70">
-                <span className="font-semibold text-white block mb-1">Kredensial Resmi:</span>
+                <span className="font-semibold text-white block mb-1">Kredensial Kepelatihan:</span>
                 <p>
-                  Pelatih berlisensi dan terafiliasi dengan Wilayah ESPORT SUMBAR {profile.regionName}. Terdaftar aktif dalam pembinaan atlet esport daerah.
+                  Pelatih terverifikasi dan terafiliasi dengan Wilayah ESPORT SUMBAR {profile.regionName}. Terdaftar aktif dalam pembinaan atlet esport daerah.
                 </p>
               </div>
             )}

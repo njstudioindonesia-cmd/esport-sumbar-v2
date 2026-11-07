@@ -106,7 +106,7 @@ export function DesktopVerificationView() {
       {
         id: 3,
         name: "Lencana Terverifikasi",
-        date: isVerified ? "Aktif (Tersertifikasi)" : "Menunggu Selesai",
+        date: isVerified ? "Aktif (Terverifikasi)" : "Menunggu Selesai",
         status: isVerified ? "completed" : "upcoming",
       },
     ];
@@ -121,7 +121,7 @@ export function DesktopVerificationView() {
         {
           id: "legalitas_tim",
           title: "Surat Keputusan / Legalitas Tim",
-          desc: "Akta pendirian klub, SK kepengurusan tim, atau surat keterangan manajemen resmi.",
+          desc: "Akta pendirian klub, SK kepengurusan tim, atau surat keterangan manajemen.",
           defaultFile: "sk_kepengurusan_klub.pdf",
         },
         {
@@ -133,7 +133,7 @@ export function DesktopVerificationView() {
         {
           id: "prestasi_tim",
           title: "Piagam Prestasi Turnamen Tim",
-          desc: "Sertifikat juara turnamen resmi atau piagam kejuaraan yang pernah diikuti.",
+          desc: "Sertifikat juara turnamen atau piagam kejuaraan yang pernah diikuti.",
           defaultFile: "portofolio_kejuaraan_tim.pdf",
         },
       ];
@@ -143,7 +143,7 @@ export function DesktopVerificationView() {
         {
           id: "sk_sekolah",
           title: "Surat Keterangan Sekolah / Kampus",
-          desc: "SK Kepala Sekolah / Dekan pengesahan Ekstrakurikuler atau UKM Esport resmi.",
+          desc: "SK Kepala Sekolah / Dekan penetapan Ekstrakurikuler atau UKM Esport.",
           defaultFile: "sk_ekstrakurikuler_esport.pdf",
         },
         {
@@ -155,7 +155,7 @@ export function DesktopVerificationView() {
         {
           id: "surat_pembina",
           title: "Surat Mandat Guru Pembina",
-          desc: "Penunjukan guru pendamping / pembina resmi perwakilan sekolah.",
+          desc: "Penunjukan guru pendamping / pembina perwakilan sekolah.",
           defaultFile: "surat_mandat_guru_pembina.pdf",
         },
       ];
@@ -248,7 +248,7 @@ export function DesktopVerificationView() {
         body: JSON.stringify({
           profileId: profile.id,
           regionId: profile.regionId,
-          notes: userNotes || `Pengajuan verifikasi resmi entitas ${profile.entityType} untuk ${profile.displayName}.`,
+          notes: userNotes || `Pengajuan verifikasi entitas ${profile.entityType} untuk ${profile.displayName}.`,
           evidenceFiles: payloadFiles,
         }),
       });
@@ -258,7 +258,7 @@ export function DesktopVerificationView() {
         throw new Error(errJson.error || "Gagal mengirim berkas verifikasi");
       }
 
-      setSubmitSuccess("Berkas verifikasi resmi berhasil dikirimkan ke antrean Komunitas Esport!");
+      setSubmitSuccess("Berkas verifikasi berhasil dikirimkan ke antrean Komunitas Esport!");
       await loadVerificationData();
     } catch (err: any) {
       setSubmitError(err.message || "Terjadi kesalahan saat mengajukan verifikasi.");
@@ -307,7 +307,7 @@ export function DesktopVerificationView() {
             </span>
           </div>
           <h1 className="text-2xl font-heading font-black text-white tracking-tight">
-            Status Verifikasi Resmi: {profile.displayName}
+            Status Verifikasi: {profile.displayName}
           </h1>
           <p className="text-xs text-white/50 mt-1">
             Pelacakan validasi berjenjang oleh Wilayah Kota/Kabupaten dan ESPORT SUMBAR.
@@ -318,7 +318,7 @@ export function DesktopVerificationView() {
           <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
           <span>
             {status === "verified"
-              ? "TERVERIFIKASI RESMI ESPORT SUMBAR"
+              ? "TERVERIFIKASI ESPORT SUMBAR"
               : status === "revision_requested"
               ? "PERLU REVISI DOKUMEN"
               : status === "submitted" || status === "in_review_regional"
@@ -426,7 +426,7 @@ export function DesktopVerificationView() {
                 </span>
               </div>
               <p className="text-xs text-white/80 leading-relaxed mt-1 max-w-2xl">
-                {request?.notes || "Mohon perbarui atau lengkapi berkas identitas resmi Anda agar dapat disahkan."}
+                {request?.notes || "Mohon perbarui atau lengkapi berkas identitas Anda agar dapat diverifikasi."}
               </p>
             </div>
           </div>
@@ -449,17 +449,17 @@ export function DesktopVerificationView() {
           <Sparkles className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-1 leading-relaxed">
             <span className="font-heading font-black uppercase text-white text-sm">
-              Ajukan Verifikasi Resmi ESPORT SUMBAR {profile.regionName}
+              Ajukan Verifikasi ESPORT SUMBAR {profile.regionName}
             </span>
             <span>
-              Sebagai entitas <strong>{entityType.toUpperCase()}</strong> terdaftar ({profile.displayName}), Anda berhak memperoleh lisensi dan lencana keabsahan resmi dari ESPORT SUMBAR. Unggah dokumen pendukung di bawah ini untuk diverifikasi langsung oleh Pengurus Cabang Anda.
+              Sebagai entitas <strong>{entityType.toUpperCase()}</strong> terdaftar ({profile.displayName}), Anda berhak memperoleh lisensi dan lencana verifikasi dari ESPORT SUMBAR. Unggah dokumen pendukung di bawah ini untuk diverifikasi langsung oleh tim platform wilayah Anda.
             </span>
           </div>
         </div>
       )}
 
       {/* ========================================================= */}
-      {/* 3. DUA KOLOM: TILE BUKTI & INFORMASI STATUS RESMI          */}
+      {/* 3. DUA KOLOM: TILE BUKTI & INFORMASI STATUS VERIFIKASI     */}
       {/* ========================================================= */}
       <div className="grid grid-cols-12 gap-8 items-start">
         {/* KOLOM KIRI (8 COLS): DOKUMEN BUKTI SESUAI ENTITAS */}
@@ -580,7 +580,7 @@ export function DesktopVerificationView() {
               <textarea
                 value={userNotes}
                 onChange={(e) => setUserNotes(e.target.value)}
-                placeholder="Tuliskan keterangan tambahan untuk pengurus cabang (misal: portofolio turnamen, nomor kontak manajer, dll)..."
+                placeholder="Tuliskan keterangan tambahan untuk tim verifikator (misal: portofolio turnamen, nomor kontak manajer, dll)..."
                 className="w-full h-24 p-4 rounded-2xl bg-[#161A24] border border-white/10 text-xs text-white placeholder-white/30 focus:border-[#D4AF37] outline-none resize-none font-sans"
               />
 

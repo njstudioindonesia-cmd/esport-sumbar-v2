@@ -48,7 +48,7 @@ describe("Sub-langkah 7.7: BFF & Eliminasi Akses Langsung Database dari Web", ()
 
       const result = verifyServiceToken(tamperedToken);
       expect(result.valid).toBe(false);
-      expect(result.error).toMatch(/tidak sah|signature mismatch|rusak/i);
+      expect(result.error).toMatch(/tidak valid|signature mismatch|rusak/i);
     });
 
     it("menolak token yang kedaluwarsa (expired token rejection)", () => {
@@ -63,7 +63,7 @@ describe("Sub-langkah 7.7: BFF & Eliminasi Akses Langsung Database dari Web", ()
       const token = issueServiceToken("directory-service", ["directory:read"], 300, "secret-a");
       const result = verifyServiceToken(token, "secret-b");
       expect(result.valid).toBe(false);
-      expect(result.error).toMatch(/tidak sah|signature mismatch/i);
+      expect(result.error).toMatch(/tidak valid|signature mismatch/i);
     });
   });
 
@@ -122,14 +122,14 @@ describe("Sub-langkah 7.7: BFF & Eliminasi Akses Langsung Database dari Web", ()
   // 3. UJI CORS KETAT (STRICT CORS & PREFLIGHT)
   // =========================================================================
   describe("Strict CORS Policy", () => {
-    it("mengenali origin yang sah dan menolak origin sembarangan", () => {
+    it("mengenali origin yang valid dan menolak origin sembarangan", () => {
       expect(isOriginAllowed("http://localhost:3000")).toBe(true);
       expect(isOriginAllowed("http://127.0.0.1:3000")).toBe(true);
       expect(isOriginAllowed("https://hacker-site.evil.com")).toBe(false);
       expect(isOriginAllowed(null)).toBe(false);
     });
 
-    it("menerapkan header CORS khusus origin sah tanpa menggunakan wildcard '*'", () => {
+    it("menerapkan header CORS khusus origin terdaftar tanpa menggunakan wildcard '*'", () => {
       const req = new NextRequest("http://localhost:3000/api/games", {
         headers: { origin: "http://localhost:3000" },
       });
@@ -151,7 +151,7 @@ describe("Sub-langkah 7.7: BFF & Eliminasi Akses Langsung Database dari Web", ()
       expect(modifiedRes.headers.get("Access-Control-Allow-Origin")).toBeNull();
     });
 
-    it("menangani preflight OPTIONS dengan status 204 No Content untuk origin sah", () => {
+    it("menangani preflight OPTIONS dengan status 204 No Content untuk origin terdaftar", () => {
       const preflightReq = new NextRequest("http://localhost:3000/api/admin/games", {
         method: "OPTIONS",
         headers: { origin: "http://localhost:3000" },

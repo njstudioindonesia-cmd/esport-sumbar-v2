@@ -283,7 +283,7 @@ export function MobileCardWallet() {
       <div>
         <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Paspor</h3>
         <p className="text-xs text-white/50 max-w-xs mt-1 leading-relaxed">
-          Anda belum memiliki kartu paspor digital resmi ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan identitas esport resmi.
+          Anda belum memiliki kartu paspor digital ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan identitas esport Anda.
         </p>
       </div>
       <Link
@@ -484,7 +484,7 @@ export function MobileCardWallet() {
               <div className="flex flex-col gap-2.5">
                 {[
                   "Profil dasar & domisili lengkap",
-                  "Minimal 2 turnamen resmi terdata",
+                  "Minimal 2 turnamen terdata",
                   "Rating OVR berada di kelas Contender (75-84)",
                 ].map((crit, idx) => (
                   <div key={idx} className="flex items-center gap-2.5 text-xs text-white/80">

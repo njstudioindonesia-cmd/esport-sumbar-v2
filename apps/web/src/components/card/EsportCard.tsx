@@ -78,7 +78,7 @@ const RARITY_CONFIG: Record<
     badgeBg: "bg-gradient-to-r from-[#996515] via-[#D4AF37] to-[#FFA751]",
     badgeText: "text-[#12151C] font-extrabold",
     glowColor: "rgba(212, 175, 55, 0.6)",
-    accentGlow: "from-[#D4AF37]/25 via-[#C8102E]/10 to-transparent",
+    accentGlow: "from-[#D4AF37]/25 via-[#D4AF37]/10 to-transparent",
     bgGradient: "from-[#1E1A11] via-[#12151C] to-[#0E1015]",
   },
   legend: {
@@ -634,7 +634,7 @@ export function EsportCard({
                       </div>
                     ) : (
                       <p className="text-[10px] text-[#9AA3B2] italic">
-                        Belum tersertifikasi resmi ESI.
+                        Belum ada sertifikasi tercatat.
                       </p>
                     )}
                   </div>
@@ -696,7 +696,7 @@ export function EsportCard({
                       </div>
                     ) : (
                       <p className="text-[10px] text-[#9AA3B2] italic">
-                        Belum ada prestasi resmi tercatat.
+                        Belum ada prestasi tercatat.
                       </p>
                     )}
                   </div>

@@ -161,7 +161,7 @@ export const ArticleArchivedEventSchema = z.object({
 export type ArticleArchivedEvent = z.infer<typeof ArticleArchivedEventSchema>;
 
 /**
- * Katalog Resmi Peristiwa Domain V3 (Domain Event Catalog)
+ * Katalog Baku Peristiwa Domain V3 (Domain Event Catalog)
  * Mendefinisikan setiap peristiwa, produsen, dan layanan konsumen asinkronnya.
  */
 export interface EventCatalogEntry {
@@ -246,7 +246,7 @@ export const DOMAIN_EVENT_CATALOG: Record<string, EventCatalogEntry> = {
   VerificationSubmitted: {
     eventName: "VerificationSubmitted",
     aggregateType: "verification",
-    description: "Berkas pengajuan verifikasi satu tahap resmi diajukan untuk ditinjau.",
+    description: "Berkas pengajuan verifikasi satu tahap telah diajukan untuk ditinjau.",
     producers: ["verification"],
     consumers: ["notification", "audit"],
   },
@@ -267,7 +267,7 @@ export const DOMAIN_EVENT_CATALOG: Record<string, EventCatalogEntry> = {
   ArticlePublished: {
     eventName: "ArticlePublished",
     aggregateType: "content",
-    description: "Artikel berita atau pengumuman resmi berhasil dipublikasikan.",
+    description: "Artikel berita atau pengumuman platform berhasil dipublikasikan.",
     producers: ["content"],
     consumers: ["directory", "notification", "audit"],
   },

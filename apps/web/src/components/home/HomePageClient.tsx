@@ -29,7 +29,6 @@ import {
   BrandLogo,
   BrandSlash,
   BrandWatermark,
-  PartnerStrip,
   IssuedBy,
 } from "@/components/brand";
 import { mapVerificationToCard } from "@/types/card";
@@ -199,10 +198,8 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   />
                 </div>
                 <span className="text-[11px] font-mono font-bold tracking-wider text-white/80 uppercase">
-                  Platform oleh ESPORT SUMBAR™
+                  Pusat Data ESPORT SUMBAR™
                 </span>
-                <span className="text-white/30">•</span>
-                <span className="text-[10px] font-mono text-white/50">Mitra: ESI Sumbar</span>
               </div>
 
               {/* Main Headline (Saira Condensed Skewed) */}
@@ -213,7 +210,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
 
               {/* Punchy Subtitle */}
               <p className="text-base xl:text-lg text-white/70 leading-relaxed mb-8 max-w-xl">
-                Pusat data digital, paspor atlet resmi (ESPORT ID), dan ekosistem turnamen esports Sumatera Barat.
+                Pusat data digital, kartu identitas atlet (ESPORT ID), dan ekosistem turnamen esports Sumatera Barat.
               </p>
 
               {/* Action Buttons */}
@@ -239,11 +236,11 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               <div className="mt-10 pt-6 border-t border-white/[0.08] flex items-center gap-6 text-xs text-white/60">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-[#22C55E]" />
-                  <span>Verifikasi 19 Wilayah ESI</span>
+                  <span>Terhubung 19 Wilayah Sumbar</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Award className="w-4 h-4 text-[#D4AF37]" />
-                  <span>Standar Privasi UU PDP</span>
+                  <span>Pelindungan Data Pribadi</span>
                 </div>
               </div>
             </div>
@@ -308,22 +305,22 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
             </div>
           </section>
 
-          {/* ==================== 3. PERAN KAMI VS MITRA (PROMPT B6) ==================== */}
+          {/* ==================== 3. TATA KELOLA & EKOSISTEM MANDIRI V3 ==================== */}
           <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 py-20">
             <div className="text-center max-w-xl mx-auto mb-12">
               <span className="text-xs font-mono font-bold tracking-widest uppercase text-[#FF4D77]">
                 Struktur Ekosistem
               </span>
               <h2 className="text-3xl sm:text-4xl font-heading font-black uppercase text-white mt-1">
-                Dikelola Kami, Diverifikasi Mitra
+                Satu Platform, Satu Pangkalan Data
               </h2>
               <p className="text-xs text-white/60 mt-2">
-                Pemisahan tegas peran operasional teknologi dan pengesahan olahraga prestasi.
+                Tata kelola terpadu untuk pencatatan profil, verifikasi identitas, dan integrasi ekosistem.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left Panel: ESPORT SUMBAR */}
+              {/* Left Panel: ESPORT SUMBAR Data */}
               <div className="p-7 rounded-2xl bg-[#0A0A2E] border border-white/10 hover:border-[#FF1752]/40 transition-all flex flex-col justify-between relative overflow-hidden group">
                 <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#FF1752]/10 rounded-full blur-2xl group-hover:bg-[#FF1752]/15 transition-all" />
 
@@ -349,7 +346,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                     </li>
                     <li className="flex items-center gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF1752]" />
-                      <span><strong>Infrastruktur Data:</strong> Menjaga basis data, server, dan privasi atlet.</span>
+                      <span><strong>Infrastruktur Data:</strong> Menjaga basis data terpadu, server, dan privasi atlet.</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#FF1752]" />
@@ -364,7 +361,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                 </div>
               </div>
 
-              {/* Right Panel: tim kurasi ESPORT SUMBAR */}
+              {/* Right Panel: Tim Verifikasi ESPORT SUMBAR */}
               <div className="p-7 rounded-2xl bg-[#0A0A2E] border border-white/10 hover:border-[#22C55E]/40 transition-all flex flex-col justify-between relative overflow-hidden group">
                 <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#22C55E]/10 rounded-full blur-2xl group-hover:bg-[#22C55E]/15 transition-all" />
 
@@ -375,10 +372,10 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                     </div>
                     <div>
                       <h3 className="font-heading font-black text-xl text-white uppercase tracking-wide">
-                        tim kurasi ESPORT SUMBAR
+                        Tim Verifikasi
                       </h3>
                       <span className="text-[10px] font-mono text-[#22C55E] uppercase font-bold">
-                        Verifikator Data Keolahragaan
+                        Pemeriksaan Profil Terpadu
                       </span>
                     </div>
                   </div>
@@ -386,23 +383,23 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   <ul className="space-y-3 text-xs text-white/70">
                     <li className="flex items-center gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
-                      <span><strong>Pemeriksaan Daerah:</strong> ESI Kota/Kabupaten memeriksa identitas domisili.</span>
+                      <span><strong>Pemeriksaan Berkas:</strong> Memeriksa kesesuaian identitas dan domisili 19 wilayah.</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E]" />
-                      <span><strong>Pemberian Lencana:</strong> Menerbitkan status <em>Terverifikasi</em>.</span>
+                      <span><strong>Pemberian Lencana:</strong> Menerbitkan status <em>Terverifikasi</em> tunggal.</span>
                     </li>
                     <li className="flex items-center gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
-                      <span><strong>Validasi Provinsi:</strong> ESPORT SUMBAR mengesahkan status <em>Verified</em>.</span>
+                      <span><strong>Standar Tunggal:</strong> Penerbitan nomor lencana digital ESP-SB-VER.</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-white/40">
-                  <span>Integritas Olahraga Prestasi</span>
-                  <Link href="/partners" className="text-[#FF4D77] hover:underline">
-                    Lihat 19 Cabang Mitra &rarr;
+                  <span>Integritas Ekosistem Mandiri</span>
+                  <Link href="/ecosystem" className="text-[#FF4D77] hover:underline">
+                    Lihat Peta Ekosistem &rarr;
                   </Link>
                 </div>
               </div>
@@ -468,10 +465,10 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   </div>
                   <div>
                     <h3 className="font-heading font-bold text-white uppercase text-sm tracking-wide">
-                      Bagikan Identitas Resmi
+                      Bagikan Identitas Digital
                     </h3>
                     <p className="text-xs text-white/50 mt-0.5">
-                      Format paspor berstandar QR untuk pendaftaran turnamen dan media sosial.
+                      Format kartu digital berstandar QR untuk pendaftaran turnamen dan media sosial.
                     </p>
                   </div>
                 </div>
@@ -482,10 +479,10 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   </div>
                   <div>
                     <h3 className="font-heading font-bold text-white uppercase text-sm tracking-wide">
-                      Divalidasi Mitra ESI
+                      Verifikasi Terpadu Satu Tahap
                     </h3>
                     <p className="text-xs text-white/50 mt-0.5">
-                      Lencana resmi diterbitkan melalui alur verifikasi pengurus ESI.
+                      Lencana terverifikasi diterbitkan melalui pemeriksaan tim verifikasi ESPORT SUMBAR.
                     </p>
                   </div>
                 </div>
@@ -598,10 +595,10 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   <Newspaper className="w-7 h-7" />
                 </div>
                 <h3 className="font-heading font-black uppercase text-xl text-white mb-2">
-                  Belum Ada Warta Resmi Diterbitkan
+                  Belum Ada Warta Diterbitkan
                 </h3>
                 <p className="text-xs text-white/50 max-w-md mb-6 leading-relaxed">
-                  Siaran pers dan agenda resmi ESPORT SUMBAR akan ditampilkan di sini setelah dipublikasikan oleh humas pengurus.
+                  Publikasi warta dan agenda kegiatan ekosistem akan ditampilkan di sini.
                 </p>
                 <Link
                   href="/news"
@@ -611,11 +608,6 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                 </Link>
               </div>
             )}
-          </section>
-
-          {/* ==================== 6. MITRA STRIP PRE-FOOTER ==================== */}
-          <section className="w-full max-w-7xl mx-auto px-6 lg:px-8 pb-16">
-            <PartnerStrip variant="horizontal" />
           </section>
         </main>
 

@@ -358,7 +358,7 @@ export const GALLERY_CARDS: MockCardVariant[] = [
     type: "team",
     rarity: "elite",
     verification: "verified",
-    tagline: "Klub profesional resmi terakreditasi ESPORT SUMBAR",
+    tagline: "Klub profesional terdaftar di ESPORT SUMBAR",
     data: {
       displayName: "Minang Pride Esports Club",
       teamName: "Minang Pride",

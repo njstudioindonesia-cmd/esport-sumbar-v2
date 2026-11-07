@@ -135,7 +135,7 @@ async function runContractCleanup() {
   console.log(`   - Status Eksekusi: ${isDryRun ? "LULUS DRY-RUN (Siap Dijalankan)" : "SELESAI DIEKSEKUSI"}`);
   console.log(`   - Baris Diperiksa: ${manifest.recordsAudited}`);
   console.log(`   - Atribut Sensitif Diproses: ${isDryRun ? `${sensitiveCount} terdeteksi untuk dipurifikasi` : `${manifest.sensitiveAttributesRemoved} dipurifikasi`}`);
-  console.log(`   - Kepatuhan UU PDP No. 27/2022: TERPENUHI (Zero Plaintext NIK/KK)`);
+  console.log(`   - Perlindungan Data Pribadi: TERPENUHI (Zero Plaintext NIK/KK)`);
   console.log("================================================================================\n");
 
   if (isDryRun) {

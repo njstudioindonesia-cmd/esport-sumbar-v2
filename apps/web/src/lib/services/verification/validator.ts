@@ -66,7 +66,7 @@ export function validateVerificationEvidence(
         score += 20;
         feedback.push("Berkas struktur tim dan identitas skuad lengkap.");
       } else {
-        feedback.push("Saran: Unggah susunan roster dan logo resmi beresolusi tinggi.");
+        feedback.push("Saran: Unggah susunan roster dan logo beresolusi tinggi.");
       }
       break;
 

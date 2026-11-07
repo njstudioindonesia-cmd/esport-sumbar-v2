@@ -76,7 +76,7 @@ export function MobileProfileEditView({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!displayName.trim()) {
-      setErrorMessage("Nama resmi profil wajib diisi.");
+      setErrorMessage("Nama tampilan profil wajib diisi.");
       return;
     }
 
@@ -152,7 +152,7 @@ export function MobileProfileEditView({
           <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-2.5 text-xs text-amber-200">
             <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <div>
-              <div className="font-bold text-amber-300">Profil Terverifikasi Resmi ESI</div>
+              <div className="font-bold text-amber-300">Profil Terverifikasi ESPORT SUMBAR</div>
               <p className="text-[11px] text-amber-200/70 mt-0.5 leading-relaxed">
                 Mengubah nama tampilan atau IGN akan memerlukan validasi ulang Komunitas Esport.
               </p>
@@ -183,13 +183,13 @@ export function MobileProfileEditView({
 
           <div>
             <label className="block text-xs font-heading font-bold text-white mb-1.5">
-              Nama Resmi / Organisasi <span className="text-red-400">*</span>
+              Nama Tampilan / Organisasi <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Nama profil resmi"
+              placeholder="Nama profil tampilan"
               maxLength={100}
               className="w-full h-12 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-4 text-sm text-white outline-none"
             />

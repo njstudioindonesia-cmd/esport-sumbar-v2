@@ -2,7 +2,7 @@
  * Subdomain Core: Profile (Sub-langkah 7.6)
  * Mengelola 7 entitas profil ESPORT SUMBAR dengan aturan tegas:
  * 1 akun = 1 profil (UNIQUE(account_id)), jenis entitas permanen (immutable),
- * dan pemisahan data sensitif (kepatuhan UU PDP No. 27/2022).
+ * dan pemisahan data sensitif (standar perlindungan privasi).
  */
 
 export type EntityType =

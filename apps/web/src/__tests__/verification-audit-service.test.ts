@@ -30,7 +30,7 @@ describe("Sub-langkah 7.4: Ekstraksi Layanan Verifikasi & Audit (Verification & 
   });
 
   describe("1. Mesin Status Verifikasi (State Machine V3)", () => {
-    it("harus mengizinkan transisi status yang sah dalam siklus hidup verifikasi", () => {
+    it("harus mengizinkan transisi status yang valid dalam siklus hidup verifikasi", () => {
       expect(canTransitionVerification("unverified", "submitted")).toBe(true);
       expect(canTransitionVerification("submitted", "under_review")).toBe(true);
       expect(canTransitionVerification("under_review", "verified")).toBe(true);
@@ -97,7 +97,7 @@ describe("Sub-langkah 7.4: Ekstraksi Layanan Verifikasi & Audit (Verification & 
       }).toThrow(/Alasan keputusan telaah wajib disertakan/);
     });
 
-    it("harus menghasilkan nomor registrasi resmi ESP-SB-VER-YYYY-XXXX", () => {
+    it("harus menghasilkan nomor registrasi verifikasi ESP-SB-VER-YYYY-XXXX", () => {
       const badgeNo = generateVerificationBadgeNo(null, "4521");
       const currentYear = new Date().getFullYear();
       expect(badgeNo).toBe(`ESP-SB-VER-${currentYear}-4521`);
@@ -352,7 +352,7 @@ describe("Sub-langkah 7.4: Ekstraksi Layanan Verifikasi & Audit (Verification & 
         accountId: "acc-fajar",
         entityType: "player",
         regionId: "reg-padang",
-        notes: "Pengajuan verifikasi atlet resmi.",
+        notes: "Pengajuan verifikasi atlet digital.",
         evidenceFiles: [
           { name: "id.png", url: "https://storage.supabase.co/evidence/id.png" },
         ],
@@ -373,7 +373,7 @@ describe("Sub-langkah 7.4: Ekstraksi Layanan Verifikasi & Audit (Verification & 
       expect(logs[0].action).toBe("VERIFICATION_SUBMITTED");
     });
 
-    it("harus memproses keputusan persetujuan verifikasi dan menerbitkan lencana resmi", async () => {
+    it("harus memproses keputusan persetujuan verifikasi dan menerbitkan lencana verifikasi", async () => {
       registerMockProfile({
         id: "prof-fajar",
         accountId: "acc-fajar",

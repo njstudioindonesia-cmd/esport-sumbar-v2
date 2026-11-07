@@ -127,7 +127,7 @@ export default async function RegionDetailPage({
         </section>
 
         {/* ========================================================= */}
-        {/* 2. BENTO STATISTIK & KARTU PENGURUS ESI                   */}
+        {/* 2. BENTO STATISTIK & KARTU LAYANAN WILAYAH                */}
         {/* ========================================================= */}
         <div className="grid grid-cols-12 gap-8 mb-12">
           {/* BENTO STATISTIK (7 COLS): PLAYER, PELATIH, TIM */}
@@ -135,7 +135,7 @@ export default async function RegionDetailPage({
             {/* Stat Player */}
             <div className="p-6 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col justify-between">
               <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
-                ATLET RESMI
+                ATLET TERDATA
               </span>
               <div className="my-2">
                 <StatNumber value={playerCount} label="Player" className="text-3xl lg:text-4xl font-mono font-black text-white" />
@@ -151,7 +151,7 @@ export default async function RegionDetailPage({
               <div className="my-2">
                 <StatNumber value={coachCount} label="Pelatih" className="text-3xl lg:text-4xl font-mono font-black text-[#4C7DFF]" />
               </div>
-              <span className="text-[10px] font-mono text-white/40">Pelatih Resmi</span>
+              <span className="text-[10px] font-mono text-white/40">Pelatih Terdaftar</span>
             </div>
 
             {/* Stat Tim */}
@@ -180,7 +180,7 @@ export default async function RegionDetailPage({
 
             <div className="my-3 flex flex-col gap-1.5 text-xs">
               <div className="text-sm font-heading font-bold text-white">
-                Direktori Resmi {region.name}
+                Direktori Wilayah {region.name}
               </div>
               <div className="text-[11px] font-mono text-white/50">
                 Pendaftaran dan verifikasi profil dilayani langsung secara mandiri oleh ESPORT SUMBAR.
@@ -256,7 +256,7 @@ export default async function RegionDetailPage({
         </section>
 
         {/* ========================================================= */}
-        {/* 4. BERITA & AGENDA RESMI WILAYAH                          */}
+        {/* 4. BERITA & AGENDA WILAYAH                                */}
         {/* ========================================================= */}
         <section className="mt-14 flex flex-col gap-6">
           <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">

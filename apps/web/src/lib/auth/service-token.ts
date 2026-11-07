@@ -96,7 +96,7 @@ export function verifyServiceToken(
   const sigBuffer = Buffer.from(signature);
   const expBuffer = Buffer.from(expectedSignature);
   if (sigBuffer.length !== expBuffer.length || !crypto.timingSafeEqual(sigBuffer, expBuffer)) {
-    return { valid: false, error: "Tanda tangan token tidak sah (signature mismatch)." };
+    return { valid: false, error: "Tanda tangan token tidak valid (signature mismatch)." };
   }
 
   try {

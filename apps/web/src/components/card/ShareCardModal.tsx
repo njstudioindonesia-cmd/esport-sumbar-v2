@@ -220,7 +220,7 @@ export function ShareCardModal({
                       </span>
                     </div>
                     <span className="text-[8px] font-mono font-bold text-[#FF4D77] uppercase tracking-wider">
-                      PASPOR ATLET RESMI
+                      PASPOR ATLET DIGITAL
                     </span>
                   </div>
                 </>

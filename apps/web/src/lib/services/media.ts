@@ -86,7 +86,7 @@ export interface OrphanMediaReport {
 /**
  * Kompresi gambar sisi server menggunakan Sharp:
  * - Dikonversi ke format WebP (kualitas 85).
- * - Metadata EXIF (lokasi GPS, identitas perangkat) DIHAPUS demi kepatuhan UU PDP No. 27/2022.
+ * - Metadata EXIF (lokasi GPS, identitas perangkat) DIHAPUS demi perlindungan data pribadi dan privasi.
  * - Dimensi disesuaikan proporsional sesuai tujuan (avatar max 1024, cover max 1920, dll).
  */
 export async function compressImageWithSharp(

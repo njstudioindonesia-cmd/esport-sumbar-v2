@@ -139,7 +139,7 @@ export default function MembershipsPage() {
                 Afiliasi Tim Anda
               </h2>
               <p className="text-[11px] text-white/50 mt-0.5">
-                Kelola status klub resmi dan riwayat transfer atlet.
+                Kelola status klub terdaftar dan riwayat transfer atlet.
               </p>
             </div>
           </div>

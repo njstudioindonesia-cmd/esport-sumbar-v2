@@ -204,10 +204,10 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                   </h4>
                   <p className="text-[11px] text-[#8E95A5] mt-0.5">
                     {verification === "verified"
-                      ? `Lencana Emas resmi (No: ${data.badgeNumber || "ESI-SB-2026-0124"}) aktif 12 bulan.`
+                      ? `Lencana Emas (No: ${data.badgeNumber || "ESP-SB-VER-2026-0001"}) aktif 12 bulan.`
                       : verification === "regional"
                       ? `Lolos verifikasi daerah Wilayah ${data.region.name}. Menunggu pleno provinsi.`
-                      : "Profil pendaftaran mandiri. Belum diverifikasi resmi ESI."}
+                      : "Profil pendaftaran mandiri. Belum diverifikasi."}
                   </p>
                 </div>
               </div>
@@ -353,7 +353,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                               {item.isValidated && (
                                 <span className="text-[9px] font-mono text-[#D4AF37] bg-[#D4AF37]/10 px-1.5 py-0.2 rounded border border-[#D4AF37]/30 flex items-center gap-0.5">
                                   <CheckCircle2 className="w-2.5 h-2.5" />
-                                  <span>Tervalidasi ESI</span>
+                                  <span>Terverifikasi</span>
                                 </span>
                               )}
                             </div>
@@ -495,13 +495,13 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
               <X className="w-5 h-5" />
             </button>
             <h3 className="font-heading font-black uppercase text-base text-white">
-              Kode QR Profil Resmi
+              Kode QR Profil Digital
             </h3>
             <div className="p-4 rounded-2xl bg-white mx-auto w-48 h-48 flex items-center justify-center">
               <QrCode className="w-40 h-40 text-black" />
             </div>
             <p className="text-xs text-gray-400 font-mono">
-              Pindai untuk memverifikasi keabsahan kartu ESPORT ID
+              Pindai untuk memverifikasi kartu ESPORT ID
             </p>
           </div>
         </div>

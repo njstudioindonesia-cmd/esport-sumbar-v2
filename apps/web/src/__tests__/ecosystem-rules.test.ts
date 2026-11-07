@@ -65,7 +65,7 @@ export function validateRelationRequest(params: {
   if (!rule) {
     return {
       valid: false,
-      error: `Pasangan relasi ${params.sourceType} -> ${params.targetType} [${params.relationType}] tidak sah dalam aturan ekosistem.`,
+      error: `Pasangan relasi ${params.sourceType} -> ${params.targetType} [${params.relationType}] tidak valid dalam aturan ekosistem.`,
     };
   }
 
@@ -91,12 +91,12 @@ export function validateRelationRequest(params: {
 }
 
 describe("Ekosistem Terhubung Antar 7 Entitas V3 (Mandat 6 & Bagian 6)", () => {
-  describe("1. Matriks 17 Aturan Pasangan Sah (Mandat 6.1 & 6.6)", () => {
+  describe("1. Matriks 17 Aturan Pasangan Valid (Mandat 6.1 & 6.6)", () => {
     it("harus tepat memiliki 17 aturan deklaratif yang terdaftar", () => {
       expect(OFFICIAL_RELATION_RULES.length).toBe(17);
     });
 
-    it("semua 17 pasangan sah harus lolos validasi saat parameter terpenuhi", () => {
+    it("semua 17 pasangan valid harus lolos validasi saat parameter terpenuhi", () => {
       OFFICIAL_RELATION_RULES.forEach((rule) => {
         const result = validateRelationRequest({
           sourceType: rule.sourceEntityType,
@@ -114,7 +114,7 @@ describe("Ekosistem Terhubung Antar 7 Entitas V3 (Mandat 6 & Bagian 6)", () => {
     });
   });
 
-  describe("2. Penolakan Pasangan Tidak Sah (Invalid Pairs Rejected)", () => {
+  describe("2. Penolakan Pasangan Tidak Valid (Invalid Pairs Rejected)", () => {
     const invalidPairs: Array<{ source: EntityType; target: EntityType; type: string }> = [
       { source: "venue", target: "player", type: "anggota" },
       { source: "school", target: "player", type: "siswa" },
@@ -127,7 +127,7 @@ describe("Ekosistem Terhubung Antar 7 Entitas V3 (Mandat 6 & Bagian 6)", () => {
     ];
 
     invalidPairs.forEach(({ source, target, type }) => {
-      it(`harus menolak pasangan tidak sah: ${source} -> ${target} [${type}]`, () => {
+      it(`harus menolak pasangan tidak valid: ${source} -> ${target} [${type}]`, () => {
         const result = validateRelationRequest({
           sourceType: source,
           targetType: target,
@@ -138,7 +138,7 @@ describe("Ekosistem Terhubung Antar 7 Entitas V3 (Mandat 6 & Bagian 6)", () => {
         });
 
         expect(result.valid).toBe(false);
-        expect(result.error).toContain("tidak sah dalam aturan ekosistem");
+        expect(result.error).toContain("tidak valid dalam aturan ekosistem");
       });
     });
   });
@@ -213,7 +213,7 @@ describe("Ekosistem Terhubung Antar 7 Entitas V3 (Mandat 6 & Bagian 6)", () => {
       expect(result.error).toContain("Batas maksimum relasi aktif (1) telah tercapai");
     });
 
-    it("harus menolak tim yang sudah memiliki 1 basecamp resmi (max 1)", () => {
+    it("harus menolak tim yang sudah memiliki 1 basecamp (max 1)", () => {
       const result = validateRelationRequest({
         sourceType: "team",
         targetType: "venue",

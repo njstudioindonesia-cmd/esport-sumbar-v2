@@ -201,7 +201,7 @@ export default function AdminDashboardPage() {
                 Antrean Verifikasi
               </h3>
               <p className="text-xs text-white/60 leading-relaxed">
-                Pemeriksaan bukti kepemilikan akun in-game, sertifikat turnamen, dan penetapan status lolos verifikasi resmi ESPORT SUMBAR.
+                Pemeriksaan bukti kepemilikan akun in-game, sertifikat turnamen, dan penetapan status lolos verifikasi ESPORT SUMBAR.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-[#D4AF37]">
@@ -243,7 +243,7 @@ export default function AdminDashboardPage() {
                 Katalog Game Dinamis
               </h3>
               <p className="text-xs text-white/60 leading-relaxed">
-                Atur daftar game resmi (termasuk Honor of Kings & Valorant), role spesifik game, dan tingkatan rank dari database.
+                Atur daftar cabang game (termasuk Honor of Kings & Valorant), role spesifik game, dan tingkatan rank dari database.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-blue-400">

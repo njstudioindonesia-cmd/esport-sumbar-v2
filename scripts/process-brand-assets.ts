@@ -218,7 +218,7 @@ async function main() {
         SUMATERA BARAT
       </text>
       <text x="620" y="380" font-family="sans-serif" font-weight="400" font-size="20" fill="#9AA3B2">
-        Identitas Digital • Kartu TCG Atlet • Ekosistem Resmi
+        Identitas Digital • Kartu TCG Atlet • Ekosistem Terintegrasi
       </text>
       <text x="620" y="440" font-family="sans-serif" font-weight="700" font-size="14" fill="#FFFFFF" letter-spacing="3" opacity="0.6">
         WWW.ESPORTSUMBAR.COM

@@ -460,7 +460,7 @@ export async function transitionArticleStatus(
 
   if (!canTransitionArticle(existing.status, params.targetStatus)) {
     throw new Error(
-      `Transisi editorial tidak sah: Tidak dapat mengubah status dari "${existing.status}" ke "${params.targetStatus}".`
+      `Transisi editorial tidak valid: Tidak dapat mengubah status dari "${existing.status}" ke "${params.targetStatus}".`
     );
   }
 

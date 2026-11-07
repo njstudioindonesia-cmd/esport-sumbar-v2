@@ -349,9 +349,9 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                   </strong>
                   <span className="text-white/70 leading-relaxed block">
                     {authError === "unauthorized_operator"
-                      ? "Rute tersebut dikhususkan untuk Operator Sistem. Sebagai ESPORT SUMBAR, gunakan tautan Panel ESPORT SUMBAR resmi Anda."
+                      ? "Rute tersebut dikhususkan untuk Administrator Platform ESPORT SUMBAR."
                       : authError === "unauthorized_province"
-                      ? "Rute tersebut dikhususkan untuk Pengurus Provinsi ESI Sumatera Barat."
+                      ? "Rute tersebut dikhususkan untuk Administrator Wilayah ESPORT SUMBAR."
                       : "Anda telah login sebagai administrator. Silakan buka menu panel di atas."}
                   </span>
                   <div className="mt-3 flex items-center gap-2">
@@ -365,7 +365,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                       }
                       className="px-3.5 py-1.5 rounded-lg bg-[#D4AF37] text-black font-heading font-extrabold uppercase text-[11px] hover:brightness-110 transition-all"
                     >
-                      Buka Panel Resmi Anda Sekarang →
+                      Buka Panel Admin Anda Sekarang →
                     </Link>
                   </div>
                 </div>

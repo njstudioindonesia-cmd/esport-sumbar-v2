@@ -57,7 +57,7 @@ export function EmptyState({
     notifications: {
       icon: Bell,
       defaultTitle: "Tidak Ada Notifikasi Baru",
-      defaultDesc: "Pemberitahuan resmi mengenai undangan tim, perubahan status verifikasi, dan jadwal turnamen akan muncul di sini.",
+      defaultDesc: "Pemberitahuan mengenai undangan tim, perubahan status verifikasi, dan jadwal turnamen akan muncul di sini.",
       defaultAction: "Jelajahi Turnamen",
       iconColor: "text-purple-400",
       bgGlow: "bg-purple-500/5",

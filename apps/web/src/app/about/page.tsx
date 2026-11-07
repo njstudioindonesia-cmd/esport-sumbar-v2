@@ -160,11 +160,11 @@ export default function AboutPage() {
                   </li>
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
-                    <span><strong>Kode Sertifikasi Unik:</strong> Setiap profil yang lolos verifikasi memperoleh nomor registrasi resmi format <code>ESP-SB-VER-YYYY-XXXX</code>.</span>
+                    <span><strong>Kode Sertifikasi Unik:</strong> Setiap profil yang lolos verifikasi memperoleh nomor lencana terverifikasi format <code>ESP-SB-VER-YYYY-XXXX</code>.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-[#FF1752] shrink-0 mt-0.5" />
-                    <span><strong>Target SLA 24-48 Jam:</strong> Penelaahan berkas bukti in-game dan piagam kompetisi diproses secara cepat dan transparan.</span>
+                    <span><strong>Target SLA Terukur:</strong> Penelaahan berkas bukti akun game dan portofolio kompetisi diproses secara transparan sesuai antrean.</span>
                   </li>
                 </ul>
               </div>
@@ -179,7 +179,7 @@ export default function AboutPage() {
                 <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-4 text-emerald-400">
                   <Database className="w-5 h-5" />
                   <h3 className="font-heading font-black text-lg text-white uppercase">
-                    Kepatuhan UU PDP &amp; Privasi
+                    Pelindungan Data Pribadi
                   </h3>
                 </div>
 
@@ -190,7 +190,7 @@ export default function AboutPage() {
                   </li>
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span><strong>Perlindungan Atlet Pelajar:</strong> Pendaftaran pemain di bawah usia 18 tahun tunduk pada persetujuan orang tua/wali sah.</span>
+                    <span><strong>Perlindungan Atlet Pelajar:</strong> Pendaftaran pemain di bawah usia 18 tahun tunduk pada persetujuan orang tua atau wali.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
@@ -200,7 +200,7 @@ export default function AboutPage() {
               </div>
 
               <div className="mt-6 pt-4 border-t border-white/5 text-[10px] font-mono text-white/40">
-                Kepatuhan UU No. 27 Tahun 2022
+                Prinsip Pelindungan Data Pribadi
               </div>
             </div>
           </div>

@@ -115,7 +115,7 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
         if (!input.guardianConsent || !input.guardianConsent.guardianName?.trim() || !input.guardianConsent.guardianContact?.trim()) {
           return {
             success: false,
-            error: "Pendaftaran atlet di bawah 18 tahun wajib menyertakan nama dan kontak orang tua/wali sah sesuai UU PDP.",
+            error: "Pendaftaran atlet di bawah 18 tahun wajib menyertakan nama dan kontak orang tua atau wali.",
           };
         }
 
@@ -124,14 +124,14 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
           account_id: accountId,
           guardian_name: input.guardianConsent.guardianName.trim().slice(0, 150),
           guardian_contact: input.guardianConsent.guardianContact.trim().slice(0, 100),
-          guardian_relationship: (input.guardianConsent.guardianRelationship || "Orang Tua / Wali Sah").slice(0, 50),
+          guardian_relationship: (input.guardianConsent.guardianRelationship || "Orang Tua / Wali").slice(0, 50),
           consent_version: "v1.0-2026",
           consented_at: new Date().toISOString(),
         });
       }
     }
 
-    // 2. Generator ESPORT ID Unik Resmi via RPC Database atau Standar Formula
+    // 2. Generator ESPORT ID Unik via RPC Database atau Standar Formula
     let esportId: string;
     try {
       const { data: rpcId } = await supabase.rpc("generate_esport_id" as any, {
@@ -176,7 +176,7 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       .replace(/^-+|-+$/g, "");
     const slug = `${cleanName}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // 4. Kalkulasi kelengkapan & rarity tier resmi
+    // 4. Kalkulasi kelengkapan & rarity tier profil
     const completeness = calculateCompletenessScore(
       input.entityType,
       {
@@ -252,7 +252,7 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       return { success: false, error: profileError.message };
     }
 
-    // 6. Simpan data pribadi & kontak ke profile_private (Kepatuhan UU PDP)
+    // 6. Simpan data pribadi & kontak ke profile_private (Perlindungan Data Pribadi)
     try {
       await supabase.from("profile_private").upsert(
         {
@@ -335,7 +335,7 @@ export async function updatePrivacySettingsAction(
       .single();
 
     if (profileData && profileData.account_id !== authData.user.id) {
-      return { success: false, error: "Akses ditolak: Anda bukan pemilik sah dari profil ini." };
+      return { success: false, error: "Akses ditolak: Anda bukan pemilik profil ini." };
     }
 
     const { error } = await supabase

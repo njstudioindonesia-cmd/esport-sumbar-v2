@@ -27,7 +27,7 @@ export function VerificationBadge({
     return (
       <div
         className="relative group flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-gradient-to-r from-[#1A1810]/95 via-[#231F10]/95 to-[#1A1810]/95 border border-[#D4AF37]/80 shadow-[0_0_15px_rgba(212,175,55,0.4)] backdrop-blur-md"
-        title="Diverifikasi Resmi oleh ESPORT SUMBAR"
+        title="Terverifikasi oleh ESPORT SUMBAR"
       >
         <Award className={isSmall ? "w-3 h-3 text-[#D4AF37]" : "w-3.5 h-3.5 text-[#D4AF37]"} />
         <div className="flex flex-col leading-none">

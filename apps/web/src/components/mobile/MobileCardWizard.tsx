@@ -241,7 +241,7 @@ export function MobileCardWizard() {
     }
 
     if (step === 3 && !displayName.trim()) {
-      setErrorMessage("Nama resmi wajib diisi.");
+      setErrorMessage("Nama tampilan wajib diisi.");
       return;
     }
 
@@ -574,7 +574,7 @@ export function MobileCardWizard() {
                           type="text"
                           value={guardianName}
                           onChange={(e) => setGuardianName(e.target.value)}
-                          placeholder="Nama Wali Sah"
+                          placeholder="Nama Wali"
                           className="w-full h-9 bg-[#0A0C13] border border-white/10 rounded-lg px-2.5 text-xs text-white outline-none"
                         />
                         <input
@@ -637,7 +637,7 @@ export function MobileCardWizard() {
                 <div className="flex flex-col gap-2.5 mb-3">
                   <div>
                     <label className="text-[10px] font-mono text-white/60 block mb-1">
-                      Nama Resmi <span className="text-red-400">*</span>
+                      Nama Tampilan <span className="text-red-400">*</span>
                     </label>
                     <input
                       type="text"
@@ -688,10 +688,10 @@ export function MobileCardWizard() {
                 className="flex flex-col items-center text-center"
               >
                 <div className="text-lg font-heading font-black text-white mb-0.5">
-                  Foto Resmi
+                  Foto Profil
                 </div>
                 <p className="text-[11px] text-white/50 mb-3">
-                  Potong sesuai rasio paspor resmi (WebP &le; 2 MB).
+                  Potong sesuai rasio paspor digital (WebP &le; 2 MB).
                 </p>
 
                 <div className="flex items-center gap-2 mb-3">
@@ -804,7 +804,7 @@ export function MobileCardWizard() {
                   Siap Diterbitkan
                 </div>
                 <p className="text-[11px] text-white/50 mb-3">
-                  ESPORT ID resmi diterbitkan otomatis ke basis data ESPORT SUMBAR.
+                  ESPORT ID diterbitkan otomatis ke basis data ESPORT SUMBAR.
                 </p>
 
                 <div className="p-3 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-between text-xs mb-3">

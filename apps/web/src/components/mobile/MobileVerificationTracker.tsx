@@ -99,7 +99,7 @@ export function MobileVerificationTracker() {
           <ArrowLeft className="w-4 h-4" />
         </button>
 
-        {/* Status Resmi Badge (Tersinkronisasi dengan Data Backend) */}
+        {/* Status Verifikasi Badge (Tersinkronisasi dengan Data Backend) */}
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161A24] border border-white/[0.08]">
           <span
             className={`w-1.5 h-1.5 rounded-full ${

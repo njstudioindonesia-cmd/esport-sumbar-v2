@@ -90,30 +90,30 @@ export function DesktopDashboardView() {
     if (verificationStatus === "unverified") {
       if (entityType === "team") {
         return {
-          title: "Ajukan Legalisasi Klub ESPORT SUMBAR",
-          desc: "Daftarkan tim resmi untuk berpartisipasi dalam Kejurda & Liga Esport Sumatera Barat.",
+          title: "Ajukan Verifikasi Klub ESPORT SUMBAR",
+          desc: "Daftarkan tim untuk berpartisipasi dalam Kejurda & Liga Esport Sumatera Barat.",
           actionText: "Ajukan",
           href: "/me/verification",
         };
       }
       if (entityType === "coach") {
         return {
-          title: "Ajukan Sertifikasi Pelatih ESI",
-          desc: "Lengkapi sertifikat kepelatihan atau lisensi wasit untuk verifikasi lencana resmi.",
+          title: "Ajukan Sertifikasi Pelatih ESPORT SUMBAR",
+          desc: "Lengkapi sertifikat kepelatihan atau lisensi wasit untuk verifikasi lencana terdaftar.",
           actionText: "Ajukan",
           href: "/me/verification",
         };
       }
       if (entityType === "school" || entityType === "campus") {
         return {
-          title: "Pengesahan Ekstrakurikuler ESPORT SUMBAR",
-          desc: "Lampirkan SK Kepala Sekolah/Dekan untuk pembinaan atlet pelajar resmi daerah.",
+          title: "Verifikasi Ekstrakurikuler ESPORT SUMBAR",
+          desc: "Lampirkan SK Kepala Sekolah/Dekan untuk pembinaan atlet pelajar daerah.",
           actionText: "Ajukan",
           href: "/me/verification",
         };
       }
       return {
-        title: "Ajukan Lisensi Resmi ESPORT SUMBAR",
+        title: "Ajukan Verifikasi ESPORT SUMBAR",
         desc: "Lengkapi 1 piagam prestasi untuk peningkatan Tier dan Lencana Emas ESPORT SUMBAR.",
         actionText: "Ajukan",
         href: "/me/verification",
@@ -122,7 +122,7 @@ export function DesktopDashboardView() {
     if (verificationStatus === "submitted" || verificationStatus === "in_review_regional") {
       return {
         title: `Dalam Telaah Wilayah ${activeProfile?.regionName || "Daerah"}`,
-        desc: "Berkas Anda sedang dalam antrean verifikasi pengurus cabang. Estimasi 1-3 hari kerja.",
+        desc: "Berkas Anda sedang dalam antrean verifikasi tim platform. Estimasi 1-3 hari kerja.",
         actionText: "Pantau Status",
         href: "/me/verification",
       };
@@ -137,14 +137,14 @@ export function DesktopDashboardView() {
     }
     if (verificationStatus === "verified") {
       return {
-        title: "Menunggu Pengesahan ESPORT SUMBAR",
-        desc: "Lolos verifikasi daerah! Berkas kini di meja ESPORT SUMBAR untuk lencana emas.",
+        title: "Menunggu Penerbitan ESPORT SUMBAR",
+        desc: "Lolos verifikasi awal! Berkas kini dalam proses penerbitan lencana.",
         actionText: "Lihat",
         href: "/me/verification",
       };
     }
     return {
-      title: "Profil Terverifikasi Resmi",
+      title: "Profil Terverifikasi",
       desc: "Lencana Emas aktif! Identitas Anda diakui secara penuh di ekosistem ESPORT SUMBAR.",
       actionText: "Lihat Lisensi",
       href: "/me/verification",
@@ -246,7 +246,7 @@ export function DesktopDashboardView() {
                 <div>
                   <h4 className="font-heading font-black text-white text-base">Belum Ada Kartu Paspor</h4>
                   <p className="text-xs text-white/50 max-w-xs mt-1">
-                    Buat paspor digital Anda untuk mendapatkan kartu resmi berstandar ESPORT SUMBAR.
+                    Buat paspor digital Anda untuk mendapatkan kartu identitas berstandar ESPORT SUMBAR.
                   </p>
                 </div>
                 <Link
@@ -329,7 +329,7 @@ export function DesktopDashboardView() {
                 </span>
                 <span className="text-[11px] text-white/50 mt-0.5">
                   {entityType === "team"
-                    ? "Logo, deskripsi tim, dan divisi terisi. Tambahkan sosmed resmi."
+                    ? "Logo, deskripsi tim, dan divisi terisi. Tambahkan tautan sosial media."
                     : "Foto, IGN, Game, dan Wilayah terisi. Tambahkan sosmed."}
                 </span>
                 <Link
@@ -345,7 +345,7 @@ export function DesktopDashboardView() {
             <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col justify-between">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
-                  STATUS RESMI
+                  STATUS VERIFIKASI
                 </span>
                 <span className={`w-2 h-2 rounded-full ${isVerified ? "bg-emerald-400 animate-pulse" : "bg-amber-400"}`} />
               </div>
@@ -357,9 +357,9 @@ export function DesktopDashboardView() {
                 <div>
                   <div className="text-base font-heading font-black text-white">
                     {isVerified
-                      ? "Terverifikasi Resmi"
+                      ? "Terverifikasi"
                       : verificationStatus === "submitted"
-                      ? "Diajukan (Tahap 2)"
+                      ? "Diajukan"
                       : verificationStatus === "in_review_regional"
                       ? "Telaah Wilayah"
                       : verificationStatus === "verified"

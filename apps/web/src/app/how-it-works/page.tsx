@@ -36,11 +36,11 @@ export default function HowItWorksPage() {
     },
     {
       q: "Apa perbedaan Frame Rarity dengan Lencana Verifikasi?",
-      a: "Frame Rarity menunjukkan tingkatan prestasi kompetitif atlet di platform ESPORT SUMBAR™. Sedangkan Lencana merupakan status pengesahan dari tim kurasi ESPORT SUMBAR.",
+      a: "Frame Rarity menunjukkan tingkatan prestasi kompetitif atlet di platform ESPORT SUMBAR™. Sedangkan Lencana merupakan tanda status verifikasi berkas dari tim ESPORT SUMBAR.",
     },
     {
-      q: "Siapa yang berhak memberikan verifikasi lencana resmi?",
-      a: "Verifikasi lencana kartu disetujui berjenjang oleh tata kelola mandiri: Komunitas Esport Kota/Kabupaten sebagai pemeriksa wilayah, dan ESPORT SUMBAR sebagai verifikator provinsi. Platform dikelola independen oleh ESPORT SUMBAR™.",
+      q: "Bagaimana proses verifikasi lencana?",
+      a: "Verifikasi kartu dilakukan secara terpusat dalam satu tahap langsung oleh tim kurator ESPORT SUMBAR. Pemilik profil cukup mengunggah bukti identitas dan tangkapan layar akun game untuk ditinjau.",
     },
     {
       q: "Berapa lama masa berlaku lencana verifikasi?",
@@ -81,20 +81,20 @@ export default function HowItWorksPage() {
             {[
               {
                 step: "01",
-                title: "Registrasi Paspor",
-                desc: "Buat akun atlet resmi dan dapatkan kartu digital Tier 1 Rookie.",
+                title: "Registrasi Akun",
+                desc: "Daftar akun dan lengkapi profil untuk mendapatkan kartu digital Tier Rookie.",
                 icon: Trophy,
               },
               {
                 step: "02",
-                title: "Validasi Daerah",
-                desc: "Wilayah Kota/Kabupaten memeriksa identitas domisili dan dokumen.",
+                title: "Unggah Berkas",
+                desc: "Unggah bukti identitas dan tangkapan layar akun game untuk verifikasi satu tahap.",
                 icon: Award,
               },
               {
                 step: "03",
-                title: "Pengesahan ESPORT SUMBAR",
-                desc: "ESPORT SUMBAR menerbitkan lencana resmi bernomor seri nasional.",
+                title: "Verifikasi ESPORT SUMBAR",
+                desc: "ESPORT SUMBAR memeriksa berkas dan menerbitkan lencana berformat ESP-SB-VER-YYYY-XXXX.",
                 icon: ShieldCheck,
               },
             ].map((item, idx) => {

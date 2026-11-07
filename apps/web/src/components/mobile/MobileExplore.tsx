@@ -501,7 +501,7 @@ export function MobileExplore() {
                   "Padang",
                   "Bukittinggi",
                   "Legend Tier",
-                  "Verified ESI",
+                  "Terverifikasi",
                 ].map((sug) => (
                   <button
                     key={sug}
@@ -615,8 +615,8 @@ export function MobileExplore() {
                   </span>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { id: "verified", label: "Verified ESI" },
-                      { id: "regional", label: "Terverifikasi" },
+                      { id: "verified", label: "Terverifikasi ESPORT SUMBAR" },
+                      { id: "regional", label: "Terverifikasi Wilayah" },
                       { id: "unverified", label: "Unverified" },
                     ].map((v) => {
                       const isSelected = selectedVerif === v.id;

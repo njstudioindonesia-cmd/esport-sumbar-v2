@@ -7,7 +7,7 @@ export const instant = false;
 
 export const metadata: Metadata = {
   title: "Direktori Pelatih Esport Sumatera Barat | ESPORT SUMBAR™",
-  description: "Pangkalan data pelatih berlisensi dan juru taktik binaan ESI di Sumatera Barat.",
+  description: "Pangkalan data pelatih terdaftar dan juru taktik kompetitif di Sumatera Barat.",
 };
 
 export default async function CoachesDirectoryPage() {
@@ -17,7 +17,7 @@ export default async function CoachesDirectoryPage() {
     <EntityDirectoryView
       entityType="coach"
       title="Direktori Pelatih Esport Sumbar"
-      subtitle="Katalog pelatih resmi, juru taktik berlisensi, dan pembina tim esport di Sumatera Barat."
+      subtitle="Katalog pelatih terverifikasi, juru taktik terdaftar, dan pembina tim esport di Sumatera Barat."
       initialProfiles={profiles}
     />
   );

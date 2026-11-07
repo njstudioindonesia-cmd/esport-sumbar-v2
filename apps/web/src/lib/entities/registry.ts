@@ -41,7 +41,7 @@ export function isEntityTypeEnabled(type: string): boolean {
 }
 
 // ==============================================================================
-// 2. REGISTRY RESMI KE-7 BIDANG EKOSISTEM ESPORT SUMBAR
+// 2. REGISTRY ENTITAS KE-7 BIDANG EKOSISTEM ESPORT SUMBAR
 // ==============================================================================
 export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
   // ----------------------------------------------------------------------------
@@ -128,7 +128,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
     code: "CO",
     label: "Pelatih / Coach",
     singularLabel: "Pelatih",
-    description: "Sertifikasi dan lisensi resmi pelatih taktis & analis esport Sumatera Barat.",
+    description: "Registrasi profil pelatih taktis & analis esport Sumatera Barat.",
     badgeColor: "from-amber-500/20 to-amber-600/30 text-[#D4AF37] border-[#D4AF37]/40",
     accentGradient: "from-amber-500 to-yellow-600",
     defaultRarity: "rookie",
@@ -180,7 +180,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
     code: "TM",
     label: "Klub & Tim Esport",
     singularLabel: "Tim",
-    description: "Registrasi klub esport dengan roster resmi dan keanggotaan terverifikasi.",
+    description: "Registrasi klub esport dengan roster terdaftar dan keanggotaan terverifikasi.",
     badgeColor: "from-purple-500/20 to-purple-600/30 text-purple-400 border-purple-500/40",
     accentGradient: "from-purple-500 to-violet-600",
     defaultRarity: "rookie",
@@ -306,7 +306,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
     code: "VN",
     label: "Venue & Gaming Hub",
     singularLabel: "Venue",
-    description: "Tempat bertanding resmi, iCafe, dan bootcamp station terakreditasi ESI.",
+    description: "Tempat bertanding esport, iCafe, dan bootcamp station di Sumatera Barat.",
     badgeColor: "from-orange-500/20 to-orange-600/30 text-orange-400 border-orange-500/40",
     accentGradient: "from-orange-500 to-amber-600",
     defaultRarity: "rookie",
@@ -326,7 +326,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
         options: [
           { value: "icafe", label: "iCafe / Gaming Lounge" },
           { value: "warnet", label: "Warnet Esport" },
-          { value: "arena", label: "Arena Turnamen Resmi" },
+          { value: "arena", label: "Arena Turnamen" },
           { value: "warkop_gaming", label: "Warkop Gaming" },
           { value: "bootcamp", label: "Bootcamp Station" },
         ],
@@ -506,7 +506,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
     code: "EO",
     label: "Event Organizer",
     singularLabel: "Organizer",
-    description: "Penyelenggara turnamen resmi berizin rekomendasi ESPORT SUMBAR.",
+    description: "Penyelenggara turnamen dan event organizer ekosistem ESPORT SUMBAR.",
     badgeColor: "from-rose-500/20 to-red-600/30 text-rose-400 border-rose-500/40",
     accentGradient: "from-rose-500 to-red-600",
     defaultRarity: "rookie",
@@ -528,7 +528,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
 };
 
 /**
- * Mengambil metadata definisi bidang entitas resmi
+ * Mengambil metadata definisi bidang entitas ekosistem
  */
 export function getEntityDefinition(type: EntityType): EntityDefinition {
   return ENTITY_REGISTRY[type] || ENTITY_REGISTRY.player;

@@ -40,7 +40,7 @@ export default async function EcosystemPublicPage() {
       border: "border-blue-500/30",
       textColor: "text-blue-400",
       count: stats.totalPlayers,
-      desc: "Talenta kompetitif digital dengan rekam jejak resmi, tier rarity terkelola, dan hak perwakilan tim.",
+      desc: "Talenta kompetitif digital dengan rekam jejak terverifikasi, tier rarity terkelola, dan hak perwakilan tim.",
       canConnectTo: "Klub/Tim, Komunitas, Sekolah, Kampus",
     },
     {
@@ -51,7 +51,7 @@ export default async function EcosystemPublicPage() {
       border: "border-[#D4AF37]/40",
       textColor: "text-[#D4AF37]",
       count: stats.totalTeams,
-      desc: "Organisasi roster resmi yang menaungi atlet, didukung pelatih berlisensi, dan bertanding di divisi game terdaftar.",
+      desc: "Organisasi roster aktif yang menaungi atlet, didukung pelatih terdaftar, dan bertanding di divisi game terdaftar.",
       canConnectTo: "Roster Atlet, Pelatih, Komunitas Naungan, Institusi, Basecamp",
     },
     {
@@ -63,7 +63,7 @@ export default async function EcosystemPublicPage() {
       textColor: "text-purple-400",
       count: 0,
       desc: "Peracik strategi dan analis taktikal berlisensi dengan rekam jejak kepelatihan yang terverifikasi.",
-      canConnectTo: "Klub/Tim Resmi, Pembina Sekolah/Kampus, Penasihat Komunitas",
+      canConnectTo: "Klub/Tim, Pembina Sekolah/Kampus, Penasihat Komunitas",
     },
     {
       type: "community",
@@ -84,7 +84,7 @@ export default async function EcosystemPublicPage() {
       border: "border-emerald-500/30",
       textColor: "text-emerald-400",
       count: stats.totalVenues,
-      desc: "Sentra fasilitas latihan, gaming lounge, dan arena turnamen berspesifikasi kompetisi resmi.",
+      desc: "Sentra fasilitas latihan, gaming lounge, dan arena turnamen berspesifikasi kompetisi terdaftar.",
       canConnectTo: "Basecamp Tim, Markas Komunitas, Tempat Latihan Sekolah/Kampus",
     },
     {
@@ -128,7 +128,7 @@ export default async function EcosystemPublicPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-white/70 max-w-2xl leading-relaxed">
-            Pusat interkoneksi resmi antara 7 pilar industri olahraga elektronik Ranah Minang. Satu akun, satu profil, terhubung secara sah dengan aturan deklaratif terverifikasi.
+            Pusat interkoneksi antara 7 pilar industri olahraga elektronik Ranah Minang. Satu akun, satu profil, terhubung secara valid dengan aturan deklaratif terverifikasi.
           </p>
 
           {/* STATS BENTO ROW */}
@@ -156,7 +156,7 @@ export default async function EcosystemPublicPage() {
                 {stats.totalTeams}
               </span>
               <span className="text-[10px] sm:text-xs font-mono text-white/50 uppercase">
-                Klub &amp; Tim Resmi
+                Klub &amp; Tim Terdaftar
               </span>
             </div>
 
@@ -193,7 +193,7 @@ export default async function EcosystemPublicPage() {
         <section className="flex flex-col gap-6">
           <div className="flex flex-col gap-1">
             <span className="text-xs font-mono text-[#D4AF37] uppercase font-bold tracking-wider">
-              7 PILAR RESMI
+              7 PILAR EKOSISTEM
             </span>
             <h2 className="text-2xl sm:text-3xl font-heading font-black uppercase text-white tracking-tight">
               Entitas yang Saling Terhubung
@@ -231,7 +231,7 @@ export default async function EcosystemPublicPage() {
                   </div>
 
                   <div className="pt-3 border-t border-white/10 text-xs font-mono flex flex-col gap-1">
-                    <span className="text-[10px] text-white/40 uppercase">Target Hubungan Sah:</span>
+                    <span className="text-[10px] text-white/40 uppercase">Target Hubungan Valid:</span>
                     <span className="text-white/90 text-[11px]">{card.canConnectTo}</span>
                   </div>
                 </div>
@@ -240,13 +240,13 @@ export default async function EcosystemPublicPage() {
           </div>
         </section>
 
-        {/* ATURAN KETERHUBUNGAN RESMI (RELATION RULES MATRIX) */}
+        {/* ATURAN KETERHUBUNGAN EKOSISTEM (RELATION RULES MATRIX) */}
         <section className="p-8 rounded-3xl bg-[#0B0E17] border border-white/10 flex flex-col gap-6">
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <Link2 className="w-4 h-4 text-[#D4AF37]" />
               <span className="text-xs font-mono text-[#D4AF37] uppercase font-bold tracking-wider">
-                MATRIKS ATURAN DEKLARATIF ({rules.length} ATURAN RESMI)
+                MATRIKS ATURAN DEKLARATIF ({rules.length} ATURAN BAKU)
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-heading font-black uppercase text-white tracking-tight">

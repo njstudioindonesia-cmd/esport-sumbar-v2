@@ -16,7 +16,7 @@ export interface GameCategory {
 export type GameMaster = GameCategory;
 
 /**
- * Baseline resmi katalog game ESPORT SUMBAR V3.
+ * Baseline baku katalog game ESPORT SUMBAR V3.
  * Tersinkronisasi dengan tabel `games`, `game_roles`, dan `game_ranks` di PostgreSQL.
  * Seluruh logo merek digantikan oleh ikon netral berbasis genre sesuai Mandat 5.4.
  */

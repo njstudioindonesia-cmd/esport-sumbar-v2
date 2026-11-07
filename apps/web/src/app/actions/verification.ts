@@ -85,7 +85,7 @@ export async function submitVerificationAction(
 
       return {
         success: true,
-        message: "Berkas verifikasi berhasil dikirim ke antrean telaah resmi ESPORT SUMBAR.",
+        message: "Berkas verifikasi berhasil dikirim ke antrean telaah ESPORT SUMBAR.",
         newStatus: "submitted",
       };
     }
@@ -124,7 +124,7 @@ export async function submitVerificationAction(
 
     return {
       success: true,
-      message: "Berkas verifikasi berhasil dikirim ke antrean telaah resmi ESPORT SUMBAR.",
+      message: "Berkas verifikasi berhasil dikirim ke antrean telaah ESPORT SUMBAR.",
       newStatus: "submitted",
     };
   } catch (err: unknown) {

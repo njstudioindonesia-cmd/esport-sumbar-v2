@@ -67,7 +67,7 @@ export const optionalE164PhoneSchema = z
 // 1. SKEMA DATA PRIBADI (PROFILE_PRIVATE - 1:1 DENGAN PROFILES)
 // ==============================================================================
 export const profilePrivateSchema = z.object({
-  full_name: sanitizedString(2, 150, "Nama lengkap resmi wajib diisi untuk verifikasi resmi ESPORT SUMBAR."),
+  full_name: sanitizedString(2, 150, "Nama lengkap sesuai identitas wajib diisi untuk verifikasi ESPORT SUMBAR."),
   whatsapp_e164: e164PhoneSchema,
   contact_email: z.string().email("Format email tidak valid.").optional().or(z.literal("")),
   birth_date: z.string().optional(),

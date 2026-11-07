@@ -155,7 +155,7 @@ export function MobilePublicProfile({ card, isQrScan = false, isOwner = false }:
 
       {/* CENTER CONTENT */}
       <div className="px-5 flex flex-col items-center gap-4 pt-2">
-        {/* KARTU RESMI 3D PASPOR ATLET */}
+        {/* KARTU DIGITAL 3D PASPOR ATLET */}
         <EsportCard
           type={card.type}
           rarity={card.rarity}
@@ -263,7 +263,7 @@ export function MobilePublicProfile({ card, isQrScan = false, isOwner = false }:
                     verified: true,
                   },
                   {
-                    title: "Runner Up • Kejurprov ESI Sumbar",
+                    title: "Runner Up • Kejuaraan Esport Sumbar",
                     year: "2025",
                     level: "Provinsi",
                     verified: true,
@@ -295,7 +295,7 @@ export function MobilePublicProfile({ card, isQrScan = false, isOwner = false }:
                     {ach.verified && (
                       <div
                         className="w-6 h-6 rounded-full bg-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37]"
-                        title="Tervalidasi Resmi ESI"
+                        title="Terverifikasi ESPORT SUMBAR"
                       >
                         <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                       </div>
