@@ -4,13 +4,18 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BrandLogo, BrandWatermark } from "@/components/brand";
-import { Lock, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, ArrowRight, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { GlassSurface } from "@/components/glass/GlassSurface";
+import { GlassCard } from "@/components/glass/GlassCard";
+import { GlassButton } from "@/components/glass/GlassButton";
+import { GlassBadge } from "@/components/glass/GlassBadge";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -48,14 +53,23 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#07080C] text-white flex flex-col justify-between p-6 select-none selection:bg-[#FF1752]/30 selection:text-white">
+    <div className="relative min-h-screen w-full bg-[#07080C] text-white flex flex-col justify-between p-6 select-none selection:bg-[#D4AF37]/30 selection:text-white">
       {/* Background Watermark Mark */}
-      <BrandWatermark opacity={0.04} size={640} position="center" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#FF1752]/10 rounded-full blur-3xl pointer-events-none" />
+      <BrandWatermark opacity={0.03} size={640} position="center" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header */}
       <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between pt-2">
-        <BrandLogo variant="lockup" size="sm" withLink={true} />
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="flex h-5 w-1.5 shrink-0 rounded-full overflow-hidden">
+            <span className="h-1/3 w-full bg-[#C8102E]" />
+            <span className="h-1/3 w-full bg-[#D4AF37]" />
+            <span className="h-1/3 w-full bg-black" />
+          </div>
+          <span className="font-heading font-black text-sm tracking-wider text-white group-hover:text-[#D4AF37] transition-colors">
+            ESPORT SUMBAR
+          </span>
+        </Link>
         <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
           Ubah Kata Sandi
         </span>
@@ -63,89 +77,112 @@ export default function ResetPasswordPage() {
 
       {/* Main Form Box */}
       <main className="relative z-10 w-full max-w-md mx-auto my-auto">
-        <div className="p-8 rounded-3xl bg-[#0F1118]/90 border border-white/[0.08] backdrop-blur-xl shadow-2xl">
+        <GlassSurface
+          variant="elevated"
+          elevation="glass"
+          radius="3xl"
+          className="p-8 sm:p-10 shadow-2xl"
+        >
           {isSuccess ? (
             <div className="flex flex-col items-center text-center gap-4 py-4">
-              <div className="w-14 h-14 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
-                <CheckCircle2 className="w-7 h-7" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h1 className="text-xl font-heading font-black text-white uppercase">
-                Kata Sandi Berhasil Diperbarui!
-              </h1>
+              <div>
+                <GlassBadge variant="subtle" size="sm" className="mb-2">
+                  Sandi Berhasil Diubah
+                </GlassBadge>
+                <h1 className="text-xl font-heading font-black text-white uppercase tracking-tight">
+                  Kata Sandi Baru Aktif
+                </h1>
+              </div>
               <p className="text-xs text-white/70 leading-relaxed max-w-sm">
-                Kata sandi baru akun Anda telah aktif. Silakan masuk menggunakan kredensial terbaru Anda.
+                Kata sandi akun Anda telah diperbarui. Silakan masuk kembali menggunakan kata sandi baru Anda untuk melanjutkan ke paspor digital.
               </p>
-              <div className="pt-2 w-full">
-                <Link
-                  href="/login"
-                  className="w-full py-3 rounded-xl bg-[#FF1752] hover:bg-[#E01447] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#FF1752]/20 transition-all"
-                >
-                  <span>Masuk ke Akun Saya</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+              <div className="pt-2">
+                <Link href="/login">
+                  <GlassButton variant="primary" size="md" className="flex items-center gap-2 font-bold">
+                    <span>Masuk ke Akun</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </GlassButton>
                 </Link>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleUpdatePassword} className="flex flex-col gap-4">
+            <form onSubmit={handleUpdatePassword} className="flex flex-col gap-5">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#FF1752] block mb-1">
-                  Atur Ulang
-                </span>
+                <GlassBadge variant="subtle" size="sm" className="mb-2 text-[#D4AF37]">
+                  Keamanan Akun
+                </GlassBadge>
                 <h1 className="text-2xl font-heading font-black text-white uppercase tracking-tight">
-                  Kata Sandi Baru
+                  Atur Kata Sandi Baru
                 </h1>
-                <p className="text-xs text-white/60 mt-1 leading-relaxed">
-                  Gunakan kombinasi minimal 8 karakter huruf dan angka demi keamanan akun.
+                <p className="text-xs text-white/60 mt-1.5 leading-relaxed">
+                  Buat kata sandi baru yang kuat untuk melindungi akun dan paspor digital Anda.
                 </p>
               </div>
 
               {errorMessage && (
-                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
+                <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-xs text-red-200 flex items-center gap-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
                   <span>{errorMessage}</span>
                 </div>
               )}
 
-              <div>
-                <label className="text-xs font-mono text-white/70 block mb-1.5">Kata Sandi Baru *</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-heading font-bold text-white/80 block">
+                  Kata Sandi Baru *
+                </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Minimal 8 karakter"
-                    autoFocus
-                    className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#FF1752] rounded-xl pl-10 pr-3.5 text-xs text-white outline-none"
+                    placeholder="Min. 8 karakter"
+                    required
+                    className="w-full h-11 bg-white/[0.04] border border-white/10 focus:border-[#D4AF37]/60 focus:ring-1 focus:ring-[#D4AF37]/30 rounded-xl pl-10 pr-10 text-xs text-white outline-none transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
-              <div>
-                <label className="text-xs font-mono text-white/70 block mb-1.5">Konfirmasi Kata Sandi Baru *</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-heading font-bold text-white/80 block">
+                  Konfirmasi Kata Sandi Baru *
+                </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Ulangi kata sandi baru"
-                    className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#FF1752] rounded-xl pl-10 pr-3.5 text-xs text-white outline-none"
+                    placeholder="Ketik ulang kata sandi baru"
+                    required
+                    className="w-full h-11 bg-white/[0.04] border border-white/10 focus:border-[#D4AF37]/60 focus:ring-1 focus:ring-[#D4AF37]/30 rounded-xl pl-10 pr-3.5 text-xs text-white outline-none transition-all"
                   />
                 </div>
               </div>
 
-              <button
+              <GlassButton
                 type="submit"
+                variant="primary"
+                size="md"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-xl bg-[#FF1752] hover:bg-[#E01447] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#FF1752]/20 disabled:opacity-50 transition-all mt-2"
+                className="w-full mt-1 font-black uppercase tracking-wider flex items-center justify-center gap-2"
               >
-                <span>{isSubmitting ? "Menyimpan Kata Sandi..." : "Simpan Kata Sandi"}</span>
+                <span>{isSubmitting ? "Menyimpan Sandi..." : "Simpan Kata Sandi"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </GlassButton>
             </form>
           )}
-        </div>
+        </GlassSurface>
       </main>
 
       {/* Footer */}

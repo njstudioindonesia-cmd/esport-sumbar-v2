@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getProfileByAccountId } from "@/lib/services/core/profile";
 import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
 import { EditProfileClientForm } from "@/app/me/profile/[id]/edit/EditProfileClientForm";
-import { MobileProfileEditView } from "@/components/mobile/MobileProfileEditView";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import type { Metadata } from "next";
 
 export const instant = false;
@@ -60,25 +60,9 @@ export default async function EditMyProfilePage() {
 
   return (
     <main className="min-h-screen w-full bg-[#07080C]">
-      {/* Mobile Flow (< 1024px): Dedicated Ergonomic Mobile Form */}
-      <div className="block lg:hidden min-h-[100dvh] w-full">
-        <MobileProfileEditView
-          profileId={profile.id}
-          entityType={profile.entityType}
-          initialDisplayName={profile.displayName}
-          initialIgn={profile.ign || ""}
-          initialBio={profile.bio || ""}
-          initialRoleName={profile.roleName || ""}
-          initialAttributes={initialAttributes}
-          verificationStatus={profile.verificationStatus as any}
-          slug={profile.slug}
-        />
-      </div>
-
-      {/* Desktop Flow (>= 1024px): Full Shell with Sidebar */}
-      <div className="hidden lg:block w-full min-h-screen">
-        <DesktopUserShell breadcrumb="Edit Profil">
-          <div className="max-w-4xl mx-auto py-4">
+      <DesktopUserShell breadcrumb="Edit Profil">
+        <div className="max-w-4xl mx-auto py-4">
+          <QuietSurface elevation="raised" radius="3xl" className="p-6 sm:p-8">
             <EditProfileClientForm
               profileId={profile.id}
               entityType={profile.entityType}
@@ -90,9 +74,9 @@ export default async function EditMyProfilePage() {
               verificationStatus={profile.verificationStatus as any}
               slug={profile.slug}
             />
-          </div>
-        </DesktopUserShell>
-      </div>
+          </QuietSurface>
+        </div>
+      </DesktopUserShell>
     </main>
   );
 }

@@ -3,8 +3,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { BrandLogo, BrandWatermark } from "@/components/brand";
-import { Mail, ArrowLeft, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
+import { Mail, ArrowLeft, ArrowRight, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { GlassSurface } from "@/components/glass/GlassSurface";
+import { GlassCard } from "@/components/glass/GlassCard";
+import { GlassButton } from "@/components/glass/GlassButton";
+import { GlassBadge } from "@/components/glass/GlassBadge";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -24,7 +28,7 @@ export default function ForgotPasswordPage() {
 
     try {
       const supabase = createClient();
-      const origin = typeof window !== "undefined" ? window.location.origin : "https://esport-sumbar.com";
+      const origin = typeof window !== "undefined" ? window.location.origin : "https://esportsumbar.id";
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
         redirectTo: `${origin}/reset-password`,
       });
@@ -43,14 +47,23 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#07080C] text-white flex flex-col justify-between p-6 select-none selection:bg-[#FF1752]/30 selection:text-white">
+    <div className="relative min-h-screen w-full bg-[#07080C] text-white flex flex-col justify-between p-6 select-none selection:bg-[#D4AF37]/30 selection:text-white">
       {/* Background Watermark Mark */}
-      <BrandWatermark opacity={0.04} size={640} position="center" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#FF1752]/10 rounded-full blur-3xl pointer-events-none" />
+      <BrandWatermark opacity={0.03} size={640} position="center" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header */}
       <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between pt-2">
-        <BrandLogo variant="lockup" size="sm" withLink={true} />
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="flex h-5 w-1.5 shrink-0 rounded-full overflow-hidden">
+            <span className="h-1/3 w-full bg-[#C8102E]" />
+            <span className="h-1/3 w-full bg-[#D4AF37]" />
+            <span className="h-1/3 w-full bg-black" />
+          </div>
+          <span className="font-heading font-black text-sm tracking-wider text-white group-hover:text-[#D4AF37] transition-colors">
+            ESPORT SUMBAR
+          </span>
+        </Link>
         <Link
           href="/login"
           className="inline-flex items-center gap-1.5 text-xs font-mono text-white/50 hover:text-white transition-colors"
@@ -62,75 +75,89 @@ export default function ForgotPasswordPage() {
 
       {/* Main Form Box */}
       <main className="relative z-10 w-full max-w-md mx-auto my-auto">
-        <div className="p-8 rounded-3xl bg-[#0F1118]/90 border border-white/[0.08] backdrop-blur-xl shadow-2xl">
+        <GlassSurface
+          variant="elevated"
+          elevation="glass"
+          radius="3xl"
+          className="p-8 sm:p-10 shadow-2xl"
+        >
           {isSuccess ? (
             <div className="flex flex-col items-center text-center gap-4 py-4">
-              <div className="w-14 h-14 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
-                <CheckCircle2 className="w-7 h-7" />
+              <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h1 className="text-xl font-heading font-black text-white uppercase">
-                Periksa Inbox Email Anda
-              </h1>
+              <div>
+                <GlassBadge variant="subtle" size="sm" className="mb-2">
+                  Instruksi Terkirim
+                </GlassBadge>
+                <h1 className="text-xl font-heading font-black text-white uppercase tracking-tight">
+                  Periksa Inbox Email Anda
+                </h1>
+              </div>
               <p className="text-xs text-white/70 leading-relaxed max-w-sm">
                 Jika alamat <span className="text-[#D4AF37] font-mono font-semibold">{email}</span> terdaftar di ESPORT SUMBAR, kami telah mengirimkan tautan pemulihan kata sandi. Tautan berlaku selama 60 menit.
               </p>
               <div className="pt-2">
-                <Link
-                  href="/login"
-                  className="px-6 py-2.5 rounded-xl bg-white/[0.06] hover:bg-white/10 text-xs font-mono text-white transition-all flex items-center gap-2"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Kembali ke Halaman Masuk</span>
+                <Link href="/login">
+                  <GlassButton variant="secondary" size="md" className="flex items-center gap-2">
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span>Kembali ke Halaman Masuk</span>
+                  </GlassButton>
                 </Link>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleResetRequest} className="flex flex-col gap-4">
+            <form onSubmit={handleResetRequest} className="flex flex-col gap-5">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#FF1752] block mb-1">
+                <GlassBadge variant="subtle" size="sm" className="mb-2 text-[#D4AF37]">
                   Keamanan Akun
-                </span>
+                </GlassBadge>
                 <h1 className="text-2xl font-heading font-black text-white uppercase tracking-tight">
                   Pemulihan Kata Sandi
                 </h1>
-                <p className="text-xs text-white/60 mt-1 leading-relaxed">
-                  Masukkan email yang terdaftar untuk menerima tautan pembuatan kata sandi baru.
+                <p className="text-xs text-white/60 mt-1.5 leading-relaxed">
+                  Masukkan email yang terdaftar untuk menerima tautan pembuatan kata sandi baru tanpa pembocoran privasi akun.
                 </p>
               </div>
 
               {errorMessage && (
-                <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0" />
+                <div className="p-3.5 rounded-xl bg-red-500/15 border border-red-500/30 text-xs text-red-200 flex items-center gap-2.5">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
                   <span>{errorMessage}</span>
                 </div>
               )}
 
-              <div>
-                <label className="text-xs font-mono text-white/70 block mb-1.5">Alamat Email *</label>
+              <div className="space-y-1.5">
+                <label className="text-xs font-heading font-bold text-white/80 block">
+                  Alamat Email Akun
+                </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="nama@email.com"
                     autoFocus
-                    className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#FF1752] rounded-xl pl-10 pr-3.5 text-xs text-white outline-none"
+                    required
+                    className="w-full h-11 bg-white/[0.04] border border-white/10 focus:border-[#D4AF37]/60 focus:ring-1 focus:ring-[#D4AF37]/30 rounded-xl pl-10 pr-3.5 text-xs text-white outline-none transition-all"
                   />
                 </div>
               </div>
 
-              <button
+              <GlassButton
                 type="submit"
+                variant="primary"
+                size="md"
                 disabled={isSubmitting}
-                className="w-full py-3 rounded-xl bg-[#FF1752] hover:bg-[#E01447] text-white font-heading font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#FF1752]/20 disabled:opacity-50 transition-all mt-2"
+                className="w-full mt-1 font-black uppercase tracking-wider flex items-center justify-center gap-2"
               >
                 <span>{isSubmitting ? "Mengirimkan Tautan..." : "Kirim Tautan Pemulihan"}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </GlassButton>
             </form>
           )}
-        </div>
+        </GlassSurface>
       </main>
 
       {/* Footer */}

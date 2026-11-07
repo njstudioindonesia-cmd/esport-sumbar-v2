@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import {
   Bell,
@@ -8,11 +8,17 @@ import {
   Clock,
   ShieldCheck,
   Share2,
-  ArrowLeft,
   Trash2,
   Check,
+  Sparkles,
+  Inbox,
+  Filter,
 } from "lucide-react";
-import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
+import { UserShell } from "@/components/dashboard/DesktopUserShell";
+import { GlassSurface } from "@/components/glass/GlassSurface";
+import { GlassCard } from "@/components/glass/GlassCard";
+import { GlassButton } from "@/components/glass/GlassButton";
+import { GlassBadge } from "@/components/glass/GlassBadge";
 
 interface NotificationItem {
   id: string;
@@ -24,6 +30,7 @@ interface NotificationItem {
 }
 
 export default function MyNotificationsPage() {
+  const [filter, setFilter] = useState<"all" | "unread" | "verification" | "ecosystem">("all");
   const [notifications, setNotifications] = useState<NotificationItem[]>([
     {
       id: "notif-1",
@@ -59,52 +66,115 @@ export default function MyNotificationsPage() {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
+  const filteredNotifications = notifications.filter((item) => {
+    if (filter === "unread") return !item.read;
+    if (filter === "verification") return item.type === "verification";
+    if (filter === "ecosystem") return item.type === "ecosystem";
+    return true;
+  });
+
   return (
     <main className="min-h-screen w-full bg-[#07080C] text-white">
-      <DesktopUserShell breadcrumb="Notifikasi">
-        <div className="max-w-3xl mx-auto py-6 px-4 space-y-6">
-          <div className="flex items-center justify-between">
+      <UserShell breadcrumb="Notifikasi">
+        <div className="max-w-4xl mx-auto py-4 space-y-6">
+          {/* Header Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2.5">
-                <Bell className="w-6 h-6 text-pink-500" /> Notifikasi
+              <h1 className="text-2xl font-heading font-black text-white uppercase tracking-tight flex items-center gap-2.5">
+                <Bell className="w-6 h-6 text-[#D4AF37]" />
+                <span>Pusat Notifikasi</span>
               </h1>
-              <p className="text-xs text-slate-400 mt-1">
-                Pembaruan seputar verifikasi, permohonan kemitraan, dan keamanan akun.
+              <p className="text-xs text-white/50 mt-1">
+                Pemberitahuan terpusat kurasi verifikasi, undangan ekosistem, dan keamanan akun Anda.
               </p>
             </div>
+            <div className="flex items-center gap-2">
+              <GlassButton
+                variant="secondary"
+                size="sm"
+                onClick={markAllRead}
+                className="flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Tandai Semua Dibaca</span>
+              </GlassButton>
+            </div>
+          </div>
+
+          {/* Filter Bar */}
+          <div className="flex items-center gap-2 p-1 rounded-2xl bg-white/[0.03] border border-white/10 overflow-x-auto text-xs">
             <button
-              onClick={markAllRead}
-              className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-slate-300 flex items-center gap-1.5 transition-colors"
+              onClick={() => setFilter("all")}
+              className={`px-3.5 py-1.5 rounded-xl font-heading font-bold transition-all ${
+                filter === "all" ? "bg-[#D4AF37] text-black" : "text-white/60 hover:text-white"
+              }`}
             >
-              <Check className="w-3.5 h-3.5" /> Tandai Semua Dibaca
+              Semua ({notifications.length})
+            </button>
+            <button
+              onClick={() => setFilter("unread")}
+              className={`px-3.5 py-1.5 rounded-xl font-heading font-bold transition-all ${
+                filter === "unread" ? "bg-[#D4AF37] text-black" : "text-white/60 hover:text-white"
+              }`}
+            >
+              Belum Dibaca ({notifications.filter((n) => !n.read).length})
+            </button>
+            <button
+              onClick={() => setFilter("verification")}
+              className={`px-3.5 py-1.5 rounded-xl font-heading font-bold transition-all ${
+                filter === "verification" ? "bg-[#D4AF37] text-black" : "text-white/60 hover:text-white"
+              }`}
+            >
+              Verifikasi
+            </button>
+            <button
+              onClick={() => setFilter("ecosystem")}
+              className={`px-3.5 py-1.5 rounded-xl font-heading font-bold transition-all ${
+                filter === "ecosystem" ? "bg-[#D4AF37] text-black" : "text-white/60 hover:text-white"
+              }`}
+            >
+              Ekosistem
             </button>
           </div>
 
+          {/* Notifications List */}
           <div className="space-y-3">
-            {notifications.length === 0 ? (
-              <div className="p-12 text-center bg-slate-900/50 rounded-2xl border border-white/10 text-slate-400">
-                <Bell className="w-8 h-8 mx-auto mb-2 text-slate-500" />
-                <p className="text-sm font-medium text-white">Belum ada notifikasi.</p>
-                <p className="text-xs text-slate-500 mt-1">Anda akan menerima pembaruan di sini.</p>
-              </div>
+            {filteredNotifications.length === 0 ? (
+              <GlassCard
+                variant="thin"
+                elevation="flat"
+                radius="3xl"
+                className="p-12 text-center flex flex-col items-center justify-center gap-3"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40">
+                  <Inbox className="w-7 h-7" />
+                </div>
+                <h3 className="text-sm font-heading font-bold text-white uppercase">
+                  Tidak Ada Notifikasi
+                </h3>
+                <p className="text-xs text-white/50 max-w-sm">
+                  Seluruh notifikasi telah Anda tangani atau belum ada aktivitas baru.
+                </p>
+              </GlassCard>
             ) : (
-              notifications.map((item) => (
-                <div
+              filteredNotifications.map((item) => (
+                <GlassCard
                   key={item.id}
-                  className={`p-4 rounded-2xl border transition-all flex items-start justify-between gap-4 ${
-                    item.read
-                      ? "bg-slate-900/40 border-white/5 text-slate-300"
-                      : "bg-slate-900/80 border-pink-500/30 text-white shadow-lg shadow-pink-500/5"
+                  variant={item.read ? "thin" : "thick"}
+                  elevation={item.read ? "flat" : "raised"}
+                  radius="2xl"
+                  className={`p-4 transition-all flex items-start justify-between gap-4 ${
+                    !item.read ? "border-[#D4AF37]/40 shadow-lg shadow-[#D4AF37]/5" : ""
                   }`}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3.5">
                     <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5 border ${
                         item.type === "verification"
-                          ? "bg-emerald-500/10 text-emerald-400"
+                          ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30"
                           : item.type === "ecosystem"
-                          ? "bg-blue-500/10 text-blue-400"
-                          : "bg-pink-500/10 text-pink-400"
+                          ? "bg-cyan-500/15 text-cyan-400 border-cyan-500/30"
+                          : "bg-[#D4AF37]/15 text-[#D4AF37] border-[#D4AF37]/30"
                       }`}
                     >
                       {item.type === "verification" ? (
@@ -117,15 +187,17 @@ export default function MyNotificationsPage() {
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-bold text-white">{item.title}</h3>
+                        <h3 className="text-sm font-heading font-bold text-white">
+                          {item.title}
+                        </h3>
                         {!item.read && (
-                          <span className="w-2 h-2 rounded-full bg-pink-500 shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
                         )}
                       </div>
-                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                      <p className="text-xs text-white/70 mt-1 leading-relaxed">
                         {item.message}
                       </p>
-                      <span className="text-[10px] text-slate-500 mt-2 block font-mono">
+                      <span className="text-[10px] text-white/40 mt-2 block font-mono">
                         {item.createdAt}
                       </span>
                     </div>
@@ -133,17 +205,17 @@ export default function MyNotificationsPage() {
 
                   <button
                     onClick={() => deleteNotification(item.id)}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-slate-300 transition-colors"
-                    title="Hapus"
+                    className="p-1.5 rounded-lg text-white/40 hover:text-red-400 hover:bg-white/5 transition-colors"
+                    title="Hapus notifikasi"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
-                </div>
+                </GlassCard>
               ))
             )}
           </div>
         </div>
-      </DesktopUserShell>
+      </UserShell>
     </main>
   );
 }

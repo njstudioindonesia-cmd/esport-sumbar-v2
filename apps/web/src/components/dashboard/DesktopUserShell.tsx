@@ -18,9 +18,16 @@ import {
   LogOut,
   Sparkles,
   ExternalLink,
+  Menu,
+  X,
+  Edit3,
 } from "lucide-react";
 import { CommandPalette } from "@/components/shared/CommandPalette";
 import { signOutAction } from "@/app/actions/auth";
+import { GlassSurface } from "@/components/glass/GlassSurface";
+import { GlassCard } from "@/components/glass/GlassCard";
+import { GlassBadge } from "@/components/glass/GlassBadge";
+import { GlassButton } from "@/components/glass/GlassButton";
 
 interface DesktopUserShellProps {
   children: React.ReactNode;
@@ -28,11 +35,13 @@ interface DesktopUserShellProps {
 }
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Beranda", icon: LayoutDashboard },
-  { href: "/me/profile", label: "Profil Saya", icon: User },
-  { href: "/me/cards", label: "Kartu Paspor", icon: CreditCard },
+  { href: "/dashboard", label: "Ringkasan", icon: LayoutDashboard },
+  { href: "/me", label: "Paspor Saya", icon: User },
+  { href: "/me/edit", label: "Edit Profil", icon: Edit3 },
+  { href: "/me/card", label: "Kartu Digital", icon: CreditCard },
   { href: "/me/verification", label: "Verifikasi", icon: ShieldCheck },
-  { href: "/me/memberships", label: "Relasi Tim", icon: Users },
+  { href: "/me/ecosystem", label: "Ekosistem", icon: Users },
+  { href: "/me/notifications", label: "Notifikasi", icon: Bell },
   { href: "/me/privacy", label: "Privasi Data", icon: Lock },
   { href: "/me/settings", label: "Pengaturan", icon: Settings },
 ];
@@ -43,6 +52,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
   const [collapsed, setCollapsed] = useState(false);
   const [hasUnreadNotification, setHasUnreadNotification] = useState(true);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [userSession, setUserSession] = useState<{
     email: string;
     role: string;
@@ -100,22 +110,26 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   return (
-    <div className="w-full min-h-screen bg-[#07080C] text-white flex select-none">
+    <div className="w-full min-h-screen bg-[#07080C] text-white flex flex-col lg:flex-row select-none">
       <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
 
       {/* ========================================================= */}
-      {/* SIDEBAR KIRI RAMPING DAPAT DILIPAT                        */}
+      {/* SIDEBAR KIRI RAMPING DAPAT DILIPAT (DESKTOP >= 1024px)   */}
       {/* ========================================================= */}
       <aside
-        className={`sticky top-0 h-screen border-r border-white/[0.08] bg-[#0B0D14] hidden lg:flex flex-col justify-between transition-all duration-300 z-40 ${
+        className={`sticky top-0 h-screen border-r border-white/[0.08] bg-[#0B0D14]/90 backdrop-blur-xl hidden lg:flex flex-col justify-between transition-all duration-300 z-40 ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
         {/* Top Header / Brand */}
         <div className="p-4 border-b border-white/[0.06] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 overflow-hidden group">
-            {/* Marawa Tricolor Bar */}
             <div className="flex h-5 w-1.5 shrink-0 rounded-full overflow-hidden">
               <span className="h-1/3 w-full bg-[#C8102E]" />
               <span className="h-1/3 w-full bg-[#D4AF37]" />
@@ -128,7 +142,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                   ESPORT SUMBAR
                 </span>
                 <span className="text-[9px] font-mono text-white/40 tracking-widest uppercase">
-                  PASPOR ATLET
+                  PASPOR DIGITAL
                 </span>
               </div>
             )}
@@ -145,28 +159,28 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
           </button>
         </div>
 
-        {/* Navigation Items (Ikon + 1 Kata) */}
-        <nav className="flex-1 px-3 py-6 flex flex-col gap-1.5">
+        {/* Navigation Items */}
+        <nav className="flex-1 px-3 py-6 flex flex-col gap-1.5 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const isActive =
               item.href === "/dashboard"
                 ? pathname === "/dashboard"
-                : pathname.startsWith(item.href);
+                : pathname === item.href || (item.href !== "/me" && pathname.startsWith(item.href));
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative flex items-center gap-3.5 px-3 py-3 rounded-xl text-xs font-heading font-bold transition-all group ${
+                className={`relative flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-xs font-heading font-bold transition-all group ${
                   isActive
-                    ? "bg-[#D4AF37]/10 text-[#D4AF37] border-l-2 border-[#D4AF37] shadow-sm"
+                    ? "bg-[#D4AF37]/10 text-[#D4AF37] border-l-2 border-[#D4AF37] shadow-sm font-black"
                     : "text-white/60 hover:text-white hover:bg-white/[0.04]"
                 }`}
                 title={collapsed ? item.label : undefined}
               >
                 <Icon
-                  className={`w-5 h-5 shrink-0 transition-colors ${
+                  className={`w-4 h-4 shrink-0 transition-colors ${
                     isActive ? "text-[#D4AF37]" : "text-white/50 group-hover:text-white"
                   }`}
                 />
@@ -186,15 +200,13 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
           <div className="px-3 pb-3">
             <Link
               href="/admin"
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 transition-all shadow-lg ${
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 transition-all shadow-lg ${
                 collapsed ? "justify-center px-0" : ""
               }`}
               title={collapsed ? "Buka Panel Admin" : undefined}
             >
               <ShieldCheck className="w-4 h-4 shrink-0" />
-              {!collapsed && (
-                <span className="truncate">Panel Admin</span>
-              )}
+              {!collapsed && <span className="truncate">Panel Admin</span>}
             </Link>
           </div>
         )}
@@ -217,7 +229,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                   </span>
                   <span className="text-[9px] font-mono text-[#D4AF37] uppercase tracking-wider">
                     {userSession?.role === "platform_admin"
-                      ? "PLATFORM ADMIN"
+                      ? "ADMIN PLATFORM"
                       : userSession?.entityType === "team"
                       ? "PASPOR TIM"
                       : userSession?.entityType === "coach"
@@ -249,38 +261,49 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
       </aside>
 
       {/* ========================================================= */}
-      {/* MAIN CONTENT AREA & TOPBAR                                */}
+      {/* MAIN CONTENT AREA & TOPBAR (RESPONSIVE)                   */}
       {/* ========================================================= */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Topbar: Breadcrumb, Pencarian Cmd+K, Notifikasi, Avatar */}
-        <header className="sticky top-0 h-16 border-b border-white/[0.08] bg-[#07080C]/90 backdrop-blur-xl px-8 flex items-center justify-between z-30">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs font-mono">
-            <span className="text-white/40">Dashboard</span>
-            <span className="text-white/20">/</span>
-            <span className="text-white font-semibold">
-              {breadcrumb ||
-                (pathname === "/dashboard"
-                  ? "Beranda"
-                  : pathname === "/me/cards"
-                  ? "Kartu"
-                  : pathname === "/me/verification"
-                  ? "Verifikasi"
-                  : pathname === "/me/memberships"
-                  ? "Tim"
-                  : pathname === "/me/privacy"
-                  ? "Privasi"
-                  : "Pengaturan")}
-            </span>
+        {/* Topbar: Mobile Hamburger + Breadcrumb + Actions */}
+        <header className="sticky top-0 h-16 border-b border-white/[0.08] bg-[#07080C]/90 backdrop-blur-xl px-4 sm:px-8 flex items-center justify-between z-30">
+          <div className="flex items-center gap-3">
+            {/* Mobile Drawer Button (< 1024px) */}
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-xl bg-white/[0.04] border border-white/10 text-white/70 hover:text-white"
+              aria-label="Buka menu navigasi"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+
+            {/* Mobile Brand Link (< 1024px) */}
+            <Link href="/" className="flex lg:hidden items-center gap-2">
+              <div className="flex h-4 w-1.5 shrink-0 rounded-full overflow-hidden">
+                <span className="h-1/3 w-full bg-[#C8102E]" />
+                <span className="h-1/3 w-full bg-[#D4AF37]" />
+                <span className="h-1/3 w-full bg-black" />
+              </div>
+              <span className="font-heading font-black text-xs text-white">
+                ESPORT SUMBAR
+              </span>
+            </Link>
+
+            {/* Desktop Breadcrumb */}
+            <div className="hidden sm:flex items-center gap-2 text-xs font-mono">
+              <span className="text-white/40">Area Pengguna</span>
+              <span className="text-white/20">/</span>
+              <span className="text-white font-semibold">{breadcrumb || "Paspor"}</span>
+            </div>
           </div>
 
           {/* Right Header Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             {/* Pencarian Cmd+K Pill */}
             <button
               type="button"
               onClick={() => setIsCommandOpen(true)}
-              className="hidden md:flex items-center gap-3 px-3.5 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-white/20 text-xs font-mono text-white/50 hover:text-white transition-all group"
+              className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-white/20 text-xs font-mono text-white/50 hover:text-white transition-all group"
             >
               <Search className="w-3.5 h-3.5 text-white/40 group-hover:text-white transition-colors" />
               <span>Cari...</span>
@@ -290,9 +313,8 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
             </button>
 
             {/* Notification Bell with Gold Dot */}
-            <button
-              type="button"
-              onClick={() => setHasUnreadNotification(false)}
+            <Link
+              href="/me/notifications"
               className="relative w-9 h-9 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] flex items-center justify-center text-white/60 hover:text-white transition-colors"
               title="Notifikasi"
             >
@@ -300,72 +322,122 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
               {hasUnreadNotification && (
                 <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#D4AF37] ring-2 ring-[#07080C]" />
               )}
-            </button>
+            </Link>
 
             {/* Admin Portal Jump Button */}
-            {userSession && ["platform_admin", "platform_admin", "platform_admin"].includes(userSession.role) && (
+            {userSession && userSession.role === "platform_admin" && (
               <Link
-                href={
-                  userSession.role === "platform_admin"
-                    ? "/admin/platform"
-                    : userSession.role === "platform_admin"
-                    ? "/admin/province"
-                    : "/admin/region"
-                }
-                className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 shadow-md transition-all"
+                href="/admin"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-xs font-heading font-black uppercase tracking-wider hover:brightness-110 shadow-md transition-all"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>
-                  {userSession.role === "platform_admin"
-                    ? "Panel Operator"
-                    : userSession.role === "platform_admin"
-                    ? "Panel ESPORT SUMBAR"
-                    : "Panel Wilayah"}
-                </span>
+                <span>Panel Admin</span>
               </Link>
             )}
 
             {/* Public Profile View Shortcut */}
-            <Link
-              href={userSession?.slug ? `/${userSession.entityType || "player"}/${userSession.slug}` : "/dashboard"}
-              target="_blank"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-xs font-mono text-[#D4AF37] transition-all"
-            >
-              <span>Lihat Publik</span>
-              <ExternalLink className="w-3 h-3" />
-            </Link>
+            {userSession?.slug && (
+              <Link
+                href={`/${userSession.entityType || "player"}/${userSession.slug}`}
+                target="_blank"
+                className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 text-xs font-mono text-[#D4AF37] transition-all"
+              >
+                <span>Lihat Publik</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
+            )}
           </div>
         </header>
 
+        {/* Mobile Navigation Drawer Modal (< 1024px) */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col p-6 animate-in fade-in">
+            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div className="flex items-center gap-2">
+                <div className="flex h-5 w-1.5 shrink-0 rounded-full overflow-hidden">
+                  <span className="h-1/3 w-full bg-[#C8102E]" />
+                  <span className="h-1/3 w-full bg-[#D4AF37]" />
+                  <span className="h-1/3 w-full bg-black" />
+                </div>
+                <span className="font-heading font-black text-sm text-white">
+                  MENU PENGGUNA
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 rounded-xl bg-white/10 text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <nav className="flex-1 py-6 flex flex-col gap-2 overflow-y-auto">
+              {NAV_ITEMS.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-heading font-bold transition-all ${
+                      isActive
+                        ? "bg-[#D4AF37] text-black font-black shadow-lg"
+                        : "text-white/70 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+
+              {userSession && userSession.role === "platform_admin" && (
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3.5 px-4 py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-amber-500 text-black text-sm font-heading font-black uppercase tracking-wider mt-2"
+                >
+                  <ShieldCheck className="w-5 h-5" />
+                  <span>Panel Admin</span>
+                </Link>
+              )}
+            </nav>
+
+            <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+              <span className="text-xs font-mono text-white/50 truncate">
+                {userSession?.email}
+              </span>
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="px-4 py-2 rounded-xl bg-red-500/20 text-red-300 border border-red-500/40 text-xs font-mono flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Keluar</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Dynamic Page Content */}
-        <main className="flex-1 p-8 lg:p-10 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-10 max-w-7xl w-full mx-auto">
           {authError && (
             <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start justify-between gap-3 text-xs text-amber-300">
               <div className="flex items-start gap-2.5">
                 <ShieldCheck className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-white block font-heading uppercase text-sm mb-0.5">
-                    Pemberitahuan Akses Administrator
+                    Pemberitahuan Administrator
                   </strong>
                   <span className="text-white/70 leading-relaxed block">
-                    {authError === "unauthorized_operator"
-                      ? "Rute tersebut dikhususkan untuk Administrator Platform ESPORT SUMBAR."
-                      : authError === "unauthorized_province"
-                      ? "Rute tersebut dikhususkan untuk Administrator Wilayah ESPORT SUMBAR."
-                      : "Anda telah login sebagai administrator. Silakan buka menu panel di atas."}
+                    Anda telah masuk sebagai administrator platform. Silakan buka menu panel admin di atas.
                   </span>
-                  <div className="mt-3 flex items-center gap-2">
+                  <div className="mt-3">
                     <Link
-                      href={
-                        userSession?.role === "platform_admin"
-                          ? "/admin/platform"
-                          : userSession?.role === "platform_admin"
-                          ? "/admin/province"
-                          : "/admin/region"
-                      }
-                      className="px-3.5 py-1.5 rounded-lg bg-[#D4AF37] text-black font-heading font-extrabold uppercase text-[11px] hover:brightness-110 transition-all"
+                      href="/admin"
+                      className="px-3.5 py-1.5 rounded-lg bg-[#D4AF37] text-black font-heading font-black uppercase text-[11px] hover:brightness-110 transition-all inline-block"
                     >
-                      Buka Panel Admin Anda Sekarang →
+                      Buka Panel Admin Platform →
                     </Link>
                   </div>
                 </div>
@@ -385,3 +457,5 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
     </div>
   );
 }
+
+export { DesktopUserShell as UserShell };

@@ -40,8 +40,9 @@ import {
   calculateRarityTier,
 } from "@/lib/entities";
 import type { EntityType, RarityTier } from "@/lib/supabase/database.types";
-import { ImageCropperModal } from "./ImageCropperModal";
 import { DynamicEntityFields } from "./DynamicEntityFields";
+import { ImageCropperModal } from "./ImageCropperModal";
+import { EsportCard } from "@/components/card/EsportCard";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { saveWizardDraft, loadWizardDraft, clearWizardDraft } from "@/lib/entities/draft";
 
@@ -89,6 +90,10 @@ export function DesktopCardWizard() {
   // Modal Cropper State
   const [cropperOpen, setCropperOpen] = useState<boolean>(false);
   const [cropperType, setCropperType] = useState<"avatar" | "logo" | "cover">("avatar");
+
+  // Konfirmasi Bidang Final Modal State & Mobile Preview State
+  const [showEntityConfirmModal, setShowEntityConfirmModal] = useState<boolean>(false);
+  const [showMobilePreview, setShowMobilePreview] = useState<boolean>(false);
 
   // Loading, Finishing, dan Hasil Penerbitan
   const [isFinishing, setIsFinishing] = useState<boolean>(false);
@@ -256,9 +261,13 @@ export function DesktopCardWizard() {
   const handleNext = () => {
     setErrorMessage(null);
 
-    // Validasi Langkah 1: Entitas harus aktif
-    if (step === 1 && !isEntityTypeEnabled(entityType)) {
-      setErrorMessage("Bidang ini belum dibuka untuk pendaftaran publik (Segera hadir).");
+    // Validasi Langkah 1: Entitas harus aktif & konfirmasi final
+    if (step === 1) {
+      if (!isEntityTypeEnabled(entityType)) {
+        setErrorMessage("Bidang ini belum dibuka untuk pendaftaran publik (Segera hadir).");
+        return;
+      }
+      setShowEntityConfirmModal(true);
       return;
     }
 
@@ -484,6 +493,46 @@ export function DesktopCardWizard() {
             <div className="p-8 rounded-3xl bg-[#0D1017] border border-white/[0.08] shadow-2xl relative overflow-hidden">
               {/* Brand top accent bar */}
               <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-brand-pink to-transparent opacity-80" />
+
+              {/* Mobile Live Card Preview Accordion (Hidden on lg+) */}
+              <div className="block lg:hidden mb-6">
+                <button
+                  type="button"
+                  onClick={() => setShowMobilePreview(!showMobilePreview)}
+                  className="w-full p-3.5 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-between text-xs font-heading font-bold text-white hover:bg-white/[0.08] transition-all"
+                >
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                    <span>Pratinjau Kartu Paspor Live</span>
+                  </div>
+                  <span className="text-[11px] font-mono text-[#D4AF37]">
+                    {showMobilePreview ? "Tutup ▲" : "Buka Pratinjau ▼"}
+                  </span>
+                </button>
+                {showMobilePreview && (
+                  <div className="mt-3 p-4 rounded-3xl bg-slate-900/80 border border-white/10 flex justify-center backdrop-blur-xl animate-in fade-in">
+                    <EsportCard
+                      type={entityType as any}
+                      rarity={rarityTier}
+                      verification="unverified"
+                      data={{
+                        esportId: issuedResult?.esportId || "ESP-SB-DRAFT",
+                        displayName: displayName || "Nama Atlet",
+                        ign: attributes.ign || undefined,
+                        region: {
+                          name: selectedRegion.name,
+                          code: selectedRegion.code,
+                        },
+                        game: activeGame.name,
+                        role: attributes.role || undefined,
+                        avatarUrl: avatarUrl || undefined,
+                      }}
+                      size="mobile"
+                      interactive={true}
+                    />
+                  </div>
+                )}
+              </div>
 
               {/* Error Message Alert */}
               {errorMessage && (
@@ -1263,6 +1312,58 @@ export function DesktopCardWizard() {
         </div>
       </main>
 
+      {/* MODAL KONFIRMASI PEMILIHAN BIDANG (1 AKUN = 1 BIDANG) */}
+      {showEntityConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="w-full max-w-md p-6 rounded-3xl bg-[#0D1017] border border-[#D4AF37]/40 shadow-2xl flex flex-col gap-4 animate-in fade-in zoom-in-95">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-sm text-white uppercase">
+                  Konfirmasi Pemilihan Bidang
+                </h3>
+                <p className="text-[11px] font-mono text-[#D4AF37]">
+                  1 Akun = 1 Bidang Entitas
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-white/70 leading-relaxed">
+              Anda memilih kategori <strong className="text-white">{entityDef.label}</strong>. Sesuai prinsip integritas ekosistem, pilihan bidang ini bersifat permanen untuk akun Anda dan tidak dapat diubah setelah paspor digital diterbitkan.
+            </p>
+
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-center gap-3 text-xs text-white/60">
+              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${entityDef.badgeColor}`}>
+                {entityDef.code}
+              </span>
+              <span className="truncate">{entityDef.description}</span>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowEntityConfirmModal(false)}
+                className="px-4 py-2 rounded-xl text-xs font-mono text-white/60 hover:text-white"
+              >
+                Ganti Pilihan
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEntityConfirmModal(false);
+                  setStep(2);
+                }}
+                className="px-5 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#E5C158] text-black font-heading font-black text-xs uppercase shadow-lg shadow-[#D4AF37]/20"
+              >
+                Konfirmasi &amp; Lanjutkan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* MODAL CROPPER FOTO */}
       <ImageCropperModal
         isOpen={cropperOpen}
@@ -1280,3 +1381,5 @@ export function DesktopCardWizard() {
     </div>
   );
 }
+
+export { DesktopCardWizard as UnifiedCardWizard };

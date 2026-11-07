@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ShieldCheck, Clock, XCircle, AlertCircle, Sparkles } from "lucide-react";
 
 export interface GlassBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: "primary" | "secondary" | "outline" | "success" | "warning" | "danger" | "elite";
+  variant?: "primary" | "secondary" | "outline" | "success" | "warning" | "danger" | "elite" | "subtle";
   size?: "sm" | "md";
 }
 
@@ -15,6 +15,7 @@ export const GlassBadge = forwardRef<HTMLSpanElement, GlassBadgeProps>(
       primary:
         "bg-pink-500/20 text-pink-300 border-pink-500/40 shadow-sm shadow-pink-500/20",
       secondary: "bg-white/10 text-slate-200 border-white/20",
+      subtle: "bg-white/[0.04] text-white/70 border-white/10",
       outline: "bg-transparent text-slate-300 border-white/30",
       success:
         "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/20",

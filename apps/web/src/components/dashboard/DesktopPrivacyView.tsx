@@ -81,7 +81,7 @@ export function DesktopPrivacyView() {
           Privasi &amp; Perlindungan Data
         </h1>
         <p className="text-xs text-white/50 mt-1">
-          Kontrol visibilitas data publik paspor atlet Anda sesuai amanat Undang-Undang Perlindungan Data Pribadi (UU PDP No. 27/2022).
+          Kontrol visibilitas data publik paspor atlet Anda sesuai standar tata kelola pelindungan data pribadi (UU No. 27/2022).
         </p>
       </div>
 

@@ -6,7 +6,7 @@ export const instant = false;
 
 /**
  * Smart redirector untuk navigasi "Profil Saya" (SPEC 2.4).
- * Mengarahkan pengguna langsung ke profil resminya sendiri via Profile Service,
+ * Mengarahkan pengguna langsung ke profil terdaftarnya sendiri via Profile Service,
  * atau ke wizard pendaftaran jika belum memiliki profil.
  */
 export default async function MyProfileRedirectPage() {

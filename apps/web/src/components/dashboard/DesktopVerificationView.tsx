@@ -128,7 +128,7 @@ export function DesktopVerificationView() {
           id: "roster_domisili",
           title: "Daftar Roster & Bukti Domisili Sumbar",
           desc: "Daftar susunan pemain aktif beserta identitas domisili Sumatera Barat.",
-          defaultFile: "roster_resmi_tim.pdf",
+          defaultFile: "roster_tim_terdaftar.pdf",
         },
         {
           id: "prestasi_tim",
@@ -178,7 +178,7 @@ export function DesktopVerificationView() {
         id: "rekomendasi",
         title: "Surat Rekomendasi Klub / Tim / Komunitas",
         desc: "Surat pengantar atau bukti keanggotaan dari manajer tim atau pimpinan komunitas esports.",
-        defaultFile: "surat_rekomendasi_resmi.pdf",
+        defaultFile: "surat_rekomendasi_komunitas.pdf",
       },
     ];
   };

@@ -121,14 +121,15 @@ export function MobileTeamRoster() {
   const handleCopyInviteLink = () => {
     triggerHaptic();
     if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText("https://esport-sumbar-v2.vercel.app/team/singkarak-esports/join");
+      const origin = typeof window !== "undefined" ? window.location.origin : "https://esportsumbar.id";
+      navigator.clipboard.writeText(`${origin}/team/join`);
       setToastMessage("Tautan disalin!");
       setTimeout(() => setToastMessage(null), 1800);
     }
   };
 
   return (
-    <div className="relative w-full min-h-[100dvh] max-w-[420px] mx-auto bg-[#07080C] text-white flex flex-col justify-between pb-24 overflow-x-hidden select-none">
+    <div className="relative w-full min-h-[100dvh] max-w-4xl mx-auto bg-[#07080C] text-white flex flex-col justify-between pb-24 overflow-x-hidden select-none">
       {/* Background Ambience */}
       <div className="absolute top-0 right-0 w-72 h-72 bg-[#4C7DFF]/8 rounded-full blur-3xl pointer-events-none" />
 
