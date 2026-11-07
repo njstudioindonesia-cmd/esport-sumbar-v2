@@ -1,0 +1,16 @@
+import React from "react";
+import type { Metadata } from "next";
+import { GlassLaboratoryClient } from "./GlassLaboratoryClient";
+
+export const metadata: Metadata = {
+  title: "Laboratorium Desain Liquid Glass 2026 — Dev Studio",
+  description: "Alat validasi token, empat material kaca, mode kualitas adaptif, radius konsentris, dan anggaran blur.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
+export default function GlassLaboratoryPage() {
+  return <GlassLaboratoryClient />;
+}

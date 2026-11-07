@@ -41,6 +41,28 @@
   --radius-panel: 28px;
   --radius-pill: 9999px;
   --radius-tcg: 18px;
+
+  /* Liquid Glass 2026 Core Tokens (Bagian 4) */
+  --glass-blur-thin: 14px;
+  --glass-blur-regular: 24px;
+  --glass-blur-thick: 40px;
+  --glass-saturate: 170%;
+  --glass-bg-thin: rgba(255, 255, 255, 0.05);
+  --glass-bg-regular: rgba(255, 255, 255, 0.08);
+  --glass-bg-thick: rgba(255, 255, 255, 0.12);
+  --glass-tint-pink: rgba(255, 23, 82, 0.16);
+  --glass-scrim: rgba(3, 3, 26, 0.45);
+  --glass-rim: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08) 30%, rgba(255, 255, 255, 0.02) 70%, rgba(255, 255, 255, 0.28));
+  --glass-shadow: 0 8px 32px rgba(0, 0, 20, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+
+  /* Motion Timing Tokens (Bagian 4 & 10) */
+  --motion-instant: 100ms;
+  --motion-fast: 180ms;
+  --motion-base: 280ms;
+  --motion-slow: 450ms;
+  --motion-cinematic: 700ms;
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
 
 @theme {
@@ -315,4 +337,114 @@ body {
 }
 .pt-safe {
   padding-top: max(env(safe-area-inset-top, 16px), 16px);
+}
+
+/* ==========================================================================
+   LIQUID GLASS 2026 DESIGN SYSTEM UTILITIES (Bagian 4)
+   ========================================================================== */
+
+/* 1. Core Glass Materials */
+.glass-surface {
+  background: var(--glass-bg-regular);
+  backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
+  box-shadow: var(--glass-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background-color var(--motion-fast) var(--motion-ease-out),
+              border-color var(--motion-fast) var(--motion-ease-out),
+              box-shadow var(--motion-fast) var(--motion-ease-out),
+              transform var(--motion-fast) var(--motion-ease-out);
+}
+
+.glass-thin {
+  background: var(--glass-bg-thin);
+  backdrop-filter: blur(var(--glass-blur-thin)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(var(--glass-saturate));
+  box-shadow: 0 4px 20px rgba(0, 0, 20, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-thick {
+  background: var(--glass-bg-thick);
+  backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate));
+  box-shadow: 0 12px 48px rgba(0, 0, 20, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-tinted {
+  background: var(--glass-tint-pink);
+  backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
+  box-shadow: 0 8px 32px rgba(255, 23, 82, 0.2);
+  border: 1px solid rgba(255, 23, 82, 0.35);
+}
+
+/* 2. Specular Pointer Tracker Highlight */
+.glass-specular {
+  background-image: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 0%),
+    rgba(255, 255, 255, 0.16),
+    transparent 45%
+  );
+}
+
+/* 3. Contrast Scrim Layer (Protects WCAG AA >= 4.5:1 over busy scenes) */
+.glass-scrim {
+  background-color: var(--glass-scrim);
+}
+
+/* 4. Quiet Surface (For data-dense tables/forms: translucent without blur) */
+.quiet-surface {
+  background: rgba(10, 10, 36, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 20, 0.25);
+}
+
+/* 5. Adaptive Quality Modes (Penuh / Standar / Hemat) */
+[data-quality="eco"] .glass-surface,
+[data-quality="eco"] .glass-thin,
+[data-quality="eco"] .glass-thick,
+[data-quality="eco"] .glass-tinted {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(14, 18, 42, 0.94) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 20, 0.3) !important;
+}
+
+[data-quality="eco"] .glass-specular {
+  background-image: none !important;
+}
+
+/* 6. Accessibility & Feature Fallbacks */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass-surface,
+  .glass-thin,
+  .glass-thick,
+  .glass-tinted {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(14, 18, 42, 0.94);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface,
+  .glass-thin,
+  .glass-thick,
+  .glass-tinted {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(10, 10, 36, 0.96) !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .glass-surface,
+  .glass-thin,
+  .glass-thick,
+  .glass-tinted {
+    background: rgba(10, 10, 36, 0.98) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+  }
 }
