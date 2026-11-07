@@ -22,6 +22,7 @@ import {
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { VerificationBadge } from "@/components/card/VerificationBadge";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import { copy } from "@esport-sumbar/lib";
 
 interface VerificationDetail {
@@ -46,12 +47,20 @@ interface VerificationDetail {
   attributes: Record<string, any>;
 }
 
-export function AdminVerificationDetailClient({ id }: { id: string }) {
+export function AdminVerificationDetailClient({
+  id,
+  initialItem,
+  initialAdminId,
+}: {
+  id: string;
+  initialItem?: VerificationDetail;
+  initialAdminId?: string;
+}) {
   const router = useRouter();
 
-  const [item, setItem] = useState<VerificationDetail | null>(null);
-  const [currentAdminId, setCurrentAdminId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [item, setItem] = useState<VerificationDetail | null>(initialItem || null);
+  const [currentAdminId, setCurrentAdminId] = useState<string | null>(initialAdminId || null);
+  const [isLoading, setIsLoading] = useState(!initialItem);
   const [decision, setDecision] = useState<"verified" | "revision_requested" | "rejected" | "suspended">("verified");
   const [reason, setReason] = useState("");
   const [adminNotes, setAdminNotes] = useState("");
@@ -215,7 +224,7 @@ export function AdminVerificationDetailClient({ id }: { id: string }) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Profil & Berkas (2 Kolom) */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="p-6 bg-slate-900/60 rounded-2xl border border-white/10 backdrop-blur-md">
+              <QuietSurface radius="2xl" elevation="raised" className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h1 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
@@ -262,10 +271,10 @@ export function AdminVerificationDetailClient({ id }: { id: string }) {
                     </span>
                   </div>
                 </div>
-              </div>
+              </QuietSurface>
 
               {/* Berkas Bukti Digital */}
-              <div className="p-6 bg-slate-900/60 rounded-2xl border border-white/10">
+              <QuietSurface radius="2xl" elevation="raised" className="p-6">
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
                   <FileText className="w-4 h-4 text-pink-400" />
                   Berkas Bukti Verifikasi (URL Bertanda Tangan 60 Detik)
@@ -299,12 +308,12 @@ export function AdminVerificationDetailClient({ id }: { id: string }) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </QuietSurface>
             </div>
 
             {/* Panel Keputusan Admin (1 Kolom) */}
             <div className="space-y-6">
-              <div className="p-6 bg-slate-900/60 rounded-2xl border border-white/10">
+              <QuietSurface radius="2xl" elevation="raised" className="p-6">
                 <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   Keputusan Verifikasi
@@ -436,7 +445,7 @@ export function AdminVerificationDetailClient({ id }: { id: string }) {
                     </button>
                   </form>
                 )}
-              </div>
+              </QuietSurface>
             </div>
           </div>
         )}

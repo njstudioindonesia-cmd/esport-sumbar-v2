@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import {
   Sparkles,
   Save,
@@ -48,7 +49,7 @@ export default function AdminSettingsPage() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="px-2 py-0.5 rounded-full bg-[#FF1752]/15 border border-[#FF1752]/30 text-[10px] font-mono text-[#FF4D77] font-bold">
-                PANEL ADMIN PLATFORM
+                PANEL ADMIN
               </span>
               <span className="text-xs text-white/40 font-mono">
                 Satu Sumber Kebenaran Konfigurasi V3
@@ -72,7 +73,7 @@ export default function AdminSettingsPage() {
 
         <form onSubmit={handleSave} className="flex flex-col gap-6">
           {/* 1. INFORMASI IDENTITAS MEREK */}
-          <div className="p-6 rounded-3xl bg-[#0B0E17] border border-white/10 flex flex-col gap-4">
+          <QuietSurface radius="3xl" elevation="raised" className="p-6 flex flex-col gap-4">
             <h3 className="font-heading font-bold text-base text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[#FF4D77]" />
               <span>Identitas Platform ESPORT SUMBAR</span>
@@ -119,10 +120,10 @@ export default function AdminSettingsPage() {
                 />
               </div>
             </div>
-          </div>
+          </QuietSurface>
 
           {/* 2. PENGUMUMAN BANNER GLOBAL */}
-          <div className="p-6 rounded-3xl bg-[#0B0E17] border border-white/10 flex flex-col gap-4">
+          <QuietSurface radius="3xl" elevation="raised" className="p-6 flex flex-col gap-4">
             <h3 className="font-heading font-bold text-base text-white flex items-center gap-2">
               <Globe className="w-4 h-4 text-amber-400" />
               <span>Pengumuman Banner Global</span>
@@ -150,10 +151,10 @@ export default function AdminSettingsPage() {
                 className="p-3 rounded-xl bg-black/40 border border-white/15 text-white focus:outline-none"
               />
             </div>
-          </div>
+          </QuietSurface>
 
           {/* 3. KONTAK & MEDIA SOSIAL */}
-          <div className="p-6 rounded-3xl bg-[#0B0E17] border border-white/10 flex flex-col gap-4">
+          <QuietSurface radius="3xl" elevation="raised" className="p-6 flex flex-col gap-4">
             <h3 className="font-heading font-bold text-base text-white flex items-center gap-2">
               <Mail className="w-4 h-4 text-blue-400" />
               <span>Kontak &amp; Tautan Sosial</span>
@@ -180,7 +181,7 @@ export default function AdminSettingsPage() {
                 />
               </div>
             </div>
-          </div>
+          </QuietSurface>
 
           <div className="flex items-center justify-end pt-2">
             <button

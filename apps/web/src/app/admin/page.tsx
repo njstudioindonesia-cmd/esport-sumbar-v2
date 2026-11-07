@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 
 export default function AdminDashboardPage() {
   const [metrics, setMetrics] = useState({
@@ -42,8 +43,8 @@ export default function AdminDashboardPage() {
           setMetrics({
             totalUsers: json.platform?.totalUsers || 0,
             totalProfiles: json.platform?.totalCards || 0,
-            pendingVerification: (json.province?.pendingGold || 0) + (json.region?.pending || 0),
-            verifiedProfiles: json.province?.goldActive || 0,
+            pendingVerification: json.verification?.pending || json.platform?.pendingVerification || 0,
+            verifiedProfiles: json.verification?.verified || json.platform?.verifiedProfiles || 0,
             totalArticles: json.platform?.totalArticles || 0,
             totalReports: json.platform?.totalReports || 0,
           });
@@ -118,9 +119,37 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
+        {/* MFA SECURITY STATUS BANNER (MANDATE 9.4) */}
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-sm font-heading font-bold text-white">
+                  Sesi Admin Terverifikasi (MFA TOTP Aktif)
+                </h4>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 font-bold uppercase">
+                  AAL2 Terproteksi
+                </span>
+              </div>
+              <p className="text-xs text-white/60">
+                Sesuai kebijakan keamanan V3 (Mandat 9.4), tindakan administratif dan verifikasi hanya diizinkan untuk sesi dengan MFA terpasang.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/admin/settings"
+            className="px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono text-white/80 self-start sm:self-auto transition-colors"
+          >
+            Status Keamanan
+          </Link>
+        </div>
+
         {/* METRICS CARDS */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="p-5 rounded-2xl bg-[#0B0E17] border border-white/10 flex flex-col gap-2">
+          <QuietSurface radius="2xl" elevation="raised" className="p-5 flex flex-col gap-2">
             <div className="flex items-center justify-between text-white/40">
               <span className="text-[11px] font-mono uppercase">Total Akun</span>
               <Users className="w-4 h-4 text-white/60" />
@@ -129,9 +158,9 @@ export default function AdminDashboardPage() {
               {isLoading ? "..." : metrics.totalUsers}
             </span>
             <span className="text-[10px] text-white/40">Akun terdaftar</span>
-          </div>
+          </QuietSurface>
 
-          <div className="p-5 rounded-2xl bg-[#0B0E17] border border-white/10 flex flex-col gap-2">
+          <QuietSurface radius="2xl" elevation="raised" className="p-5 flex flex-col gap-2">
             <div className="flex items-center justify-between text-white/40">
               <span className="text-[11px] font-mono uppercase">Total Profil</span>
               <Layers className="w-4 h-4 text-[#FF4D77]" />
@@ -140,9 +169,9 @@ export default function AdminDashboardPage() {
               {isLoading ? "..." : metrics.totalProfiles}
             </span>
             <span className="text-[10px] text-white/40">1 akun 1 profil</span>
-          </div>
+          </QuietSurface>
 
-          <div className="p-5 rounded-2xl bg-[#0B0E17] border border-amber-500/30 flex flex-col gap-2 bg-gradient-to-b from-amber-500/5 to-transparent">
+          <QuietSurface radius="2xl" elevation="raised" className="p-5 flex flex-col gap-2 border-amber-500/30 bg-gradient-to-b from-amber-500/5 to-transparent">
             <div className="flex items-center justify-between text-amber-400">
               <span className="text-[11px] font-mono uppercase">Antrean Verifikasi</span>
               <Clock className="w-4 h-4 text-amber-400" />
@@ -151,9 +180,9 @@ export default function AdminDashboardPage() {
               {isLoading ? "..." : metrics.pendingVerification}
             </span>
             <span className="text-[10px] text-amber-400/80">Menunggu review</span>
-          </div>
+          </QuietSurface>
 
-          <div className="p-5 rounded-2xl bg-[#0B0E17] border border-emerald-500/30 flex flex-col gap-2 bg-gradient-to-b from-emerald-500/5 to-transparent">
+          <QuietSurface radius="2xl" elevation="raised" className="p-5 flex flex-col gap-2 border-emerald-500/30 bg-gradient-to-b from-emerald-500/5 to-transparent">
             <div className="flex items-center justify-between text-emerald-400">
               <span className="text-[11px] font-mono uppercase">Terverifikasi</span>
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
@@ -162,9 +191,9 @@ export default function AdminDashboardPage() {
               {isLoading ? "..." : metrics.verifiedProfiles}
             </span>
             <span className="text-[10px] text-emerald-400/80">Lencana aktif</span>
-          </div>
+          </QuietSurface>
 
-          <div className="p-5 rounded-2xl bg-[#0B0E17] border border-white/10 flex flex-col gap-2">
+          <QuietSurface radius="2xl" elevation="raised" className="p-5 flex flex-col gap-2">
             <div className="flex items-center justify-between text-white/40">
               <span className="text-[11px] font-mono uppercase">Warta Berita</span>
               <Newspaper className="w-4 h-4 text-blue-400" />
@@ -173,9 +202,9 @@ export default function AdminDashboardPage() {
               {isLoading ? "..." : metrics.totalArticles}
             </span>
             <span className="text-[10px] text-white/40">Artikel CMS</span>
-          </div>
+          </QuietSurface>
 
-          <div className="p-5 rounded-2xl bg-[#0B0E17] border border-white/10 flex flex-col gap-2">
+          <QuietSurface radius="2xl" elevation="raised" className="p-5 flex flex-col gap-2">
             <div className="flex items-center justify-between text-white/40">
               <span className="text-[11px] font-mono uppercase">Laporan</span>
               <Flag className="w-4 h-4 text-rose-400" />
@@ -184,93 +213,101 @@ export default function AdminDashboardPage() {
               {isLoading ? "..." : metrics.totalReports}
             </span>
             <span className="text-[10px] text-white/40">Aduan komunitas</span>
-          </div>
+          </QuietSurface>
         </div>
 
         {/* QUICK ACCESS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Link
             href="/admin/verification"
-            className="p-6 rounded-3xl bg-[#0A0D15] border border-white/10 hover:border-[#D4AF37]/50 hover:bg-[#0E121E] transition-all group flex flex-col justify-between"
+            className="group block"
           >
-            <div className="flex flex-col gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-6 h-6" />
+            <QuietSurface radius="3xl" elevation="raised" interactive className="p-6 h-full flex flex-col justify-between group-hover:border-[#D4AF37]/50 transition-all">
+              <div className="flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] group-hover:scale-110 transition-transform">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-[#D4AF37] transition-colors">
+                  Antrean Verifikasi
+                </h3>
+                <p className="text-xs text-white/60 leading-relaxed">
+                  Pemeriksaan bukti kepemilikan akun in-game, sertifikat turnamen, dan penetapan status lolos verifikasi ESPORT SUMBAR.
+                </p>
               </div>
-              <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-[#D4AF37] transition-colors">
-                Antrean Verifikasi
-              </h3>
-              <p className="text-xs text-white/60 leading-relaxed">
-                Pemeriksaan bukti kepemilikan akun in-game, sertifikat turnamen, dan penetapan status lolos verifikasi ESPORT SUMBAR.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-[#D4AF37]">
-              <span>Buka Antrean</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
+              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-[#D4AF37]">
+                <span>Buka Antrean</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </QuietSurface>
           </Link>
 
           <Link
             href="/admin/users"
-            className="p-6 rounded-3xl bg-[#0A0D15] border border-white/10 hover:border-[#FF1752]/50 hover:bg-[#0E121E] transition-all group flex flex-col justify-between"
+            className="group block"
           >
-            <div className="flex flex-col gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#FF1752]/15 border border-[#FF1752]/30 flex items-center justify-center text-[#FF1752] group-hover:scale-110 transition-transform">
-                <Users className="w-6 h-6" />
+            <QuietSurface radius="3xl" elevation="raised" interactive className="p-6 h-full flex flex-col justify-between group-hover:border-[#FF1752]/50 transition-all">
+              <div className="flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-[#FF1752]/15 border border-[#FF1752]/30 flex items-center justify-center text-[#FF1752] group-hover:scale-110 transition-transform">
+                  <Users className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-[#FF4D77] transition-colors">
+                  Manajemen Pengguna
+                </h3>
+                <p className="text-xs text-white/60 leading-relaxed">
+                  Kelola akun pengguna, suspensi profil bermasalah, dan penegakan aturan integritas 1 akun 1 profil.
+                </p>
               </div>
-              <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-[#FF4D77] transition-colors">
-                Manajemen Pengguna
-              </h3>
-              <p className="text-xs text-white/60 leading-relaxed">
-                Kelola akun pengguna, suspensi profil bermasalah, dan penegakan aturan integritas 1 akun 1 profil.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-[#FF4D77]">
-              <span>Kelola Pengguna</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
+              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-[#FF4D77]">
+                <span>Kelola Pengguna</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </QuietSurface>
           </Link>
 
           <Link
             href="/admin/games"
-            className="p-6 rounded-3xl bg-[#0A0D15] border border-white/10 hover:border-blue-500/50 hover:bg-[#0E121E] transition-all group flex flex-col justify-between"
+            className="group block"
           >
-            <div className="flex flex-col gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
-                <Gamepad2 className="w-6 h-6" />
+            <QuietSurface radius="3xl" elevation="raised" interactive className="p-6 h-full flex flex-col justify-between group-hover:border-blue-500/50 transition-all">
+              <div className="flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+                  <Gamepad2 className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-blue-400 transition-colors">
+                  Katalog Game Dinamis
+                </h3>
+                <p className="text-xs text-white/60 leading-relaxed">
+                  Atur daftar cabang game (termasuk Honor of Kings & Valorant), role spesifik game, dan tingkatan rank dari database.
+                </p>
               </div>
-              <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-blue-400 transition-colors">
-                Katalog Game Dinamis
-              </h3>
-              <p className="text-xs text-white/60 leading-relaxed">
-                Atur daftar cabang game (termasuk Honor of Kings & Valorant), role spesifik game, dan tingkatan rank dari database.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-blue-400">
-              <span>Atur Katalog</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
+              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-blue-400">
+                <span>Atur Katalog</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </QuietSurface>
           </Link>
 
           <Link
             href="/admin/audit"
-            className="p-6 rounded-3xl bg-[#0A0D15] border border-white/10 hover:border-purple-500/50 hover:bg-[#0E121E] transition-all group flex flex-col justify-between"
+            className="group block"
           >
-            <div className="flex flex-col gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                <History className="w-6 h-6" />
+            <QuietSurface radius="3xl" elevation="raised" interactive className="p-6 h-full flex flex-col justify-between group-hover:border-purple-500/50 transition-all">
+              <div className="flex flex-col gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
+                  <History className="w-6 h-6" />
+                </div>
+                <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-purple-400 transition-colors">
+                  Audit Log Append-Only
+                </h3>
+                <p className="text-xs text-white/60 leading-relaxed">
+                  Rekam jejak transparan seluruh aksi administratif, keputusan verifikasi, perubahan data entitas, dan timestamp.
+                </p>
               </div>
-              <h3 className="font-heading font-black text-lg text-white uppercase group-hover:text-purple-400 transition-colors">
-                Audit Log Append-Only
-              </h3>
-              <p className="text-xs text-white/60 leading-relaxed">
-                Rekam jejak transparan seluruh aksi administratif, keputusan verifikasi, perubahan data entitas, dan timestamp.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-purple-400">
-              <span>Buka Audit Log</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </div>
+              <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-purple-400">
+                <span>Buka Audit Log</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </QuietSurface>
           </Link>
         </div>
       </main>

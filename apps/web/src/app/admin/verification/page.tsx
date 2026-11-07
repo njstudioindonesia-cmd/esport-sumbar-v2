@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import { EsportCard } from "@/components/card/EsportCard";
 import { VerificationBadge } from "@/components/card/VerificationBadge";
 import { transitionVerificationAction } from "@/app/actions/verification";
@@ -258,7 +259,7 @@ export default function AdminVerificationQueuePage() {
         </div>
 
         {/* SLA LEGEND BANNER */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-[#0B0E17] border border-white/10 text-xs">
+        <QuietSurface radius="2xl" elevation="raised" className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 text-xs">
           <div className="flex items-center gap-2.5">
             <span className="w-3 h-3 rounded-full bg-emerald-400 shrink-0" />
             <span className="text-white/70">
@@ -277,10 +278,10 @@ export default function AdminVerificationQueuePage() {
               <strong className="text-rose-400 font-bold">&gt; 48 Jam:</strong> SLA Kritis (Tertunda)
             </span>
           </div>
-        </div>
+        </QuietSurface>
 
         {/* FILTERS & SEARCH BAR */}
-        <div className="p-4 rounded-2xl bg-[#0B0E17] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+        <QuietSurface radius="2xl" elevation="raised" className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* SEARCH INPUT */}
           <div className="relative w-full md:w-80">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
@@ -355,10 +356,10 @@ export default function AdminVerificationQueuePage() {
               <option value="campus">Campus</option>
             </select>
           </div>
-        </div>
+        </QuietSurface>
 
         {/* QUEUE TABLE */}
-        <div className="rounded-2xl bg-[#0B0E17] border border-white/10 overflow-hidden shadow-xl">
+        <QuietSurface radius="2xl" elevation="raised" className="overflow-hidden">
           {isLoading ? (
             <div className="p-12 text-center text-white/50 text-xs font-mono animate-pulse">
               Memuat data antrean verifikasi...
@@ -491,7 +492,7 @@ export default function AdminVerificationQueuePage() {
               </table>
             </div>
           )}
-        </div>
+        </QuietSurface>
       </main>
 
       {/* ============================================================== */}

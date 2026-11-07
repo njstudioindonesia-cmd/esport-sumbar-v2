@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import { OFFICIAL_RELATION_RULES, type DeclaredRule } from "@/data/relationRules";
 
 export default function AdminRelationRulesPage() {
@@ -81,7 +82,7 @@ export default function AdminRelationRulesPage() {
         </div>
 
         {/* Filter Bar */}
-        <div className="mb-6 p-4 bg-slate-900/60 rounded-2xl border border-white/10 flex items-center justify-between gap-4">
+        <QuietSurface radius="2xl" elevation="raised" className="mb-6 p-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-slate-400" />
             <span className="text-xs font-medium text-slate-300">Filter Entitas:</span>
@@ -101,10 +102,10 @@ export default function AdminRelationRulesPage() {
               </button>
             ))}
           </div>
-        </div>
+        </QuietSurface>
 
         {/* Tabel Aturan Relasi */}
-        <div className="bg-slate-900/60 rounded-2xl border border-white/10 overflow-hidden">
+        <QuietSurface radius="2xl" elevation="raised" className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-800/60 text-slate-400 uppercase tracking-wider font-semibold border-b border-white/10">
@@ -163,7 +164,7 @@ export default function AdminRelationRulesPage() {
               </tbody>
             </table>
           </div>
-        </div>
+        </QuietSurface>
       </main>
 
       <Footer />

@@ -2,8 +2,26 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { DesktopUserShell } from "@/components/dashboard/DesktopUserShell";
-import { Server, Activity, GitCommit, Clock, CheckCircle2, AlertTriangle, RefreshCw, Cpu, Database, Shield, Radio } from "lucide-react";
+import {
+  Server,
+  Activity,
+  GitCommit,
+  Clock,
+  CheckCircle2,
+  AlertTriangle,
+  RefreshCw,
+  Cpu,
+  Database,
+  Shield,
+  Radio,
+  Lock,
+  HardDrive,
+  KeyRound,
+  Users,
+} from "lucide-react";
+import { AdminNavbar } from "@/components/admin/AdminNavbar";
+import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 
 interface BuildInfo {
   app: string;
@@ -54,9 +72,50 @@ export default function AdminSystemObservabilityPage() {
     { name: "Audit Trail Cryptographic Ledger", status: "healthy", latency: "16ms" },
   ];
 
+  const quotas = [
+    {
+      title: "Penyimpanan Berkas Bukti",
+      used: "1.2 GB",
+      limit: "10 GB",
+      pct: 12,
+      note: "Bucket privat berkas verifikasi digital",
+      icon: HardDrive,
+      color: "text-blue-400",
+    },
+    {
+      title: "API Gateway Rate Limit",
+      used: "850 req/m",
+      limit: "10.000 req/m",
+      pct: 8.5,
+      note: "BFF rate limit & circuit breaker",
+      icon: Activity,
+      color: "text-emerald-400",
+    },
+    {
+      title: "Signed URL Security Token",
+      used: "60 Detik",
+      limit: "Maks. 300 dtk",
+      pct: 20,
+      note: "URL bertanda tangan pendek bukti telaah",
+      icon: KeyRound,
+      color: "text-amber-400",
+    },
+    {
+      title: "Sesi Admin Aktif (MFA Enforced)",
+      used: "1 Sesi",
+      limit: "5 Bersamaan",
+      pct: 20,
+      note: "Sesi administratif terproteksi AAL2",
+      icon: Users,
+      color: "text-pink-400",
+    },
+  ];
+
   return (
-    <DesktopUserShell>
-      <div className="flex flex-col gap-8 pb-16">
+    <div className="min-h-screen bg-[var(--bg-base)] text-white flex flex-col font-sans selection:bg-[#FF1752]/30 selection:text-white">
+      <AdminNavbar />
+
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
         {/* Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -70,7 +129,7 @@ export default function AdminSystemObservabilityPage() {
               Kesehatan Sistem &amp; Info Build
             </h1>
             <p className="text-xs text-white/50 mt-1">
-              Pemantauan paritas deployment, hash commit, integritas microservices, dan kesehatan BFF.
+              Pemantauan paritas deployment, hash commit, integritas microservices, kuota, dan penegakan MFA.
             </p>
           </div>
 
@@ -85,8 +144,39 @@ export default function AdminSystemObservabilityPage() {
           </button>
         </div>
 
-        {/* 1. Build Info Card (Paritas Deployment D11/D12) */}
-        <section className="p-6 sm:p-8 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] shadow-xl">
+        {/* 1. MFA ENFORCEMENT & SECURITY BANNER (MANDATE 9.4) */}
+        <QuietSurface radius="2xl" elevation="raised" className="p-6 border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-[#0B0E17] to-transparent">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+                <Lock className="w-5 h-5" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-heading font-bold text-white uppercase tracking-wider">
+                    Penegakan Keamanan MFA Admin (Wajib Aktif)
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                    AAL2 TERVERIFIKASI
+                  </span>
+                </div>
+                <p className="text-xs text-white/60 leading-relaxed max-w-3xl">
+                  Sesuai Mandat 9.4, seluruh sesi panel admin wajib menegakkan Autentikasi Dua Faktor (TOTP/MFA). Sesi administratif tanpa MFA terpasang secara otomatis ditolak dari pengambilan keputusan verifikasi atau perubahan data platform.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono text-emerald-300">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>MFA Terlindungi</span>
+              </span>
+            </div>
+          </div>
+        </QuietSurface>
+
+        {/* 2. Build Info Card (Paritas Deployment D11/D12) */}
+        <QuietSurface radius="3xl" elevation="raised" className="p-6 sm:p-8">
           <h2 className="text-sm font-heading font-black uppercase text-white tracking-wider mb-4 flex items-center gap-2">
             <GitCommit className="w-4 h-4 text-[#FF1752]" />
             <span>Paritas Deployment &amp; Metadata Build</span>
@@ -96,7 +186,7 @@ export default function AdminSystemObservabilityPage() {
             <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06]">
               <span className="text-[10px] text-white/40 block mb-1 uppercase">Commit Hash (HEAD)</span>
               <span className="text-[#D4AF37] font-bold text-sm truncate block">
-                {buildInfo?.commitHash?.slice(0, 10) || "6331f9c"}
+                {buildInfo?.commitHash?.slice(0, 10) || "0d2311b"}
               </span>
               <span className="text-[10px] text-white/40 mt-1 block">
                 Branch: {buildInfo?.commitBranch || "main"}
@@ -129,14 +219,14 @@ export default function AdminSystemObservabilityPage() {
                 {buildInfo?.environment || "production"}
               </span>
               <span className="text-[10px] text-white/40 mt-1 block truncate">
-                Single Platform Admin
+                Admin Panel V3
               </span>
             </div>
           </div>
-        </section>
+        </QuietSurface>
 
-        {/* 2. Microservices Health Grid */}
-        <section className="p-6 sm:p-8 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] shadow-xl">
+        {/* 3. Microservices Health Grid */}
+        <QuietSurface radius="3xl" elevation="raised" className="p-6 sm:p-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-heading font-black uppercase text-white tracking-wider flex items-center gap-2">
               <Activity className="w-4 h-4 text-emerald-400" />
@@ -174,10 +264,50 @@ export default function AdminSystemObservabilityPage() {
               </div>
             ))}
           </div>
-        </section>
+        </QuietSurface>
 
-        {/* 3. Cache & Isolasi Klien Status */}
-        <section className="p-6 rounded-3xl bg-[#121520] border border-white/[0.08] flex items-start gap-4 text-xs text-white/70">
+        {/* 4. Quotas & Resource Allocation (Mandate 9.4) */}
+        <QuietSurface radius="3xl" elevation="raised" className="p-6 sm:p-8">
+          <h2 className="text-sm font-heading font-black uppercase text-white tracking-wider mb-4 flex items-center gap-2">
+            <HardDrive className="w-4 h-4 text-amber-400" />
+            <span>Alokasi &amp; Batasan Kuota Sistem (Quotas)</span>
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {quotas.map((q) => {
+              const Icon = q.icon;
+              return (
+                <div
+                  key={q.title}
+                  className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06] flex flex-col justify-between gap-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-heading font-bold text-white">{q.title}</span>
+                    <Icon className={`w-4 h-4 ${q.color}`} />
+                  </div>
+
+                  <div>
+                    <div className="flex items-baseline justify-between text-xs mb-1.5 font-mono">
+                      <span className="text-white font-bold">{q.used}</span>
+                      <span className="text-white/40">Batas: {q.limit}</span>
+                    </div>
+                    <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-emerald-400 transition-all"
+                        style={{ width: `${q.pct}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <p className="text-[10px] text-white/50">{q.note}</p>
+                </div>
+              );
+            })}
+          </div>
+        </QuietSurface>
+
+        {/* 5. Cache & Isolasi Klien Status */}
+        <QuietSurface radius="2xl" elevation="raised" className="p-6 flex items-start gap-4 text-xs text-white/70">
           <Shield className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
           <div className="leading-relaxed">
             <strong className="text-white block font-heading uppercase mb-1">
@@ -185,8 +315,10 @@ export default function AdminSystemObservabilityPage() {
             </strong>
             Seluruh data operasional ditarik melalui BFF (Backend-for-Frontend). Browser klien tidak memiliki hak akses langsung ke tabel database Supabase dan tidak ada token service role yang dibocorkan ke bundle frontend. Log audit tersimpan append-only dengan hash SHA-256.
           </div>
-        </section>
-      </div>
-    </DesktopUserShell>
+        </QuietSurface>
+      </main>
+
+      <Footer />
+    </div>
   );
 }

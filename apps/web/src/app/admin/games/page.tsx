@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import {
   saveGameAction,
   toggleGameStatusAction,
@@ -339,7 +340,7 @@ export default function AdminGamesPage() {
         )}
 
         {/* FILTER & SEARCH STRIP */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 bg-[#0B0E17] border border-white/10 p-3 rounded-2xl">
+        <QuietSurface radius="2xl" elevation="raised" className="flex flex-col sm:flex-row items-center gap-3 p-3">
           <div className="relative flex-1 w-full">
             <Search className="w-4 h-4 text-white/40 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
@@ -366,7 +367,7 @@ export default function AdminGamesPage() {
               </button>
             ))}
           </div>
-        </div>
+        </QuietSurface>
 
         {/* GAME CARDS GRID */}
         {isLoading ? (
@@ -375,15 +376,17 @@ export default function AdminGamesPage() {
             <span>Memuat katalog game dari pangkalan data...</span>
           </div>
         ) : filteredGames.length === 0 ? (
-          <div className="p-16 text-center text-xs font-mono text-white/40 border border-white/10 rounded-2xl bg-[#0B0E17]">
+          <QuietSurface radius="2xl" elevation="raised" className="p-16 text-center text-xs font-mono text-white/40">
             Tidak ada game yang sesuai kriteria pencarian.
-          </div>
+          </QuietSurface>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredGames.map((game) => (
-              <div
+              <QuietSurface
                 key={game.id}
-                className="p-5 rounded-2xl bg-[#0B0E17] border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between gap-4 group"
+                radius="2xl"
+                elevation="raised"
+                className="p-5 hover:border-white/20 transition-all flex flex-col justify-between gap-4 group"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -471,7 +474,7 @@ export default function AdminGamesPage() {
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              </div>
+              </QuietSurface>
             ))}
           </div>
         )}

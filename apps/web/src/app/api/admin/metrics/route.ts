@@ -43,17 +43,12 @@ export async function GET(request: NextRequest) {
         totalArticles: totalArticles || 0,
         draftArticles: draftArticles || 0,
         totalReports: totalReports || 0,
+        pendingVerification: pendingVerifications || 0,
+        verifiedProfiles: goldActive || 0,
       },
-      province: {
-        pendingGold: pendingVerifications || 0,
-        goldActive: goldActive || 0,
-        fallbackPending: 0,
-      },
-      region: {
-        pending: 0,
-        inReview: 0,
-        revision: 0,
-        approvedThisMonth: 0,
+      verification: {
+        pending: pendingVerifications || 0,
+        verified: goldActive || 0,
       },
     });
   } catch (error: any) {
@@ -68,9 +63,10 @@ export async function GET(request: NextRequest) {
         totalArticles: 0,
         draftArticles: 0,
         totalReports: 0,
+        pendingVerification: 0,
+        verifiedProfiles: 0,
       },
-      province: { pendingGold: 0, goldActive: 0, fallbackPending: 0 },
-      region: { pending: 0, inReview: 0, revision: 0, approvedThisMonth: 0 },
+      verification: { pending: 0, verified: 0 },
     });
   }
 }

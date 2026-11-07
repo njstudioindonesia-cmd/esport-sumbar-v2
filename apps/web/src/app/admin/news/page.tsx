@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import { Article } from "@/data/mockNews";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { saveArticleAction, deleteArticleAction } from "@/app/actions/news";
@@ -244,7 +245,7 @@ export default function AdminNewsPage() {
         </div>
 
         {/* SEARCH & FILTERS */}
-        <div className="p-4 rounded-2xl bg-[#0B0E17] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        <QuietSurface radius="2xl" elevation="raised" className="p-4 flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
           <div className="relative w-full md:w-80">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
             <input
@@ -281,7 +282,7 @@ export default function AdminNewsPage() {
               <option value="draft">Draf</option>
             </select>
           </div>
-        </div>
+        </QuietSurface>
 
         {/* ARTICLES GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -290,14 +291,16 @@ export default function AdminNewsPage() {
               Memuat data artikel...
             </div>
           ) : filteredArticles.length === 0 ? (
-            <div className="col-span-full p-12 text-center text-white/40 text-xs">
+            <QuietSurface radius="2xl" elevation="raised" className="col-span-full p-12 text-center text-white/40 text-xs">
               Tidak ada artikel yang sesuai kriteria.
-            </div>
+            </QuietSurface>
           ) : (
             filteredArticles.map((article) => (
-              <div
+              <QuietSurface
                 key={article.id}
-                className="p-5 rounded-2xl bg-[#0B0E17] border border-white/10 hover:border-white/20 transition-all flex flex-col justify-between gap-4"
+                radius="2xl"
+                elevation="raised"
+                className="p-5 hover:border-white/20 transition-all flex flex-col justify-between gap-4"
               >
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between text-[10px] font-mono text-white/40">
@@ -342,7 +345,7 @@ export default function AdminNewsPage() {
                     </button>
                   </div>
                 </div>
-              </div>
+              </QuietSurface>
             ))
           )}
         </div>

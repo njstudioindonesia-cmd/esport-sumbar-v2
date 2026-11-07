@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 
 interface ContentItem {
   id: string;
@@ -109,7 +110,7 @@ export default function AdminContentPage() {
         </div>
 
         {/* Search & Filter */}
-        <div className="mb-6 p-4 bg-slate-900/60 rounded-2xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <QuietSurface radius="2xl" elevation="raised" className="mb-6 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -137,7 +138,7 @@ export default function AdminContentPage() {
               </button>
             ))}
           </div>
-        </div>
+        </QuietSurface>
 
         {/* List Content */}
         {isLoading ? (
@@ -153,9 +154,11 @@ export default function AdminContentPage() {
         ) : (
           <div className="space-y-3">
             {filtered.map((item) => (
-              <div
+              <QuietSurface
                 key={item.id}
-                className="p-5 bg-slate-900/60 rounded-2xl border border-white/10 hover:border-white/20 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                radius="2xl"
+                elevation="raised"
+                className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
@@ -194,7 +197,7 @@ export default function AdminContentPage() {
                     <Edit className="w-4 h-4" />
                   </Link>
                 </div>
-              </div>
+              </QuietSurface>
             ))}
           </div>
         )}

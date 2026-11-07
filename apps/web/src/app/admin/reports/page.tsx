@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 
 export interface ReportItem {
   id: string;
@@ -169,9 +170,11 @@ export default function AdminReportsPage() {
         ) : (
           <div className="space-y-3">
             {filtered.map((item) => (
-              <div
+              <QuietSurface
                 key={item.id}
-                className="p-5 bg-slate-900/60 rounded-2xl border border-white/10 hover:border-white/20 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+                radius="2xl"
+                elevation="raised"
+                className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
@@ -205,7 +208,7 @@ export default function AdminReportsPage() {
                     Tinjau Laporan
                   </button>
                 </div>
-              </div>
+              </QuietSurface>
             ))}
           </div>
         )}

@@ -100,9 +100,9 @@ describe("Kerangka Aplikasi dan Navigasi V3 (Bagian 6)", () => {
   });
 
   describe("4. AdminNavbar (Liquid Glass)", () => {
-    it("harus merender menu navigasi admin lengkap dengan peran Admin Platform", () => {
+    it("harus merender menu navigasi admin lengkap dengan peran Admin", () => {
       const html = renderToString(<AdminNavbar />);
-      expect(html).toContain("PANEL ADMIN PLATFORM");
+      expect(html).toContain("PANEL ADMIN");
       expect(html).toContain("Ringkasan");
       expect(html).toContain("Verifikasi");
       expect(html).toContain("Aturan Relasi");

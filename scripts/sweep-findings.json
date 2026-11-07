@@ -1,38 +1,29 @@
 [
   {
-    "file": "apps\\web\\src\\app\\me\\notifications\\page.tsx",
-    "line": 88,
-    "rule": "KLAIM_RESMI",
+    "file": "apps\\web\\src\\__tests__\\admin-liquid-glass.test.tsx",
+    "line": 56,
+    "rule": "ADMIN_DAERAH_PROV",
     "matches": [
-      "resmi"
+      "Admin Provinsi"
     ],
-    "snippet": "Pemberitahuan resmi kurasi verifikasi, undangan ekosistem, dan keamanan akun Anda."
+    "snippet": "expect(html).not.toContain(\"Admin Provinsi\");"
   },
   {
-    "file": "apps\\web\\src\\app\\me\\page.tsx",
-    "line": 159,
-    "rule": "KLAIM_RESMI",
+    "file": "apps\\web\\src\\__tests__\\admin-liquid-glass.test.tsx",
+    "line": 57,
+    "rule": "PENGCAB_TERM",
     "matches": [
-      "resmi"
+      "Pengcab"
     ],
-    "snippet": "Lacak proses kurasi bukti mandiri satu pintu untuk penerbitan lencana terverifikasi resmi."
+    "snippet": "expect(html).not.toContain(\"Admin Pengcab\");"
   },
   {
-    "file": "apps\\web\\src\\components\\dashboard\\UnifiedSettingsView.tsx",
-    "line": 311,
-    "rule": "KLAIM_RESMI",
+    "file": "apps\\web\\src\\__tests__\\admin-liquid-glass.test.tsx",
+    "line": 58,
+    "rule": "ADMIN_DAERAH_PROV",
     "matches": [
-      "resmi"
+      "Admin Daerah"
     ],
-    "snippet": "Pemberitahuan resmi via email terdaftar."
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\user-area-liquid-glass.test.tsx",
-    "line": 121,
-    "rule": "KLAIM_BERDAULAT",
-    "matches": [
-      "berdaulat"
-    ],
-    "snippet": "expect(html).not.toMatch(/\\b(kepatuhan\\s+UU\\s+PDP|patuh\\s+100%|berdaulat)\\b/i);"
+    "snippet": "expect(html).not.toContain(\"Admin Daerah\");"
   }
 ]

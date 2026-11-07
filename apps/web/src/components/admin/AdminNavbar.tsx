@@ -33,7 +33,7 @@ export function AdminNavbar() {
           const pending =
             json.platform?.pendingVerification ||
             json.verification?.pending ||
-            (json.province?.pendingGold || 0) + (json.region?.pending || 0);
+            0;
           if (typeof pending === "number") {
             setPendingVerifications(pending);
           }
@@ -118,7 +118,7 @@ export function AdminNavbar() {
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/30">
               <span className="w-2 h-2 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50" />
               <span className="text-[10px] font-mono tracking-widest text-pink-300 uppercase font-bold">
-                PANEL ADMIN PLATFORM
+                PANEL ADMIN
               </span>
             </div>
           </div>

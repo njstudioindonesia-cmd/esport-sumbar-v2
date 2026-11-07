@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { ActivityLogItem } from "@/data/mockAdminData";
 
@@ -137,7 +138,7 @@ export default function AdminAuditPage() {
         </div>
 
         {/* SEARCH & FILTERS */}
-        <div className="p-4 rounded-2xl bg-[#0B0E17] border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <QuietSurface radius="2xl" elevation="raised" className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
             <input
@@ -164,10 +165,10 @@ export default function AdminAuditPage() {
               ))}
             </select>
           </div>
-        </div>
+        </QuietSurface>
 
         {/* LOGS TABLE */}
-        <div className="rounded-2xl bg-[#0B0E17] border border-white/10 overflow-hidden shadow-xl">
+        <QuietSurface radius="2xl" elevation="raised" className="overflow-hidden">
           {isLoading ? (
             <div className="p-12 text-center text-white/40 text-xs font-mono animate-pulse">
               Memuat arsip log dari basis data...
@@ -219,7 +220,7 @@ export default function AdminAuditPage() {
               </table>
             </div>
           )}
-        </div>
+        </QuietSurface>
       </main>
 
       <Footer />

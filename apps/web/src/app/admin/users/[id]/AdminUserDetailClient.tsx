@@ -20,6 +20,7 @@ import {
 import { AdminNavbar } from "@/components/admin/AdminNavbar";
 import { Footer } from "@/components/layout/Footer";
 import { VerificationBadge } from "@/components/card/VerificationBadge";
+import { QuietSurface } from "@/components/glass/QuietSurface";
 
 interface UserDetail {
   id: string;
@@ -115,7 +116,7 @@ export function AdminUserDetailClient({ id }: { id: string }) {
         ) : (
           <div className="space-y-6">
             {/* Account Info */}
-            <div className="p-6 bg-slate-900/60 rounded-2xl border border-white/10">
+            <QuietSurface radius="2xl" elevation="raised" className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-pink-600 to-rose-400 flex items-center justify-center text-white shadow-lg shadow-pink-600/20">
@@ -125,7 +126,7 @@ export function AdminUserDetailClient({ id }: { id: string }) {
                     <h1 className="text-xl font-bold text-white">{user.email}</h1>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">
-                        Peran: {user.role === "platform_admin" ? "Platform Admin" : "Pengguna"}
+                        Peran: {user.role === "platform_admin" || user.role === "admin" ? "Admin" : "Pengguna"}
                       </span>
                       <span
                         className={`text-xs px-2 py-0.5 rounded font-medium ${
@@ -157,10 +158,10 @@ export function AdminUserDetailClient({ id }: { id: string }) {
                   <span className="text-emerald-400 font-medium">Terkonfirmasi (V3)</span>
                 </div>
               </div>
-            </div>
+            </QuietSurface>
 
             {/* Profile Info */}
-            <div className="p-6 bg-slate-900/60 rounded-2xl border border-white/10">
+            <QuietSurface radius="2xl" elevation="raised" className="p-6">
               <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-pink-400" /> Profil Terhubung
               </h2>
@@ -200,7 +201,7 @@ export function AdminUserDetailClient({ id }: { id: string }) {
                   <p className="text-sm">Pengguna belum menyelesaikan onboarding atau belum membuat kartu profil.</p>
                 </div>
               )}
-            </div>
+            </QuietSurface>
           </div>
         )}
       </main>

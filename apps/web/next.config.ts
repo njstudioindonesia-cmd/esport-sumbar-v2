@@ -49,6 +49,16 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/admin/regions/:path*",
+        destination: "/admin",
+        permanent: true,
+      },
+      {
+        source: "/admin/regions",
+        destination: "/admin",
+        permanent: true,
+      },
+      {
         source: "/admin/province/:path*",
         destination: "/admin",
         permanent: true,
