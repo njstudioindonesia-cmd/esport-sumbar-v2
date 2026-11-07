@@ -4,7 +4,8 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, AlertTriangle, XCircle, Info, X } from "lucide-react";
-import { MOTION_SPRINGS } from "./MotionPresets";
+import { MOTION_SPRINGS, MOTION_DURATIONS } from "./MotionPresets";
+import { useIsReducedMotion } from "./useQualityMode";
 
 export interface ToastMessage {
   id: string;
@@ -21,6 +22,8 @@ export interface GlassToastProps {
 }
 
 export function GlassToast({ toasts, onDismiss, className }: GlassToastProps) {
+  const isReducedMotion = useIsReducedMotion();
+
   const icons = {
     success: <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />,
     error: <XCircle className="w-5 h-5 text-rose-400 shrink-0" />,
@@ -52,10 +55,22 @@ export function GlassToast({ toasts, onDismiss, className }: GlassToastProps) {
               key={toast.id}
               role="status"
               aria-live="polite"
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              initial={
+                isReducedMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: 20, scale: 0.95 }
+              }
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.15 } }}
-              transition={MOTION_SPRINGS.snappy}
+              exit={
+                isReducedMotion
+                  ? { opacity: 0, transition: { duration: MOTION_DURATIONS.instant } }
+                  : { opacity: 0, scale: 0.9, transition: { duration: 0.15 } }
+              }
+              transition={
+                isReducedMotion
+                  ? { duration: MOTION_DURATIONS.instant }
+                  : MOTION_SPRINGS.snappy
+              }
               className={cn(
                 "pointer-events-auto p-4 rounded-2xl bg-slate-900/90 backdrop-blur-xl border shadow-xl flex items-start gap-3 relative overflow-hidden",
                 borders[type]
@@ -76,7 +91,7 @@ export function GlassToast({ toasts, onDismiss, className }: GlassToastProps) {
                 type="button"
                 onClick={() => onDismiss(toast.id)}
                 aria-label="Tutup notifikasi"
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors shrink-0"
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors shrink-0 min-h-[36px] min-w-[36px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
               >
                 <X className="w-4 h-4" />
               </button>

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { MOTION_SPRINGS } from "./MotionPresets";
+import { MOTION_SPRINGS, MOTION_DURATIONS } from "./MotionPresets";
+import { useIsReducedMotion } from "./useQualityMode";
 
 export interface GlassSwitchProps {
   checked: boolean;
@@ -19,6 +20,9 @@ export const GlassSwitch = forwardRef<HTMLButtonElement, GlassSwitchProps>(
     { checked, onCheckedChange, disabled = false, label, id, className },
     ref
   ) => {
+    const isReducedMotion = useIsReducedMotion();
+    const [isPressed, setIsPressed] = useState(false);
+
     const handleToggle = () => {
       if (!disabled) {
         onCheckedChange(!checked);
@@ -37,6 +41,9 @@ export const GlassSwitch = forwardRef<HTMLButtonElement, GlassSwitchProps>(
           aria-label={label || "Tombol saklar"}
           disabled={disabled}
           onClick={handleToggle}
+          onPointerDown={() => !disabled && setIsPressed(true)}
+          onPointerUp={() => setIsPressed(false)}
+          onPointerLeave={() => setIsPressed(false)}
           onKeyDown={(e) => {
             if (e.key === " " || e.key === "Enter") {
               e.preventDefault();
@@ -58,13 +65,23 @@ export const GlassSwitch = forwardRef<HTMLButtonElement, GlassSwitchProps>(
               "focus-visible:ring-2 focus-visible:ring-pink-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             )}
           >
-            {/* Visual Thumb */}
+            {/* Visual Fluid Thumb (Memanjang saat ditarik/ditekan) */}
             <motion.span
               layout
-              transition={MOTION_SPRINGS.snappy}
-              animate={{ x: checked ? 20 : 0 }}
+              style={{
+                originX: checked ? 1 : 0,
+              }}
+              animate={{
+                x: checked ? 20 : 0,
+                scaleX: !isReducedMotion && isPressed ? 1.25 : 1,
+              }}
+              transition={
+                isReducedMotion
+                  ? { duration: 0 }
+                  : MOTION_SPRINGS.snappy
+              }
               className={cn(
-                "w-5 h-5 rounded-full bg-white shadow-md block border border-white/20",
+                "w-5 h-5 rounded-full shadow-md block border border-white/20",
                 checked ? "bg-white" : "bg-slate-300"
               )}
             />

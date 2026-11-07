@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   Compass,
@@ -41,6 +42,13 @@ import { GlassCard, GlassCardHeader, GlassCardTitle, GlassCardContent } from "@/
 import { GlassBadge, GlassStatusBadge } from "@/components/glass/GlassBadge";
 import { GlassButton } from "@/components/glass/GlassButton";
 import { SpecularLayer } from "@/components/glass/SpecularLayer";
+import {
+  GlassNumberCounter,
+  ScrollReveal,
+  MOTION_SPRINGS,
+  MOTION_DURATIONS,
+  MOTION_EASINGS,
+} from "@/components/glass";
 import { mapVerificationToCard } from "@/types/card";
 import { GALLERY_CARDS } from "@/data/mockCards";
 import { MOCK_NEWS } from "@/data/mockNews";
@@ -230,10 +238,20 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
           <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-[#00004F]/50 blur-[130px] pointer-events-none rounded-full" />
           <BrandWatermark opacity={0.04} size={700} position="top-right" />
 
-          {/* Left Column: Headlines & Action Buttons */}
-          <div className="relative z-10 flex-1 flex flex-col items-center lg:items-start text-center lg:text-left max-w-2xl">
+          {/* Left Column: Headlines & Action Buttons (Cinematic Stagger) */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: MOTION_DURATIONS.cinematic, ease: MOTION_EASINGS.standardOut }}
+            className="relative z-10 flex-1 flex flex-col items-center lg:items-start text-center lg:text-left max-w-2xl"
+          >
             {/* Brand Ownership Pill */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 mb-6 shadow-sm backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...MOTION_SPRINGS.snappy, delay: 0.05 }}
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.06] border border-white/10 mb-6 shadow-sm backdrop-blur-md"
+            >
               <div className="relative w-4 h-2.5">
                 <Image
                   src="/brand/logo-mark-pink.png"
@@ -246,21 +264,36 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               <span className="text-[11px] font-mono font-bold tracking-wider text-white/80 uppercase">
                 Pusat Data ESPORT SUMBAR™
               </span>
-            </div>
+            </motion.div>
 
             {/* Main Headline (Brand Slanted Style) */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-tight text-white leading-[1.05] mb-5">
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...MOTION_SPRINGS.fluid, delay: 0.15 }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-tight text-white leading-[1.05] mb-5"
+            >
               BANGUN NAMAMU DI{" "}
               <span className="text-[#FF1752] display-skew inline-block">ARENA SUMBAR</span>
-            </h1>
+            </motion.h1>
 
             {/* Subtitle */}
-            <p className="text-sm sm:text-base lg:text-lg text-white/70 leading-relaxed mb-8 max-w-xl">
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...MOTION_SPRINGS.fluid, delay: 0.25 }}
+              className="text-sm sm:text-base lg:text-lg text-white/70 leading-relaxed mb-8 max-w-xl"
+            >
               Pusat data olahraga elektronik, paspor digital ber-ESPORT ID, dan jaringan keterhubungan 7 entitas Sumatera Barat.
-            </p>
+            </motion.p>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...MOTION_SPRINGS.snappy, delay: 0.35 }}
+              className="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto"
+            >
               <Link href="/register" className="w-full sm:w-auto">
                 <GlassButton variant="primary" size="lg" className="w-full sm:w-auto text-sm font-heading font-black uppercase tracking-wider">
                   <Sparkles className="w-4 h-4 mr-2" />
@@ -274,10 +307,15 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   Jelajahi Roster
                 </GlassButton>
               </Link>
-            </div>
+            </motion.div>
 
             {/* Trust Indicators */}
-            <div className="mt-8 pt-6 border-t border-white/[0.08] w-full flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-white/60">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...MOTION_SPRINGS.gentle, delay: 0.45 }}
+              className="mt-8 pt-6 border-t border-white/[0.08] w-full flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-white/60"
+            >
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 <span>Terhubung 19 Wilayah Sumbar</span>
@@ -290,11 +328,16 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                 <Layers className="w-4 h-4 text-sky-400" />
                 <span>1 Akun = 1 Profil Terdaftar</span>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column: 3D Cinematic Glass Stage */}
-          <div className="relative z-10 flex-1 w-full flex flex-col items-center justify-center py-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ ...MOTION_SPRINGS.fluid, delay: 0.2 }}
+            className="relative z-10 flex-1 w-full flex flex-col items-center justify-center py-4"
+          >
             <GlassSurface
               variant="elevated"
               elevation="overlay"
@@ -323,16 +366,27 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                 </div>
               </div>
 
-              {/* 3D Interactive Card Component */}
-              <div className="w-full flex justify-center py-2">
-                <EsportCard
-                  type={currentHeroCard.type as any}
-                  rarity={currentHeroCard.rarity as any}
-                  verification={currentHeroCard.verification}
-                  data={currentHeroCard.data}
-                  size="fluid"
-                  interactive={true}
-                />
+              {/* 3D Interactive Card Component with Fluid Morph Switch */}
+              <div className="w-full flex justify-center py-2 min-h-[360px] items-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeHeroIdx}
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={MOTION_SPRINGS.snappy}
+                    className="w-full flex justify-center"
+                  >
+                    <EsportCard
+                      type={currentHeroCard.type as any}
+                      rarity={currentHeroCard.rarity as any}
+                      verification={currentHeroCard.verification}
+                      data={currentHeroCard.data}
+                      size="fluid"
+                      interactive={true}
+                    />
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
               {/* Card Meta Bar */}
@@ -349,108 +403,117 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                 </Link>
               </div>
             </GlassSurface>
-          </div>
+          </motion.div>
         </section>
 
         {/* ==================== 2. PLATFORM STATISTICS BAR ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-              <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                Profil Terdaftar
-              </span>
-              <div className="text-3xl sm:text-4xl font-heading font-black text-white">
-                <StatNumber value={stats?.totalEntities || 128} label="Profil Terdaftar" />
-              </div>
-              <span className="text-[10px] font-mono text-rose-400 mt-1 block">7 Entitas Terhubung</span>
-            </GlassCard>
+          <ScrollReveal direction="up" threshold={0.1}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                  Profil Terdaftar
+                </span>
+                <GlassNumberCounter
+                  value={stats?.totalEntities || 128}
+                  numberClassName="text-3xl sm:text-4xl text-white"
+                />
+                <span className="text-[10px] font-mono text-rose-400 mt-1 block">7 Entitas Terhubung</span>
+              </GlassCard>
 
-            <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-              <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                Terverifikasi
-              </span>
-              <div className="text-3xl sm:text-4xl font-heading font-black text-[#D4AF37]">
-                <StatNumber value={stats?.verifiedCount || 42} label="Terverifikasi" />
-              </div>
-              <span className="text-[10px] font-mono text-emerald-400 mt-1 block">Standar ESP-SB-VER</span>
-            </GlassCard>
+              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                  Terverifikasi
+                </span>
+                <GlassNumberCounter
+                  value={stats?.verifiedCount || 42}
+                  numberClassName="text-3xl sm:text-4xl text-[#D4AF37]"
+                />
+                <span className="text-[10px] font-mono text-emerald-400 mt-1 block">Standar ESP-SB-VER</span>
+              </GlassCard>
 
-            <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-              <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                Wilayah Terjangkau
-              </span>
-              <div className="text-3xl sm:text-4xl font-heading font-black text-white">
-                <StatNumber value={stats?.activeRegions || 19} label="Wilayah Terjangkau" />
-              </div>
-              <span className="text-[10px] font-mono text-sky-400 mt-1 block">Kota &amp; Kabupaten</span>
-            </GlassCard>
+              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                  Wilayah Terjangkau
+                </span>
+                <GlassNumberCounter
+                  value={stats?.activeRegions || 19}
+                  numberClassName="text-3xl sm:text-4xl text-white"
+                />
+                <span className="text-[10px] font-mono text-sky-400 mt-1 block">Kota &amp; Kabupaten</span>
+              </GlassCard>
 
-            <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-              <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                Klub &amp; Tim Aktif
-              </span>
-              <div className="text-3xl sm:text-4xl font-heading font-black text-white">
-                <StatNumber value={stats?.totalTeams || 28} label="Klub &amp; Tim Aktif" />
-              </div>
-              <span className="text-[10px] font-mono text-amber-400 mt-1 block">Divisi Kompetitif</span>
-            </GlassCard>
-          </div>
+              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                  Klub &amp; Tim Aktif
+                </span>
+                <GlassNumberCounter
+                  value={stats?.totalTeams || 28}
+                  numberClassName="text-3xl sm:text-4xl text-white"
+                />
+                <span className="text-[10px] font-mono text-amber-400 mt-1 block">Divisi Kompetitif</span>
+              </GlassCard>
+            </div>
+          </ScrollReveal>
         </section>
 
         {/* ==================== 3. CARA KERJA SISTEM V3 (5 LANGKAH) ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-          <div className="flex flex-col items-center text-center mb-10">
-            <span className="px-3 py-1 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30 text-pink-300 text-xs font-mono font-bold uppercase tracking-widest mb-3">
-              Protokol Platform
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight">
-              Cara Kerja Sistem V3
-            </h2>
-            <p className="text-xs sm:text-sm text-white/60 max-w-xl mt-2 leading-relaxed">
-              Lima tahapan terstruktur dari penerbitan identitas hingga partisipasi turnamen terbuka.
-            </p>
-          </div>
+          <ScrollReveal direction="up" threshold={0.1}>
+            <div className="flex flex-col items-center text-center mb-10">
+              <span className="px-3 py-1 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30 text-pink-300 text-xs font-mono font-bold uppercase tracking-widest mb-3">
+                Protokol Platform
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight">
+                Cara Kerja Sistem V3
+              </h2>
+              <p className="text-xs sm:text-sm text-white/60 max-w-xl mt-2 leading-relaxed">
+                Lima tahapan terstruktur dari penerbitan identitas hingga partisipasi turnamen terbuka.
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            {workflowSteps.map((step, idx) => (
-              <GlassCard
-                key={idx}
-                variant="standard"
-                elevation="glass"
-                radius="2xl"
-                specular={true}
-                className="p-5 flex flex-col justify-between group hover:border-[#FF1752]/40 transition-colors"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-2xl font-heading font-black text-[#FF1752] opacity-80 group-hover:opacity-100 transition-opacity">
-                      {step.num}
-                    </span>
-                    <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-white/10 text-white/70">
-                      {step.badge}
-                    </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {workflowSteps.map((step, idx) => (
+                <GlassCard
+                  key={idx}
+                  variant="standard"
+                  elevation="glass"
+                  radius="2xl"
+                  specular={true}
+                  className="p-5 flex flex-col justify-between group hover:border-[#FF1752]/40 transition-colors"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-2xl font-heading font-black text-[#FF1752] opacity-80 group-hover:opacity-100 transition-opacity">
+                        {step.num}
+                      </span>
+                      <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-white/10 text-white/70">
+                        {step.badge}
+                      </span>
+                    </div>
+                    <h3 className="text-base font-heading font-black uppercase text-white mb-2">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-white/60 leading-relaxed">
+                      {step.desc}
+                    </p>
                   </div>
-                  <h3 className="text-base font-heading font-black uppercase text-white mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs text-white/60 leading-relaxed">
-                    {step.desc}
-                  </p>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
+                </GlassCard>
+              ))}
+            </div>
+          </ScrollReveal>
         </section>
 
         {/* ==================== 4. EKOSISTEM 7 BIDANG (VISUAL KETERHUBUNGAN) ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-          <GlassSurface
-            variant="elevated"
-            elevation="glass"
-            radius="3xl"
-            specular={true}
-            className="p-6 sm:p-10 border-white/15"
-          >
+          <ScrollReveal direction="up" threshold={0.1}>
+            <GlassSurface
+              variant="elevated"
+              elevation="glass"
+              radius="3xl"
+              specular={true}
+              className="p-6 sm:p-10 border-white/15"
+            >
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-6 border-b border-white/10">
               <div>
                 <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D77] uppercase block mb-1">
@@ -495,182 +558,189 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               })}
             </div>
           </GlassSurface>
-        </section>
+        </ScrollReveal>
+      </section>
 
         {/* ==================== 5. BERITA & WARTA TERBARU ==================== */}
         {headlineArticle && (
           <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D77] uppercase block mb-1">
-                  Warta Terkini
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-heading font-black uppercase text-white">
-                  Kabar Turnamen &amp; Agenda
-                </h2>
+            <ScrollReveal direction="up" threshold={0.1}>
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D77] uppercase block mb-1">
+                    Warta Terkini
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-heading font-black uppercase text-white">
+                    Kabar Turnamen &amp; Agenda
+                  </h2>
+                </div>
+
+                <Link href="/news">
+                  <GlassButton variant="ghost" size="sm" className="font-mono text-xs text-white/70 hover:text-white">
+                    <span>Semua Berita</span>
+                    <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                  </GlassButton>
+                </Link>
               </div>
 
-              <Link href="/news">
-                <GlassButton variant="ghost" size="sm" className="font-mono text-xs text-white/70 hover:text-white">
-                  <span>Semua Berita</span>
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-                </GlassButton>
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              {/* Headline Card (7 Cols) */}
-              <Link
-                href={`/news/${headlineArticle.slug}`}
-                className="lg:col-span-7 group block"
-              >
-                <GlassSurface
-                  variant="standard"
-                  elevation="glass"
-                  radius="2xl"
-                  specular={true}
-                  className="p-6 h-full flex flex-col justify-between hover:border-[#FF1752]/40 transition-colors"
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Headline Card (7 Cols) */}
+                <Link
+                  href={`/news/${headlineArticle.slug}`}
+                  className="lg:col-span-7 group block"
                 >
-                  <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-4 bg-black/40 border border-white/10">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={headlineArticle.imageUrl}
-                      alt={headlineArticle.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] font-mono font-bold text-pink-300 uppercase">
-                        {headlineArticle.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center gap-3 text-xs font-mono text-white/50 mb-2">
-                      <span>{headlineArticle.date}</span>
-                      <span>•</span>
-                      <span>{headlineArticle.readTime}</span>
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-heading font-black text-white group-hover:text-pink-300 transition-colors line-clamp-2">
-                      {headlineArticle.title}
-                    </h3>
-                  </div>
-                </GlassSurface>
-              </Link>
-
-              {/* Sub Articles (5 Cols) */}
-              <div className="lg:col-span-5 flex flex-col gap-4">
-                {subArticles.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/news/${article.slug}`}
-                    className="group block"
+                  <GlassSurface
+                    variant="standard"
+                    elevation="glass"
+                    radius="2xl"
+                    specular={true}
+                    className="p-6 h-full flex flex-col justify-between hover:border-[#FF1752]/40 transition-colors"
                   >
-                    <GlassSurface
-                      variant="standard"
-                      elevation="glass"
-                      radius="xl"
-                      className="p-4 flex gap-4 items-center hover:border-white/20 transition-colors"
+                    <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden mb-4 bg-black/40 border border-white/10">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={headlineArticle.imageUrl}
+                        alt={headlineArticle.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] font-mono font-bold text-pink-300 uppercase">
+                          {headlineArticle.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex items-center gap-3 text-xs font-mono text-white/50 mb-2">
+                        <span>{headlineArticle.date}</span>
+                        <span>•</span>
+                        <span>{headlineArticle.readTime}</span>
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-heading font-black text-white group-hover:text-pink-300 transition-colors line-clamp-2">
+                        {headlineArticle.title}
+                      </h3>
+                    </div>
+                  </GlassSurface>
+                </Link>
+
+                {/* Sub Articles (5 Cols) */}
+                <div className="lg:col-span-5 flex flex-col gap-4">
+                  {subArticles.map((article) => (
+                    <Link
+                      key={article.id}
+                      href={`/news/${article.slug}`}
+                      className="group block"
                     >
-                      <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-black/40 border border-white/10">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={article.imageUrl}
-                          alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-[10px] font-mono text-pink-400 font-bold uppercase block mb-1">
-                          {article.category}
-                        </span>
-                        <h4 className="text-sm font-heading font-black text-white group-hover:text-pink-300 transition-colors line-clamp-2">
-                          {article.title}
-                        </h4>
-                        <span className="text-[10px] font-mono text-white/40 block mt-1">
-                          {article.date}
-                        </span>
-                      </div>
-                    </GlassSurface>
-                  </Link>
-                ))}
+                      <GlassSurface
+                        variant="standard"
+                        elevation="glass"
+                        radius="xl"
+                        className="p-4 flex gap-4 items-center hover:border-white/20 transition-colors"
+                      >
+                        <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-black/40 border border-white/10">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={article.imageUrl}
+                            alt={article.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[10px] font-mono text-pink-400 font-bold uppercase block mb-1">
+                            {article.category}
+                          </span>
+                          <h4 className="text-sm font-heading font-black text-white group-hover:text-pink-300 transition-colors line-clamp-2">
+                            {article.title}
+                          </h4>
+                          <span className="text-[10px] font-mono text-white/40 block mt-1">
+                            {article.date}
+                          </span>
+                        </div>
+                      </GlassSurface>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           </section>
         )}
 
         {/* ==================== 6. PROFIL UNGGULAN TERVERIFIKASI ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D77] uppercase block mb-1">
-                Katalog Publik
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-heading font-black uppercase text-white">
-                Roster Terverifikasi
-              </h2>
+          <ScrollReveal direction="up" threshold={0.1}>
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <span className="text-xs font-mono font-bold tracking-widest text-[#FF4D77] uppercase block mb-1">
+                  Katalog Publik
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-heading font-black uppercase text-white">
+                  Roster Terverifikasi
+                </h2>
+              </div>
+
+              <Link href="/explore">
+                <GlassButton variant="ghost" size="sm" className="font-mono text-xs text-white/70 hover:text-white">
+                  <span>Eksplorasi Lengkap</span>
+                  <ChevronRight className="w-3.5 h-3.5 ml-1" />
+                </GlassButton>
+              </Link>
             </div>
 
-            <Link href="/explore">
-              <GlassButton variant="ghost" size="sm" className="font-mono text-xs text-white/70 hover:text-white">
-                <span>Eksplorasi Lengkap</span>
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </GlassButton>
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {featuredCards.slice(0, 4).map((card, idx) => (
-              <div key={card.id || idx} className="flex flex-col items-center">
-                <EsportCard
-                  type={card.type as any}
-                  rarity={card.rarity as any}
-                  verification={card.verification}
-                  data={card.data}
-                  size="fluid"
-                  interactive={true}
-                />
-              </div>
-            ))}
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {featuredCards.slice(0, 4).map((card, idx) => (
+                <div key={card.id || idx} className="flex flex-col items-center">
+                  <EsportCard
+                    type={card.type as any}
+                    rarity={card.rarity as any}
+                    verification={card.verification}
+                    data={card.data}
+                    size="fluid"
+                    interactive={true}
+                  />
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </section>
 
         {/* ==================== 7. HIGH-IMPACT CTA BANNER ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <GlassSurface
-            variant="prominent"
-            elevation="overlay"
-            radius="3xl"
-            specular={true}
-            className="p-8 sm:p-14 text-center relative overflow-hidden border-[#FF1752]/30"
-          >
-            <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-              <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-pink-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
-                Bergabung Sekarang
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-heading font-black uppercase text-white tracking-tight leading-tight mb-4">
-                Daftarkan Identitasmu di{" "}
-                <span className="text-[#FF1752] display-skew inline-block">ESPORT SUMBAR™</span>
-              </h2>
-              <p className="text-sm sm:text-base text-white/70 leading-relaxed mb-8 max-w-xl">
-                Satu akun terikat pada satu identitas bidang spesifik. Dapatkan kartu identitas digital, kode verifikasi tunggal, dan keterhubungan ekosistem se-Sumatera Barat.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                <Link href="/register" className="w-full sm:w-auto">
-                  <GlassButton variant="primary" size="lg" className="w-full sm:w-auto font-heading font-black uppercase tracking-wider">
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Mulai Pendaftaran
-                  </GlassButton>
-                </Link>
-                <Link href="/verification-standard" className="w-full sm:w-auto">
-                  <GlassButton variant="secondary" size="lg" className="w-full sm:w-auto font-heading font-black uppercase tracking-wider">
-                    <ShieldCheck className="w-4 h-4 mr-2 text-emerald-400" />
-                    Standar Verifikasi
-                  </GlassButton>
-                </Link>
+          <ScrollReveal direction="up" threshold={0.1}>
+            <GlassSurface
+              variant="prominent"
+              elevation="overlay"
+              radius="3xl"
+              specular={true}
+              className="p-8 sm:p-14 text-center relative overflow-hidden border-[#FF1752]/30"
+            >
+              <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
+                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-pink-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
+                  Bergabung Sekarang
+                </span>
+                <h2 className="text-3xl sm:text-5xl font-heading font-black uppercase text-white tracking-tight leading-tight mb-4">
+                  Daftarkan Identitasmu di{" "}
+                  <span className="text-[#FF1752] display-skew inline-block">ESPORT SUMBAR™</span>
+                </h2>
+                <p className="text-sm sm:text-base text-white/70 leading-relaxed mb-8 max-w-xl">
+                  Satu akun terikat pada satu identitas bidang spesifik. Dapatkan kartu identitas digital, kode verifikasi tunggal, dan keterhubungan ekosistem se-Sumatera Barat.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                  <Link href="/register" className="w-full sm:w-auto">
+                    <GlassButton variant="primary" size="lg" className="w-full sm:w-auto font-heading font-black uppercase tracking-wider">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Mulai Pendaftaran
+                    </GlassButton>
+                  </Link>
+                  <Link href="/verification-standard" className="w-full sm:w-auto">
+                    <GlassButton variant="secondary" size="lg" className="w-full sm:w-auto font-heading font-black uppercase tracking-wider">
+                      <ShieldCheck className="w-4 h-4 mr-2 text-emerald-400" />
+                      Standar Verifikasi
+                    </GlassButton>
+                  </Link>
+                </div>
               </div>
-            </div>
-          </GlassSurface>
+            </GlassSurface>
+          </ScrollReveal>
         </section>
       </main>
 

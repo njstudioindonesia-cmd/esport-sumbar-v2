@@ -416,6 +416,18 @@ body {
   background-image: none !important;
 }
 
+[data-quality="eco"] .animate-shimmer,
+[data-quality="eco"] .animate-crystal,
+[data-quality="eco"] .animate-brand-pulse,
+[data-quality="eco"] .animate-brand-bar,
+[data-quality="eco"] .animate-pulse {
+  animation: none !important;
+}
+
+[data-quality="standard"] .glass-specular {
+  background-image: radial-gradient(420px circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 45%) !important;
+}
+
 /* 6. Accessibility & Feature Fallbacks */
 @supports not (backdrop-filter: blur(1px)) {
   .glass-surface,
@@ -446,5 +458,18 @@ body {
   .glass-tinted {
     background: rgba(10, 10, 36, 0.98) !important;
     border-color: rgba(255, 255, 255, 0.6) !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .glass-surface,
+  .glass-thin,
+  .glass-thick,
+  .glass-tinted {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-color: ButtonBorder !important;
   }
 }

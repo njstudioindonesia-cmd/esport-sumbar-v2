@@ -45,6 +45,7 @@ import { ImageCropperModal } from "./ImageCropperModal";
 import { EsportCard } from "@/components/card/EsportCard";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { saveWizardDraft, loadWizardDraft, clearWizardDraft } from "@/lib/entities/draft";
+import { CardSuccessCelebration } from "@/components/glass/CardSuccessCelebration";
 
 export function DesktopCardWizard() {
   const router = useRouter();
@@ -1079,71 +1080,15 @@ export function DesktopCardWizard() {
                         </div>
                       </div>
 
-                      {/* Hasil Sukses Terbit */}
+                      {/* Hasil Sukses Terbit dengan Animasi Liquid Glass */}
                       {issuedResult && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 text-center flex flex-col items-center gap-3 mb-4"
-                        >
-                          <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500 flex items-center justify-center text-emerald-400">
-                            <Sparkles className="w-6 h-6" />
-                          </div>
-                          <div>
-                            <span className="text-base font-heading font-black text-white block">
-                              ESPORT ID Berhasil Diterbitkan!
-                            </span>
-                            <span className="text-sm font-mono font-bold text-[#D4AF37] block mt-1">
-                              {issuedResult.esportId}
-                            </span>
-                          </div>
-
-                          <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
-                            <Link
-                              href="/dashboard"
-                              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] text-[#07080C] text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-amber-950/20 hover:brightness-110 transition-all"
-                            >
-                              <span>Buka Dashboard Saya</span>
-                              <ChevronRight className="w-4 h-4" />
-                            </Link>
-
-                            <Link
-                              href="/me/verification"
-                              className="px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/10 text-xs font-mono text-white flex items-center gap-1.5 transition-all"
-                            >
-                              <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
-                              <span>Ajukan Verifikasi</span>
-                            </Link>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (navigator.share) {
-                                  navigator.share({
-                                    title: displayName,
-                                    text: `Kartu Atlet Esport Sumbar: ${displayName}`,
-                                    url: `${window.location.origin}/profile/${issuedResult.slug}`,
-                                  }).catch(() => {});
-                                } else {
-                                  navigator.clipboard.writeText(`${window.location.origin}/profile/${issuedResult.slug}`);
-                                  alert("Tautan kartu berhasil disalin ke clipboard!");
-                                }
-                              }}
-                              className="px-4 py-2.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-xs font-mono text-white flex items-center gap-1.5"
-                            >
-                              <Share2 className="w-3.5 h-3.5" />
-                              <span>Bagikan</span>
-                            </button>
-
-                            <Link
-                              href="/dashboard"
-                              className="px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-white/20 text-xs font-mono text-white/60 hover:text-white flex items-center gap-1.5"
-                            >
-                              <ArrowRight className="w-3.5 h-3.5" />
-                              <span>Buka Dasbor</span>
-                            </Link>
-                          </div>
-                        </motion.div>
+                        <div className="mb-6">
+                          <CardSuccessCelebration
+                            esportId={issuedResult.esportId}
+                            entityType={entityType}
+                            rarityTier={rarityTier}
+                          />
+                        </div>
                       )}
                     </motion.div>
                   )}

@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Home, Compass, CreditCard, User } from "lucide-react";
 import { MOTION_SPRINGS } from "./MotionPresets";
+import { useIsReducedMotion } from "./useQualityMode";
 
 export interface TabItem {
   href: string;
@@ -20,6 +21,7 @@ export interface GlassTabBarProps {
 
 export function GlassTabBar({ className }: GlassTabBarProps) {
   const pathname = usePathname();
+  const isReducedMotion = useIsReducedMotion();
 
   const tabs: TabItem[] = [
     { href: "/", label: "Beranda", icon: Home },
@@ -58,7 +60,11 @@ export function GlassTabBar({ className }: GlassTabBarProps) {
               {isActive && (
                 <motion.div
                   layoutId="glass-tabbar-active-indicator"
-                  transition={MOTION_SPRINGS.snappy}
+                  transition={
+                    isReducedMotion
+                      ? { duration: 0 }
+                      : MOTION_SPRINGS.snappy
+                  }
                   className="absolute inset-0 bg-white/15 border border-white/20 rounded-2xl shadow-sm -z-10"
                 />
               )}

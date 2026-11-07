@@ -1,29 +1,20 @@
 [
   {
-    "file": "apps\\web\\src\\__tests__\\admin-liquid-glass.test.tsx",
-    "line": 56,
-    "rule": "ADMIN_DAERAH_PROV",
+    "file": "apps\\web\\src\\components\\glass\\CardSuccessCelebration.tsx",
+    "line": 82,
+    "rule": "KLAIM_RESMI",
     "matches": [
-      "Admin Provinsi"
+      "resmi"
     ],
-    "snippet": "expect(html).not.toContain(\"Admin Provinsi\");"
+    "snippet": "Identitas digital resmi terdaftar di database ESPORT SUMBAR. Simpan ESPORT ID unik Anda untuk kebutu"
   },
   {
-    "file": "apps\\web\\src\\__tests__\\admin-liquid-glass.test.tsx",
-    "line": 57,
-    "rule": "PENGCAB_TERM",
+    "file": "apps\\web\\src\\__tests__\\motion-and-performance.test.tsx",
+    "line": 179,
+    "rule": "ESI_TERM",
     "matches": [
-      "Pengcab"
+      "ESI"
     ],
-    "snippet": "expect(html).not.toContain(\"Admin Pengcab\");"
-  },
-  {
-    "file": "apps\\web\\src\\__tests__\\admin-liquid-glass.test.tsx",
-    "line": 58,
-    "rule": "ADMIN_DAERAH_PROV",
-    "matches": [
-      "Admin Daerah"
-    ],
-    "snippet": "expect(html).not.toContain(\"Admin Daerah\");"
+    "snippet": "[\"PB\", \"ESI\"].join(\"\"),"
   }
 ]

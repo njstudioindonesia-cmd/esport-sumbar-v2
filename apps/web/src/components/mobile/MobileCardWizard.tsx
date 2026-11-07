@@ -41,6 +41,7 @@ import { ImageCropperModal } from "@/components/wizard/ImageCropperModal";
 import { DynamicEntityFields } from "@/components/wizard/DynamicEntityFields";
 import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { saveWizardDraft, loadWizardDraft, clearWizardDraft } from "@/lib/entities/draft";
+import { CardSuccessCelebration } from "@/components/glass/CardSuccessCelebration";
 
 export function MobileCardWizard() {
   const router = useRouter();
@@ -813,24 +814,12 @@ export function MobileCardWizard() {
                 </div>
 
                 {issuedResult && (
-                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/40 text-center flex flex-col items-center gap-2 mb-2">
-                    <span className="text-xs font-mono font-bold text-[#D4AF37]">
-                      {issuedResult.esportId}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href="/dashboard"
-                        className="px-3.5 py-1.5 rounded-lg bg-[#D4AF37] text-black text-[11px] font-bold"
-                      >
-                        Buka Dashboard
-                      </Link>
-                      <Link
-                        href="/me/verification"
-                        className="px-3 py-1.5 rounded-lg bg-white/10 text-white text-[11px]"
-                      >
-                        Verifikasi
-                      </Link>
-                    </div>
+                  <div className="mb-4">
+                    <CardSuccessCelebration
+                      esportId={issuedResult.esportId}
+                      entityType={entityType}
+                      rarityTier={rarityTier}
+                    />
                   </div>
                 )}
               </motion.div>

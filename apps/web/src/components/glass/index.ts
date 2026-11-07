@@ -8,7 +8,7 @@ export * from "./SceneBackground";
 export * from "./QuietSurface";
 export * from "./viewTransition";
 
-// Component Library (Bagian 5)
+// Component Library (Bagian 5 & 10)
 export * from "./GlassButton";
 export * from "./GlassCard";
 export * from "./GlassBadge";
@@ -24,3 +24,7 @@ export * from "./GlassTabBar";
 export * from "./GlassSidebar";
 export * from "./GlassBreadcrumb";
 export * from "./PageTransition";
+export * from "./ScrollReveal";
+export * from "./GlassNumberCounter";
+export * from "./VerificationFlowTracker";
+export * from "./CardSuccessCelebration";

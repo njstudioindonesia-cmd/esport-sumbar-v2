@@ -20,14 +20,14 @@ function detectOptimalQuality(): QualityMode {
   }
 
   // 2. Penghemat Data
-  const connection = (navigator as any).connection;
+  const connection = (navigator as unknown as { connection?: { saveData?: boolean } }).connection;
   if (connection?.saveData) {
     return "eco";
   }
 
   // 3. Kapabilitas CPU & Memori
   const cores = navigator.hardwareConcurrency || 4;
-  const memory = (navigator as any).deviceMemory || 4;
+  const memory = (navigator as unknown as { deviceMemory?: number }).deviceMemory || 4;
   if (cores < 4 || memory < 4) {
     return "standard";
   }
@@ -77,7 +77,7 @@ export function useQualityMode() {
     }
   }, []);
 
-  // Pemantau FPS ringan (Jank detector)
+  // Pemantau FPS ringan (Jank detector) dengan degradasi bertingkat: full -> standard -> eco
   useEffect(() => {
     if (typeof window === "undefined" || quality === "eco") return;
 
@@ -85,8 +85,25 @@ export function useQualityMode() {
     let lastTime = performance.now();
     let animationFrameId: number;
     let lowFpsCount = 0;
+    let isTabVisible = !document.hidden;
+
+    const handleVisibility = () => {
+      isTabVisible = !document.hidden;
+      if (isTabVisible) {
+        lastTime = performance.now();
+        frameCount = 0;
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
 
     const measureFps = (now: number) => {
+      if (!isTabVisible) {
+        // Jeda pengukuran saat tab tidak aktif agar hemat daya dan tidak salah hitung 0 FPS
+        animationFrameId = requestAnimationFrame(measureFps);
+        return;
+      }
+
       frameCount++;
       const delta = now - lastTime;
 
@@ -94,15 +111,25 @@ export function useQualityMode() {
         const currentFps = Math.round((frameCount * 1000) / delta);
         setFps(currentFps);
 
-        // Jika FPS turun di bawah 35 selama 3 detik berturut-turut pada mode otomatis
-        if (currentFps < 35 && isAutoDetected) {
-          lowFpsCount++;
-          if (lowFpsCount >= 3) {
-            console.info("FPS rendah terdeteksi; menurunkan mode liquid glass ke 'eco' secara otomatis.");
-            setQualityMode("eco", false);
+        // Evaluasi otomatis jika pengguna belum mengunci mode manual
+        if (isAutoDetected) {
+          if (quality === "full" && currentFps < 45) {
+            lowFpsCount++;
+            if (lowFpsCount >= 3) {
+              console.info("FPS rendah terdeteksi (< 45); menurunkan mode liquid glass ke 'standard'.");
+              setQualityMode("standard", false);
+              lowFpsCount = 0;
+            }
+          } else if (quality === "standard" && currentFps < 35) {
+            lowFpsCount++;
+            if (lowFpsCount >= 3) {
+              console.info("FPS rendah terdeteksi (< 35); menurunkan mode liquid glass ke 'eco'.");
+              setQualityMode("eco", false);
+              lowFpsCount = 0;
+            }
+          } else {
+            lowFpsCount = 0;
           }
-        } else {
-          lowFpsCount = 0;
         }
 
         frameCount = 0;
@@ -116,6 +143,7 @@ export function useQualityMode() {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [quality, isAutoDetected, setQualityMode]);
 
@@ -125,4 +153,23 @@ export function useQualityMode() {
     isAutoDetected,
     fps,
   };
+}
+
+/**
+ * Hook bantuan untuk memeriksa preferensi reduced-motion
+ */
+export function useIsReducedMotion(): boolean {
+  const [isReduced, setIsReduced] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setIsReduced(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) => setIsReduced(e.matches);
+    mediaQuery.addEventListener("change", handler);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
+
+  return isReduced;
 }

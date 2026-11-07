@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useQualityMode } from "./useQualityMode";
+import React, { useEffect, useState, useRef } from "react";
+import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
 
 interface SceneBackgroundProps {
   className?: string;
@@ -12,12 +12,14 @@ interface SceneBackgroundProps {
 export function SceneBackground({
   className = "",
   intensity = "normal",
-  interactive = true,
 }: SceneBackgroundProps) {
   const { quality } = useQualityMode();
+  const isReducedMotion = useIsReducedMotion();
   const [isTabVisible, setIsTabVisible] = useState(true);
+  const [isIntersecting, setIsIntersecting] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Pantau apakah tab aktif agar animasi hemat baterai
+  // 1. Pantau apakah tab aktif agar animasi hemat baterai
   useEffect(() => {
     if (typeof document === "undefined") return;
 
@@ -31,21 +33,38 @@ export function SceneBackground({
     };
   }, []);
 
-  const shouldAnimate = quality === "full" && isTabVisible;
+  // 2. Pantau IntersectionObserver agar scene di-pause bila offscreen
+  useEffect(() => {
+    if (typeof window === "undefined" || !("IntersectionObserver" in window)) return;
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setIsIntersecting(entries[0]?.isIntersecting ?? true);
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const shouldAnimate = quality === "full" && isTabVisible && isIntersecting && !isReducedMotion;
 
   const pinkOpacity =
     intensity === "subtle" ? "opacity-25" : intensity === "vibrant" ? "opacity-55" : "opacity-40";
 
   return (
     <div
+      ref={containerRef}
       aria-hidden="true"
       className={`fixed inset-0 pointer-events-none -z-50 overflow-hidden bg-[#03031A] ${className}`}
     >
       {/* Deep Navy Radial Base */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(0,2,81,0.5),rgba(3,3,26,1))]" />
 
-      {/* Mode Hemat: Tampilkan bentuk statis tanpa animasi */}
-      {quality === "eco" ? (
+      {/* Mode Hemat / Reduced Motion: Tampilkan bentuk statis tanpa animasi */}
+      {quality === "eco" || isReducedMotion ? (
         <>
           <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-pink-600/10 blur-[100px]" />
           <div className="absolute top-1/2 -right-32 w-[32rem] h-[32rem] rounded-full bg-indigo-950/20 blur-[120px]" />

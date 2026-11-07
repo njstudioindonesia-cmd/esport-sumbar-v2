@@ -20,6 +20,7 @@ import {
   FileCheck,
 } from "lucide-react";
 import { uploadEvidenceAction } from "@/app/actions/upload";
+import { VerificationFlowTracker, type VerificationStep } from "@/components/glass/VerificationFlowTracker";
 
 interface VerificationData {
   profile: {
@@ -329,68 +330,16 @@ export function DesktopVerificationView() {
       </div>
 
       {/* ========================================================= */}
-      {/* 1. TRACKER HORIZONTAL BERGAYA PELACAK PAKET               */}
+      {/* 1. TRACKER HORIZONTAL BERGAYA PELACAK PAKET (LIQUID FLOW) */}
       {/* ========================================================= */}
-      <div className="p-8 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] shadow-2xl backdrop-blur-xl">
-        <div className="relative flex items-center justify-between max-w-4xl mx-auto px-4 sm:px-8">
-          {/* Connecting Line */}
-          <div className="absolute left-12 right-12 top-6 h-0.5 bg-white/[0.08] -z-0">
-            <div
-              className={`h-full bg-gradient-to-r from-emerald-500 via-[#D4AF37] to-transparent transition-all duration-500 ${
-                status === "verified"
-                  ? "w-full"
-                  : status === "verified"
-                  ? "w-[75%]"
-                  : status === "submitted" || status === "in_review_regional" || status === "revision_requested"
-                  ? "w-[45%]"
-                  : "w-[15%]"
-              }`}
-            />
-          </div>
-
-          {/* Stepper Nodes */}
-          {steps.map((st) => (
-            <div key={st.id} className="relative z-10 flex flex-col items-center">
-              {st.status === "completed" ? (
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
-              ) : st.status === "revision" ? (
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.4)]">
-                  <AlertTriangle className="w-6 h-6" />
-                </div>
-              ) : st.status === "active" ? (
-                <div className="relative w-12 h-12 rounded-2xl bg-[#D4AF37]/20 border-2 border-[#D4AF37] text-[#D4AF37] flex items-center justify-center shadow-[0_0_24px_rgba(212,175,55,0.5)]">
-                  <span className="w-4 h-4 rounded-full bg-[#D4AF37] animate-pulse" />
-                </div>
-              ) : (
-                <div className="w-12 h-12 rounded-2xl bg-[#161A24] border border-white/[0.08] text-white/30 flex items-center justify-center">
-                  <span className="font-mono text-sm font-bold">0{st.id}</span>
-                </div>
-              )}
-
-              <div className="text-center mt-3">
-                <div
-                  className={`text-sm font-heading font-bold ${
-                    st.status === "active"
-                      ? "text-[#D4AF37]"
-                      : st.status === "completed"
-                      ? "text-emerald-400"
-                      : st.status === "revision"
-                      ? "text-amber-400"
-                      : "text-white/40"
-                  }`}
-                >
-                  {st.name}
-                </div>
-                <div className="text-[10px] font-mono text-white/40 mt-0.5">
-                  {st.date}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <VerificationFlowTracker
+        steps={steps.map((st) => ({
+          id: st.id,
+          label: st.name,
+          status: (st.status === "upcoming" ? "pending" : st.status) as VerificationStep["status"],
+          badge: st.date,
+        }))}
+      />
 
       {/* FEEDBACK TOAST / ALERT */}
       {submitSuccess && (

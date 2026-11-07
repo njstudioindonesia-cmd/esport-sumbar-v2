@@ -3,7 +3,8 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { MOTION_SPRINGS } from "./MotionPresets";
+import { MOTION_SPRINGS, MOTION_DURATIONS } from "./MotionPresets";
+import { useIsReducedMotion } from "./useQualityMode";
 
 export interface SegmentedOption<T extends string = string> {
   value: T;
@@ -30,6 +31,7 @@ export function GlassSegmented<T extends string = string>({
   ariaLabel = "Pilihan segmen",
 }: GlassSegmentedProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isReducedMotion = useIsReducedMotion();
 
   const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
     let nextIndex = currentIndex;
@@ -98,12 +100,16 @@ export function GlassSegmented<T extends string = string>({
             {/* Sliding Liquid Capsule Indicator */}
             {isSelected && (
               <motion.div
-                layoutId={`glass-segmented-indicator-${ariaLabel}`}
-                transition={MOTION_SPRINGS.snappy}
-                className="absolute inset-0 bg-white/15 border border-white/20 rounded-[inherit] shadow-md -z-10"
+                layoutId={`glass-segmented-active-${ariaLabel}`}
+                transition={
+                  isReducedMotion
+                    ? { duration: 0 }
+                    : MOTION_SPRINGS.snappy
+                }
+                className="absolute inset-0 bg-white/20 border border-white/25 shadow-sm rounded-lg sm:rounded-xl -z-10"
               />
             )}
-            {opt.icon && <span aria-hidden="true">{opt.icon}</span>}
+            {opt.icon && <span className="w-4 h-4">{opt.icon}</span>}
             <span>{opt.label}</span>
           </button>
         );

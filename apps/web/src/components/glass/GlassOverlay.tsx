@@ -4,7 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import { MOTION_SPRINGS } from "./MotionPresets";
+import { MOTION_SPRINGS, MOTION_DURATIONS } from "./MotionPresets";
+import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
 
 /* ========================================================================= */
 /* 1. GLASS DIALOG                                                           */
@@ -15,6 +16,7 @@ export interface GlassDialogProps {
   title?: string;
   description?: string;
   children: React.ReactNode;
+  origin?: string;
   className?: string;
 }
 
@@ -24,9 +26,11 @@ export function GlassDialog({
   title,
   description,
   children,
+  origin = "center center",
   className,
 }: GlassDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const isReducedMotion = useIsReducedMotion();
 
   // Esc key and focus trap
   useEffect(() => {
@@ -55,7 +59,6 @@ export function GlassDialog({
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    // Lock scroll
     document.body.style.overflow = "hidden";
 
     return () => {
@@ -78,16 +81,29 @@ export function GlassDialog({
             className="fixed inset-0 bg-slate-950/80 backdrop-blur-md -z-10"
           />
 
-          {/* Morphing Dialog Surface */}
+          {/* Morphing Dialog Surface from Origin Point */}
           <motion.div
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            initial={{ opacity: 0, scale: 0.94, y: 12 }}
+            style={{ transformOrigin: origin }}
+            initial={
+              isReducedMotion
+                ? { opacity: 0 }
+                : { opacity: 0, scale: 0.94, y: 12 }
+            }
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 8 }}
-            transition={MOTION_SPRINGS.fluid}
+            exit={
+              isReducedMotion
+                ? { opacity: 0 }
+                : { opacity: 0, scale: 0.96, y: 8 }
+            }
+            transition={
+              isReducedMotion
+                ? { duration: MOTION_DURATIONS.instant }
+                : MOTION_SPRINGS.fluid
+            }
             className={cn(
               "w-full max-w-lg rounded-3xl p-6 sm:p-8 bg-[#090924]/90 backdrop-blur-2xl border border-white/20 shadow-2xl shadow-black/60 relative",
               className
@@ -142,6 +158,8 @@ export function GlassSheet({
   children,
   className,
 }: GlassSheetProps) {
+  const isReducedMotion = useIsReducedMotion();
+
   useEffect(() => {
     if (!isOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -157,21 +175,21 @@ export function GlassSheet({
 
   const slideVariants = {
     right: {
-      initial: { x: "100%", opacity: 0.5 },
-      animate: { x: 0, opacity: 1 },
-      exit: { x: "100%", opacity: 0 },
+      initial: isReducedMotion ? { opacity: 0 } : { x: "100%", opacity: 0.5 },
+      animate: isReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1 },
+      exit: isReducedMotion ? { opacity: 0 } : { x: "100%", opacity: 0 },
       wrapperClass: "fixed inset-y-0 right-0 w-full max-w-md",
     },
     left: {
-      initial: { x: "-100%", opacity: 0.5 },
-      animate: { x: 0, opacity: 1 },
-      exit: { x: "-100%", opacity: 0 },
+      initial: isReducedMotion ? { opacity: 0 } : { x: "-100%", opacity: 0.5 },
+      animate: isReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1 },
+      exit: isReducedMotion ? { opacity: 0 } : { x: "-100%", opacity: 0 },
       wrapperClass: "fixed inset-y-0 left-0 w-full max-w-md",
     },
     bottom: {
-      initial: { y: "100%", opacity: 0.5 },
-      animate: { y: 0, opacity: 1 },
-      exit: { y: "100%", opacity: 0 },
+      initial: isReducedMotion ? { opacity: 0 } : { y: "100%", opacity: 0.5 },
+      animate: isReducedMotion ? { opacity: 1 } : { y: 0, opacity: 1 },
+      exit: isReducedMotion ? { opacity: 0 } : { y: "100%", opacity: 0 },
       wrapperClass: "fixed inset-x-0 bottom-0 max-h-[90vh] rounded-t-3xl",
     },
   };
@@ -200,7 +218,11 @@ export function GlassSheet({
             initial={config.initial}
             animate={config.animate}
             exit={config.exit}
-            transition={MOTION_SPRINGS.fluid}
+            transition={
+              isReducedMotion
+                ? { duration: MOTION_DURATIONS.instant }
+                : MOTION_SPRINGS.fluid
+            }
             className={cn(
               "z-10 bg-[#090924]/95 backdrop-blur-2xl border-white/20 p-6 flex flex-col shadow-2xl overflow-y-auto",
               side === "right" && "border-l",
@@ -228,6 +250,81 @@ export function GlassSheet({
             <div className="flex-1 py-4">{children}</div>
           </motion.aside>
         </div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* ========================================================================= */
+/* 3. GLASS POPOVER / MENU (MORPH DARI TITIK ASAL)                           */
+/* ========================================================================= */
+export interface GlassPopoverProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  origin?: "top left" | "top right" | "bottom left" | "bottom right" | "center";
+  className?: string;
+}
+
+export function GlassPopover({
+  isOpen,
+  onClose,
+  children,
+  origin = "top right",
+  className,
+}: GlassPopoverProps) {
+  const isReducedMotion = useIsReducedMotion();
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          ref={popoverRef}
+          role="menu"
+          style={{ transformOrigin: origin }}
+          initial={
+            isReducedMotion
+              ? { opacity: 0 }
+              : { opacity: 0, scale: 0.92, y: origin.includes("top") ? -6 : 6 }
+          }
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={
+            isReducedMotion
+              ? { opacity: 0 }
+              : { opacity: 0, scale: 0.92, y: origin.includes("top") ? -4 : 4 }
+          }
+          transition={
+            isReducedMotion
+              ? { duration: MOTION_DURATIONS.instant }
+              : MOTION_SPRINGS.snappy
+          }
+          className={cn(
+            "absolute z-50 p-2 rounded-2xl bg-slate-950/90 backdrop-blur-xl border border-white/20 shadow-2xl min-w-[200px]",
+            className
+          )}
+        >
+          {children}
+        </motion.div>
       )}
     </AnimatePresence>
   );
