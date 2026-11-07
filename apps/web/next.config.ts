@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+const isStaging =
+  process.env.VERCEL_ENV !== "production" ||
+  process.env.NEXT_PUBLIC_IS_STAGING === "true" ||
+  process.env.SHOW_DEMO_DATA === "true";
+
 const securityHeaders = [
   {
     key: "X-DNS-Prefetch-Control",
@@ -25,11 +30,31 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
   },
+  ...(isStaging
+    ? [
+        {
+          key: "X-Robots-Tag",
+          value: "noindex, nofollow",
+        },
+      ]
+    : []),
 ];
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.supabase.co",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+    ],
+  },
   async redirects() {
     return [
       // 301 Pengalihan rute lama ke padanan V3 (Bagian 3.2 & Keputusan D5)
@@ -121,6 +146,11 @@ const nextConfig: NextConfig = {
       {
         source: "/me/profile/:id/edit",
         destination: "/me/edit",
+        permanent: true,
+      },
+      {
+        source: "/me/profile/new",
+        destination: "/onboarding",
         permanent: true,
       },
       {

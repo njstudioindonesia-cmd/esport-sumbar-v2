@@ -258,6 +258,62 @@ export function DesktopCardWizard() {
     mouseY.set(0);
   };
 
+  // Final Profile & ESPORT ID Creation
+  const handleFinalSubmit = async () => {
+    setIsFinishing(true);
+    setErrorMessage(null);
+
+    try {
+      const result = await createProfileAction({
+        entityType,
+        displayName: displayName.trim(),
+        ign: attributes.ign?.trim() || undefined,
+        regionId: selectedRegion.id,
+        regionCode: selectedRegion.code,
+        mainGameId: activeGame.id,
+        roleName: attributes.role || undefined,
+        avatarUrl: avatarUrl || undefined,
+        birthDate: entityType === "player" || entityType === "coach" ? birthDate : undefined,
+        bio: bio.trim() || undefined,
+        guardianConsent:
+          isUnder18 && guardianConsent
+            ? {
+                guardianName: guardianName.trim(),
+                guardianContact: guardianContact.trim(),
+                guardianRelationship,
+              }
+            : undefined,
+        metadata: {
+          ...attributes,
+          cover_url: coverUrl || undefined,
+        },
+        visibility: {
+          contact: privacy.kontak,
+          birthDate: privacy.tglLahir,
+          stats: privacy.statistik,
+          photo: privacy.fotoPublik,
+        },
+      });
+
+      if (!result.success || !result.profileId) {
+        throw new Error(result.error || "Gagal menerbitkan profil.");
+      }
+
+      // Bersihkan draf lokal setelah berhasil terbit
+      clearWizardDraft();
+
+      setIssuedResult({
+        profileId: result.profileId,
+        esportId: result.esportId || "ESB-PDG-PL-100234",
+        slug: result.slug || "profil-baru",
+      });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Terjadi kesalahan sistem saat membuat profil.";
+      setErrorMessage(msg);
+      setIsFinishing(false);
+    }
+  };
+
   // Navigasi Langkah Wizard
   const handleNext = () => {
     setErrorMessage(null);
@@ -322,62 +378,6 @@ export function DesktopCardWizard() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [step, cropperOpen, issuedResult, entityType, isUnder18, guardianConsent, displayName]);
-
-  // Final Profile & ESPORT ID Creation
-  const handleFinalSubmit = async () => {
-    setIsFinishing(true);
-    setErrorMessage(null);
-
-    try {
-      const result = await createProfileAction({
-        entityType,
-        displayName: displayName.trim(),
-        ign: attributes.ign?.trim() || undefined,
-        regionId: selectedRegion.id,
-        regionCode: selectedRegion.code,
-        mainGameId: activeGame.id,
-        roleName: attributes.role || undefined,
-        avatarUrl: avatarUrl || undefined,
-        birthDate: entityType === "player" || entityType === "coach" ? birthDate : undefined,
-        bio: bio.trim() || undefined,
-        guardianConsent:
-          isUnder18 && guardianConsent
-            ? {
-                guardianName: guardianName.trim(),
-                guardianContact: guardianContact.trim(),
-                guardianRelationship,
-              }
-            : undefined,
-        metadata: {
-          ...attributes,
-          cover_url: coverUrl || undefined,
-        },
-        visibility: {
-          contact: privacy.kontak,
-          birthDate: privacy.tglLahir,
-          stats: privacy.statistik,
-          photo: privacy.fotoPublik,
-        },
-      });
-
-      if (!result.success || !result.profileId) {
-        throw new Error(result.error || "Gagal menerbitkan profil.");
-      }
-
-      // Bersihkan draf lokal setelah berhasil terbit
-      clearWizardDraft();
-
-      setIssuedResult({
-        profileId: result.profileId,
-        esportId: result.esportId || "ESB-PDG-PL-100234",
-        slug: result.slug || "profil-baru",
-      });
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Terjadi kesalahan sistem saat membuat profil.";
-      setErrorMessage(msg);
-      setIsFinishing(false);
-    }
-  };
 
   // Tentukan Aspek Rasio Crop Sesuai Entitas
   const getEntityCropperType = (): "avatar" | "logo" | "cover" => {
