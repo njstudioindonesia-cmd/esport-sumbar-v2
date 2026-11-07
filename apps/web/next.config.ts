@@ -5,7 +5,23 @@ const isStaging =
   process.env.NEXT_PUBLIC_IS_STAGING === "true" ||
   process.env.SHOW_DEMO_DATA === "true";
 
+const cspDirectives = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
 const securityHeaders = [
+  {
+    key: "Content-Security-Policy",
+    value: cspDirectives,
+  },
   {
     key: "X-DNS-Prefetch-Control",
     value: "on",
