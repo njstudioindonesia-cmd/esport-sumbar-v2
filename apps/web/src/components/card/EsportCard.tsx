@@ -99,7 +99,7 @@ const SIZE_CLASSES: Record<CardSize, string> = {
   md: "w-[300px] h-[420px] text-sm",
   lg: "w-[360px] h-[504px] text-base",
   mobile: "w-full max-w-[340px] aspect-[1/1.42] text-sm",
-  fluid: "w-full h-full text-sm",
+  fluid: "w-full aspect-[1/1.42] text-sm",
 };
 
 export function EsportCard({

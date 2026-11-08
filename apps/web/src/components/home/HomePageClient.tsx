@@ -116,6 +116,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
           game: p.mainGameName || "Esport",
           region: { name: p.regionName, code: p.regionCode },
           esportId: p.esportId,
+          badgeNumber: p.verifiedBadgeNo || undefined,
           avatarUrl: p.avatarUrl || undefined,
         },
       }))
@@ -367,7 +368,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               </div>
 
               {/* 3D Interactive Card Component with Fluid Morph Switch */}
-              <div className="w-full flex justify-center py-2 min-h-[360px] items-center">
+              <div className="w-full flex justify-center py-2 min-h-[420px] items-center">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeHeroIdx}
@@ -375,14 +376,14 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.96 }}
                     transition={MOTION_SPRINGS.snappy}
-                    className="w-full flex justify-center"
+                    className="w-full max-w-[300px] sm:max-w-[320px] flex justify-center"
                   >
                     <EsportCard
                       type={currentHeroCard.type as any}
                       rarity={currentHeroCard.rarity as any}
                       verification={currentHeroCard.verification}
                       data={currentHeroCard.data}
-                      size="fluid"
+                      size="mobile"
                       interactive={true}
                     />
                   </motion.div>
@@ -686,15 +687,15 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
               {featuredCards.slice(0, 4).map((card, idx) => (
-                <div key={card.id || idx} className="flex flex-col items-center">
+                <div key={card.id || idx} className="w-full max-w-[280px] sm:max-w-[300px] flex flex-col items-center">
                   <EsportCard
                     type={card.type as any}
                     rarity={card.rarity as any}
                     verification={card.verification}
                     data={card.data}
-                    size="fluid"
+                    size="mobile"
                     interactive={true}
                   />
                 </div>
