@@ -80,6 +80,14 @@ export async function signUpAction(formData: FormData): Promise<AuthActionResult
     return { success: false, error: firstError };
   }
 
+  // 1b. Periksa Toggle Pendaftaran Publik (Soft Launch Mode / Keputusan P11)
+  if (process.env.NEXT_PUBLIC_ENABLE_REGISTRATION === "false") {
+    return {
+      success: false,
+      error: "Pendaftaran publik dibatasi untuk kelompok uji terbatas selama masa peluncuran terkendali (soft launch).",
+    };
+  }
+
   const { email, password, birthDate } = validation.data;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 

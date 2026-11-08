@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
-const isStaging =
+const isSoftLaunchNoIndex =
   process.env.VERCEL_ENV !== "production" ||
   process.env.NEXT_PUBLIC_IS_STAGING === "true" ||
-  process.env.SHOW_DEMO_DATA === "true";
+  process.env.SHOW_DEMO_DATA === "true" ||
+  process.env.NEXT_PUBLIC_PUBLIC_LAUNCH !== "true";
 
 const cspDirectives = [
   "default-src 'self'",
@@ -46,7 +47,7 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
   },
-  ...(isStaging
+  ...(isSoftLaunchNoIndex
     ? [
         {
           key: "X-Robots-Tag",

@@ -111,6 +111,22 @@ export const FLAGS = {
   },
 
   /**
+   * Pembatasan Pendaftaran Publik (Keputusan P11 / Bagian 4.3 Soft Launch)
+   * Mengatur apakah pendaftaran terbuka untuk umum atau dibatasi untuk kelompok kecil uji terkendali.
+   */
+  get ENABLE_REGISTRATION(): boolean {
+    return process.env.NEXT_PUBLIC_ENABLE_REGISTRATION !== "false";
+  },
+
+  /**
+   * Mode Pemeliharaan Sistem (Keputusan P14 / Runbook Rilis)
+   * Mengatur pengalihan seluruh lalu lintas non-admin ke halaman pemeliharaan.
+   */
+  get MAINTENANCE_MODE(): boolean {
+    return process.env.MAINTENANCE_MODE === "true";
+  },
+
+  /**
    * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
    */
   ENABLED_ENTITY_TYPES: [

@@ -6,6 +6,22 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const requestId = request.headers.get("x-request-id") || `req-${crypto.randomUUID()}`;
 
+  // 0. Penanganan Mode Pemeliharaan Sistem (Maintenance Mode - Keputusan P14)
+  if (
+    process.env.MAINTENANCE_MODE === "true" &&
+    !path.startsWith("/maintenance") &&
+    !path.startsWith("/admin") &&
+    !path.startsWith("/api/healthz") &&
+    !path.startsWith("/api/admin") &&
+    !path.startsWith("/_next") &&
+    !path.startsWith("/brand") &&
+    !path.startsWith("/icons") &&
+    !path.includes(".")
+  ) {
+    const maintenanceUrl = new URL("/maintenance", request.url);
+    return NextResponse.redirect(maintenanceUrl);
+  }
+
   // 1. Penanganan Khusus Permintaan Preflight CORS untuk API (/api/*)
   if (path.startsWith("/api") && request.method === "OPTIONS") {
     return handleCorsPreflight(request);
@@ -106,12 +122,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/api/:path*",
-    "/admin/:path*",
-    "/dashboard/:path*",
-    "/wizard/:path*",
-    "/profile/:path*",
-    "/verification/:path*",
-    "/ecosystem/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|brand/|icons/).*)",
   ],
 };
