@@ -98,8 +98,8 @@ const SIZE_CLASSES: Record<CardSize, string> = {
   sm: "w-[240px] h-[336px] text-xs",
   md: "w-[300px] h-[420px] text-sm",
   lg: "w-[360px] h-[504px] text-base",
-  mobile: "w-full max-w-[340px] aspect-[1/1.42] text-sm",
-  fluid: "w-full aspect-[1/1.42] text-sm",
+  mobile: "w-[280px] min-[360px]:w-[300px] max-w-full h-[392px] min-[360px]:h-[420px] text-sm",
+  fluid: "w-full max-w-[340px] h-[420px] text-sm",
 };
 
 export function EsportCard({
@@ -162,22 +162,54 @@ export function EsportCard({
     mouseY.set(0.5);
   };
 
+  // Track touch start to differentiate drag/tilt from tap/flip
+  const touchStartPos = useRef<{ x: number; y: number } | null>(null);
+  const isTouchDragging = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
+    isTouchDragging.current = false;
+  };
+
   // Mobile Touch Handlers
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!interactive || reducedMotion || isFlipped) return;
+    if (!interactive || reducedMotion) return;
     const touch = e.touches[0];
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect || !touch) return;
-    const x = (touch.clientX - rect.left) / rect.width;
-    const y = (touch.clientY - rect.top) / rect.height;
-    mouseX.set(Math.min(Math.max(x, 0), 1));
-    mouseY.set(Math.min(Math.max(y, 0), 1));
+
+    if (touchStartPos.current) {
+      const dx = Math.abs(touch.clientX - touchStartPos.current.x);
+      const dy = Math.abs(touch.clientY - touchStartPos.current.y);
+      if (dx > 8 || dy > 8) {
+        isTouchDragging.current = true;
+      }
+    }
+
+    if (!isFlipped) {
+      const x = (touch.clientX - rect.left) / rect.width;
+      const y = (touch.clientY - rect.top) / rect.height;
+      mouseX.set(Math.min(Math.max(x, 0), 1));
+      mouseY.set(Math.min(Math.max(y, 0), 1));
+    }
   };
 
   const handleTouchEnd = () => {
     if (!interactive || reducedMotion) return;
     mouseX.set(0.5);
     mouseY.set(0.5);
+  };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (isTouchDragging.current) {
+      isTouchDragging.current = false;
+      return;
+    }
+    if (interactive) {
+      handleFlip(e);
+    }
   };
 
   // Mobile Device Gyroscope / Parallax support
@@ -228,32 +260,61 @@ export function EsportCard({
 
   return (
     <div
-      className={`perspective-1000 select-none ${SIZE_CLASSES[size]} ${className}`}
+      className={`relative perspective-1000 select-none ${SIZE_CLASSES[size]} ${className}`}
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchEnd}
+      style={{
+        perspective: 1000,
+        WebkitPerspective: 1000,
+      }}
     >
+      {/* Layer 1: 3D Tilt Wrapper (Mouse & Gyroscope Parallax) */}
       <motion.div
-        className="w-full h-full relative preserve-3d cursor-pointer rounded-[16px]"
+        className="w-full h-full relative preserve-3d rounded-[16px]"
         style={{
           rotateX: isFlipped ? 0 : rotateX,
-          rotateY: isFlipped ? 180 : rotateY,
+          rotateY: isFlipped ? 0 : rotateY,
           transformStyle: "preserve-3d",
+          WebkitTransformStyle: "preserve-3d",
         }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        onClick={() => interactive && handleFlip()}
       >
-        {/* ==================== SISI DEPAN (FRONT) ==================== */}
-        <div
-          className={`absolute inset-0 w-full h-full rounded-[16px] overflow-hidden backface-hidden bg-gradient-to-b ${config.bgGradient} ${
-            rarity === "legend"
-              ? "p-[2px] bg-gradient-to-br from-[#C084FC] via-[#60A5FA] to-[#34D399]"
-              : `border ${config.frameBorder}`
-          }`}
+        {/* Layer 2: 3D Flip Wrapper (Smooth 180deg flip between front and back) */}
+        <motion.div
+          className="w-full h-full relative preserve-3d cursor-pointer rounded-[16px]"
+          animate={{
+            rotateY: isFlipped ? 180 : 0,
+          }}
+          transition={{
+            duration: 0.6,
+            ease: [0.23, 1, 0.32, 1],
+          }}
+          style={{
+            transformStyle: "preserve-3d",
+            WebkitTransformStyle: "preserve-3d",
+          }}
+          onClick={handleCardClick}
         >
+          {/* ==================== SISI DEPAN (FRONT) ==================== */}
+          <div
+            className={`absolute inset-0 w-full h-full rounded-[16px] overflow-hidden backface-hidden bg-gradient-to-b ${config.bgGradient} ${
+              rarity === "legend"
+                ? "p-[2px] bg-gradient-to-br from-[#C084FC] via-[#60A5FA] to-[#34D399]"
+                : `border ${config.frameBorder}`
+            }`}
+            style={{
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(0deg) translateZ(1px)",
+              WebkitTransform: "rotateY(0deg) translateZ(1px)",
+              zIndex: isFlipped ? 0 : 10,
+              pointerEvents: isFlipped ? "none" : "auto",
+            }}
+          >
           {/* Inner Card Frame */}
           <div className="relative w-full h-full rounded-[14px] overflow-hidden bg-[#0D1017] flex flex-col justify-between">
             {/* Shimmer Overlays */}
@@ -509,11 +570,19 @@ export function EsportCard({
 
         {/* ==================== SISI BELAKANG (BACK) ==================== */}
         <div
-          className={`absolute inset-0 w-full h-full rounded-[16px] overflow-hidden backface-hidden rotate-y-180 bg-gradient-to-b ${config.bgGradient} ${
+          className={`absolute inset-0 w-full h-full rounded-[16px] overflow-hidden backface-hidden bg-gradient-to-b ${config.bgGradient} ${
             rarity === "legend"
               ? "p-[2px] bg-gradient-to-br from-[#C084FC] via-[#60A5FA] to-[#34D399]"
               : `border ${config.frameBorder}`
           }`}
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(180deg) translateZ(1px)",
+            WebkitTransform: "rotateY(180deg) translateZ(1px)",
+            zIndex: isFlipped ? 10 : 0,
+            pointerEvents: isFlipped ? "auto" : "none",
+          }}
         >
           <div className="relative w-full h-full rounded-[14px] overflow-hidden bg-[#0D1017] p-3 flex flex-col justify-between">
             {/* Brand Pattern and Large Centered Watermark */}
@@ -758,6 +827,7 @@ export function EsportCard({
             </div>
           </div>
         </div>
+        </motion.div>
       </motion.div>
     </div>
   );
