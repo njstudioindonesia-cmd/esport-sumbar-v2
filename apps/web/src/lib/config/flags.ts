@@ -127,7 +127,7 @@ export const FLAGS = {
   },
 
   /**
-   * Apakah registrasi entitas tertentu sedang dibuka di masa pra-rilis.
+   * Daftar tipe entitas yang didukung untuk registrasi publik.
    */
   ENABLED_ENTITY_TYPES: [
     "player",
