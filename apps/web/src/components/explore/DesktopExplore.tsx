@@ -65,10 +65,12 @@ export function DesktopExplore() {
             setDbCards(
               json.profiles.map((p: any) => ({
                 id: p.id,
+                slug: p.slug,
                 type: p.entityType,
                 rarity: p.rarityTier,
                 verification: p.verificationStatus,
                 data: {
+                  slug: p.slug,
                   displayName: p.displayName,
                   ign: p.ign || undefined,
                   role: p.roleName || "Member",
@@ -186,8 +188,7 @@ export function DesktopExplore() {
   }, [regionFilterSearch]);
 
   const getProfileSlug = (card: MockCardVariant) => {
-    const name = card.data.ign || card.data.displayName;
-    const slug = name.toLowerCase().replace(/\s+/g, "-");
+    const slug = card.slug || card.data.slug || (card.data.ign || card.data.displayName).toLowerCase().replace(/\s+/g, "-");
     switch (card.type) {
       case "player": return `/player/${slug}`;
       case "coach": return `/coach/${slug}`;

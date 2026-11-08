@@ -49,10 +49,12 @@ export function MobileExplore() {
             setDbCards(
               json.profiles.map((p: any) => ({
                 id: p.id,
+                slug: p.slug,
                 type: p.entityType,
                 rarity: p.rarityTier,
                 verification: p.verificationStatus,
                 data: {
+                  slug: p.slug,
                   displayName: p.displayName,
                   ign: p.ign || undefined,
                   role: p.roleName || "Member",
@@ -344,13 +346,8 @@ export function MobileExplore() {
                     layoutId={`card-${card.id}`}
                     onClick={() => {
                       triggerHaptic();
-                      router.push(
-                        card.type === "player"
-                          ? `/player/${card.data.ign?.toLowerCase() || "profile"}`
-                          : card.type === "coach"
-                          ? `/coach/${card.data.displayName.toLowerCase().replace(/\s+/g, "_")}`
-                          : `/team/${card.data.displayName.toLowerCase().replace(/\s+/g, "-")}`
-                      );
+                      const slug = card.slug || card.data.slug || (card.data.ign || card.data.displayName).toLowerCase().replace(/\s+/g, "-");
+                      router.push(`/${card.type || "player"}/${slug}`);
                     }}
                     className={`relative w-full h-64 rounded-[18px] bg-gradient-to-b from-[#1C202C] to-[#0A0D14] border-2 ${frameBorder} p-3 flex flex-col justify-between overflow-hidden cursor-pointer active:scale-[0.98] transition-all`}
                   >
@@ -401,7 +398,8 @@ export function MobileExplore() {
                   key={card.id}
                   onClick={() => {
                     triggerHaptic();
-                    router.push(`/player/${card.data.ign?.toLowerCase() || "profile"}`);
+                    const slug = card.slug || card.data.slug || (card.data.ign || card.data.displayName).toLowerCase().replace(/\s+/g, "-");
+                    router.push(`/${card.type || "player"}/${slug}`);
                   }}
                   className="h-18 rounded-2xl bg-[#161A24] border border-white/[0.08] p-3 flex items-center justify-between cursor-pointer hover:border-[#D4AF37]/50 active:scale-[0.99] transition-all"
                 >

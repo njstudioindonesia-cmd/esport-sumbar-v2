@@ -106,10 +106,13 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
   // Hero cards: dari database atau fallback ke mock
   const heroCards = profiles.length >= 3
     ? profiles.slice(0, 3).map((p) => ({
+        id: p.id,
+        slug: p.slug,
         type: p.entityType,
         rarity: p.rarityTier,
         verification: mapVerificationToCard(p.verificationStatus),
         data: {
+          slug: p.slug,
           displayName: p.displayName,
           ign: p.ign || undefined,
           role: p.roleName || "Athlete",
@@ -169,6 +172,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
         rarity: p.rarityTier,
         verification: mapVerificationToCard(p.verificationStatus),
         data: {
+          slug: p.slug,
           displayName: p.displayName,
           ign: p.ign || undefined,
           role: p.roleName || "Athlete",
@@ -396,7 +400,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   {currentHeroCard.data.esportId}
                 </span>
                 <Link
-                  href={`/player/${currentHeroCard.data.ign?.toLowerCase() || "profile"}`}
+                  href={`/${currentHeroCard.type || "player"}/${(currentHeroCard as any).slug || (currentHeroCard.data as any).slug || currentHeroCard.data.ign?.toLowerCase() || "profile"}`}
                   className="text-[11px] text-pink-300 hover:text-pink-200 flex items-center gap-1 font-medium transition-colors"
                 >
                   Buka Profil
@@ -698,6 +702,13 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                     size="mobile"
                     interactive={true}
                   />
+                  <Link
+                    href={`/${card.type || "player"}/${(card as any).slug || (card.data as any).slug || card.data.ign?.toLowerCase() || "profile"}`}
+                    className="mt-3 text-xs text-pink-400 hover:text-pink-300 flex items-center gap-1 font-mono transition-colors"
+                  >
+                    <span>Lihat Profil</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               ))}
             </div>

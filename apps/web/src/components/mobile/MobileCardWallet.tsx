@@ -324,7 +324,7 @@ export function MobileCardWallet() {
               {/* QR Code Besar di Tengah */}
               <div className="p-4 rounded-2xl bg-white shadow-xl">
                 <QRCodeSVG
-                  value={`https://esport-sumbar-v2.vercel.app/player/${activeCard.data.ign?.toLowerCase() || "profile"}`}
+                  value={`https://esport-sumbar-v2.vercel.app/${activeCard.type || "player"}/${activeCard.slug || activeCard.data.slug || activeCard.data.ign?.toLowerCase() || "profile"}`}
                   size={180}
                   level="H"
                 />
@@ -441,7 +441,7 @@ export function MobileCardWallet() {
                     triggerHaptic();
                     if (typeof navigator !== "undefined" && navigator.clipboard) {
                       navigator.clipboard.writeText(
-                        `https://esport-sumbar-v2.vercel.app/player/${activeCard.data.ign?.toLowerCase() || "profile"}`
+                        `https://esport-sumbar-v2.vercel.app/${activeCard.type || "player"}/${activeCard.slug || activeCard.data.slug || activeCard.data.ign?.toLowerCase() || "profile"}`
                       );
                       alert("Tautan profil berhasil disalin!");
                     }

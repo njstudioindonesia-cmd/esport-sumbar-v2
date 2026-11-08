@@ -44,10 +44,12 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
   const dbHeroCard = profiles && profiles.length > 0
     ? {
         id: profiles[0].id,
+        slug: profiles[0].slug,
         type: profiles[0].entityType,
         rarity: profiles[0].rarityTier,
         verification: mapVerificationToCard(profiles[0].verificationStatus),
         data: {
+          slug: profiles[0].slug,
           displayName: profiles[0].displayName,
           ign: profiles[0].ign || undefined,
           role: profiles[0].roleName || "Athlete",
@@ -104,7 +106,8 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
     e.stopPropagation();
     triggerHaptic();
     if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(`https://esport-sumbar-v2.vercel.app/player/${heroCard.data.ign?.toLowerCase() || "profile"}`);
+      const slug = (heroCard as any).slug || (heroCard.data as any).slug || heroCard.data.ign?.toLowerCase() || "profile";
+      navigator.clipboard.writeText(`https://esport-sumbar-v2.vercel.app/${heroCard.type || "player"}/${slug}`);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
     }

@@ -48,6 +48,7 @@ export interface TeamRosterMember {
 
 export interface UnifiedCardData {
   // Identifiers
+  slug?: string;
   esportId: string; // e.g. ESB-PDG-PL-000124 or ESB-BKT-CO-000012 or ESB-PDG-TM-000005
   badgeNumber?: string;
   region: {

@@ -81,12 +81,56 @@ export async function getPublicProfileBySlug(
   try {
     const supabase = createPublicServerClient();
 
-    // 1. Query view public_profiles
-    const { data: profileRecord, error } = await supabase
+    // 1. Query view public_profiles: coba exact slug match
+    let { data: profileRecord, error } = await supabase
       .from("public_profiles")
       .select("*")
       .eq("slug", slug)
       .maybeSingle();
+
+    // 2. Fallback cerdas: cari berdasarkan UUID, ESPORT ID, IGN, atau awalan slug tanpa suffix
+    if (!profileRecord) {
+      const decodedSlug = decodeURIComponent(slug).trim();
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(decodedSlug);
+
+      if (isUuid) {
+        const { data: byId } = await supabase
+          .from("public_profiles")
+          .select("*")
+          .eq("id", decodedSlug)
+          .maybeSingle();
+        profileRecord = byId;
+      }
+
+      if (!profileRecord) {
+        const { data: byEsportId } = await supabase
+          .from("public_profiles")
+          .select("*")
+          .eq("esport_id", decodedSlug.toUpperCase())
+          .maybeSingle();
+        profileRecord = byEsportId;
+      }
+
+      if (!profileRecord) {
+        const { data: byIgn } = await supabase
+          .from("public_profiles")
+          .select("*")
+          .ilike("ign", decodedSlug)
+          .maybeSingle();
+        profileRecord = byIgn;
+      }
+
+      if (!profileRecord) {
+        const { data: byPrefix } = await supabase
+          .from("public_profiles")
+          .select("*")
+          .ilike("slug", `${decodedSlug}-%`)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        profileRecord = byPrefix;
+      }
+    }
 
     if (profileRecord) {
       // 2. Ambil relasi aktif V3 (entity_relations) via getPublicProfileRelations

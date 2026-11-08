@@ -7,6 +7,7 @@ import {
 
 export interface MockCardVariant {
   id: string;
+  slug?: string;
   type: CardEntityType;
   rarity: CardRarity;
   verification: CardVerification;
