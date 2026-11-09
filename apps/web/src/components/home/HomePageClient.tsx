@@ -244,32 +244,31 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
       <main className="flex-1 flex flex-col items-center overflow-x-hidden">
         {/* ==================== 1. HERO SECTION (CINEMATIC ESPORTS ARENA VENUE) ==================== */}
         <section className="relative w-full min-h-[calc(100vh-64px)] flex flex-col justify-center items-center overflow-hidden border-b border-white/[0.06]">
-          {/* 1A. High-Tech Esports Arena Background with Multi-Tier Ambient Scrim */}
+          {/* 1A. High-Tech Esports Arena Background with Vivid Visibility */}
           <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden select-none">
-            {/* Arena Stage Background Image */}
+            {/* Arena Stage Background Image - High Opacity & Vivid Contrast */}
             <Image
               src="/images/esport-arena-stage.webp"
               alt="Esport Sumbar Championship Arena Stage"
               fill
               priority
               quality={75}
-              className="object-cover object-center scale-105 opacity-30 sm:opacity-35 filter contrast-125 brightness-90 saturate-110"
+              className="object-cover object-center scale-105 opacity-80 sm:opacity-90 filter contrast-115 saturate-125 brightness-105"
             />
 
             {/* Seamless Top Fade into Fixed Navbar */}
-            <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[var(--bg-base)] via-[var(--bg-base)]/85 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[var(--bg-base)] via-[var(--bg-base)]/60 to-transparent" />
 
             {/* Seamless Bottom Fade into Statistics Section */}
-            <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[var(--bg-base)] via-[var(--bg-base)]/90 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--bg-base)] via-[var(--bg-base)]/70 to-transparent" />
 
-            {/* Horizontal Scrim (Protect headline readability on left, reveal arena crowd & stage lights on right) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-base)] via-[var(--bg-base)]/90 sm:via-[var(--bg-base)]/75 to-[var(--bg-base)]/80 lg:to-transparent" />
+            {/* Horizontal Text Readability Scrim (Only on the left behind text, right side arena stays clear) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-base)]/85 via-[var(--bg-base)]/45 to-transparent" />
 
-            {/* Radial Vignette & Atmospheric Neon Lightings */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,var(--bg-base)_95%)] opacity-85" />
-            <div className="absolute -top-24 right-1/4 w-[500px] h-[500px] bg-[#FF1752]/[0.12] blur-[150px] rounded-full" />
-            <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] bg-[#00004F]/60 blur-[140px] rounded-full" />
-            <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-[#3B82F6]/[0.10] blur-[120px] rounded-full" />
+            {/* Ambient Neon Spotlights */}
+            <div className="absolute -top-24 right-1/4 w-[500px] h-[500px] bg-[#FF1752]/[0.18] blur-[140px] rounded-full mix-blend-screen" />
+            <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] bg-[#00004F]/50 blur-[130px] rounded-full" />
+            <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-[#3B82F6]/[0.15] blur-[110px] rounded-full mix-blend-screen" />
           </div>
 
           <BrandWatermark opacity={0.03} size={720} position="top-right" />
@@ -309,10 +308,10 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...MOTION_SPRINGS.fluid, delay: 0.15 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-tight text-white leading-[1.05] mb-5"
+              className="text-4xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-tight text-white leading-[1.05] mb-5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]"
             >
               BANGUN NAMAMU DI{" "}
-              <span className="text-[#FF1752] display-skew inline-block">ARENA SUMBAR</span>
+              <span className="text-[#FF1752] display-skew inline-block drop-shadow-[0_0_25px_rgba(255,23,82,0.4)]">ARENA SUMBAR</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -320,7 +319,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...MOTION_SPRINGS.fluid, delay: 0.25 }}
-              className="text-sm sm:text-base lg:text-lg text-white/70 leading-relaxed mb-8 max-w-xl"
+              className="text-sm sm:text-base lg:text-lg text-white/80 leading-relaxed mb-8 max-w-xl drop-shadow-md"
             >
               Pusat data olahraga elektronik, paspor digital ber-ESPORT ID, dan jaringan keterhubungan 7 entitas Sumatera Barat.
             </motion.p>
