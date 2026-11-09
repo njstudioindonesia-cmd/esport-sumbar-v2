@@ -140,6 +140,8 @@ export interface EsportCardProps {
   data: UnifiedCardData;
   size?: CardSize;
   interactive?: boolean;
+  enableGyroscope?: boolean;
   className?: string;
   initialFlipped?: boolean;
+  onClick?: (e: React.MouseEvent) => void;
 }

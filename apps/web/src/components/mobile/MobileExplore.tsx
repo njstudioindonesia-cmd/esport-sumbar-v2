@@ -64,6 +64,7 @@ export function MobileExplore() {
                     : undefined,
                   region: { name: p.regionName, code: p.regionCode },
                   esportId: p.esportId,
+                  badgeNumber: p.verifiedBadgeNo || undefined,
                   avatarUrl: p.avatarUrl || undefined,
                 },
               }))

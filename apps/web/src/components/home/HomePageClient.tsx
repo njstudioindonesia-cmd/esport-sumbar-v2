@@ -389,6 +389,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                       data={currentHeroCard.data}
                       size="mobile"
                       interactive={true}
+                      enableGyroscope={true}
                     />
                   </motion.div>
                 </AnimatePresence>

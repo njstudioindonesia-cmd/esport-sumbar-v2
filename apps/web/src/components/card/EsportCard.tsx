@@ -109,8 +109,10 @@ export function EsportCard({
   data,
   size = "md",
   interactive = true,
+  enableGyroscope = false,
   className = "",
   initialFlipped = false,
+  onClick,
 }: EsportCardProps) {
   const [isFlipped, setIsFlipped] = useState(initialFlipped);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -207,14 +209,18 @@ export function EsportCard({
       isTouchDragging.current = false;
       return;
     }
+    if (onClick) {
+      onClick(e);
+      return;
+    }
     if (interactive) {
       handleFlip(e);
     }
   };
 
-  // Mobile Device Gyroscope / Parallax support
+  // Mobile Device Gyroscope / Parallax support (only when enableGyroscope is true)
   useEffect(() => {
-    if (!interactive || reducedMotion || typeof window === "undefined") return;
+    if (!interactive || !enableGyroscope || reducedMotion || typeof window === "undefined") return;
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.gamma !== null && e.beta !== null && !isFlipped) {
         // gamma: left-to-right [-90, 90], beta: front-to-back [-180, 180]
@@ -238,7 +244,7 @@ export function EsportCard({
     return () => {
       window.removeEventListener("deviceorientation", handleOrientation);
     };
-  }, [interactive, reducedMotion, isFlipped, mouseX, mouseY]);
+  }, [interactive, enableGyroscope, reducedMotion, isFlipped, mouseX, mouseY]);
 
   const handleFlip = (e?: React.MouseEvent | React.TouchEvent) => {
     if (e) e.stopPropagation();

@@ -60,6 +60,7 @@ export default function GaleriKartuPage() {
                 role: p.roleName || (p.entityType === "team" ? "Organisasi Tim" : "Athlete"),
                 region: { name: p.regionName || "Sumatera Barat", code: p.regionCode || "SB" },
                 esportId: p.esportId,
+                badgeNumber: p.verifiedBadgeNo || undefined,
                 avatarUrl: p.avatarUrl || undefined,
               },
             }));

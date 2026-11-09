@@ -80,6 +80,7 @@ export function DesktopExplore() {
                     : undefined,
                   region: { name: p.regionName, code: p.regionCode },
                   esportId: p.esportId,
+                  badgeNumber: p.verifiedBadgeNo || undefined,
                   avatarUrl: p.avatarUrl || undefined,
                 },
               }))
@@ -523,8 +524,7 @@ export function DesktopExplore() {
               {filteredCards.map((card) => (
                 <div
                   key={card.id}
-                  onClick={() => setPreviewCard(card)}
-                  className="group flex flex-col items-center cursor-pointer transition-all duration-300 hover:-translate-y-1"
+                  className="group flex flex-col items-center transition-all duration-300 hover:-translate-y-1"
                 >
                   <EsportCard
                     type={card.type}
@@ -533,14 +533,23 @@ export function DesktopExplore() {
                     data={card.data}
                     size="fluid"
                     interactive={true}
+                    enableGyroscope={false}
+                    onClick={() => setPreviewCard(card)}
                   />
                   <div className="mt-2.5 flex items-center justify-between w-full max-w-[280px] px-2 text-xs">
-                    <span className="font-heading font-bold text-white group-hover:text-pink-300 transition-colors truncate">
+                    <Link
+                      href={getProfileSlug(card)}
+                      className="font-heading font-bold text-white hover:text-pink-300 transition-colors truncate max-w-[170px]"
+                    >
                       {card.data.ign || card.data.displayName}
-                    </span>
-                    <span className="text-[10px] font-mono text-[#D4AF37] group-hover:translate-x-1 transition-transform">
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewCard(card)}
+                      className="text-[10px] font-mono text-[#D4AF37] hover:text-amber-300 flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform py-1 px-1.5 rounded cursor-pointer"
+                    >
                       Lihat →
-                    </span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -632,7 +641,7 @@ export function DesktopExplore() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setPreviewCard(null)}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             />
 
             <motion.div
@@ -640,7 +649,7 @@ export function DesktopExplore() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 280 }}
-              className="relative w-full max-w-md bg-[#0A0D15] border-l border-white/15 h-full shadow-2xl z-10 flex flex-col p-6 overflow-y-auto"
+              className="relative z-20 w-full max-w-md bg-[#0A0D15] border-l border-white/15 h-full shadow-2xl flex flex-col p-6 overflow-y-auto"
             >
               <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
                 <span className="text-xs font-mono text-[#D4AF37] font-bold">
@@ -648,7 +657,7 @@ export function DesktopExplore() {
                 </span>
                 <button
                   onClick={() => setPreviewCard(null)}
-                  className="w-8 h-8 rounded-full bg-white/[0.05] hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white"
+                  className="w-8 h-8 rounded-full bg-white/[0.05] hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white cursor-pointer"
                   aria-label="Tutup pratinjau"
                 >
                   <X className="w-4 h-4" />
@@ -661,8 +670,9 @@ export function DesktopExplore() {
                   rarity={previewCard.rarity}
                   verification={previewCard.verification}
                   data={previewCard.data}
-                  size="fluid"
+                  size="mobile"
                   interactive={true}
+                  enableGyroscope={true}
                 />
               </div>
 
@@ -690,12 +700,11 @@ export function DesktopExplore() {
               <div className="pt-6 border-t border-white/10">
                 <Link
                   href={getProfileSlug(previewCard)}
-                  className="w-full"
+                  onClick={() => setPreviewCard(null)}
+                  className="w-full h-11 min-h-[44px] px-4 rounded-2xl bg-gradient-to-r from-[#FF1752] to-[#FF4D77] hover:from-[#E01246] hover:to-[#FF3866] text-white font-heading font-black text-xs uppercase tracking-wider shadow-lg shadow-pink-500/25 border border-white/20 inline-flex items-center justify-center gap-2 transition-all active:scale-[0.97] select-none cursor-pointer"
                 >
-                  <GlassButton variant="primary" size="md" className="w-full text-xs font-heading font-black uppercase tracking-wider">
-                    <span>Buka Profil Lengkap</span>
-                    <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
-                  </GlassButton>
+                  <span>Buka Profil Lengkap</span>
+                  <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                 </Link>
               </div>
             </motion.div>

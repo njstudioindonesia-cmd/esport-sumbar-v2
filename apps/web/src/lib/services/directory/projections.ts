@@ -46,17 +46,22 @@ export async function projectProfileCreated(
     completenessScore?: number;
     isDemo?: boolean;
     createdAt?: string;
+    esportId?: string;
+    verificationStatus?: VerificationStatus;
+    verifiedBadgeNo?: string | null;
+    verifiedAt?: string | null;
   }
 ): Promise<{ success: boolean; handled: boolean }> {
   const idempotencyKey = generateDeterministicIdempotencyKey("project-profile-created", event.profileId);
 
   const { result } = await withIdempotency(idempotencyKey, async () => {
+    const existing = directoryProjections.get(event.profileId);
     const now = new Date().toISOString();
     const record: DirectoryProfileRecord = {
       id: event.profileId,
       accountId: event.accountId,
       entityType: event.entityType,
-      esportId: `ESP-SB-${event.entityType.slice(0, 2).toUpperCase()}-000000`,
+      esportId: event.esportId || existing?.esportId || `ESP-SB-${event.entityType.slice(0, 2).toUpperCase()}-000000`,
       slug: event.slug,
       displayName: event.displayName,
       ign: event.ign || null,
@@ -69,17 +74,17 @@ export async function projectProfileCreated(
       avatarUrl: event.avatarUrl || null,
       coverUrl: event.coverUrl || null,
       bio: event.bio || null,
-      rarityTier: event.rarityTier || "rookie",
-      completenessScore: event.completenessScore || 50,
-      verificationStatus: "unverified",
-      verifiedBadgeNo: null,
-      verifiedAt: null,
-      activeRelationsCount: 0,
-      confirmedPartners: [],
+      rarityTier: event.rarityTier || existing?.rarityTier || "rookie",
+      completenessScore: event.completenessScore || existing?.completenessScore || 50,
+      verificationStatus: event.verificationStatus || existing?.verificationStatus || "unverified",
+      verifiedBadgeNo: event.verifiedBadgeNo !== undefined ? event.verifiedBadgeNo : (existing?.verifiedBadgeNo || null),
+      verifiedAt: event.verifiedAt !== undefined ? event.verifiedAt : (existing?.verifiedAt || null),
+      activeRelationsCount: existing?.activeRelationsCount || 0,
+      confirmedPartners: existing?.confirmedPartners || [],
       isPublished: true,
       isSuspended: false,
       isDemo: event.isDemo || false,
-      createdAt: event.createdAt || now,
+      createdAt: event.createdAt || existing?.createdAt || now,
       updatedAt: now,
     };
 
@@ -222,7 +227,8 @@ export async function projectVerificationDecided(
   const idempotencyKey = generateDeterministicIdempotencyKey(
     "project-verification-decided",
     event.profileId,
-    event.decision
+    event.decision,
+    event.badgeNo || ""
   );
 
   const { result } = await withIdempotency(idempotencyKey, async () => {

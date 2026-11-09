@@ -22,6 +22,7 @@ import { calculateSlaStatus, prioritizeVerificationQueue } from "./sla";
 import { recordAuditLog } from "./audit";
 import { createOutboxEvent, publishOutboxEvent } from "@esport-sumbar/lib";
 import { createAdminClient } from "@/lib/supabase/server";
+import { projectVerificationDecided } from "@/lib/services/directory";
 
 // In-Memory store untuk penanganan mock/unit-test dan fallback
 interface InMemoryRequest {
@@ -355,6 +356,18 @@ export async function reviewVerificationDecision(
     } catch (dbErr) {
       console.error("Gagal memperbarui verifikasi ke database:", dbErr);
     }
+  }
+
+  // 5b. Sinkronisasi Model Baca Direktori secara Real-time
+  try {
+    await projectVerificationDecided({
+      profileId: request.profileId,
+      decision: input.decision as any,
+      badgeNo: generatedBadgeNo,
+      verifiedAt: input.decision === "verified" ? now : undefined,
+    });
+  } catch (dirErr) {
+    console.error("Gagal sinkronisasi keputusan verifikasi ke direktori:", dirErr);
   }
 
   // 6. Catat Jejak Audit Append-Only Kriptografis

@@ -173,6 +173,8 @@ export async function transitionVerificationAction(
       revalidatePath("/admin/verification");
       revalidatePath("/verification");
       revalidatePath("/dashboard");
+      revalidatePath("/explore");
+      revalidatePath("/");
 
       return {
         success: true,

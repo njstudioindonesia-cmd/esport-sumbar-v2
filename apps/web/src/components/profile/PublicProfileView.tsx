@@ -114,6 +114,7 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
                 data={data}
                 size="lg"
                 interactive={true}
+                enableGyroscope={true}
               />
             </div>
 

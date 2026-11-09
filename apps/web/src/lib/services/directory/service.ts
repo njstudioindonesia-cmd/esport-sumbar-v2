@@ -81,6 +81,10 @@ export async function searchDirectory(
             completenessScore: p.completeness_score,
             isDemo: p.is_demo,
             createdAt: p.created_at,
+            esportId: p.esport_id,
+            verificationStatus: p.verification_status,
+            verifiedBadgeNo: p.verified_badge_no,
+            verifiedAt: p.verified_at,
           });
         }
       }
@@ -234,6 +238,10 @@ export async function getDirectoryProfileBySlug(
           completenessScore: p.completeness_score,
           isDemo: p.is_demo,
           createdAt: p.created_at,
+          esportId: p.esport_id,
+          verificationStatus: p.verification_status,
+          verifiedBadgeNo: p.verified_badge_no,
+          verifiedAt: p.verified_at,
         });
 
         const createdRecord = directoryProjections.get(p.id);
@@ -332,6 +340,10 @@ export async function reconcileDirectoryReadModel(
               displayName: p.display_name,
               slug: p.slug,
               regionId: "default",
+              esportId: p.esport_id,
+              verificationStatus: p.verification_status,
+              verifiedBadgeNo: p.verified_badge_no,
+              verifiedAt: p.verified_at,
             });
           }
         } else {

@@ -218,6 +218,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
             data={heroCard.data}
             size="mobile"
             interactive={true}
+            enableGyroscope={true}
           />
 
           {/* Quick Action Dock */}
