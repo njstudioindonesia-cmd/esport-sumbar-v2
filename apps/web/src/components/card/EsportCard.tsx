@@ -98,7 +98,7 @@ const SIZE_CLASSES: Record<CardSize, string> = {
   sm: "w-[240px] h-[336px] text-xs",
   md: "w-[300px] h-[420px] text-sm",
   lg: "w-[360px] h-[504px] text-base",
-  mobile: "w-[280px] min-[360px]:w-[300px] max-w-full h-[392px] min-[360px]:h-[420px] text-sm",
+  mobile: "w-[280px] sm:w-[300px] max-w-full h-[392px] sm:h-[420px] text-sm",
   fluid: "w-full max-w-[340px] h-[420px] text-sm",
 };
 
@@ -315,8 +315,8 @@ export function EsportCard({
             style={{
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
-              transform: "rotateY(0deg) translateZ(1px)",
-              WebkitTransform: "rotateY(0deg) translateZ(1px)",
+              transform: "rotateY(0deg)",
+              WebkitTransform: "rotateY(0deg)",
               zIndex: isFlipped ? 0 : 10,
               pointerEvents: isFlipped ? "none" : "auto",
             }}
@@ -584,8 +584,8 @@ export function EsportCard({
           style={{
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
-            transform: "rotateY(180deg) translateZ(1px)",
-            WebkitTransform: "rotateY(180deg) translateZ(1px)",
+            transform: "rotateY(180deg)",
+            WebkitTransform: "rotateY(180deg)",
             zIndex: isFlipped ? 10 : 0,
             pointerEvents: isFlipped ? "auto" : "none",
           }}

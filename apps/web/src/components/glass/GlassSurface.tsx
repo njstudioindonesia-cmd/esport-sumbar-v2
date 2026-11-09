@@ -25,6 +25,7 @@ export interface GlassSurfaceProps extends React.HTMLAttributes<HTMLDivElement> 
   parentRadius?: number;
   radius?: number | string;
   padding?: number;
+  overflow?: "hidden" | "visible";
   as?: ElementType;
   children?: React.ReactNode;
 }
@@ -40,6 +41,7 @@ export const GlassSurface = forwardRef<HTMLDivElement, GlassSurfaceProps>(
       parentRadius,
       radius,
       padding = 16,
+      overflow = "hidden",
       as: Component = "div",
       className = "",
       children,
@@ -118,7 +120,7 @@ export const GlassSurface = forwardRef<HTMLDivElement, GlassSurfaceProps>(
       <Component
         ref={ref}
         style={dynamicStyle}
-        className={`relative overflow-hidden ${variantClass} ${elevationClass} ${interactiveClass} ${radiusClass} ${className}`}
+        className={`relative ${overflow === "visible" ? "overflow-visible" : "overflow-hidden"} ${variantClass} ${elevationClass} ${interactiveClass} ${radiusClass} ${className}`}
         {...props}
       >
         {specular && <SpecularLayer />}

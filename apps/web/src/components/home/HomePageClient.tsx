@@ -103,9 +103,15 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
     };
   }, []);
 
-  // Hero cards: dari database atau fallback ke mock
-  const heroCards = profiles.length >= 3
-    ? profiles.slice(0, 3).map((p) => ({
+  // Hero cards: dari database (prioritaskan profil terverifikasi) atau fallback ke mock
+  const sortedProfiles = [...profiles].sort((a, b) => {
+    if (a.verificationStatus === "verified" && b.verificationStatus !== "verified") return -1;
+    if (a.verificationStatus !== "verified" && b.verificationStatus === "verified") return 1;
+    return 0;
+  });
+
+  const heroCards = sortedProfiles.length >= 3
+    ? sortedProfiles.slice(0, 3).map((p) => ({
         id: p.id,
         slug: p.slug,
         type: p.entityType,
@@ -348,6 +354,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               elevation="overlay"
               radius="3xl"
               specular={true}
+              overflow="visible"
               className="relative p-6 sm:p-8 flex flex-col items-center max-w-[380px] w-full shadow-2xl border-white/20"
             >
               {/* Card Switcher Pills */}
@@ -376,18 +383,18 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeHeroIdx}
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.96 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     transition={MOTION_SPRINGS.snappy}
-                    className="w-full max-w-[300px] sm:max-w-[320px] flex justify-center"
+                    className="w-full max-w-[300px] sm:max-w-[320px] h-[420px] flex justify-center items-center"
                   >
                     <EsportCard
                       type={currentHeroCard.type as any}
                       rarity={currentHeroCard.rarity as any}
                       verification={currentHeroCard.verification}
                       data={currentHeroCard.data}
-                      size="mobile"
+                      size="md"
                       interactive={true}
                       enableGyroscope={true}
                     />
