@@ -277,11 +277,9 @@ export function EsportCard({
       style={{
         perspective: 1000,
         WebkitPerspective: 1000,
-        transform: "translateZ(0)",
-        WebkitTransform: "translateZ(0)",
       }}
     >
-      {/* Unified 3D Flip & Tilt Wrapper (Mencegah Safari iOS Webkit bug perataan 3D) */}
+      {/* Unified 3D Flip & Tilt Wrapper */}
       <motion.div
         className="w-full h-full relative cursor-pointer rounded-[16px]"
         animate={{
@@ -299,21 +297,21 @@ export function EsportCard({
         onClick={handleCardClick}
       >
         {/* ==================== SISI DEPAN (FRONT) ==================== */}
-          <div
-            className={`absolute inset-0 w-full h-full rounded-[16px] overflow-hidden backface-hidden bg-gradient-to-b ${config.bgGradient} ${
-              rarity === "legend"
-                ? "p-[2px] bg-gradient-to-br from-[#C084FC] via-[#60A5FA] to-[#34D399]"
-                : `border ${config.frameBorder}`
-            }`}
-            style={{
-              backfaceVisibility: "hidden",
-              WebkitBackfaceVisibility: "hidden",
-              transform: "rotateY(0deg)",
-              WebkitTransform: "rotateY(0deg)",
-              zIndex: isFlipped ? 0 : 10,
-              pointerEvents: isFlipped ? "none" : "auto",
-            }}
-          >
+        <div
+          className={`absolute inset-0 w-full h-full rounded-[16px] backface-hidden bg-gradient-to-b ${config.bgGradient} ${
+            rarity === "legend"
+              ? "p-[2px] bg-gradient-to-br from-[#C084FC] via-[#60A5FA] to-[#34D399]"
+              : `border ${config.frameBorder}`
+          }`}
+          style={{
+            backfaceVisibility: "hidden",
+            WebkitBackfaceVisibility: "hidden",
+            transform: "rotateY(0deg) translateZ(1px)",
+            WebkitTransform: "rotateY(0deg) translateZ(1px)",
+            zIndex: isFlipped ? 0 : 10,
+            pointerEvents: isFlipped ? "none" : "auto",
+          }}
+        >
           {/* Inner Card Frame */}
           <div className="relative w-full h-full rounded-[14px] overflow-hidden bg-[#0D1017] flex flex-col justify-between">
             {/* Shimmer Overlays */}
@@ -569,7 +567,7 @@ export function EsportCard({
 
         {/* ==================== SISI BELAKANG (BACK) ==================== */}
         <div
-          className={`absolute inset-0 w-full h-full rounded-[16px] overflow-hidden backface-hidden bg-gradient-to-b ${config.bgGradient} ${
+          className={`absolute inset-0 w-full h-full rounded-[16px] backface-hidden bg-gradient-to-b ${config.bgGradient} ${
             rarity === "legend"
               ? "p-[2px] bg-gradient-to-br from-[#C084FC] via-[#60A5FA] to-[#34D399]"
               : `border ${config.frameBorder}`
@@ -577,8 +575,8 @@ export function EsportCard({
           style={{
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
-            WebkitTransform: "rotateY(180deg)",
+            transform: "rotateY(180deg) translateZ(1px)",
+            WebkitTransform: "rotateY(180deg) translateZ(1px)",
             zIndex: isFlipped ? 10 : 0,
             pointerEvents: isFlipped ? "auto" : "none",
           }}

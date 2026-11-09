@@ -242,20 +242,47 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
       <Navbar />
 
       <main className="flex-1 flex flex-col items-center overflow-x-hidden">
-        {/* ==================== 1. HERO SECTION (CINEMATIC LIQUID GLASS STAGE) ==================== */}
-        <section className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-80px)] flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14 py-12 lg:py-20 overflow-hidden">
-          {/* Ambient Specular & Radial Backdrops */}
-          <div className="absolute -top-24 right-1/4 w-[500px] h-[500px] bg-[#FF1752]/[0.08] blur-[140px] pointer-events-none rounded-full" />
-          <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-[#00004F]/50 blur-[130px] pointer-events-none rounded-full" />
-          <BrandWatermark opacity={0.04} size={700} position="top-right" />
+        {/* ==================== 1. HERO SECTION (CINEMATIC ESPORTS ARENA VENUE) ==================== */}
+        <section className="relative w-full min-h-[calc(100vh-64px)] flex flex-col justify-center items-center overflow-hidden border-b border-white/[0.06]">
+          {/* 1A. High-Tech Esports Arena Background with Multi-Tier Ambient Scrim */}
+          <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden select-none">
+            {/* Arena Stage Background Image */}
+            <Image
+              src="/images/esport-arena-stage.webp"
+              alt="Esport Sumbar Championship Arena Stage"
+              fill
+              priority
+              quality={75}
+              className="object-cover object-center scale-105 opacity-30 sm:opacity-35 filter contrast-125 brightness-90 saturate-110"
+            />
 
-          {/* Left Column: Headlines & Action Buttons (Cinematic Stagger) */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: MOTION_DURATIONS.cinematic, ease: MOTION_EASINGS.standardOut }}
-            className="relative z-10 flex-1 flex flex-col items-center lg:items-start text-center lg:text-left max-w-2xl"
-          >
+            {/* Seamless Top Fade into Fixed Navbar */}
+            <div className="absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-[var(--bg-base)] via-[var(--bg-base)]/85 to-transparent" />
+
+            {/* Seamless Bottom Fade into Statistics Section */}
+            <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[var(--bg-base)] via-[var(--bg-base)]/90 to-transparent" />
+
+            {/* Horizontal Scrim (Protect headline readability on left, reveal arena crowd & stage lights on right) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-base)] via-[var(--bg-base)]/90 sm:via-[var(--bg-base)]/75 to-[var(--bg-base)]/80 lg:to-transparent" />
+
+            {/* Radial Vignette & Atmospheric Neon Lightings */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,var(--bg-base)_95%)] opacity-85" />
+            <div className="absolute -top-24 right-1/4 w-[500px] h-[500px] bg-[#FF1752]/[0.12] blur-[150px] rounded-full" />
+            <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] bg-[#00004F]/60 blur-[140px] rounded-full" />
+            <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-[#3B82F6]/[0.10] blur-[120px] rounded-full" />
+          </div>
+
+          <BrandWatermark opacity={0.03} size={720} position="top-right" />
+
+          {/* 1B. Hero Content Container (Constrained to max-w-7xl) */}
+          <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14">
+            {/* Left Column: Headlines & Action Buttons (Cinematic Stagger) */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: MOTION_DURATIONS.cinematic, ease: MOTION_EASINGS.standardOut }}
+              className="relative z-10 flex-1 flex flex-col items-center lg:items-start text-center lg:text-left max-w-2xl"
+            >
             {/* Brand Ownership Pill */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -349,18 +376,18 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
             transition={{ ...MOTION_SPRINGS.fluid, delay: 0.2 }}
             className="relative z-10 flex-1 w-full flex flex-col items-center justify-center py-4"
           >
-            <div className="relative p-6 sm:p-8 flex flex-col items-center max-w-[380px] w-full rounded-3xl shadow-2xl border border-white/20 bg-[#0B0E17]/90 backdrop-blur-md overflow-visible">
+            <div className="relative p-5 sm:p-8 flex flex-col items-center max-w-[360px] sm:max-w-[380px] w-full rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] border border-white/20 bg-[#0B0E17]/85 backdrop-blur-xl overflow-visible">
               {/* Card Switcher Pills */}
               <div className="w-full flex items-center justify-between gap-1 mb-4 pb-3 border-b border-white/10 text-xs font-mono">
-                <span className="text-white/50 text-[10px] uppercase tracking-wider">Panggung Kartu</span>
+                <span className="text-white/60 text-[10px] uppercase tracking-wider font-semibold">Panggung Kartu</span>
                 <div className="flex items-center gap-1.5">
                   {heroCards.map((_, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveHeroIdx(idx)}
-                      className={`w-6 h-6 rounded-lg text-[10px] font-bold transition-all ${
+                      className={`w-7 h-7 rounded-lg text-xs font-bold transition-all ${
                         activeHeroIdx === idx
-                          ? "bg-[#FF1752] text-white shadow-sm"
+                          ? "bg-[#FF1752] text-white shadow-md shadow-pink-500/30 ring-1 ring-white/30"
                           : "bg-white/10 text-white/60 hover:bg-white/20"
                       }`}
                       aria-label={`Lihat kartu ${idx + 1}`}
@@ -390,21 +417,22 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               </div>
 
               {/* Card Meta Bar */}
-              <div className="w-full mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/60 font-mono">
-                <span className="text-[10px] uppercase text-[#D4AF37]">
+              <div className="w-full mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/70 font-mono">
+                <span className="text-[11px] uppercase font-bold text-[#D4AF37]">
                   {currentHeroCard.data.esportId}
                 </span>
                 <Link
                   href={`/${currentHeroCard.type || "player"}/${(currentHeroCard as any).slug || (currentHeroCard.data as any).slug || currentHeroCard.data.ign?.toLowerCase() || "profile"}`}
-                  className="text-[11px] text-pink-300 hover:text-pink-200 flex items-center gap-1 font-medium transition-colors"
+                  className="text-[11px] text-pink-300 hover:text-pink-200 flex items-center gap-1 font-semibold transition-colors group"
                 >
                   Buka Profil
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </div>
             </div>
           </motion.div>
-        </section>
+        </div>
+      </section>
 
         {/* ==================== 2. PLATFORM STATISTICS BAR ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
