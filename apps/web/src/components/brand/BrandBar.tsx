@@ -10,7 +10,7 @@ interface BrandBarProps {
 export function BrandBar({ className = "", glow = true }: BrandBarProps) {
   return (
     <div
-      className={`w-full h-[2px] relative overflow-hidden bg-gradient-to-r from-transparent via-[#FF1752] to-transparent ${className}`}
+      className={`w-full h-[1.5px] relative overflow-hidden bg-gradient-to-r from-transparent via-[#FF1752] to-transparent ${className}`}
       aria-hidden="true"
     >
       <div
@@ -21,7 +21,7 @@ export function BrandBar({ className = "", glow = true }: BrandBarProps) {
       />
       {glow && (
         <div
-          className="absolute inset-0 bg-[#FF1752] blur-[2px] opacity-60 pointer-events-none"
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-[#FF1752] to-transparent opacity-40 pointer-events-none"
           aria-hidden="true"
         />
       )}
