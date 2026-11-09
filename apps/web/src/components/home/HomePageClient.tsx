@@ -226,13 +226,13 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
   ];
 
   const entityPillars = [
-    { name: "Pemain", href: "/players", icon: Gamepad2, count: stats?.totalPlayers || 0, color: "text-rose-400" },
-    { name: "Pelatih", href: "/coaches", icon: Award, count: stats?.totalCoaches || 0, color: "text-amber-400" },
-    { name: "Tim", href: "/teams", icon: Users, count: stats?.totalTeams || 0, color: "text-sky-400" },
-    { name: "Komunitas", href: "/communities", icon: Flame, count: stats?.totalCommunities || 19, color: "text-emerald-400" },
-    { name: "Venue", href: "/venues", icon: Building2, count: stats?.totalVenues || 12, color: "text-purple-400" },
-    { name: "Kampus", href: "/campuses", icon: GraduationCap, count: stats?.totalCampuses || 15, color: "text-indigo-400" },
-    { name: "Sekolah", href: "/schools", icon: Building2, count: stats?.totalSchools || 24, color: "text-teal-400" },
+    { name: "Pemain", href: "/players", icon: Gamepad2, count: stats?.totalPlayers ?? 0, color: "text-rose-400" },
+    { name: "Pelatih", href: "/coaches", icon: Award, count: stats?.totalCoaches ?? 0, color: "text-amber-400" },
+    { name: "Tim", href: "/teams", icon: Users, count: stats?.totalTeams ?? 0, color: "text-sky-400" },
+    { name: "Komunitas", href: "/communities", icon: Flame, count: stats?.totalCommunities ?? 0, color: "text-emerald-400" },
+    { name: "Venue", href: "/venues", icon: Building2, count: stats?.totalVenues ?? 0, color: "text-purple-400" },
+    { name: "Kampus", href: "/campuses", icon: GraduationCap, count: stats?.totalCampuses ?? 0, color: "text-indigo-400" },
+    { name: "Sekolah", href: "/schools", icon: Building2, count: stats?.totalSchools ?? 0, color: "text-teal-400" },
   ];
 
   const currentHeroCard = heroCards[activeHeroIdx] || heroCards[0];
@@ -349,14 +349,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
             transition={{ ...MOTION_SPRINGS.fluid, delay: 0.2 }}
             className="relative z-10 flex-1 w-full flex flex-col items-center justify-center py-4"
           >
-            <GlassSurface
-              variant="elevated"
-              elevation="overlay"
-              radius="3xl"
-              specular={true}
-              overflow="visible"
-              className="relative p-6 sm:p-8 flex flex-col items-center max-w-[380px] w-full shadow-2xl border-white/20"
-            >
+            <div className="relative p-6 sm:p-8 flex flex-col items-center max-w-[380px] w-full rounded-3xl shadow-2xl border border-white/20 bg-[#0B0E17]/90 backdrop-blur-md overflow-visible">
               {/* Card Switcher Pills */}
               <div className="w-full flex items-center justify-between gap-1 mb-4 pb-3 border-b border-white/10 text-xs font-mono">
                 <span className="text-white/50 text-[10px] uppercase tracking-wider">Panggung Kartu</span>
@@ -379,27 +372,21 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               </div>
 
               {/* 3D Interactive Card Component with Fluid Morph Switch */}
-              <div className="w-full flex justify-center py-2 min-h-[420px] items-center">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeHeroIdx}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={MOTION_SPRINGS.snappy}
-                    className="w-full max-w-[300px] sm:max-w-[320px] h-[420px] flex justify-center items-center"
-                  >
-                    <EsportCard
-                      type={currentHeroCard.type as any}
-                      rarity={currentHeroCard.rarity as any}
-                      verification={currentHeroCard.verification}
-                      data={currentHeroCard.data}
-                      size="md"
-                      interactive={true}
-                      enableGyroscope={true}
-                    />
-                  </motion.div>
-                </AnimatePresence>
+              <div className="w-full flex justify-center py-2 min-h-[420px] items-center overflow-visible">
+                <div
+                  key={activeHeroIdx}
+                  className="w-full max-w-[300px] sm:max-w-[320px] h-[420px] flex justify-center items-center overflow-visible"
+                >
+                  <EsportCard
+                    type={currentHeroCard.type as any}
+                    rarity={currentHeroCard.rarity as any}
+                    verification={currentHeroCard.verification}
+                    data={currentHeroCard.data}
+                    size="md"
+                    interactive={true}
+                    enableGyroscope={false}
+                  />
+                </div>
               </div>
 
               {/* Card Meta Bar */}
@@ -415,7 +402,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   <ChevronRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
-            </GlassSurface>
+            </div>
           </motion.div>
         </section>
 
@@ -428,7 +415,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   Profil Terdaftar
                 </span>
                 <GlassNumberCounter
-                  value={stats?.totalEntities || 128}
+                  value={stats?.totalEntities ?? 0}
                   numberClassName="text-3xl sm:text-4xl text-white"
                 />
                 <span className="text-[10px] font-mono text-rose-400 mt-1 block">7 Entitas Terhubung</span>
@@ -439,7 +426,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   Terverifikasi
                 </span>
                 <GlassNumberCounter
-                  value={stats?.verifiedCount || 42}
+                  value={stats?.verifiedCount ?? 0}
                   numberClassName="text-3xl sm:text-4xl text-[#D4AF37]"
                 />
                 <span className="text-[10px] font-mono text-emerald-400 mt-1 block">Standar ESP-SB-VER</span>
@@ -450,7 +437,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   Wilayah Terjangkau
                 </span>
                 <GlassNumberCounter
-                  value={stats?.activeRegions || 19}
+                  value={stats?.activeRegions ?? 0}
                   numberClassName="text-3xl sm:text-4xl text-white"
                 />
                 <span className="text-[10px] font-mono text-sky-400 mt-1 block">Kota &amp; Kabupaten</span>
@@ -461,7 +448,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
                   Klub &amp; Tim Aktif
                 </span>
                 <GlassNumberCounter
-                  value={stats?.totalTeams || 28}
+                  value={stats?.totalTeams ?? 0}
                   numberClassName="text-3xl sm:text-4xl text-white"
                 />
                 <span className="text-[10px] font-mono text-amber-400 mt-1 block">Divisi Kompetitif</span>

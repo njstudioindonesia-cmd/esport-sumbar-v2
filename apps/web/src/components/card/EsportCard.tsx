@@ -192,9 +192,9 @@ export function EsportCard({
 
     if (!isFlipped) {
       const x = (touch.clientX - rect.left) / rect.width;
-      const y = (touch.clientY - rect.top) / rect.height;
       mouseX.set(Math.min(Math.max(x, 0), 1));
-      mouseY.set(Math.min(Math.max(y, 0), 1));
+      // Jaga mouseY tetap di tengah pada touch mobile agar rotateX tetap 0 dan tidak miring menjadi garis datar
+      mouseY.set(0.5);
     }
   };
 
@@ -277,35 +277,28 @@ export function EsportCard({
       style={{
         perspective: 1000,
         WebkitPerspective: 1000,
+        transform: "translateZ(0)",
+        WebkitTransform: "translateZ(0)",
       }}
     >
-      {/* Layer 1: 3D Tilt Wrapper (Mouse & Gyroscope Parallax) */}
+      {/* Unified 3D Flip & Tilt Wrapper (Mencegah Safari iOS Webkit bug perataan 3D) */}
       <motion.div
-        className="w-full h-full relative preserve-3d rounded-[16px]"
+        className="w-full h-full relative cursor-pointer rounded-[16px]"
+        animate={{
+          rotateY: isFlipped ? 180 : 0,
+        }}
+        transition={{
+          duration: 0.6,
+          ease: [0.23, 1, 0.32, 1],
+        }}
         style={{
           rotateX: isFlipped ? 0 : rotateX,
-          rotateY: isFlipped ? 0 : rotateY,
           transformStyle: "preserve-3d",
           WebkitTransformStyle: "preserve-3d",
         }}
+        onClick={handleCardClick}
       >
-        {/* Layer 2: 3D Flip Wrapper (Smooth 180deg flip between front and back) */}
-        <motion.div
-          className="w-full h-full relative preserve-3d cursor-pointer rounded-[16px]"
-          animate={{
-            rotateY: isFlipped ? 180 : 0,
-          }}
-          transition={{
-            duration: 0.6,
-            ease: [0.23, 1, 0.32, 1],
-          }}
-          style={{
-            transformStyle: "preserve-3d",
-            WebkitTransformStyle: "preserve-3d",
-          }}
-          onClick={handleCardClick}
-        >
-          {/* ==================== SISI DEPAN (FRONT) ==================== */}
+        {/* ==================== SISI DEPAN (FRONT) ==================== */}
           <div
             className={`absolute inset-0 w-full h-full rounded-[16px] overflow-hidden backface-hidden bg-gradient-to-b ${config.bgGradient} ${
               rarity === "legend"
@@ -833,7 +826,6 @@ export function EsportCard({
             </div>
           </div>
         </div>
-        </motion.div>
       </motion.div>
     </div>
   );

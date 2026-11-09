@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -9,16 +9,19 @@ import {
   Compass,
   Newspaper,
   MapPin,
-  HelpCircle,
   Sparkles,
   Shield,
-  Layers,
   ArrowRight,
-  User,
   Users,
-  Trophy,
+  Gamepad2,
+  Award,
+  Flame,
+  Building2,
+  GraduationCap,
+  Building,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
-import { GALLERY_CARDS } from "@/data/mockCards";
 import { REGIONS_DETAIL } from "@/data/regions";
 
 interface CommandPaletteProps {
@@ -26,87 +29,208 @@ interface CommandPaletteProps {
   onClose: () => void;
 }
 
+export type PaletteCategory =
+  | "Navigasi"
+  | "Pemain"
+  | "Pelatih"
+  | "Tim"
+  | "Komunitas"
+  | "Venue"
+  | "Kampus"
+  | "Sekolah"
+  | "Daerah"
+  | "Direktori";
+
 interface PaletteItem {
   id: string;
-  category: "Navigasi" | "Pemain" | "Tim" | "Daerah";
+  category: PaletteCategory;
   title: string;
   subtitle: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
+  avatarUrl?: string;
 }
 
 export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [dbResults, setDbResults] = useState<PaletteItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Default Quick Links
-  const quickLinks: PaletteItem[] = [
-    {
-      id: "nav-explore",
-      category: "Navigasi",
-      title: "Jelajah Ekosistem",
-      subtitle: "Direktori lengkap pemain, klub & pelatih",
-      href: "/explore",
-      icon: Compass,
-    },
-    {
-      id: "nav-card-new",
-      category: "Navigasi",
-      title: "Buat Kartu ESPORT ID",
-      subtitle: "Penerbitan kartu identitas atlet baru",
-      href: "/me/profile/new",
-      icon: Sparkles,
-      badge: "Gratis",
-    },
-    {
-      id: "nav-regions",
-      category: "Navigasi",
-      title: "19 Kota & Kabupaten",
-      subtitle: "Peta struktur Komunitas Esport se-Sumbar",
-      href: "/regions",
-      icon: MapPin,
-    },
-    {
-      id: "nav-news",
-      category: "Navigasi",
-      title: "Warta Esport Sumbar",
-      subtitle: "Kabar pemusatan latihan & turnamen",
-      href: "/news",
-      icon: Newspaper,
-    },
-    {
-      id: "nav-how",
-      category: "Navigasi",
-      title: "Cara Kerja & Regulasi",
-      subtitle: "Panduan tier rarity & verifikasi platform",
-      href: "/how-it-works",
-      icon: HelpCircle,
-    },
-    {
-      id: "nav-admin-region",
-      category: "Navigasi",
-      title: "Portal Wilayah Padang",
-      subtitle: "Akses antrean verifikasi daerah",
-      href: "/admin/region",
-      icon: Shield,
-      badge: "Admin",
-    },
-    {
-      id: "nav-admin-province",
-      category: "Navigasi",
-      title: "Portal ESPORT SUMBAR Sumbar",
-      subtitle: "Otoritas tunggal Lencana Emas",
-      href: "/admin/province",
-      icon: Trophy,
-      badge: "Admin",
-    },
-  ];
+  const quickLinks: PaletteItem[] = useMemo(
+    () => [
+      {
+        id: "nav-explore",
+        category: "Navigasi",
+        title: "Jelajah Roster & Ekosistem",
+        subtitle: "Direktori lengkap 7 pilar entitas esport Sumatera Barat",
+        href: "/explore",
+        icon: Compass,
+      },
+      {
+        id: "nav-players",
+        category: "Navigasi",
+        title: "Direktori Atlet & Pemain",
+        subtitle: "Pangkalan data atlet kompetitif terdaftar",
+        href: "/players",
+        icon: Gamepad2,
+      },
+      {
+        id: "nav-teams",
+        category: "Navigasi",
+        title: "Klub & Roster Tim",
+        subtitle: "Daftar tim dan skuad divisi esport",
+        href: "/teams",
+        icon: Users,
+      },
+      {
+        id: "nav-coaches",
+        category: "Navigasi",
+        title: "Pelatih & Coach Berlisensi",
+        subtitle: "Peracik strategi dan analis taktikal resmi",
+        href: "/coaches",
+        icon: Award,
+      },
+      {
+        id: "nav-card-new",
+        category: "Navigasi",
+        title: "Daftarkan Identitas Digital",
+        subtitle: "Penerbitan paspor digital dan kartu ESPORT ID baru",
+        href: "/onboarding",
+        icon: Sparkles,
+        badge: "Mandiri",
+      },
+      {
+        id: "nav-regions",
+        category: "Navigasi",
+        title: "19 Kota & Kabupaten",
+        subtitle: "Peta struktur sebaran ekosistem se-Sumbar",
+        href: "/regions",
+        icon: MapPin,
+      },
+      {
+        id: "nav-news",
+        category: "Navigasi",
+        title: "Warta Berita Esport",
+        subtitle: "Kabar pemusatan latihan, turnamen & pengumuman",
+        href: "/news",
+        icon: Newspaper,
+      },
+      {
+        id: "nav-verification",
+        category: "Navigasi",
+        title: "Standar Verifikasi Tunggal",
+        subtitle: "Regulasi kurasi mandiri dan lencana resmi ESP-SB-VER",
+        href: "/verification-standard",
+        icon: Shield,
+      },
+    ],
+    []
+  );
 
-  // Dynamic search results
-  const results: PaletteItem[] = React.useMemo(() => {
+  // Focus on input when opened
+  useEffect(() => {
+    if (isOpen) {
+      setQuery("");
+      setSelectedIndex(0);
+      setDbResults([]);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [isOpen]);
+
+  // Debounced search directly to database via /api/profiles?search=...
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (!trimmed) {
+      setDbResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/profiles?search=${encodeURIComponent(trimmed)}&limit=8`, {
+          signal: controller.signal,
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.profiles && Array.isArray(json.profiles)) {
+            const mapped: PaletteItem[] = json.profiles.map((p: any) => {
+              const entityType = p.entityType || "player";
+              const IconComponent =
+                entityType === "player"
+                  ? Gamepad2
+                  : entityType === "coach"
+                  ? Award
+                  : entityType === "team"
+                  ? Users
+                  : entityType === "community"
+                  ? Flame
+                  : entityType === "venue"
+                  ? Building2
+                  : entityType === "campus"
+                  ? GraduationCap
+                  : Building;
+
+              const categoryName: PaletteCategory =
+                entityType === "player"
+                  ? "Pemain"
+                  : entityType === "coach"
+                  ? "Pelatih"
+                  : entityType === "team"
+                  ? "Tim"
+                  : entityType === "community"
+                  ? "Komunitas"
+                  : entityType === "venue"
+                  ? "Venue"
+                  : entityType === "campus"
+                  ? "Kampus"
+                  : "Sekolah";
+
+              const ignPart =
+                p.ign && p.ign.toLowerCase() !== p.displayName.toLowerCase()
+                  ? ` (@${p.ign})`
+                  : "";
+
+              return {
+                id: `db-${p.id}`,
+                category: categoryName,
+                title: `${p.displayName}${ignPart}`,
+                subtitle: `${p.esportId} · ${p.mainGameName || p.roleName || "Esport"} (${p.regionName || p.regionCode || "Sumbar"})`,
+                href: `/${entityType}/${p.slug}`,
+                icon: IconComponent,
+                badge: p.verificationStatus === "verified" ? "TERVERIFIKASI" : p.rarityTier?.toUpperCase(),
+                avatarUrl: p.avatarUrl || undefined,
+              };
+            });
+            setDbResults(mapped);
+          } else {
+            setDbResults([]);
+          }
+        }
+      } catch (err: any) {
+        if (err.name !== "AbortError") {
+          setDbResults([]);
+        }
+      } finally {
+        setIsSearching(false);
+      }
+    }, 150);
+
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query]);
+
+  // Combined search results
+  const results: PaletteItem[] = useMemo(() => {
     if (!query.trim()) {
       return quickLinks;
     }
@@ -114,48 +238,12 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
     const q = query.toLowerCase().trim();
     const list: PaletteItem[] = [];
 
-    // 1. Search in Players
-    GALLERY_CARDS.filter((c) => c.type === "player").forEach((c) => {
-      const ign = c.data.ign || "";
-      const name = c.data.displayName || "";
-      const game = c.data.game || "";
-      if (
-        ign.toLowerCase().includes(q) ||
-        name.toLowerCase().includes(q) ||
-        game.toLowerCase().includes(q)
-      ) {
-        const slug = (ign || name).toLowerCase().replace(/\s+/g, "-");
-        list.push({
-          id: `player-${c.id}`,
-          category: "Pemain",
-          title: ign,
-          subtitle: `${name} · ${game} (${c.data.region.name})`,
-          href: `/player/${slug}`,
-          icon: User,
-          badge: c.rarity.toUpperCase(),
-        });
-      }
+    // 1. Live database results
+    dbResults.forEach((item) => {
+      list.push(item);
     });
 
-    // 2. Search in Teams
-    GALLERY_CARDS.filter((c) => c.type === "team").forEach((c) => {
-      const name = c.data.displayName || "";
-      const game = c.data.game || "";
-      if (name.toLowerCase().includes(q) || game.toLowerCase().includes(q)) {
-        const slug = name.toLowerCase().replace(/\s+/g, "-");
-        list.push({
-          id: `team-${c.id}`,
-          category: "Tim",
-          title: name,
-          subtitle: `${game} · ${c.data.region.name}`,
-          href: `/team/${slug}`,
-          icon: Users,
-          badge: c.rarity.toUpperCase(),
-        });
-      }
-    });
-
-    // 3. Search in 19 Regions
+    // 2. Search in 19 Regions
     REGIONS_DETAIL.forEach((r) => {
       if (
         r.name.toLowerCase().includes(q) ||
@@ -166,7 +254,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           id: `region-${r.id}`,
           category: "Daerah",
           title: r.name,
-          subtitle: `Wilayah ESPORT SUMBAR (${r.code}) · ${r.verifiedCount} profil`,
+          subtitle: `Wilayah ESPORT SUMBAR (${r.code}) · 19 Kota & Kabupaten`,
           href: `/regions/${r.slug}`,
           icon: MapPin,
           badge: "WILAYAH",
@@ -174,35 +262,35 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       }
     });
 
-    // 4. Also match quicklinks
+    // 3. Match quicklinks / navigation
     quickLinks.forEach((k) => {
       if (k.title.toLowerCase().includes(q) || k.subtitle.toLowerCase().includes(q)) {
         list.push(k);
       }
     });
 
-    return list.slice(0, 10);
-  }, [query]);
+    // 4. Always provide fallback option to search in /explore directory
+    list.push({
+      id: "search-explore-all",
+      category: "Direktori",
+      title: `Cari "${query.trim()}" di Seluruh Roster`,
+      subtitle: `Buka halaman /explore dengan filter pencarian "${query.trim()}"`,
+      href: `/explore?q=${encodeURIComponent(query.trim())}`,
+      icon: Compass,
+      badge: "JELAJAH",
+    });
 
-  // Focus on input when opened
-  useEffect(() => {
-    if (isOpen) {
-      setQuery("");
-      setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
-  }, [isOpen]);
+    return list.slice(0, 10);
+  }, [query, dbResults, quickLinks]);
 
   // Keyboard navigation & global shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Toggle palette on Cmd+K or Ctrl+K
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         if (isOpen) {
           onClose();
-        } else {
-          // Open handled by parent or window dispatch
         }
       }
 
@@ -225,13 +313,16 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           const target = results[selectedIndex].href;
           onClose();
           router.push(target);
+        } else if (query.trim()) {
+          onClose();
+          router.push(`/explore?q=${encodeURIComponent(query.trim())}`);
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, results, selectedIndex, onClose, router]);
+  }, [isOpen, results, selectedIndex, onClose, router, query]);
 
   const handleSelect = (href: string) => {
     onClose();
@@ -261,7 +352,11 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           >
             {/* Top Search Input */}
             <div className="flex items-center px-4 py-3.5 border-b border-white/[0.08] gap-3">
-              <Search className="w-5 h-5 text-[#D4AF37] shrink-0" />
+              {isSearching ? (
+                <Loader2 className="w-5 h-5 text-[#FF1752] animate-spin shrink-0" />
+              ) : (
+                <Search className="w-5 h-5 text-[#D4AF37] shrink-0" />
+              )}
               <input
                 ref={inputRef}
                 type="text"
@@ -270,13 +365,14 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                   setQuery(e.target.value);
                   setSelectedIndex(0);
                 }}
-                placeholder="Cari atlet, tim, 19 wilayah, atau navigasi..."
+                placeholder="Cari atlet, ign, tim, venue, kampus, sekolah, atau esport id..."
                 className="flex-1 bg-transparent text-sm sm:text-base text-white placeholder-gray-500 focus:outline-none"
               />
               {query && (
                 <button
                   onClick={() => setQuery("")}
                   className="p-1 text-gray-500 hover:text-white"
+                  aria-label="Bersihkan pencarian"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -290,12 +386,13 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
             <div className="max-h-[380px] overflow-y-auto p-2 space-y-1">
               {results.length === 0 ? (
                 <div className="py-12 text-center text-gray-500 text-xs">
-                  Tidak ada hasil untuk &quot;{query}&quot;
+                  {isSearching ? "Mencari di basis data..." : `Tidak ada hasil untuk "${query}"`}
                 </div>
               ) : (
                 results.map((item, idx) => {
                   const Icon = item.icon;
                   const isSelected = idx === selectedIndex;
+                  const isVerifiedBadge = item.badge === "TERVERIFIKASI" || item.badge === "VERIFIED";
 
                   return (
                     <div
@@ -308,40 +405,54 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                           : "text-gray-300 hover:bg-white/[0.03]"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                            isSelected
-                              ? "bg-[#D4AF37]/20 text-[#D4AF37]"
-                              : "bg-white/[0.03] text-gray-400"
-                          }`}
-                        >
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div>
+                      <div className="flex items-center gap-3 min-w-0">
+                        {item.avatarUrl ? (
+                          <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 bg-black/40 border border-white/10">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={item.avatarUrl}
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                              isSelected
+                                ? "bg-[#D4AF37]/20 text-[#D4AF37]"
+                                : "bg-white/[0.03] text-gray-400"
+                            }`}
+                          >
+                            <Icon className="w-4 h-4" />
+                          </div>
+                        )}
+                        <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs sm:text-sm font-heading font-bold text-white">
+                            <span className="text-xs sm:text-sm font-heading font-bold text-white truncate">
                               {item.title}
                             </span>
                             {item.badge && (
                               <span
-                                className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase ${
-                                  item.badge === "LEGEND" || item.badge === "ELITE"
+                                className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold uppercase shrink-0 flex items-center gap-0.5 ${
+                                  isVerifiedBadge
+                                    ? "bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30"
+                                    : item.badge === "LEGEND" || item.badge === "ELITE"
                                     ? "bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30"
                                     : "bg-white/[0.05] text-gray-400 border border-white/10"
                                 }`}
                               >
-                                {item.badge}
+                                {isVerifiedBadge && <CheckCircle2 className="w-2.5 h-2.5" />}
+                                <span>{item.badge}</span>
                               </span>
                             )}
                           </div>
-                          <span className="text-[11px] text-[#9AA3B2] block line-clamp-1">
+                          <span className="text-[11px] text-[#9AA3B2] block truncate">
                             {item.subtitle}
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono">
+                      <div className="flex items-center gap-1.5 text-[10px] text-gray-400 font-mono shrink-0 ml-3">
                         <span className="hidden sm:inline">{item.category}</span>
                         <ArrowRight className="w-3.5 h-3.5 text-gray-500" />
                       </div>
@@ -361,10 +472,10 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                 </span>
                 <span className="flex items-center gap-1">
                   <kbd className="px-1.5 py-0.2 rounded bg-white/5 border border-white/10">↵</kbd>
-                  <span>Buka</span>
+                  <span>Buka Halaman</span>
                 </span>
               </div>
-              <span>ESPORT SUMBAR Search</span>
+              <span className="text-white/40">Basis Data Terhubung</span>
             </div>
           </motion.div>
         </div>

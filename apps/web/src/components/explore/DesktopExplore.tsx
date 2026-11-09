@@ -37,9 +37,10 @@ import { GlassButton } from "@/components/glass/GlassButton";
 export function DesktopExplore() {
   const searchParams = useSearchParams();
   const initialTab = searchParams.get("tab");
+  const initialQuery = searchParams.get("q") || searchParams.get("search") || "";
 
   // State Filters
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedEntity, setSelectedEntity] = useState<string>(initialTab || "all");
   const [selectedGame, setSelectedGame] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
@@ -96,12 +97,16 @@ export function DesktopExplore() {
     fetchLiveProfiles();
   }, []);
 
-  // Sync initialTab if url changes
+  // Sync initialTab and initialQuery if url changes
   useEffect(() => {
     if (initialTab) {
       setSelectedEntity(initialTab);
     }
-  }, [initialTab]);
+    const qParam = searchParams.get("q") || searchParams.get("search");
+    if (qParam !== null) {
+      setSearchQuery(qParam);
+    }
+  }, [initialTab, searchParams]);
 
   // Reset all filters
   const handleResetFilters = () => {
