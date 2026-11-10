@@ -28,9 +28,9 @@ export default function ForgotPasswordPage() {
 
     try {
       const supabase = createClient();
-      const origin = typeof window !== "undefined" ? window.location.origin : "https://esportsumbar.id";
+      const origin = typeof window !== "undefined" ? window.location.origin : (process.env.NEXT_PUBLIC_SITE_URL || "https://esport-sumbar-v2.vercel.app");
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${origin}/reset-password`,
+        redirectTo: `${origin}/auth/callback?next=/reset-password`,
       });
 
       if (error) {

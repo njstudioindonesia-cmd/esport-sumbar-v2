@@ -312,12 +312,12 @@ export async function resetPasswordAction(formData: FormData): Promise<{ success
   }
 
   const { email } = validation.data;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://esport-sumbar-v2.vercel.app";
 
   try {
     const supabase = await createClient();
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${siteUrl}/auth/callback?next=/me/settings`,
+      redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
     });
 
     if (error) {
@@ -326,7 +326,7 @@ export async function resetPasswordAction(formData: FormData): Promise<{ success
 
     return {
       success: true,
-      message: "Instruksi pengaturan ulang kata sandi telah dikirim ke email Anda.",
+      message: "Instruksi pengaturan ulang kata sandi telah dikirim ke email Anda. Silakan periksa inbox atau folder spam.",
     };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : "Gagal mengirim permintaan reset kata sandi.";
