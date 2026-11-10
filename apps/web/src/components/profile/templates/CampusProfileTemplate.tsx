@@ -20,10 +20,20 @@ import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSe
 export function CampusProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
   const [activeTab, setActiveTab] = useState<"about" | "achievements">("about");
 
-  const { attributes, achievements = [] } = profile;
+  const { attributes, achievements = [], relations = [] } = profile;
   const campusName = attributes.campus_name || profile.displayName;
-  const ukmName = attributes.ukm_name || "UKM Esport";
-  const memberCount = attributes.member_count || 30;
+  const ukmName = attributes.ukm_name || attributes.esport_club_name || "UKM Esport";
+  
+  // Mahasiswa terdaftar dihitung dari relasi ekosistem aktif atau atribut manual
+  const registeredStudents = profile.groupedRelations?.anggota ||
+    relations.filter((r) => (r.roleInRelation === "member" || r.roleInRelation === "student" || r.targetProfile?.entityType === "player") && (r.status === "active" || r.status === "approved"));
+  const memberCount = typeof attributes.member_count === "number" ? attributes.member_count : registeredStudents.length;
+
+  // Divisi kampus dihitung dari daftar divisi atribut atau default 0 jika belum ada
+  const divisionCount = typeof attributes.division_count === "number"
+    ? attributes.division_count
+    : (Array.isArray(attributes.divisions) ? attributes.divisions.length : (Array.isArray(attributes.game_divisions) ? attributes.game_divisions.length : 0));
+
   const advisor = attributes.advisor_name || "Dosen Pembina UKM";
 
   return (
@@ -63,7 +73,7 @@ export function CampusProfileTemplate({ profile }: { profile: UnifiedProfileDeta
         </div>
 
         <div className="p-4 rounded-2xl bg-[#12151F] border border-white/[0.06] text-center">
-          <div className="text-2xl font-heading font-black text-white">1</div>
+          <div className="text-2xl font-heading font-black text-white">{divisionCount}</div>
           <div className="text-[10px] font-mono text-white/40 uppercase mt-0.5">Divisi Kampus</div>
         </div>
 

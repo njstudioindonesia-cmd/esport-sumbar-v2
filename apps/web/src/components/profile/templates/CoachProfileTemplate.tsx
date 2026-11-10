@@ -24,7 +24,7 @@ export function CoachProfileTemplate({ profile }: { profile: UnifiedProfileDetai
   const [activeTab, setActiveTab] = useState<"summary" | "teams" | "achievements">("summary");
 
   const { attributes, achievements = [] } = profile;
-  const experienceYears = attributes.experience_years || 1;
+  const experienceYears = typeof attributes.experience_years === "number" ? attributes.experience_years : 0;
   const isAvailable = attributes.is_active_coaching ?? true;
   const philosophy = attributes.coaching_philosophy;
 

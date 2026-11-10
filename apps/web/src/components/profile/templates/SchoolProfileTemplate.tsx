@@ -18,11 +18,15 @@ import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { ProfileEcosystemSection } from "@/components/profile/ProfileEcosystemSection";
 
 export function SchoolProfileTemplate({ profile }: { profile: UnifiedProfileDetail }) {
-  const { attributes, achievements = [] } = profile;
+  const { attributes, achievements = [], relations = [] } = profile;
   const schoolName = attributes.school_name || profile.displayName;
   const eduLevel = attributes.education_level || "SMA";
   const extraName = attributes.extracurricular_name || "Ekskul Esport";
-  const studentCount = attributes.student_count || 15;
+  
+  const registeredStudents = profile.groupedRelations?.anggota ||
+    relations.filter((r) => (r.roleInRelation === "member" || r.roleInRelation === "student" || r.targetProfile?.entityType === "player") && (r.status === "active" || r.status === "approved"));
+  const studentCount = typeof attributes.student_count === "number" ? attributes.student_count : registeredStudents.length;
+
   const advisor = attributes.advisor_name || "Guru Pembina Ekskul";
 
   return (

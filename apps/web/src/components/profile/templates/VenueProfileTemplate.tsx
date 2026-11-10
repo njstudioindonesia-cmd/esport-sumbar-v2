@@ -25,7 +25,7 @@ export function VenueProfileTemplate({ profile }: { profile: UnifiedProfileDetai
 
   const { attributes, gallery = [] } = profile;
   const venueType = attributes.venue_type || "icafe";
-  const capacity = attributes.capacity_units || 20;
+  const capacity = typeof attributes.capacity_units === "number" ? attributes.capacity_units : 0;
   const isTournamentReady = attributes.is_tournament_ready ?? false;
   const businessAddress = attributes.business_address || "Sumatera Barat";
   const facilities = (attributes.facilities as string[]) || ["pc_high_end", "ac", "dedicated_fiber"];

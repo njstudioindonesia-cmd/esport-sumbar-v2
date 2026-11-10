@@ -22,9 +22,11 @@ export function CommunityProfileTemplate({ profile }: { profile: UnifiedProfileD
   const [activeTab, setActiveTab] = useState<"about" | "ecosystem" | "gallery">("about");
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
-  const { attributes, gallery = [] } = profile;
-  const estimatedMembers = attributes.estimated_members || 50;
-  const foundedYear = attributes.founded_year || 2022;
+  const { attributes, gallery = [], relations = [] } = profile;
+  const communityMembers = profile.groupedRelations?.anggota ||
+    relations.filter((r) => (r.roleInRelation === "member" || r.targetProfile?.entityType === "player") && (r.status === "active" || r.status === "approved"));
+  const estimatedMembers = typeof attributes.estimated_members === "number" ? attributes.estimated_members : communityMembers.length;
+  const foundedYear = attributes.founded_year || null;
   const activityFrequency = attributes.activity_frequency || "mingguan";
   const groupLink = attributes.public_group_link;
 
