@@ -243,38 +243,38 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
 
       <main className="flex-1 flex flex-col items-center overflow-x-hidden">
         {/* ==================== 1. HERO SECTION (CINEMATIC ESPORTS ARENA VENUE) ==================== */}
-        <section className="relative w-full min-h-[calc(100vh-64px)] flex flex-col justify-center items-center overflow-hidden border-b border-white/[0.06]">
-          {/* 1A. High-Tech Esports Arena Background with Vivid Visibility */}
-          <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden select-none">
-            {/* Arena Stage Background Image - High Opacity & Vivid Contrast */}
+        <section className="relative isolate w-full min-h-[calc(100vh-64px)] flex flex-col justify-center items-center overflow-hidden border-b border-white/[0.06]">
+          {/* 1A. High-Tech Esports Arena Background with Guaranteed Stacking */}
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
+            {/* Real Tournament Arena Stage Background */}
             <Image
-              src="/images/esport-arena-stage.webp"
+              src="/images/esport-venue-hero.webp"
               alt="Esport Sumbar Championship Arena Stage"
               fill
               priority
               quality={75}
-              className="object-cover object-center scale-105 opacity-80 sm:opacity-90 filter contrast-115 saturate-125 brightness-105"
+              className="object-cover object-center scale-105 opacity-80 sm:opacity-85 filter contrast-125 saturate-125 brightness-105"
             />
 
             {/* Seamless Top Fade into Fixed Navbar */}
-            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[var(--bg-base)] via-[var(--bg-base)]/60 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#07090E] via-[#07090E]/60 to-transparent" />
 
             {/* Seamless Bottom Fade into Statistics Section */}
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--bg-base)] via-[var(--bg-base)]/70 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07090E] via-[#07090E]/70 to-transparent" />
 
-            {/* Horizontal Text Readability Scrim (Only on the left behind text, right side arena stays clear) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-base)]/85 via-[var(--bg-base)]/45 to-transparent" />
+            {/* Left Readability Scrim (Ensures headlines have crystal-clear contrast while arena remains vividly visible) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07090E]/90 via-[#07090E]/40 to-transparent" />
 
-            {/* Ambient Neon Spotlights */}
-            <div className="absolute -top-24 right-1/4 w-[500px] h-[500px] bg-[#FF1752]/[0.18] blur-[140px] rounded-full mix-blend-screen" />
-            <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] bg-[#00004F]/50 blur-[130px] rounded-full" />
-            <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-[#3B82F6]/[0.15] blur-[110px] rounded-full mix-blend-screen" />
+            {/* Ambient Neon Glows matching Esport Sumbar Brand */}
+            <div className="absolute -top-20 right-1/4 w-[500px] h-[500px] bg-[#FF1752]/[0.20] blur-[140px] rounded-full mix-blend-screen" />
+            <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] bg-[#00004F]/60 blur-[130px] rounded-full" />
+            <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-[#3B82F6]/[0.20] blur-[110px] rounded-full mix-blend-screen" />
           </div>
 
           <BrandWatermark opacity={0.03} size={720} position="top-right" />
 
-          {/* 1B. Hero Content Container (Constrained to max-w-7xl) */}
-          <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14">
+          {/* 1B. Hero Content Container (Constrained to max-w-7xl, z-10) */}
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14">
             {/* Left Column: Headlines & Action Buttons (Cinematic Stagger) */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
