@@ -102,6 +102,7 @@ export function loadFileAsImage(file: File): Promise<HTMLImageElement> {
 
 /**
  * Memotong, mengubah ukuran, menghapus EXIF, dan mengonversi ke WebP
+ * Disesuaikan agar sangat hemat penyimpanan Supabase Storage & kuota bandwidth
  */
 export async function cropAndCompressToWebP(
   img: HTMLImageElement,
@@ -112,19 +113,31 @@ export async function cropAndCompressToWebP(
     sourceHeight: number;
   },
   aspectRatio: number,
-  quality = 0.82
+  quality = 0.78
 ): Promise<{ blob: Blob; dataUrl: string; width: number; height: number }> {
-  // Hitung dimensi target dengan batas maksimal 1200px sisi panjang
+  // Hitung batas dimensi cerdas berdasarkan rasio & kegunaan
+  let maxDimension = 640;
+  if (aspectRatio > 1.3) {
+    // Landscape cover / banner (16:9) -> max 1280px
+    maxDimension = 1280;
+  } else if (Math.abs(aspectRatio - 1) < 0.05) {
+    // Square logo (1:1) -> max 512px
+    maxDimension = 512;
+  } else {
+    // Portrait avatar (4:5) -> max 640px (sangat tajam untuk kartu 300px namun file cuma ~40-60KB)
+    maxDimension = 640;
+  }
+
   let targetWidth: number;
   let targetHeight: number;
 
   if (aspectRatio >= 1) {
     // Landscape atau Square (mis. 16:9 atau 1:1)
-    targetWidth = Math.min(MAX_IMAGE_DIMENSION_PX, cropArea.sourceWidth);
+    targetWidth = Math.min(maxDimension, cropArea.sourceWidth);
     targetHeight = Math.round(targetWidth / aspectRatio);
   } else {
     // Portrait (mis. 4:5)
-    targetHeight = Math.min(MAX_IMAGE_DIMENSION_PX, cropArea.sourceHeight);
+    targetHeight = Math.min(maxDimension, cropArea.sourceHeight);
     targetWidth = Math.round(targetHeight * aspectRatio);
   }
 

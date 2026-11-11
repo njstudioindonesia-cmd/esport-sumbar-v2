@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
-import { processOutboxBatch } from "@esport-sumbar/lib";
-import { processNotificationQueue } from "@/lib/services/notifications";
+import { processOutboxBatch, purgeProcessedOutboxEvents } from "@esport-sumbar/lib";
+import { processNotificationQueue, purgeStaleNotifications } from "@/lib/services/notifications";
 import { reconcileDirectoryReadModel } from "@/lib/services/directory";
-import { findOrphanMedia } from "@/lib/services/media";
+import { findOrphanMedia, purgeExpiredEvidence } from "@/lib/services/media";
 import { logger } from "@esport-sumbar/lib";
 
 /**
@@ -11,16 +11,18 @@ import { logger } from "@esport-sumbar/lib";
  * Memenuhi Spesifikasi Sub-langkah 2.3 & Keputusan P13:
  * - Terlindungi token otorisasi Bearer CRON_SECRET / SUPABASE_SERVICE_ROLE_KEY
  * - Idempoten & time-bounded (< 25 detik)
- * - Menjalankan:
- *   1. Outbox Event Dispatcher
- *   2. Antrean Notifikasi Email/In-App
+ * - Menjalankan pembersihan berkas & pangkalan data otomatis (hemat penyimpanan Supabase):
+ *   1. Outbox Event Dispatcher + Pembersihan Outbox Selesai (> 7 hari)
+ *   2. Antrean Notifikasi Email/In-App + Pembersihan Notifikasi Kedaluwarsa (> 30 hari)
  *   3. Rekonsiliasi Model Baca Direktori (Active Sync)
- *   4. Pembersih Media & Audit Retensi Bukti (Mode Laporan)
+ *   4. Pembersih Media & Audit Retensi Bukti
+ *   5. Pembersihan Berkas Dokumen Verifikasi Melewati Batas Retensi (> 90 hari - UU PDP)
  */
 
 async function handleCronDispatch(req: NextRequest) {
   const startTime = Date.now();
   const authHeader = req.headers.get("authorization");
+  const cleanOrphans = req.nextUrl?.searchParams?.get("cleanOrphans") === "true";
 
   const validSecret =
     process.env.CRON_SECRET ||
@@ -45,15 +47,23 @@ async function handleCronDispatch(req: NextRequest) {
   };
 
   try {
-    // 1. Eksekusi Outbox Batch
+    // 1. Eksekusi Outbox Batch & Pembersihan Event Outbox Selesai (> 7 hari)
     logger.info("Memulai pemrosesan batch outbox terjadwal...");
     const outboxResult = await processOutboxBatch(adminClient, {}, { batchSize: 25 });
-    summary.outbox = outboxResult;
+    const purgedOutboxCount = await purgeProcessedOutboxEvents(adminClient, 7);
+    summary.outbox = {
+      ...outboxResult,
+      purgedCount: purgedOutboxCount,
+    };
 
-    // 2. Eksekusi Antrean Notifikasi
+    // 2. Eksekusi Antrean Notifikasi & Pembersihan Notifikasi Kedaluwarsa (> 30 hari)
     logger.info("Memulai pemrosesan antrean notifikasi terjadwal...");
     const notificationResult = await processNotificationQueue(25, adminClient);
-    summary.notifications = notificationResult;
+    const purgedNotificationCount = await purgeStaleNotifications(30, adminClient);
+    summary.notifications = {
+      ...notificationResult,
+      purgedCount: purgedNotificationCount,
+    };
 
     // 3. Rekonsiliasi Direktori (Mode Aktif)
     logger.info("Memulai rekonsiliasi direktori terjadwal...");
@@ -66,28 +76,24 @@ async function handleCronDispatch(req: NextRequest) {
       orphanedProjectionsCount: dirResult.orphanedProjectionsCount,
     };
 
-    // 4. Pembersih Media & Audit Retensi Bukti (Mode Laporan / Dry-run)
-    logger.info("Memulai audit penyimpanan & pembersih media (mode laporan)...");
-    const mediaAuditResult = await findOrphanMedia(true, adminClient);
+    // 4. Pembersih Media & Audit Retensi Bukti
+    logger.info("Memulai audit penyimpanan & pembersih media...");
+    const mediaAuditResult = await findOrphanMedia(!cleanOrphans, adminClient);
     summary.mediaAuditReport = {
       scannedBuckets: mediaAuditResult.scannedBuckets,
       totalFilesScanned: mediaAuditResult.totalFilesScanned,
       orphanFilesCount: mediaAuditResult.orphanFilesCount,
       orphanBytesTotal: mediaAuditResult.orphanBytesTotal,
+      purgedCount: mediaAuditResult.purgedCount || 0,
     };
 
-    // 5. Cek Berkas Bukti Verifikasi Melebihi Retensi (90 Hari)
-    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
-    const { count: expiredEvidenceCount, error: evErr } = await adminClient
-      .from("verification_requests")
-      .select("id", { count: "exact", head: true })
-      .lt("created_at", ninetyDaysAgo)
-      .in("status", ["verified", "rejected"]);
-
+    // 5. Pembersihan Berkas Bukti Verifikasi Melebihi Retensi (90 Hari - UU PDP & Hemat Storage)
+    const evidenceRetentionResult = await purgeExpiredEvidence(90, adminClient);
     summary.evidenceRetention = {
       retentionDays: 90,
-      expiredEvidenceCount: expiredEvidenceCount || 0,
-      status: evErr ? evErr.message : "OK",
+      scanned: evidenceRetentionResult.scanned,
+      purgedFiles: evidenceRetentionResult.purgedFiles,
+      freedBytes: evidenceRetentionResult.freedBytes,
     };
 
     summary.durationMs = Date.now() - startTime;

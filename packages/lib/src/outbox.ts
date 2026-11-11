@@ -180,3 +180,37 @@ export async function processOutboxBatch(
 
   return { processed: processedCount, failed: failedCount };
 }
+
+/**
+ * Membersihkan event outbox yang telah sukses diproses ('processed') dan sudah melewati batas usia.
+ * Mencegah pembengkakan penyimpanan tabel outbox_events di database PostgreSQL Supabase.
+ */
+export async function purgeProcessedOutboxEvents(
+  supabaseClient: any,
+  daysOld: number = 7
+): Promise<number> {
+  try {
+    const cutoffDate = new Date(Date.now() - daysOld * 24 * 60 * 60 * 1000).toISOString();
+
+    const { data, error } = await supabaseClient
+      .from("outbox_events")
+      .delete()
+      .eq("status", "processed")
+      .lt("created_at", cutoffDate)
+      .select("id");
+
+    if (error) {
+      logger.warn("Gagal membersihkan outbox_events kedaluwarsa", { error: error.message });
+      return 0;
+    }
+
+    const deletedCount = data?.length || 0;
+    if (deletedCount > 0) {
+      logger.info(`Berhasil memangkas ${deletedCount} event outbox kedaluwarsa (> ${daysOld} hari).`);
+    }
+    return deletedCount;
+  } catch (err: any) {
+    logger.warn("Kesalahan saat mengeksekusi purgeProcessedOutboxEvents", { error: err.message });
+    return 0;
+  }
+}

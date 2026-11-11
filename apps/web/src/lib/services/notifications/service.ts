@@ -760,3 +760,50 @@ export async function getDeadLetterNotifications(
     }))
     .slice(0, limit);
 }
+
+/**
+ * Membersihkan notifikasi lama yang sudah terkirim ('sent') atau gagal ('failed') melebihi batas usia.
+ * Mencegah pembengkakan penyimpanan database pada tabel notifications_queue saat ribuan player terdaftar.
+ */
+export async function purgeStaleNotifications(
+  daysOld: number = 30,
+  client?: any
+): Promise<number> {
+  const supabase = client || createAdminClient();
+
+  try {
+    const { data: rpcCount, error: rpcError } = await supabase.rpc("purge_stale_notifications", {
+      p_days_old: daysOld,
+    });
+
+    if (!rpcError && typeof rpcCount === "number") {
+      return rpcCount;
+    }
+  } catch {
+    // Fallback ke query langsung jika RPC belum terdaftar
+  }
+
+  try {
+    const cutoffDate = new Date(Date.now() - daysOld * 24 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await supabase
+      .from("notifications_queue")
+      .delete()
+      .in("status", ["sent", "failed"])
+      .lt("created_at", cutoffDate)
+      .select("id");
+
+    if (error) {
+      logger.warn("Gagal membersihkan notifications_queue kedaluwarsa", { error: error.message });
+      return 0;
+    }
+
+    const count = data?.length || 0;
+    if (count > 0) {
+      logger.info(`Berhasil memangkas ${count} notifikasi kedaluwarsa (> ${daysOld} hari).`);
+    }
+    return count;
+  } catch (err: any) {
+    logger.warn("Kesalahan saat mengeksekusi purgeStaleNotifications", { error: err.message });
+    return 0;
+  }
+}

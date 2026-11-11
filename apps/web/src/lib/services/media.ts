@@ -96,32 +96,32 @@ export async function compressImageWithSharp(
   const originalSize = inputBuffer.length;
   const image = sharp(inputBuffer);
 
-  // Atur batas dimensi berdasarkan tujuan media
-  let maxWidth = 1024;
-  let maxHeight = 1024;
-  let quality = 85;
+  // Atur batas dimensi optimal hemat penyimpanan & bandwidth Supabase
+  let maxWidth = 640;
+  let maxHeight = 640;
+  let quality = 78;
 
   switch (purpose) {
     case "cover":
-      maxWidth = 1920;
-      maxHeight = 1080;
-      quality = 85;
+      maxWidth = 1280;
+      maxHeight = 720;
+      quality = 78;
       break;
     case "gallery":
-      maxWidth = 1600;
-      maxHeight = 1200;
-      quality = 85;
+      maxWidth = 1280;
+      maxHeight = 960;
+      quality = 78;
       break;
     case "evidence":
-      maxWidth = 1600;
-      maxHeight = 1600;
-      quality = 80;
+      maxWidth = 1280;
+      maxHeight = 1280;
+      quality = 75;
       break;
     case "avatar":
     default:
-      maxWidth = 1024;
-      maxHeight = 1024;
-      quality = 85;
+      maxWidth = 640;
+      maxHeight = 640;
+      quality = 78;
       break;
   }
 
@@ -133,7 +133,7 @@ export async function compressImageWithSharp(
     })
     .webp({
       quality,
-      effort: 4,
+      effort: 5,
     });
 
   // Hapus metadata (EXIF/IPTC/XMP) secara tegas untuk privasi pengguna
@@ -470,6 +470,37 @@ export async function deleteOldMediaFile(
   }
 }
 
+async function listStorageFilesRecursively(
+  supabase: any,
+  bucket: string,
+  prefix = ""
+): Promise<Array<{ path: string; size: number }>> {
+  try {
+    const { data: items, error } = await supabase.storage.from(bucket).list(prefix, {
+      limit: 200,
+    });
+    if (error || !items) return [];
+
+    let files: Array<{ path: string; size: number }> = [];
+    for (const item of items) {
+      const fullPath = prefix ? `${prefix}/${item.name}` : item.name;
+      if (item.id === null || !item.metadata) {
+        // Objek sub-folder -> rekursif
+        const subFiles = await listStorageFilesRecursively(supabase, bucket, fullPath);
+        files = files.concat(subFiles);
+      } else {
+        files.push({
+          path: fullPath,
+          size: item.metadata?.size || 0,
+        });
+      }
+    }
+    return files;
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Pembersih Berkas Yatim (Orphan Media Cleaner):
  * Mode laporan dahulu (dryRun = true): membandingkan berkas di Storage dengan rujukan aktif di DB.
@@ -525,29 +556,23 @@ export async function findOrphanMedia(
     }
   }
 
-  // 2. Pindai berkas fisik dalam storage bucket
+  // 2. Pindai berkas fisik dalam storage bucket secara rekursif
   const orphans: Array<{ bucket: string; path: string; size?: number }> = [];
   let totalFilesScanned = 0;
   let orphanBytesTotal = 0;
 
   for (const bucket of bucketsToScan) {
     try {
-      const { data: fileList, error } = await supabase.storage.from(bucket).list("", {
-        limit: 1000,
-        sortBy: { column: "created_at", order: "desc" },
-      });
-
-      if (error || !fileList) continue;
+      const fileList = await listStorageFilesRecursively(supabase, bucket, "");
 
       for (const file of fileList) {
         totalFilesScanned++;
-        const fileSize = file.metadata?.size || 0;
-        const filePath = file.name;
+        const fileSize = file.size;
+        const filePath = file.path;
 
-        // Cek apakah file dirujuk dalam activePaths (mencocokkan substring path atau URL)
         let isReferenced = false;
         for (const ref of activePaths) {
-          if (ref.includes(filePath)) {
+          if (ref.includes(filePath) || filePath.includes(ref)) {
             isReferenced = true;
             break;
           }
@@ -589,6 +614,67 @@ export async function findOrphanMedia(
     purged: !dryRun,
     purgedCount,
   };
+}
+
+/**
+ * Membersihkan berkas fisik bukti verifikasi (KTP, Kartu Pelajar, Sertifikat) yang telah
+ * melampaui masa retensi (90 hari) sesuai kepatuhan perlindungan data pribadi UU PDP
+ * dan menghemat kuota bucket storage Supabase.
+ */
+export async function purgeExpiredEvidence(
+  retentionDays: number = 90,
+  client?: any
+): Promise<{ scanned: number; purgedFiles: number; freedBytes: number }> {
+  const supabase = client || createAdminClient();
+  const cutoffDate = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000).toISOString();
+
+  let purgedFiles = 0;
+  let freedBytes = 0;
+
+  try {
+    const { data: requests, error } = await supabase
+      .from("verification_requests")
+      .select("id, evidence_files, decided_at, status")
+      .in("status", ["verified", "rejected"])
+      .not("decided_at", "is", null)
+      .lt("decided_at", cutoffDate)
+      .limit(100);
+
+    if (error || !requests) {
+      return { scanned: 0, purgedFiles: 0, freedBytes: 0 };
+    }
+
+    for (const req of requests) {
+      if (Array.isArray(req.evidence_files) && req.evidence_files.length > 0) {
+        let hasChanges = false;
+        for (const item of req.evidence_files) {
+          const path = typeof item === "string" ? item : item?.path;
+          if (path && !path.startsWith("purged:")) {
+            const success = await deleteOldMediaFile("evidence", path, supabase);
+            if (success) {
+              purgedFiles++;
+              freedBytes += (typeof item === "object" ? item?.size : 0) || 120 * 1024;
+              hasChanges = true;
+            }
+          }
+        }
+
+        if (hasChanges) {
+          await supabase
+            .from("verification_requests")
+            .update({
+              evidence_files: [{ purged: true, purgedAt: new Date().toISOString() }],
+            })
+            .eq("id", req.id);
+        }
+      }
+    }
+
+    return { scanned: requests.length, purgedFiles, freedBytes };
+  } catch (err) {
+    logger.warn("Kesalahan saat mengeksekusi purgeExpiredEvidence", { error: err });
+    return { scanned: 0, purgedFiles: 0, freedBytes: 0 };
+  }
 }
 
 // ==============================================================================
