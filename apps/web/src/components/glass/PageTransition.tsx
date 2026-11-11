@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { MOTION_DURATIONS, MOTION_EASINGS } from "./MotionPresets";
-import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
+import { useQuality, useIsReducedMotion } from "./useQualityMode";
 
 export interface PageTransitionProps {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export interface PageTransitionProps {
 }
 
 export function PageTransition({ children, className }: PageTransitionProps) {
-  const { quality } = useQualityMode();
+  const quality = useQuality();
   const isReducedMotion = useIsReducedMotion();
 
   if (isReducedMotion || quality === "eco") {

@@ -42,11 +42,11 @@
   --radius-pill: 9999px;
   --radius-tcg: 18px;
 
-  /* Liquid Glass 2026 Core Tokens (Bagian 4) */
-  --glass-blur-thin: 14px;
-  --glass-blur-regular: 24px;
-  --glass-blur-thick: 40px;
-  --glass-saturate: 170%;
+  /* Liquid Glass 2026 Core Tokens (Bagian 4) - Dioptimalkan untuk rendering 60-120 FPS */
+  --glass-blur-thin: 8px;
+  --glass-blur-regular: 12px;
+  --glass-blur-thick: 20px;
+  --glass-saturate: 130%;
   --glass-bg-thin: rgba(255, 255, 255, 0.05);
   --glass-bg-regular: rgba(255, 255, 255, 0.08);
   --glass-bg-thick: rgba(255, 255, 255, 0.12);
@@ -346,13 +346,14 @@ body {
    LIQUID GLASS 2026 DESIGN SYSTEM UTILITIES (Bagian 4)
    ========================================================================== */
 
-/* 1. Core Glass Materials */
+/* 1. Core Glass Materials (Hardware composited with translateZ for silky 60-120fps scrolling) */
 .glass-surface {
   background: var(--glass-bg-regular);
   backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
   -webkit-backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
   box-shadow: var(--glass-shadow);
   border: 1px solid rgba(255, 255, 255, 0.12);
+  transform: translateZ(0);
   transition: background-color var(--motion-fast) var(--motion-ease-out),
               border-color var(--motion-fast) var(--motion-ease-out),
               box-shadow var(--motion-fast) var(--motion-ease-out),
@@ -365,6 +366,7 @@ body {
   -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(var(--glass-saturate));
   box-shadow: 0 4px 20px rgba(0, 0, 20, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translateZ(0);
 }
 
 .glass-thick {
@@ -373,6 +375,7 @@ body {
   -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate));
   box-shadow: 0 12px 48px rgba(0, 0, 20, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.18);
+  transform: translateZ(0);
 }
 
 .glass-tinted {
@@ -381,6 +384,17 @@ body {
   -webkit-backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
   box-shadow: 0 8px 32px rgba(255, 23, 82, 0.2);
   border: 1px solid rgba(255, 23, 82, 0.35);
+  transform: translateZ(0);
+}
+
+/* Mobile device GPU fillrate optimization */
+@media (max-width: 768px) {
+  :root {
+    --glass-blur-thin: 4px;
+    --glass-blur-regular: 8px;
+    --glass-blur-thick: 12px;
+    --glass-saturate: 110%;
+  }
 }
 
 /* 2. Specular Pointer Tracker Highlight */
@@ -405,6 +419,13 @@ body {
 }
 
 /* 5. Adaptive Quality Modes (Penuh / Standar / Hemat) */
+[data-quality="standard"] {
+  --glass-blur-thin: 4px;
+  --glass-blur-regular: 8px;
+  --glass-blur-thick: 12px;
+  --glass-saturate: 110%;
+}
+
 [data-quality="eco"] .glass-surface,
 [data-quality="eco"] .glass-thin,
 [data-quality="eco"] .glass-thick,

@@ -116,7 +116,9 @@ export function EsportCard({
 }: EsportCardProps) {
   const [isFlipped, setIsFlipped] = useState(initialFlipped);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
 
   // Check prefers-reduced-motion
   useEffect(() => {
@@ -147,10 +149,16 @@ export function EsportCard({
   const glareY = useTransform(mouseY, [0, 1], ["0%", "100%"]);
   const glareBackground = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.12) 28%, transparent 68%)`;
 
-  // Desktop Mouse Handlers
+  // Desktop Mouse Handlers (Cached rect to prevent layout thrashing)
+  const handleMouseEnter = () => {
+    if (!interactive || reducedMotion) return;
+    setIsHovered(true);
+    rectRef.current = cardRef.current?.getBoundingClientRect() ?? null;
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!interactive || reducedMotion || isFlipped) return;
-    const rect = cardRef.current?.getBoundingClientRect();
+    const rect = rectRef.current || cardRef.current?.getBoundingClientRect();
     if (!rect) return;
     const x = (e.clientX - rect.left) / rect.width;
     const y = (e.clientY - rect.top) / rect.height;
@@ -159,6 +167,8 @@ export function EsportCard({
   };
 
   const handleMouseLeave = () => {
+    rectRef.current = null;
+    setIsHovered(false);
     if (!interactive || reducedMotion) return;
     mouseX.set(0.5);
     mouseY.set(0.5);
@@ -175,33 +185,20 @@ export function EsportCard({
     isTouchDragging.current = false;
   };
 
-  // Mobile Touch Handlers
+  // Mobile Touch Handlers - Zero layout thrashing, never block native scrolling
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!interactive || reducedMotion) return;
+    if (!touchStartPos.current) return;
     const touch = e.touches[0];
-    const rect = cardRef.current?.getBoundingClientRect();
-    if (!rect || !touch) return;
-
-    if (touchStartPos.current) {
-      const dx = Math.abs(touch.clientX - touchStartPos.current.x);
-      const dy = Math.abs(touch.clientY - touchStartPos.current.y);
-      if (dx > 8 || dy > 8) {
-        isTouchDragging.current = true;
-      }
-    }
-
-    if (!isFlipped) {
-      const x = (touch.clientX - rect.left) / rect.width;
-      mouseX.set(Math.min(Math.max(x, 0), 1));
-      // Jaga mouseY tetap di tengah pada touch mobile agar rotateX tetap 0 dan tidak miring menjadi garis datar
-      mouseY.set(0.5);
+    if (!touch) return;
+    const dx = Math.abs(touch.clientX - touchStartPos.current.x);
+    const dy = Math.abs(touch.clientY - touchStartPos.current.y);
+    if (dx > 6 || dy > 6) {
+      isTouchDragging.current = true;
     }
   };
 
   const handleTouchEnd = () => {
-    if (!interactive || reducedMotion) return;
-    mouseX.set(0.5);
-    mouseY.set(0.5);
+    touchStartPos.current = null;
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -266,8 +263,9 @@ export function EsportCard({
 
   return (
     <div
-      className={`relative perspective-1000 select-none ${SIZE_CLASSES[size]} ${className}`}
+      className={`relative perspective-1000 select-none touch-pan-y ${SIZE_CLASSES[size]} ${className}`}
       ref={cardRef}
+      onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
@@ -293,6 +291,7 @@ export function EsportCard({
           rotateX: isFlipped ? 0 : rotateX,
           transformStyle: "preserve-3d",
           WebkitTransformStyle: "preserve-3d",
+          willChange: isHovered ? "transform" : "auto",
         }}
         onClick={handleCardClick}
       >
@@ -322,8 +321,8 @@ export function EsportCard({
               <div className="absolute inset-0 opacity-20 pointer-events-none bg-gradient-to-tr from-[#7C3AED]/30 via-[#3B82F6]/30 to-[#34D399]/30 animate-shimmer" />
             )}
 
-            {/* Glare: Dynamic Real-time Light Reflection */}
-            {!reducedMotion && interactive && !isFlipped && (
+            {/* Glare: Dynamic Real-time Light Reflection (Hanya aktif saat di-hover) */}
+            {!reducedMotion && interactive && !isFlipped && isHovered && (
               <motion.div
                 className="absolute inset-0 pointer-events-none z-30 opacity-40 mix-blend-overlay"
                 style={{

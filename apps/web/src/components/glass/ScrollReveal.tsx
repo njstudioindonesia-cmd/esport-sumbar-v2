@@ -9,7 +9,7 @@ import {
   MOTION_SPRINGS,
   REDUCED_MOTION_VARIANTS,
 } from "./MotionPresets";
-import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
+import { useQuality, useIsReducedMotion } from "./useQualityMode";
 
 export interface ScrollRevealProps {
   children: React.ReactNode;
@@ -35,7 +35,7 @@ export function ScrollReveal({
     once,
     amount: threshold,
   });
-  const { quality } = useQualityMode();
+  const quality = useQuality();
   const isReducedMotion = useIsReducedMotion();
 
   // Jika mode hemat atau pengguna meminta reduced-motion: tampilkan tanpa pergeseran transform

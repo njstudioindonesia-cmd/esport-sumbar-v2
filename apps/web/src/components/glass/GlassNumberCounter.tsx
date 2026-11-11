@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
+import { useQuality, useIsReducedMotion } from "./useQualityMode";
 
 export interface GlassNumberCounterProps {
   value: number;
@@ -25,7 +25,7 @@ export function GlassNumberCounter({
   numberClassName,
   labelClassName,
 }: GlassNumberCounterProps) {
-  const { quality } = useQualityMode();
+  const quality = useQuality();
   const isReducedMotion = useIsReducedMotion();
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);

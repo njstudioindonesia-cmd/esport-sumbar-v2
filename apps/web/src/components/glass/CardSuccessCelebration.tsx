@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Sparkles, ShieldCheck, ChevronRight, Check, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MOTION_SPRINGS, MOTION_DURATIONS } from "./MotionPresets";
-import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
+import { useQuality, useIsReducedMotion } from "./useQualityMode";
 
 export interface CardSuccessCelebrationProps {
   esportId: string;
@@ -23,7 +23,7 @@ export function CardSuccessCelebration({
   onCopyEsportId,
   className,
 }: CardSuccessCelebrationProps) {
-  const { quality } = useQualityMode();
+  const quality = useQuality();
   const isReducedMotion = useIsReducedMotion();
   const [copied, setCopied] = React.useState(false);
 

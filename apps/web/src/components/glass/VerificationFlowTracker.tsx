@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { CheckCircle2, AlertTriangle, Clock } from "lucide-react";
 import { MOTION_SPRINGS, MOTION_DURATIONS } from "./MotionPresets";
-import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
+import { useQuality, useIsReducedMotion } from "./useQualityMode";
 
 export interface VerificationStep {
   id: number;
@@ -26,7 +26,7 @@ export function VerificationFlowTracker({
   currentStepId,
   className,
 }: VerificationFlowTrackerProps) {
-  const { quality } = useQualityMode();
+  const quality = useQuality();
   const isReducedMotion = useIsReducedMotion();
 
   // Hitung persentase progres alur verifikasi (0 to 1)

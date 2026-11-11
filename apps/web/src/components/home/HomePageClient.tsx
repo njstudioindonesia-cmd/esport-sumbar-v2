@@ -246,14 +246,14 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
         <section className="relative isolate w-full min-h-[calc(100vh-64px)] flex flex-col justify-center items-center overflow-hidden border-b border-white/[0.06]">
           {/* 1A. High-Tech Esports Arena Background with Guaranteed Stacking */}
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-            {/* Real Tournament Arena Stage Background */}
+            {/* Real Tournament Arena Stage Background (Hardware accelerated without heavy CSS filter) */}
             <Image
               src="/images/esport-venue-hero.webp"
               alt="Esport Sumbar Championship Arena Stage"
               fill
               priority
               quality={75}
-              className="object-cover object-center scale-105 opacity-80 sm:opacity-85 filter contrast-125 saturate-125 brightness-105"
+              className="object-cover object-center scale-105 opacity-80 sm:opacity-85"
             />
 
             {/* Seamless Top Fade into Fixed Navbar */}
@@ -265,10 +265,25 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
             {/* Left Readability Scrim (Ensures headlines have crystal-clear contrast while arena remains vividly visible) */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#07090E]/90 via-[#07090E]/40 to-transparent" />
 
-            {/* Ambient Neon Glows matching Esport Sumbar Brand */}
-            <div className="absolute -top-20 right-1/4 w-[500px] h-[500px] bg-[#FF1752]/[0.20] blur-[140px] rounded-full mix-blend-screen" />
-            <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] bg-[#00004F]/60 blur-[130px] rounded-full" />
-            <div className="absolute bottom-1/4 right-10 w-[350px] h-[350px] bg-[#3B82F6]/[0.20] blur-[110px] rounded-full mix-blend-screen" />
+            {/* Ambient Neon Glows matching Esport Sumbar Brand (Zero-blur GPU radial gradients) */}
+            <div
+              className="absolute -top-20 right-1/4 w-[500px] h-[500px] rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(255, 23, 82, 0.22) 0%, rgba(255, 23, 82, 0.05) 45%, transparent 70%)",
+              }}
+            />
+            <div
+              className="absolute top-1/3 left-1/4 w-[450px] h-[450px] rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(0, 0, 79, 0.55) 0%, transparent 70%)",
+              }}
+            />
+            <div
+              className="absolute bottom-1/4 right-10 w-[350px] h-[350px] rounded-full pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, rgba(59, 130, 246, 0.20) 0%, transparent 70%)",
+              }}
+            />
           </div>
 
           <BrandWatermark opacity={0.03} size={720} position="top-right" />

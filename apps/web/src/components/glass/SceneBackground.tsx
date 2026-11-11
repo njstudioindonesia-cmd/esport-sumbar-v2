@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import { useQualityMode, useIsReducedMotion } from "./useQualityMode";
+import { useQuality, useIsReducedMotion } from "./useQualityMode";
 
 interface SceneBackgroundProps {
   className?: string;
@@ -13,7 +13,7 @@ export function SceneBackground({
   className = "",
   intensity = "normal",
 }: SceneBackgroundProps) {
-  const { quality } = useQualityMode();
+  const quality = useQuality();
   const isReducedMotion = useIsReducedMotion();
   const [isTabVisible, setIsTabVisible] = useState(true);
   const [isIntersecting, setIsIntersecting] = useState(true);
@@ -66,34 +66,53 @@ export function SceneBackground({
       {/* Mode Hemat / Reduced Motion: Tampilkan bentuk statis tanpa animasi */}
       {quality === "eco" || isReducedMotion ? (
         <>
-          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-pink-600/10 blur-[100px]" />
-          <div className="absolute top-1/2 -right-32 w-[32rem] h-[32rem] rounded-full bg-indigo-950/20 blur-[120px]" />
+          <div
+            className="absolute -top-32 -left-32 w-96 h-96 rounded-full pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, rgba(255,23,82,0.12) 0%, transparent 70%)",
+            }}
+          />
+          <div
+            className="absolute top-1/2 -right-32 w-[32rem] h-[32rem] rounded-full pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, rgba(0,0,79,0.3) 0%, transparent 70%)",
+            }}
+          />
         </>
       ) : (
         <>
-          {/* Bentuk Cair 1: Brand Pink Primary Bulb */}
+          {/* Bentuk Cair 1: Brand Pink Primary Bulb (Zero-blur GPU radial gradient) */}
           <div
-            className={`absolute -top-24 -left-24 w-[36rem] h-[36rem] rounded-full bg-gradient-to-tr from-[#FF1752] to-[#FF4D77] blur-[120px] ${pinkOpacity} ${
+            className={`absolute -top-24 -left-24 w-[36rem] h-[36rem] rounded-full pointer-events-none ${pinkOpacity} ${
               shouldAnimate ? "animate-[pulse_10s_ease-in-out_infinite]" : ""
             }`}
+            style={{
+              background: "radial-gradient(circle, rgba(255,23,82,0.35) 0%, rgba(255,77,119,0.15) 35%, transparent 70%)",
+            }}
           />
 
-          {/* Bentuk Cair 2: Deep Navy/Indigo Secondary Glow */}
+          {/* Bentuk Cair 2: Deep Navy/Indigo Secondary Glow (Zero-blur GPU radial gradient) */}
           <div
-            className={`absolute top-1/3 -right-28 w-[40rem] h-[40rem] rounded-full bg-gradient-to-br from-[#00004F] via-[#1A1040] to-[#0A0A2E] blur-[140px] opacity-70 ${
+            className={`absolute top-1/3 -right-28 w-[40rem] h-[40rem] rounded-full pointer-events-none opacity-70 ${
               shouldAnimate ? "animate-[pulse_14s_ease-in-out_infinite_reverse]" : ""
             }`}
+            style={{
+              background: "radial-gradient(circle, rgba(0,0,79,0.65) 0%, rgba(26,16,64,0.3) 40%, transparent 70%)",
+            }}
           />
 
-          {/* Bentuk Cair 3: Soft Ambient Center Floating Light */}
+          {/* Bentuk Cair 3: Soft Ambient Center Floating Light (Zero-blur GPU radial gradient) */}
           <div
-            className={`absolute bottom-[-10%] left-1/3 w-[30rem] h-[30rem] rounded-full bg-gradient-to-t from-[#FF1752]/15 via-transparent to-transparent blur-[110px] ${
+            className={`absolute bottom-[-10%] left-1/3 w-[30rem] h-[30rem] rounded-full pointer-events-none opacity-40 ${
               shouldAnimate ? "animate-[pulse_12s_ease-in-out_infinite]" : ""
             }`}
+            style={{
+              background: "radial-gradient(circle, rgba(255,23,82,0.15) 0%, transparent 65%)",
+            }}
           />
 
           {/* Micro Grid Specular Dot Matrix Overlay */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none" />
         </>
       )}
     </div>
