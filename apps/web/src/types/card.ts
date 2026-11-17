@@ -49,7 +49,7 @@ export interface TeamRosterMember {
 export interface UnifiedCardData {
   // Identifiers
   slug?: string;
-  esportId: string; // e.g. ESB-PDG-PL-000124 or ESB-BKT-CO-000012 or ESB-PDG-TM-000005
+  esportId: string; // e.g. ESB-SB-PL-100001 (Format resmi ESPORT SUMBAR V3)
   badgeNumber?: string;
   region: {
     name: string;
@@ -131,6 +131,16 @@ export interface UnifiedCardData {
     studentCount?: number;
     coachedGames?: string[];
   };
+}
+
+export interface CardVariantItem {
+  id: string;
+  slug?: string;
+  type: CardEntityType;
+  rarity: CardRarity;
+  verification: CardVerification;
+  tagline?: string;
+  data: UnifiedCardData;
 }
 
 export interface EsportCardProps {

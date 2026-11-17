@@ -397,7 +397,7 @@ export default function TournamentDetailClient({ tournament }: Props) {
                     value={captainEsportId}
                     onChange={(e) => setCaptainEsportId(e.target.value)}
                     required
-                    placeholder="Contoh: ESB-PDG-PL-000124"
+                    placeholder="Contoh: ESB-SB-PL-100001"
                     className="w-full bg-[#1A1E28] border border-[#262B38] focus:border-[#D4AF37] rounded-xl px-3 py-2.5 text-xs text-white placeholder-gray-500 font-mono focus:outline-none uppercase"
                   />
                 </div>

@@ -70,7 +70,7 @@ export const ENTITY_REGISTRY: Record<EntityType, EntityDefinition> = {
         name: "ign",
         label: "In-Game Name (IGN)",
         type: "text",
-        placeholder: "mis. SUTAN_AIM",
+        placeholder: "mis. IN_GAME_NAME",
         required: true,
         weight: 20,
       },

@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import type { NextRequest } from "next/server";
 import type { Database } from "./database.types";
 
 /**
@@ -40,11 +41,55 @@ export function createPublicServerClient() {
   });
 }
 
-export async function createClient() {
-  const cookieStore = await cookies();
-
+export async function createClient(req?: Request | NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-esport-sumbar.supabase.co";
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key";
+
+  // 1. Dukungan Mobile / API Client via Authorization: Bearer <token>
+  let authHeader: string | null = null;
+  if (req && req.headers) {
+    authHeader = req.headers.get("authorization");
+  }
+
+  if (!authHeader) {
+    try {
+      const headerStore = await headers();
+      authHeader = headerStore.get("authorization");
+    } catch {
+      // Abaikan jika di luar konteks request
+    }
+  }
+
+  if (authHeader && authHeader.toLowerCase().startsWith("bearer ")) {
+    const token = authHeader.substring(7).trim();
+    if (token) {
+      const client = createSupabaseClient<Database>(supabaseUrl, supabaseAnonKey, {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      });
+
+      // Patch getUser agar otomatis memvalidasi token JWT mobile jika dipanggil tanpa parameter
+      const originalGetUser = client.auth.getUser.bind(client.auth);
+      client.auth.getUser = ((jwt?: string) => originalGetUser(jwt || token)) as typeof client.auth.getUser;
+
+      return client;
+    }
+  }
+
+  // 2. Cookie-based client untuk sesi web browser eksisting (100% backward compatible)
+  let cookieStore: any;
+  try {
+    cookieStore = await cookies();
+  } catch {
+    return createPublicServerClient();
+  }
 
   return createServerClient<Database>(supabaseUrl, supabaseAnonKey, {
     cookies: {

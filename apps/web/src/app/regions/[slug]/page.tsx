@@ -138,7 +138,7 @@ export default async function RegionDetailPage({
           {/* BENTO STATISTIK (7 COLS): PLAYER, PELATIH, TIM */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-4">
             <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 flex flex-col justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+              <span className="text-xs font-mono uppercase tracking-wider text-white/50">
                 ATLET TERDATA
               </span>
               <div className="my-2">
@@ -148,7 +148,7 @@ export default async function RegionDetailPage({
             </GlassCard>
 
             <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 flex flex-col justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+              <span className="text-xs font-mono uppercase tracking-wider text-white/50">
                 PELATIH TERLISENSI
               </span>
               <div className="my-2">
@@ -158,7 +158,7 @@ export default async function RegionDetailPage({
             </GlassCard>
 
             <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 flex flex-col justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+              <span className="text-xs font-mono uppercase tracking-wider text-white/50">
                 KLUB &amp; TIM
               </span>
               <div className="my-2">
@@ -185,7 +185,7 @@ export default async function RegionDetailPage({
                 Wilayah {region.name}
               </div>
               <div className="text-[11px] font-mono text-white/60">
-                Pendaftaran dan verifikasi paspor digital atlet dilayani langsung mandiri oleh platform ESPORT SUMBAR.
+                Pendaftaran dan verifikasi kartu digital atlet dilayani langsung mandiri oleh platform ESPORT SUMBAR.
               </div>
             </div>
 

@@ -25,7 +25,7 @@ import {
   GraduationCap,
   Flame,
 } from "lucide-react";
-import { MockCardVariant } from "@/data/mockCards";
+import { CardVariantItem } from "@/types/card";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { OFFICIAL_GAMES } from "@/data/games";
 import { EsportCard } from "@/components/card/EsportCard";
@@ -51,9 +51,9 @@ export function DesktopExplore() {
   // View mode & mobile filter sheet
   const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [previewCard, setPreviewCard] = useState<MockCardVariant | null>(null);
+  const [previewCard, setPreviewCard] = useState<CardVariantItem | null>(null);
   const [regionFilterSearch, setRegionFilterSearch] = useState("");
-  const [dbCards, setDbCards] = useState<MockCardVariant[] | null>(null);
+  const [dbCards, setDbCards] = useState<CardVariantItem[] | null>(null);
 
   // Fetch live profiles from Supabase API
   useEffect(() => {
@@ -193,7 +193,7 @@ export function DesktopExplore() {
     );
   }, [regionFilterSearch]);
 
-  const getProfileSlug = (card: MockCardVariant) => {
+  const getProfileSlug = (card: CardVariantItem) => {
     const slug = card.slug || card.data.slug || (card.data.ign || card.data.displayName).toLowerCase().replace(/\s+/g, "-");
     switch (card.type) {
       case "player": return `/player/${slug}`;
@@ -658,7 +658,7 @@ export function DesktopExplore() {
             >
               <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
                 <span className="text-xs font-mono text-[#D4AF37] font-bold">
-                  Pratinjau Paspor Digital
+                  Pratinjau Kartu Digital
                 </span>
                 <button
                   onClick={() => setPreviewCard(null)}

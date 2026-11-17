@@ -195,7 +195,7 @@ export function TeamProfileTemplate({ profile }: { profile: UnifiedProfileDetail
               Ajukan Bergabung ke {profile.displayName}
             </h3>
             <p className="text-xs text-white/60 mb-5">
-              Permintaan bergabung akan dikirim langsung ke Manajer Tim beserta profil paspor esport Anda.
+              Permintaan bergabung akan dikirim langsung ke Manajer Tim beserta profil profil esport Anda.
             </p>
 
             {joinSuccess ? (

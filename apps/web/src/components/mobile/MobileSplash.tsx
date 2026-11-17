@@ -99,7 +99,7 @@ export function MobileSplash({
           </div>
 
           {/* Skip Notice */}
-          <span className="absolute bottom-8 text-[10px] font-mono text-white/30 uppercase tracking-widest">
+          <span className="absolute bottom-8 text-xs font-mono text-white/30 uppercase tracking-wider">
             Sentuh untuk lewati
           </span>
         </motion.div>

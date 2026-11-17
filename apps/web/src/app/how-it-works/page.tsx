@@ -63,7 +63,7 @@ export default function HowItWorksPage() {
             <span>PANDUAN SISTEM TATA KELOLA</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-heading font-black uppercase text-white tracking-tight">
-            Cara Kerja Paspor Digital
+            Cara Kerja Kartu Digital
           </h1>
           <p className="text-xs sm:text-sm text-white/60 mt-2">
             Pedoman lengkap tata kelola identitas digital, lencana tunggal, dan relasi ekosistem.
@@ -73,11 +73,11 @@ export default function HowItWorksPage() {
         {/* 1. DIAGRAM ALUR 3 LANGKAH */}
         <section className="mb-16">
           <div className="text-center mb-8">
-            <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block mb-1">
+            <span className="text-xs font-mono text-white/40 uppercase tracking-wider block mb-1">
               PROSES SISTEMATIS
             </span>
             <h2 className="text-xl font-heading font-black text-white uppercase tracking-wider">
-              3 Langkah Kepemilikan Paspor
+              3 Langkah Kepemilikan Kartu
             </h2>
           </div>
 
@@ -137,7 +137,7 @@ export default function HowItWorksPage() {
         {/* 2. FAQ AREA (QUIET SURFACE UNTUK KETERBACAAN TEKS) */}
         <section className="mb-14">
           <div className="text-center mb-8">
-            <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block mb-1">
+            <span className="text-xs font-mono text-white/40 uppercase tracking-wider block mb-1">
               INFORMASI PENTING
             </span>
             <h2 className="text-xl font-heading font-black text-white uppercase tracking-wider">
@@ -180,7 +180,7 @@ export default function HowItWorksPage() {
           <Link href="/register">
             <GlassButton variant="primary" size="lg" className="font-heading font-black uppercase tracking-wider">
               <Sparkles className="w-4 h-4 mr-2" />
-              <span>Daftarkan Paspor Anda</span>
+              <span>Daftarkan Kartu Anda</span>
             </GlassButton>
           </Link>
         </section>

@@ -103,9 +103,9 @@ describe("Bagian 10: Koreografi Motion, Penyetelan Performa & Aksesibilitas", ()
           rarityTier="elite"
         />
       );
-      expect(html).toContain("Kartu Paspor Berhasil Diterbitkan!");
+      expect(html).toContain("Kartu Identitas Berhasil Diterbitkan!");
       expect(html).toContain("ESB-PDG-PL-100234");
-      expect(html).toContain("Dashboard");
+      expect(html).toContain("Lihat Profil");
       expect(html).toContain("Verifikasi");
     });
 

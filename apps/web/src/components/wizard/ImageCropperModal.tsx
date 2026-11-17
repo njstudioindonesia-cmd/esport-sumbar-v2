@@ -235,7 +235,7 @@ export function ImageCropperModal({
               </h3>
               <p className="text-[11px] font-mono text-white/50">
                 {aspectRatioType === "avatar"
-                  ? "Rasio Paspor 4:5 • Otomatis Tanpa EXIF"
+                  ? "Rasio Kartu 4:5 • Otomatis Tanpa EXIF"
                   : aspectRatioType === "cover"
                   ? "Rasio Sampul 16:9 • Maksimal 2 MB"
                   : "Rasio Logo 1:1 • Format WebP"}
@@ -367,7 +367,7 @@ export function ImageCropperModal({
                   {/* Badge Rasio */}
                   <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/15 text-[9px] font-mono text-[#D4AF37]">
                     {aspectRatioType === "avatar"
-                      ? "4:5 Paspor"
+                      ? "4:5 Kartu"
                       : aspectRatioType === "cover"
                       ? "16:9 Sampul"
                       : "1:1 Persegi"}

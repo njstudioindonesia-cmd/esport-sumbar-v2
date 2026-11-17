@@ -61,13 +61,13 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        window.location.href = "/dashboard";
+        window.location.href = "/me";
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) {
-        window.location.href = "/dashboard";
+        window.location.href = "/me";
       }
     });
 
@@ -115,7 +115,7 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
           if (res.needsConfirmation) {
             setNeedsEmailConfirmation(true);
           } else {
-            router.push("/me/profile/new");
+            router.push("/onboarding");
           }
         } else {
           setAuthError(res.error || "Gagal daftar");
@@ -129,7 +129,7 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
           } else if (res.role === "platform_admin") {
             router.push("/admin");
           } else {
-            router.push("/dashboard");
+            router.push("/me");
           }
         } else {
           setAuthError(res.error || "Email atau kata sandi keliru");
@@ -234,7 +234,7 @@ export function MobileAuthFlow({ initialMode = "login" }: MobileAuthFlowProps) {
               <p className="text-xs text-white/50 mb-6">
                 {mode === "login"
                   ? "Masukkan email akun Anda untuk melanjutkan."
-                  : "Mulai perjalanan paspor esport digital kamu."}
+                  : "Mulai perjalanan profil esport digital kamu."}
               </p>
               <h2 className="font-heading font-bold text-[34px] tracking-tight text-white mb-6">
                 Alamat Email

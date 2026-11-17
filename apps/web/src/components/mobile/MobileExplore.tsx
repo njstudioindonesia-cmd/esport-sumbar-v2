@@ -17,7 +17,7 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
-import { GALLERY_CARDS, MockCardVariant } from "@/data/mockCards";
+import { CardVariantItem } from "@/types/card";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { OFFICIAL_GAMES } from "@/data/games";
 import { MobileBottomBar } from "./MobileBottomBar";
@@ -37,7 +37,7 @@ export function MobileExplore() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [filterRegionSearch, setFilterRegionSearch] = useState("");
-  const [dbCards, setDbCards] = useState<MockCardVariant[] | null>(null);
+  const [dbCards, setDbCards] = useState<CardVariantItem[] | null>(null);
 
   React.useEffect(() => {
     async function loadLiveCards() {
@@ -221,7 +221,7 @@ export function MobileExplore() {
         {/* SEKSI "PER WILAYAH": 19 EMBLEM BULAT + TOMBOL PETA */}
         <div className="w-full flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+            <span className="text-xs font-mono uppercase tracking-wider text-white/50">
               19 Wilayah
             </span>
             <Link
@@ -490,7 +490,7 @@ export function MobileExplore() {
 
             {/* Riwayat & Saran Berupa Chip */}
             <div className="flex flex-col gap-3">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+              <span className="text-xs font-mono uppercase tracking-wider text-white/40">
                 Saran Pencarian
               </span>
               <div className="flex flex-wrap gap-2">
@@ -553,7 +553,7 @@ export function MobileExplore() {
               <div className="flex flex-col gap-4">
                 {/* 1. Game (Grid Logo / Tombol) */}
                 <div>
-                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block mb-2">
+                  <span className="text-xs font-mono text-white/40 uppercase tracking-wider block mb-2">
                     Game
                   </span>
                   <div className="grid grid-cols-2 gap-2">
@@ -581,7 +581,7 @@ export function MobileExplore() {
 
                 {/* 2. Rarity Tier (Chips) */}
                 <div>
-                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block mb-2">
+                  <span className="text-xs font-mono text-white/40 uppercase tracking-wider block mb-2">
                     Rarity
                   </span>
                   <div className="flex flex-wrap gap-2">
@@ -609,7 +609,7 @@ export function MobileExplore() {
 
                 {/* 3. Lencana Verifikasi (Chips) */}
                 <div>
-                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block mb-2">
+                  <span className="text-xs font-mono text-white/40 uppercase tracking-wider block mb-2">
                     Lencana
                   </span>
                   <div className="flex flex-wrap gap-2">

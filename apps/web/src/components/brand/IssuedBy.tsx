@@ -50,7 +50,7 @@ export function IssuedBy({
           />
         </div>
         <div className="flex flex-col leading-tight">
-          <span className="text-[8px] font-mono tracking-widest text-[#FF4D77] uppercase font-bold">
+          <span className="text-xs font-mono tracking-wider text-[#FF4D77] uppercase font-bold">
             Kartu Digital
           </span>
           <span className="text-[10px] font-heading font-black text-white tracking-wider uppercase">

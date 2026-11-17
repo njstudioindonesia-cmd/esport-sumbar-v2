@@ -89,7 +89,7 @@ export default function PrivacyPolicyPage() {
               Minimisasi Data yang Kami Kumpulkan
             </h2>
             <p className="mb-3 text-white/70">
-              Sesuai prinsip minimisasi data, sistem tidak mengumpulkan Nomor Induk Kependudukan (NIK), foto KTP/KIA, maupun Kartu Keluarga. Kami hanya memproses data yang esensial untuk penerbitan paspor digital:
+              Sesuai prinsip minimisasi data, sistem tidak mengumpulkan Nomor Induk Kependudukan (NIK), foto KTP/KIA, maupun Kartu Keluarga. Kami hanya memproses data yang esensial untuk penerbitan kartu digital:
             </p>
             <ul className="list-disc pl-5 space-y-2 text-white/60">
               <li>

@@ -117,7 +117,7 @@ export function AdminNavbar() {
             <BrandLogo variant="lockup" size="sm" withLink={false} />
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/10 border border-pink-500/30">
               <span className="w-2 h-2 rounded-full bg-pink-500 shadow-sm shadow-pink-500/50" />
-              <span className="text-[10px] font-mono tracking-widest text-pink-300 uppercase font-bold">
+              <span className="text-xs font-mono tracking-wider text-pink-300 uppercase font-bold">
                 PANEL ADMIN
               </span>
             </div>

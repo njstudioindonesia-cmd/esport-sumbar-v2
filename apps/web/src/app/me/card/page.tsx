@@ -1,15 +1,24 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getProfileByAccountId } from "@/lib/services/core/profile";
 
-import React from "react";
-import { UserShell } from "@/components/dashboard/DesktopUserShell";
-import { DesktopCardsView } from "@/components/dashboard/DesktopCardsView";
+/**
+ * Pengalihan Arsitektur W1: Profil Terpadu
+ * Mengalihkan /me/card langsung ke kartu pada profil publik pemilik.
+ */
+export default async function MyCardPage() {
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
 
-export default function MyCardPage() {
-  return (
-    <main className="min-h-screen w-full bg-[#07080C]">
-      <UserShell breadcrumb="Kartu Digital">
-        <DesktopCardsView />
-      </UserShell>
-    </main>
-  );
+  if (!authData?.user) {
+    redirect("/login?redirect=/me/card");
+  }
+
+  const profile = await getProfileByAccountId(authData.user.id);
+
+  if (!profile || !profile.slug) {
+    redirect("/onboarding");
+  }
+
+  redirect(`/${profile.entityType}/${profile.slug}`);
 }

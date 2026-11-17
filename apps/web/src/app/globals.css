@@ -1,68 +1,78 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Core Tokens (ESPORT SUMBAR) */
-  --bg-base: #03031A;
-  --surface-1: #0A0A2E;
-  --surface-2: #12123F;
-  --brand-navy: #00004F;
-  --brand-navy-dark: #000251;
-  --brand-pink: #FF1752;
-  --brand-pink-400: #FF4D77;
-  --brand-pink-600: #D90F43;
-  --brand-pink-glow: rgba(255, 23, 82, 0.35);
+  /* ==========================================================================
+     ESPORT SUMBAR V3 DESIGN TOKENS (Arah B - Matte Glass)
+     Satu sumber kebenaran warna resmi dari berkas logo.
+     ========================================================================== */
 
+  /* Tonal Surfaces */
+  --bg-base: #05051A;
+  --surface-1: #0C0C26;
+  --surface-2: #14143A;
+  --surface-3: #1D1D4A;
+
+  /* Dividers & Borders */
   --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.20);
+  --border-bold: rgba(255, 255, 255, 0.30);
 
-  /* Text 3-Tier Hierarchy */
+  /* Clean Monochrome Text Hierarchy (WCAG AA Compliant) */
   --text-primary: #FFFFFF;
-  --text-secondary: rgba(255, 255, 255, 0.62);
+  --text-secondary: rgba(255, 255, 255, 0.64);
   --text-muted: rgba(255, 255, 255, 0.40);
 
-  /* Functional Status Colors (Never used as mere decoration) */
-  --status-regional: #22C55E; /* Terverifikasi */
-  --status-verified: #D4AF37; /* Emas ONLY for Verified status & Elite tier */
-  --status-pending: #F5A524;
-  --status-error: #F04438;   /* Functional error, never brand pink */
+  /* Single Brand Pink Accent (from official Mark V-S) */
+  --brand-pink: #FF1752;
+  --brand-pink-hover: #E01246;
+  --brand-pink-subtle: rgba(255, 23, 82, 0.12);
+  --brand-pink-border: rgba(255, 23, 82, 0.35);
+
+  /* Status Gold (Strictly reserved for Verified badge and Elite tier) */
+  --verified-gold: #D4AF37;
+  --verified-gold-subtle: rgba(212, 175, 55, 0.12);
+  --verified-gold-border: rgba(212, 175, 55, 0.40);
+
+  /* Functional Semantics (Separated from Brand Pink) */
+  --status-regional: #2BB673;
+  --status-verified: #D4AF37;
+  --status-pending: #F2A33A;
+  --status-error: #F04438;
   --status-suspended: #6B7280;
 
-  /* Compatibility mappings */
+  /* Semantic Aliases */
+  --success: #2BB673;
+  --warning: #F2A33A;
+  --danger: #F04438;
+
+  /* Compatibility Mappings */
   --background: var(--bg-base);
   --surface: var(--surface-1);
   --surface-elevated: var(--surface-2);
   --border: var(--border-subtle);
   --foreground: var(--text-primary);
-
   --status-rejected: var(--status-error);
   --accent-gold: var(--status-verified);
-  --accent-gold-glow: rgba(212, 175, 55, 0.35);
 
+  /* Consistent Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
   --radius-card: 20px;
-  --radius-panel: 28px;
+  --radius-panel: 24px;
   --radius-pill: 9999px;
-  --radius-tcg: 18px;
+  --radius-tcg: 20px;
 
-  /* Liquid Glass 2026 Core Tokens (Bagian 4) - Dioptimalkan untuk rendering 60-120 FPS */
-  --glass-blur-thin: 8px;
-  --glass-blur-regular: 12px;
-  --glass-blur-thick: 20px;
-  --glass-saturate: 130%;
-  --glass-bg-thin: rgba(255, 255, 255, 0.05);
-  --glass-bg-regular: rgba(255, 255, 255, 0.08);
-  --glass-bg-thick: rgba(255, 255, 255, 0.12);
-  --glass-tint-pink: rgba(255, 23, 82, 0.16);
-  --glass-scrim: rgba(3, 3, 26, 0.45);
-  --glass-rim: linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08) 30%, rgba(255, 255, 255, 0.02) 70%, rgba(255, 255, 255, 0.28));
-  --glass-shadow: 0 8px 32px rgba(0, 0, 20, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+  /* Matte Glass (Strictly for scroll header and popover modals) */
+  --glass-blur-nav: 16px;
+  --glass-scrim: rgba(5, 5, 26, 0.80);
 
-  /* Motion Timing Tokens (Bagian 4 & 10) */
+  /* Motion Timing Tokens (200ms - 300ms easeOut) */
   --motion-instant: 100ms;
   --motion-fast: 180ms;
-  --motion-base: 280ms;
-  --motion-slow: 450ms;
-  --motion-cinematic: 700ms;
-  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --motion-base: 240ms;
+  --motion-slow: 320ms;
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme {
@@ -71,12 +81,13 @@
   --color-surface-elevated: var(--surface-elevated);
   --color-surface-1: var(--surface-1);
   --color-surface-2: var(--surface-2);
-  --color-brand-navy: var(--brand-navy);
+  --color-surface-3: var(--surface-3);
   --color-brand-pink: var(--brand-pink);
-  --color-brand-pink-400: var(--brand-pink-400);
-  --color-brand-pink-600: var(--brand-pink-600);
+  --color-brand-pink-hover: var(--brand-pink-hover);
+  --color-brand-pink-subtle: var(--brand-pink-subtle);
   --color-border: var(--border);
   --color-border-subtle: var(--border-subtle);
+  --color-border-focus: var(--border-focus);
   --color-foreground: var(--foreground);
   --color-text-muted: var(--text-muted);
   --color-text-secondary: var(--text-secondary);
@@ -87,12 +98,17 @@
   --color-status-rejected: var(--status-error);
   --color-status-error: var(--status-error);
   --color-status-suspended: var(--status-suspended);
-
-  /* Gold strictly for verified / elite */
   --color-gold: var(--status-verified);
 
-  --font-heading: var(--font-heading), "Saira Condensed", sans-serif;
-  --font-sans: var(--font-sans), "Inter", sans-serif;
+  /* Semantics */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  /* Official Typography Pairing */
+  --font-heading: var(--font-heading), "Barlow Condensed", sans-serif;
+  --font-display: var(--font-display), "Barlow Condensed", sans-serif;
+  --font-sans: var(--font-sans), "Plus Jakarta Sans", sans-serif;
 }
 
 body {
@@ -132,99 +148,27 @@ body {
   -webkit-transform: rotateY(180deg);
 }
 
-/* Custom Holographic & Shimmer Keyframes */
-@keyframes holoShimmer {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Natural Material Surfaces & Shadows (No cheap glowing neon) */
+.shadow-card {
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
 }
 
-@keyframes crystalGlow {
-  0%, 100% {
-    opacity: 0.6;
-    filter: drop-shadow(0 0 12px rgba(124, 58, 237, 0.45));
-  }
-  50% {
-    opacity: 0.9;
-    filter: drop-shadow(0 0 24px rgba(59, 130, 246, 0.65));
-  }
+.shadow-panel {
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.7);
 }
 
-@keyframes brandPulse {
-  0%, 100% {
-    opacity: 0.7;
-    filter: drop-shadow(0 0 10px rgba(255, 23, 82, 0.4));
-  }
-  50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 22px rgba(255, 23, 82, 0.7));
-  }
-}
-
-@keyframes brandBarSlide {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.animate-shimmer {
-  background-size: 200% 200%;
-  animation: holoShimmer 6s ease infinite;
-}
-
-.animate-crystal {
-  animation: crystalGlow 4s ease-in-out infinite;
-}
-
-.animate-brand-pulse {
-  animation: brandPulse 3s ease-in-out infinite;
-}
-
-.animate-brand-bar {
-  background-size: 200% 100%;
-  animation: brandBarSlide 4s linear infinite;
-}
-
-/* Diagonal Pattern for Cards and Brand Panels */
+/* Diagonal Texture for Physical Card Materials */
 .bg-brand-diagonal {
   background-image: repeating-linear-gradient(
     -45deg,
     rgba(255, 255, 255, 0.02),
     rgba(255, 255, 255, 0.02) 1px,
     transparent 1px,
-    transparent 10px
+    transparent 12px
   );
 }
 
-/* Subtle Brand Glow Utilities */
-.pink-glow {
-  box-shadow: 0 0 24px rgba(255, 23, 82, 0.35);
-}
-
-.pink-glow-sm {
-  box-shadow: 0 0 12px rgba(255, 23, 82, 0.25);
-}
-
-.gold-glow {
-  box-shadow: 0 0 24px rgba(212, 175, 55, 0.25);
-}
-
-/* Display Skew Utility for Large Hero Headings */
-.display-skew {
-  transform: skewX(-8deg);
-  display: inline-block;
-}
-
-/* Primary Brand Button (Pink with Slanted Right Edge) */
+/* Primary Brand Button (Pink) */
 .btn-brand-primary {
   display: inline-flex;
   align-items: center;
@@ -232,89 +176,58 @@ body {
   gap: 0.5rem;
   background-color: var(--brand-pink);
   color: #ffffff;
-  font-family: var(--font-heading);
+  font-family: var(--font-sans);
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  border-radius: var(--radius-sm);
   padding: 0.625rem 1.25rem;
-  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  min-height: 44px;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
+  border: none;
 }
 
 .btn-brand-primary:hover {
-  background-color: var(--brand-pink-400);
-  box-shadow: 0 0 20px rgba(255, 23, 82, 0.45);
+  background-color: var(--brand-pink-hover);
 }
 
 .btn-brand-primary:active {
-  background-color: var(--brand-pink-600);
   transform: translateY(1px);
 }
 
 .btn-brand-primary:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-/* Secondary Glass Brand Button */
+/* Secondary Matte Brand Button */
 .btn-brand-secondary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: rgba(10, 10, 46, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--surface-2);
+  border: 1px solid var(--border-subtle);
   color: #ffffff;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-family: var(--font-sans);
+  font-weight: 600;
   padding: 0.625rem 1.25rem;
-  border-radius: 12px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
 }
 
 .btn-brand-secondary:hover {
-  border-color: rgba(255, 23, 82, 0.35);
-  background: rgba(18, 18, 63, 0.85);
+  border-color: var(--border-focus);
+  background-color: var(--surface-3);
 }
 
 .btn-brand-secondary:active {
   transform: translateY(1px);
 }
 
-/* Luxury Dark Gradient Background Utility */
-.bg-brand-dark {
-  background-color: var(--bg-base);
-  background-image: radial-gradient(circle at 50% -10%, rgba(255, 23, 82, 0.07) 0%, rgba(3, 3, 26, 1) 60%);
-}
-
-/* Accessibility: prefers-reduced-motion overrides */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  
-  .animate-shimmer,
-  .animate-crystal,
-  .animate-brand-pulse,
-  .animate-brand-bar,
-  .animate-pulse {
-    animation: none !important;
-  }
-}
-
-/* Ensure mobile tap target size meets >= 44px on interactive controls */
+/* Mobile tap target >= 44px */
 @media (max-width: 640px) {
   button,
   a[role="button"],
@@ -325,7 +238,7 @@ body {
   }
 }
 
-/* Hide scrollbar utility for mobile chips and horizontal rails */
+/* Hide scrollbar utility */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -334,7 +247,7 @@ body {
   scrollbar-width: none;
 }
 
-/* iOS Safe Area Padding */
+/* iOS Safe Area */
 .pb-safe {
   padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
 }
@@ -342,158 +255,29 @@ body {
   padding-top: max(env(safe-area-inset-top, 16px), 16px);
 }
 
-/* ==========================================================================
-   LIQUID GLASS 2026 DESIGN SYSTEM UTILITIES (Bagian 4)
-   ========================================================================== */
-
-/* 1. Core Glass Materials (Hardware composited with translateZ for silky 60-120fps scrolling) */
-.glass-surface {
-  background: var(--glass-bg-regular);
-  backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
-  box-shadow: var(--glass-shadow);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transform: translateZ(0);
-  transition: background-color var(--motion-fast) var(--motion-ease-out),
-              border-color var(--motion-fast) var(--motion-ease-out),
-              box-shadow var(--motion-fast) var(--motion-ease-out),
-              transform var(--motion-fast) var(--motion-ease-out);
+/* Matte Glass Surfaces (Strictly for scroll header and popover overlays) */
+.glass-nav {
+  background: var(--glass-scrim);
+  backdrop-filter: blur(var(--glass-blur-nav));
+  -webkit-backdrop-filter: blur(var(--glass-blur-nav));
+  border-bottom: 1px solid var(--border-subtle);
 }
 
-.glass-thin {
-  background: var(--glass-bg-thin);
-  backdrop-filter: blur(var(--glass-blur-thin)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(var(--glass-saturate));
-  box-shadow: 0 4px 20px rgba(0, 0, 20, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transform: translateZ(0);
+.glass-modal {
+  background: rgba(5, 5, 26, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
 }
 
-.glass-thick {
-  background: var(--glass-bg-thick);
-  backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate));
-  box-shadow: 0 12px 48px rgba(0, 0, 20, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  transform: translateZ(0);
-}
-
-.glass-tinted {
-  background: var(--glass-tint-pink);
-  backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
-  -webkit-backdrop-filter: blur(var(--glass-blur-regular)) saturate(var(--glass-saturate));
-  box-shadow: 0 8px 32px rgba(255, 23, 82, 0.2);
-  border: 1px solid rgba(255, 23, 82, 0.35);
-  transform: translateZ(0);
-}
-
-/* Mobile device GPU fillrate optimization */
-@media (max-width: 768px) {
-  :root {
-    --glass-blur-thin: 4px;
-    --glass-blur-regular: 8px;
-    --glass-blur-thick: 12px;
-    --glass-saturate: 110%;
-  }
-}
-
-/* 2. Specular Pointer Tracker Highlight */
-.glass-specular {
-  background-image: radial-gradient(
-    420px circle at var(--mx, 50%) var(--my, 0%),
-    rgba(255, 255, 255, 0.16),
-    transparent 45%
-  );
-}
-
-/* 3. Contrast Scrim Layer (Protects WCAG AA >= 4.5:1 over busy scenes) */
-.glass-scrim {
-  background-color: var(--glass-scrim);
-}
-
-/* 4. Quiet Surface (For data-dense tables/forms: translucent without blur) */
-.quiet-surface {
-  background: rgba(10, 10, 36, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 16px rgba(0, 0, 20, 0.25);
-}
-
-/* 5. Adaptive Quality Modes (Penuh / Standar / Hemat) */
-[data-quality="standard"] {
-  --glass-blur-thin: 4px;
-  --glass-blur-regular: 8px;
-  --glass-blur-thick: 12px;
-  --glass-saturate: 110%;
-}
-
-[data-quality="eco"] .glass-surface,
-[data-quality="eco"] .glass-thin,
-[data-quality="eco"] .glass-thick,
-[data-quality="eco"] .glass-tinted {
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  background: rgba(14, 18, 42, 0.94) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 20, 0.3) !important;
-}
-
-[data-quality="eco"] .glass-specular {
-  background-image: none !important;
-}
-
-[data-quality="eco"] .animate-shimmer,
-[data-quality="eco"] .animate-crystal,
-[data-quality="eco"] .animate-brand-pulse,
-[data-quality="eco"] .animate-brand-bar,
-[data-quality="eco"] .animate-pulse {
-  animation: none !important;
-}
-
-[data-quality="standard"] .glass-specular {
-  background-image: radial-gradient(420px circle at 50% 0%, rgba(255, 255, 255, 0.12), transparent 45%) !important;
-}
-
-/* 6. Accessibility & Feature Fallbacks */
-@supports not (backdrop-filter: blur(1px)) {
-  .glass-surface,
-  .glass-thin,
-  .glass-thick,
-  .glass-tinted {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: rgba(14, 18, 42, 0.94);
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .glass-surface,
-  .glass-thin,
-  .glass-thick,
-  .glass-tinted {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background: rgba(10, 10, 36, 0.96) !important;
-  }
-}
-
-@media (prefers-contrast: more) {
-  .glass-surface,
-  .glass-thin,
-  .glass-thick,
-  .glass-tinted {
-    background: rgba(10, 10, 36, 0.98) !important;
-    border-color: rgba(255, 255, 255, 0.6) !important;
-  }
-}
-
-@media (forced-colors: active) {
-  .glass-surface,
-  .glass-thin,
-  .glass-thick,
-  .glass-tinted {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background: Canvas !important;
-    color: CanvasText !important;
-    border-color: ButtonBorder !important;
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

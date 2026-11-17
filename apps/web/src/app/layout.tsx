@@ -1,25 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Saira_Condensed, Inter } from "next/font/google";
+import { Barlow_Condensed, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SceneBackground } from "@/components/glass/SceneBackground";
 import { StagingDemoBanner } from "@/components/layout/StagingDemoBanner";
 
-const sairaCondensed = Saira_Condensed({
+const barlowCondensed = Barlow_Condensed({
   weight: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
   variable: "--font-heading",
   display: "swap",
 });
 
-const inter = Inter({
-  weight: ["300", "400", "500", "600", "700"],
+const plusJakartaSans = Plus_Jakarta_Sans({
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#03031A",
+  themeColor: "#05051A",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -101,7 +101,7 @@ const organizationJsonLd = {
   url: "https://esport-sumbar-v2.vercel.app",
   logo: "https://esport-sumbar-v2.vercel.app/brand/logo-lockup-navy.png",
   description:
-    "Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem esport Sumatera Barat oleh ESPORT SUMBAR™.",
+    "Platform data, identitas digital kartu atlet resmi (ESPORT ID), dan ekosistem esport Sumatera Barat oleh ESPORT SUMBAR™.",
   sameAs: [
     "https://instagram.com/esportsumbar",
     "https://youtube.com/@esportsumbar",
@@ -116,7 +116,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${sairaCondensed.variable} ${inter.variable} dark`}
+      className={`${barlowCondensed.variable} ${plusJakartaSans.variable} dark`}
     >
       <head>
         <script

@@ -1,0 +1,12 @@
+{
+  "extends": "@esport-sumbar/config/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@esport-sumbar/contracts": ["../contracts/src"],
+      "@esport-sumbar/lib": ["../lib/src"]
+    }
+  },
+  "include": ["src/**/*"]
+}

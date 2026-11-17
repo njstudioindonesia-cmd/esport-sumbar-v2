@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ChevronRight, UserCheck, Edit3 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { GlassSurface } from "@/components/glass/GlassSurface";
-import { GlassButton } from "@/components/glass/GlassButton";
 import { createClient } from "@/lib/supabase/client";
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
 import { PlayerProfileTemplate } from "./templates/PlayerProfileTemplate";
@@ -17,6 +16,7 @@ import { VenueProfileTemplate } from "./templates/VenueProfileTemplate";
 import { CampusProfileTemplate } from "./templates/CampusProfileTemplate";
 import { SchoolProfileTemplate } from "./templates/SchoolProfileTemplate";
 import { DemoBanner } from "@/components/ui/DemoBanner";
+import { OwnerControlBar } from "./OwnerControlBar";
 
 interface EntityProfileDispatcherProps {
   profile: UnifiedProfileDetail;
@@ -24,6 +24,9 @@ interface EntityProfileDispatcherProps {
 
 export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProps) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [previewAsPublic, setPreviewAsPublic] = useState(false);
+  const searchParams = useSearchParams();
+  const actionParam = searchParams.get("action") as "edit" | "verify" | "privacy" | "ecosystem" | null;
 
   useEffect(() => {
     const supabase = createClient();
@@ -60,11 +63,11 @@ export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProp
   const getEntityDirectoryLink = () => {
     switch (profile.entityType) {
       case "player":
-        return { href: "/players", label: "Atlet" };
+        return { href: "/players", label: "Pemain" };
       case "coach":
         return { href: "/coaches", label: "Pelatih" };
       case "team":
-        return { href: "/teams", label: "Tim" };
+        return { href: "/teams", label: "Klub" };
       case "community":
         return { href: "/communities", label: "Komunitas" };
       case "venue":
@@ -103,43 +106,14 @@ export function EntityProfileDispatcher({ profile }: EntityProfileDispatcherProp
         {/* Demo Data Banner jika data berstatus demo */}
         {profile.isDemo && <DemoBanner className="mb-6" />}
 
-        {/* Banner Penanda Pemilik Kartu */}
+        {/* Unified Profile Owner Control Bar (W1 Architecture) */}
         {isOwner && (
-          <GlassSurface
-            variant="elevated"
-            elevation="glass"
-            radius="2xl"
-            specular={true}
-            className="mb-6 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-[#FF1752]/40 shadow-lg shadow-[#FF1752]/10"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#FF1752]/20 border border-[#FF1752] flex items-center justify-center text-[#FF1752] shrink-0">
-                <UserCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <p className="text-xs font-heading font-black text-white uppercase tracking-wider">
-                    Ini Profil Anda
-                  </p>
-                  <span className="px-1.5 py-0.5 rounded bg-[#FF1752]/20 text-[9px] font-mono text-pink-300 font-bold">
-                    PEMILIK KARTU
-                  </span>
-                </div>
-                <p className="text-[11px] text-white/60 mt-0.5">
-                  Anda sedang melihat tampilan publik kartu paspor digital Anda.
-                </p>
-              </div>
-            </div>
-            <Link
-              href={`/me/profile/${profile.id}/edit`}
-              className="w-full sm:w-auto"
-            >
-              <GlassButton variant="primary" size="sm" className="w-full sm:w-auto text-xs font-heading font-black uppercase">
-                <Edit3 className="w-3.5 h-3.5 mr-1.5" />
-                <span>Edit Profil</span>
-              </GlassButton>
-            </Link>
-          </GlassSurface>
+          <OwnerControlBar
+            profile={profile}
+            previewAsPublic={previewAsPublic}
+            onTogglePreviewPublic={setPreviewAsPublic}
+            initialAction={actionParam}
+          />
         )}
 
         {/* Dynamic Entity Template Content */}

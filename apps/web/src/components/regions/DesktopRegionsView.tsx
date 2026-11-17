@@ -119,7 +119,7 @@ export function DesktopRegionsView() {
 
             {/* Top map bar */}
             <div className="relative z-10 flex items-center justify-between px-2 pt-1">
-              <span className="text-[10px] font-mono text-white/50 uppercase tracking-widest">
+              <span className="text-xs font-mono text-white/50 uppercase tracking-wider">
                 PETA INTERAKTIF SEBARAN
               </span>
               <span className="text-[10px] font-mono text-[#D4AF37]">

@@ -140,7 +140,7 @@ export function MobileOnboarding() {
                     <Sparkles className="w-8 h-8 text-[#FF1752]" />
                   </div>
                   <span className="font-heading font-black text-sm text-white uppercase mt-1">
-                    Paspor Atlet
+                    Kartu Atlet
                   </span>
                 </div>
                 <IssuedBy variant="badge" />

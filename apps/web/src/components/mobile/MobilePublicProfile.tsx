@@ -23,11 +23,11 @@ import {
   X,
   Edit3,
 } from "lucide-react";
-import { MockCardVariant } from "@/data/mockCards";
+import { CardVariantItem } from "@/types/card";
 import { EsportCard } from "@/components/card/EsportCard";
 
 interface MobilePublicProfileProps {
-  card: MockCardVariant;
+  card: CardVariantItem;
   isQrScan?: boolean;
   isOwner?: boolean;
 }
@@ -155,7 +155,7 @@ export function MobilePublicProfile({ card, isQrScan = false, isOwner = false }:
 
       {/* CENTER CONTENT */}
       <div className="px-5 flex flex-col items-center gap-4 pt-2">
-        {/* KARTU DIGITAL 3D PASPOR ATLET */}
+        {/* KARTU DIGITAL 3D KARTU ATLET */}
         <EsportCard
           type={card.type}
           rarity={card.rarity}

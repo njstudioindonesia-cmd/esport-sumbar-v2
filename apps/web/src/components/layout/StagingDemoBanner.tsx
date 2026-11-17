@@ -3,8 +3,11 @@ import { FlaskConical, AlertTriangle } from "lucide-react";
 
 export function StagingDemoBanner() {
   // Dinonaktifkan secara default pada rilis publik V3 (v3.0.0).
-  // Hanya aktif jika secara eksplisit diminta via env NEXT_PUBLIC_SHOW_STAGING_BANNER="true".
-  if (process.env.NEXT_PUBLIC_SHOW_STAGING_BANNER !== "true") {
+  // Hanya aktif jika secara eksplisit diminta via env NEXT_PUBLIC_SHOW_STAGING_BANNER="true" atau NEXT_PUBLIC_APP_ENV="staging".
+  if (
+    process.env.NEXT_PUBLIC_SHOW_STAGING_BANNER !== "true" &&
+    process.env.NEXT_PUBLIC_APP_ENV !== "staging"
+  ) {
     return null;
   }
 

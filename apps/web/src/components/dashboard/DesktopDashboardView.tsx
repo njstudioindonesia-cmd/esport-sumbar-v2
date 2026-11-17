@@ -244,9 +244,9 @@ export function DesktopDashboardView() {
                   <ShieldCheck className="w-7 h-7" />
                 </div>
                 <div>
-                  <h4 className="font-heading font-black text-white text-base">Belum Ada Kartu Paspor</h4>
+                  <h4 className="font-heading font-black text-white text-base">Belum Ada Kartu Identitas</h4>
                   <p className="text-xs text-white/50 max-w-xs mt-1">
-                    Buat paspor digital Anda untuk mendapatkan kartu identitas berstandar ESPORT SUMBAR.
+                    Buat kartu digital Anda untuk mendapatkan kartu identitas berstandar ESPORT SUMBAR.
                   </p>
                 </div>
                 <Link
@@ -271,7 +271,7 @@ export function DesktopDashboardView() {
                 <Sparkles className="w-6 h-6" />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold">
+                <span className="text-xs font-mono uppercase tracking-wider text-[#D4AF37] font-bold">
                   LANGKAH BERIKUT
                 </span>
                 <h3 className="text-base font-heading font-black text-white">
@@ -344,7 +344,7 @@ export function DesktopDashboardView() {
             {/* Status Verifikasi Ringkas */}
             <div className="p-6 rounded-3xl bg-[#0F1118]/80 border border-white/[0.08] flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+                <span className="text-xs font-mono uppercase tracking-wider text-white/40">
                   STATUS VERIFIKASI
                 </span>
                 <span className={`w-2 h-2 rounded-full ${isVerified ? "bg-emerald-400 animate-pulse" : "bg-amber-400"}`} />

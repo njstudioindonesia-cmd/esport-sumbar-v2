@@ -50,21 +50,31 @@ import {
   MOTION_EASINGS,
 } from "@/components/glass";
 import { mapVerificationToCard } from "@/types/card";
-import { GALLERY_CARDS } from "@/data/mockCards";
-import { MOCK_NEWS } from "@/data/mockNews";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { createClient } from "@/lib/supabase/client";
 import type { PlatformStats } from "@/lib/services/stats";
 import type { PublicArticle } from "@/lib/services/news";
 import type { UnifiedProfileDetail } from "@/lib/services/public-profiles";
+import type { Banner, ContentBlock } from "@esport-sumbar/contracts";
+import { AccessibleBannerSlider } from "@/components/banner/AccessibleBannerSlider";
 
 interface HomePageClientProps {
   stats: PlatformStats;
   articles: PublicArticle[];
   profiles: UnifiedProfileDetail[];
+  topBanners?: Banner[];
+  middleBanners?: Banner[];
+  heroBlock?: ContentBlock | null;
 }
 
-export function HomePageClient({ stats, articles, profiles }: HomePageClientProps) {
+export function HomePageClient({
+  stats,
+  articles,
+  profiles,
+  topBanners = [],
+  middleBanners = [],
+  heroBlock,
+}: HomePageClientProps) {
   const [productCardFlipped, setProductCardFlipped] = useState(false);
   const [liveArticles, setLiveArticles] = useState<PublicArticle[]>(articles);
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
@@ -110,7 +120,64 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
     return 0;
   });
 
-  const heroCards = sortedProfiles.length >= 3
+  const brandArchetypeCards = [
+    {
+      id: "archetype-player",
+      slug: "register",
+      type: "player" as const,
+      rarity: "elite" as const,
+      verification: "verified" as const,
+      data: {
+        slug: "register",
+        displayName: "Pemain Esport",
+        ign: "ATLET_SUMBAR",
+        role: "Atlet Terdaftar",
+        game: "Esport Sumbar",
+        region: { name: "Sumatera Barat", code: "SB" },
+        esportId: "ESB-SB-PL-100001",
+        badgeNumber: "ESP-SB-VER-2026-0001",
+        avatarUrl: undefined,
+      },
+    },
+    {
+      id: "archetype-team",
+      slug: "register",
+      type: "team" as const,
+      rarity: "master" as const,
+      verification: "verified" as const,
+      data: {
+        slug: "register",
+        displayName: "Klub Esport",
+        ign: "TIM_SUMBAR",
+        role: "Roster Tim",
+        game: "Esport Sumbar",
+        region: { name: "Sumatera Barat", code: "SB" },
+        esportId: "ESB-SB-TM-100001",
+        badgeNumber: "ESP-SB-VER-2026-0002",
+        avatarUrl: undefined,
+      },
+    },
+    {
+      id: "archetype-campus",
+      slug: "register",
+      type: "campus" as const,
+      rarity: "contender" as const,
+      verification: "verified" as const,
+      data: {
+        slug: "register",
+        displayName: "UKM Komunitas",
+        ign: "KOMUNITAS_SUMBAR",
+        role: "Divisi Kampus",
+        game: "Esport Sumbar",
+        region: { name: "Sumatera Barat", code: "SB" },
+        esportId: "ESB-SB-CP-100001",
+        badgeNumber: "ESP-SB-VER-2026-0003",
+        avatarUrl: undefined,
+      },
+    },
+  ];
+
+  const heroCards = sortedProfiles.length > 0
     ? sortedProfiles.slice(0, 3).map((p) => ({
         id: p.id,
         slug: p.slug,
@@ -129,13 +196,9 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
           avatarUrl: p.avatarUrl || undefined,
         },
       }))
-    : [
-        GALLERY_CARDS.find((c) => c.id === "pl-contender") || GALLERY_CARDS[1],
-        GALLERY_CARDS.find((c) => c.id === "pl-elite") || GALLERY_CARDS[2],
-        GALLERY_CARDS.find((c) => c.id === "tm-elite") || GALLERY_CARDS[10],
-      ];
+    : brandArchetypeCards;
 
-  // News bento articles (1 headline + sub articles)
+  // News bento articles (hanya dari database berita nyata)
   const headlineArticle = liveArticles.length > 0
     ? {
         id: liveArticles[0].id,
@@ -150,7 +213,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
         readTime: "3 min baca",
         imageUrl: liveArticles[0].coverImageUrl || "/images/news-placeholder.jpg",
       }
-    : (FLAGS.SHOW_DEMO_DATA ? (MOCK_NEWS.find((n) => n.isHeadline) || MOCK_NEWS[0]) : null);
+    : null;
 
   const subArticles = liveArticles.length > 1
     ? liveArticles.slice(1, 4).map((a) => ({
@@ -165,65 +228,29 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
         }),
         imageUrl: a.coverImageUrl || "/images/news-placeholder.jpg",
       }))
-    : (FLAGS.SHOW_DEMO_DATA && headlineArticle
-        ? MOCK_NEWS.filter((n) => n.id !== headlineArticle.id).slice(0, 3)
-        : []);
+    : [];
 
-  // Featured profiles for carousel/grid
-  const featuredCards = profiles.length > 0
-    ? profiles.map((p) => ({
-        id: p.id,
-        slug: p.slug,
-        type: p.entityType,
-        rarity: p.rarityTier,
-        verification: mapVerificationToCard(p.verificationStatus),
-        data: {
+  // Featured profiles for carousel/grid (Hanya tampilkan jika memenuhi ambang batas profil nyata terverifikasi)
+  const featuredCards =
+    profiles.length >= FLAGS.MIN_PROFILES_THRESHOLD
+      ? profiles.map((p) => ({
+          id: p.id,
           slug: p.slug,
-          displayName: p.displayName,
-          ign: p.ign || undefined,
-          role: p.roleName || "Athlete",
-          game: p.mainGameName || "Esport",
-          region: { name: p.regionName, code: p.regionCode },
-          esportId: p.esportId,
-          avatarUrl: p.avatarUrl || undefined,
-        },
-      }))
-    : GALLERY_CARDS.filter(
-        (c) => c.verification === "verified" || c.verification === "regional"
-      );
-
-  const workflowSteps = [
-    {
-      num: "01",
-      title: "Pilih 1 Bidang",
-      desc: "Satu akun terikat pada satu identitas bidang spesifik dalam ekosistem.",
-      badge: "Integritas 1 Akun",
-    },
-    {
-      num: "02",
-      title: "Terbitkan Kartu",
-      desc: "Dapatkan paspor digital ber-ESPORT ID unik dengan frame kelangkaan.",
-      badge: "Paspor Digital",
-    },
-    {
-      num: "03",
-      title: "Koneksi 7 Entitas",
-      desc: "Hubungkan profil ke klub, pelatih, komunitas, kampus, atau markas latihan.",
-      badge: "Relasi Tercatat",
-    },
-    {
-      num: "04",
-      title: "Verifikasi Standar",
-      desc: "Kurasi bukti identitas mandiri menghasilkan lencana standar ESP-SB-VER.",
-      badge: "Satu Tingkat",
-    },
-    {
-      num: "05",
-      title: "Tampil di Roster",
-      desc: "Masuk direktori publik terdaftar Sumatera Barat dan terdata di turnamen.",
-      badge: "Katalog Terbuka",
-    },
-  ];
+          type: p.entityType,
+          rarity: p.rarityTier,
+          verification: mapVerificationToCard(p.verificationStatus),
+          data: {
+            slug: p.slug,
+            displayName: p.displayName,
+            ign: p.ign || undefined,
+            role: p.roleName || "Athlete",
+            game: p.mainGameName || "Esport",
+            region: { name: p.regionName, code: p.regionCode },
+            esportId: p.esportId,
+            avatarUrl: p.avatarUrl || undefined,
+          },
+        }))
+      : [];
 
   const entityPillars = [
     { name: "Pemain", href: "/players", icon: Gamepad2, count: stats?.totalPlayers ?? 0, color: "text-rose-400" },
@@ -244,16 +271,33 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
       <main className="flex-1 flex flex-col items-center overflow-x-hidden">
         {/* ==================== 1. HERO SECTION (CINEMATIC ESPORTS ARENA VENUE) ==================== */}
         <section className="relative isolate w-full min-h-[calc(100vh-64px)] flex flex-col justify-center items-center overflow-hidden border-b border-white/[0.06]">
-          {/* 1A. High-Tech Esports Arena Background with Guaranteed Stacking */}
-          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-            {/* Real Tournament Arena Stage Background (Hardware accelerated without heavy CSS filter) */}
-            <Image
-              src="/images/esport-venue-hero.webp"
-              alt="Esport Sumbar Championship Arena Stage"
-              fill
-              priority
-              quality={75}
-              className="object-cover object-center scale-105 opacity-80 sm:opacity-85"
+          {/* 1A. High-Tech Esports Arena Background with Guaranteed Stacking (Pure Brand CSS/SVG, Zero ROG Watermark) */}
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none bg-[#07090E]">
+            {/* Cinematic Stadium Lighting & Mesh Atmosphere */}
+            <div
+              className="absolute inset-0 opacity-70 pointer-events-none"
+              style={{
+                backgroundImage: `
+                  radial-gradient(circle at 50% -10%, rgba(255, 23, 82, 0.32) 0%, transparent 65%),
+                  radial-gradient(circle at 15% 30%, rgba(0, 80, 220, 0.25) 0%, transparent 55%),
+                  radial-gradient(circle at 85% 30%, rgba(255, 23, 82, 0.20) 0%, transparent 55%),
+                  linear-gradient(to bottom, rgba(7, 9, 14, 0.1) 0%, rgba(7, 9, 14, 0.95) 100%)
+                `,
+              }}
+            />
+
+            {/* Futuristic Perspective Stage Grid Floor */}
+            <div
+              className="absolute inset-0 opacity-20 pointer-events-none"
+              style={{
+                backgroundImage: `
+                  linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px)
+                `,
+                backgroundSize: "60px 60px",
+                transform: "perspective(600px) rotateX(60deg) translateY(120px) scale(1.6)",
+                transformOrigin: "bottom center",
+              }}
             />
 
             {/* Seamless Top Fade into Fixed Navbar */}
@@ -262,7 +306,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
             {/* Seamless Bottom Fade into Statistics Section */}
             <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#07090E] via-[#07090E]/70 to-transparent" />
 
-            {/* Left Readability Scrim (Ensures headlines have crystal-clear contrast while arena remains vividly visible) */}
+            {/* Left Readability Scrim */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#07090E]/90 via-[#07090E]/40 to-transparent" />
 
             {/* Ambient Neon Glows matching Esport Sumbar Brand (Zero-blur GPU radial gradients) */}
@@ -325,8 +369,8 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               transition={{ ...MOTION_SPRINGS.fluid, delay: 0.15 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-heading font-black uppercase tracking-tight text-white leading-[1.05] mb-5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]"
             >
-              BANGUN NAMAMU DI{" "}
-              <span className="text-[#FF1752] display-skew inline-block drop-shadow-[0_0_25px_rgba(255,23,82,0.4)]">ARENA SUMBAR</span>
+              Identitas Resmi{" "}
+              <span className="text-[#FF1752] display-skew inline-block drop-shadow-[0_0_25px_rgba(255,23,82,0.4)]">Esport Sumbar</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -336,7 +380,7 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               transition={{ ...MOTION_SPRINGS.fluid, delay: 0.25 }}
               className="text-sm sm:text-base lg:text-lg text-white/80 leading-relaxed mb-8 max-w-xl drop-shadow-md"
             >
-              Pusat data olahraga elektronik, paspor digital ber-ESPORT ID, dan jaringan keterhubungan 7 entitas Sumatera Barat.
+              Satu kartu digital untuk pemain, tim, dan ekosistem kompetisi.
             </motion.p>
 
             {/* Action Buttons */}
@@ -349,37 +393,16 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               <Link href="/register" className="w-full sm:w-auto">
                 <GlassButton variant="primary" size="lg" className="w-full sm:w-auto text-sm font-heading font-black uppercase tracking-wider">
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Buat Paspor Kartu
+                  Buat Kartu
                 </GlassButton>
               </Link>
 
               <Link href="/explore" className="w-full sm:w-auto">
                 <GlassButton variant="secondary" size="lg" className="w-full sm:w-auto text-sm font-heading font-black uppercase tracking-wider">
                   <Compass className="w-4 h-4 mr-2 text-[#FF4D77]" />
-                  Jelajahi Roster
+                  Jelajahi
                 </GlassButton>
               </Link>
-            </motion.div>
-
-            {/* Trust Indicators */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ ...MOTION_SPRINGS.gentle, delay: 0.45 }}
-              className="mt-8 pt-6 border-t border-white/[0.08] w-full flex flex-wrap items-center justify-center lg:justify-start gap-5 text-xs text-white/60"
-            >
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Terhubung 19 Wilayah Sumbar</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-[#D4AF37]" />
-                <span>Verifikasi Standar Tunggal</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-sky-400" />
-                <span>1 Akun = 1 Profil Terdaftar</span>
-              </div>
             </motion.div>
           </motion.div>
 
@@ -448,105 +471,70 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
         </div>
       </section>
 
+        {/* ==================== BANNER ATAS (HOME TOP) ==================== */}
+        {topBanners && topBanners.length > 0 && (
+          <AccessibleBannerSlider
+            banners={topBanners}
+            autoPlayIntervalMs={6000}
+            className="my-3"
+            ariaLabel="Banner Pengumuman & Sponsor Teratas"
+          />
+        )}
+
         {/* ==================== 2. PLATFORM STATISTICS BAR ==================== */}
-        <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <ScrollReveal direction="up" threshold={0.1}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                  Profil Terdaftar
-                </span>
-                <GlassNumberCounter
-                  value={stats?.totalEntities ?? 0}
-                  numberClassName="text-3xl sm:text-4xl text-white"
-                />
-                <span className="text-[10px] font-mono text-rose-400 mt-1 block">7 Entitas Terhubung</span>
-              </GlassCard>
-
-              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                  Terverifikasi
-                </span>
-                <GlassNumberCounter
-                  value={stats?.verifiedCount ?? 0}
-                  numberClassName="text-3xl sm:text-4xl text-[#D4AF37]"
-                />
-                <span className="text-[10px] font-mono text-emerald-400 mt-1 block">Standar ESP-SB-VER</span>
-              </GlassCard>
-
-              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                  Wilayah Terjangkau
-                </span>
-                <GlassNumberCounter
-                  value={stats?.activeRegions ?? 0}
-                  numberClassName="text-3xl sm:text-4xl text-white"
-                />
-                <span className="text-[10px] font-mono text-sky-400 mt-1 block">Kota &amp; Kabupaten</span>
-              </GlassCard>
-
-              <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
-                <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
-                  Klub &amp; Tim Aktif
-                </span>
-                <GlassNumberCounter
-                  value={stats?.totalTeams ?? 0}
-                  numberClassName="text-3xl sm:text-4xl text-white"
-                />
-                <span className="text-[10px] font-mono text-amber-400 mt-1 block">Divisi Kompetitif</span>
-              </GlassCard>
-            </div>
-          </ScrollReveal>
-        </section>
-
-        {/* ==================== 3. CARA KERJA SISTEM V3 (5 LANGKAH) ==================== */}
-        <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-          <ScrollReveal direction="up" threshold={0.1}>
-            <div className="flex flex-col items-center text-center mb-10">
-              <span className="px-3 py-1 rounded-full bg-[#FF1752]/10 border border-[#FF1752]/30 text-pink-300 text-xs font-mono font-bold uppercase tracking-widest mb-3">
-                Protokol Platform
-              </span>
-              <h2 className="text-2xl sm:text-4xl font-heading font-black uppercase text-white tracking-tight">
-                Cara Kerja Sistem V3
-              </h2>
-              <p className="text-xs sm:text-sm text-white/60 max-w-xl mt-2 leading-relaxed">
-                Lima tahapan terstruktur dari penerbitan identitas hingga partisipasi turnamen terbuka.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-              {workflowSteps.map((step, idx) => (
-                <GlassCard
-                  key={idx}
-                  variant="standard"
-                  elevation="glass"
-                  radius="2xl"
-                  specular={true}
-                  className="p-5 flex flex-col justify-between group hover:border-[#FF1752]/40 transition-colors"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-2xl font-heading font-black text-[#FF1752] opacity-80 group-hover:opacity-100 transition-opacity">
-                        {step.num}
-                      </span>
-                      <span className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full bg-white/10 text-white/70">
-                        {step.badge}
-                      </span>
-                    </div>
-                    <h3 className="text-base font-heading font-black uppercase text-white mb-2">
-                      {step.title}
-                    </h3>
-                    <p className="text-xs text-white/60 leading-relaxed">
-                      {step.desc}
-                    </p>
-                  </div>
+        {stats && stats.totalEntities >= 3 && (
+          <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <ScrollReveal direction="up" threshold={0.1}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                  <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                    Profil Terdaftar
+                  </span>
+                  <GlassNumberCounter
+                    value={stats?.totalEntities ?? 0}
+                    numberClassName="text-3xl sm:text-4xl text-white"
+                  />
+                  <span className="text-[10px] font-mono text-rose-400 mt-1 block">7 Entitas Terhubung</span>
                 </GlassCard>
-              ))}
-            </div>
-          </ScrollReveal>
-        </section>
 
-        {/* ==================== 4. EKOSISTEM 7 BIDANG (VISUAL KETERHUBUNGAN) ==================== */}
+                <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                  <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                    Terverifikasi
+                  </span>
+                  <GlassNumberCounter
+                    value={stats?.verifiedCount ?? 0}
+                    numberClassName="text-3xl sm:text-4xl text-[#D4AF37]"
+                  />
+                  <span className="text-[10px] font-mono text-emerald-400 mt-1 block">Standar ESP-SB-VER</span>
+                </GlassCard>
+
+                <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                  <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                    Wilayah Terjangkau
+                  </span>
+                  <GlassNumberCounter
+                    value={stats?.activeRegions ?? 0}
+                    numberClassName="text-3xl sm:text-4xl text-white"
+                  />
+                  <span className="text-[10px] font-mono text-sky-400 mt-1 block">Kota &amp; Kabupaten</span>
+                </GlassCard>
+
+                <GlassCard variant="standard" elevation="glass" radius="2xl" className="p-5 text-center">
+                  <span className="text-xs font-mono text-white/50 uppercase tracking-wider block mb-1">
+                    Klub &amp; Tim Aktif
+                  </span>
+                  <GlassNumberCounter
+                    value={stats?.totalTeams ?? 0}
+                    numberClassName="text-3xl sm:text-4xl text-white"
+                  />
+                  <span className="text-[10px] font-mono text-amber-400 mt-1 block">Divisi Kompetitif</span>
+                </GlassCard>
+              </div>
+            </ScrollReveal>
+          </section>
+        )}
+
+        {/* ==================== 3. EKOSISTEM 7 BIDANG ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
           <ScrollReveal direction="up" threshold={0.1}>
             <GlassSurface
@@ -602,6 +590,16 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
           </GlassSurface>
         </ScrollReveal>
       </section>
+
+        {/* ==================== BANNER TENGAH (HOME MIDDLE) ==================== */}
+        {middleBanners && middleBanners.length > 0 && (
+          <AccessibleBannerSlider
+            banners={middleBanners}
+            autoPlayIntervalMs={7000}
+            className="my-4"
+            ariaLabel="Banner Sorotan Komunitas & Promosi Tengah"
+          />
+        )}
 
         {/* ==================== 5. BERITA & WARTA TERBARU ==================== */}
         {headlineArticle && (
@@ -728,65 +726,74 @@ export function HomePageClient({ stats, articles, profiles }: HomePageClientProp
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
-              {featuredCards.slice(0, 4).map((card, idx) => (
-                <div key={card.id || idx} className="w-full max-w-[280px] sm:max-w-[300px] flex flex-col items-center">
-                  <EsportCard
-                    type={card.type as any}
-                    rarity={card.rarity as any}
-                    verification={card.verification}
-                    data={card.data}
-                    size="mobile"
-                    interactive={true}
-                  />
-                  <Link
-                    href={`/${card.type || "player"}/${(card as any).slug || (card.data as any).slug || card.data.ign?.toLowerCase() || "profile"}`}
-                    className="mt-3 text-xs text-pink-400 hover:text-pink-300 flex items-center gap-1 font-mono transition-colors"
-                  >
-                    <span>Lihat Profil</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </Link>
+            {featuredCards.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
+                {featuredCards.slice(0, 4).map((card, idx) => (
+                  <div key={card.id || idx} className="w-full max-w-[280px] sm:max-w-[300px] flex flex-col items-center">
+                    <EsportCard
+                      type={card.type as any}
+                      rarity={card.rarity as any}
+                      verification={card.verification}
+                      data={card.data}
+                      size="mobile"
+                      interactive={true}
+                    />
+                    <Link
+                      href={`/${card.type || "player"}/${(card as any).slug || (card.data as any).slug || card.data.ign?.toLowerCase() || "profile"}`}
+                      className="mt-3 text-xs text-pink-400 hover:text-pink-300 flex items-center gap-1 font-mono transition-colors"
+                    >
+                      <span>Lihat Profil</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <GlassSurface
+                variant="subtle"
+                elevation="flat"
+                radius="2xl"
+                className="p-8 sm:p-12 text-center max-w-xl mx-auto flex flex-col items-center border-dashed border-white/10"
+              >
+                <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-pink-400 mb-4">
+                  <ShieldCheck className="w-6 h-6" />
                 </div>
-              ))}
-            </div>
+                <h3 className="text-lg font-heading font-black uppercase text-white mb-2">
+                  Belum Ada Roster Terverifikasi
+                </h3>
+                <p className="text-xs sm:text-sm text-white/60 mb-6 leading-relaxed max-w-md">
+                  Roster publik hanya menampilkan atlet dan entitas resmi Sumatera Barat yang telah terverifikasi. Daftarkan dan verifikasi profil Anda sekarang!
+                </p>
+                <Link href="/register">
+                  <GlassButton variant="primary" size="sm" className="font-mono text-xs uppercase tracking-wider">
+                    <span>Daftarkan Profil Sekarang</span>
+                    <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                  </GlassButton>
+                </Link>
+              </GlassSurface>
+            )}
           </ScrollReveal>
         </section>
 
-        {/* ==================== 7. HIGH-IMPACT CTA BANNER ==================== */}
+        {/* ==================== 6. CTA PENUTUP (1 KALIMAT + 1 TOMBOL) ==================== */}
         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <ScrollReveal direction="up" threshold={0.1}>
             <GlassSurface
               variant="prominent"
               elevation="overlay"
-              radius="3xl"
+              radius="2xl"
               specular={true}
-              className="p-8 sm:p-14 text-center relative overflow-hidden border-[#FF1752]/30"
+              className="p-8 sm:p-12 text-center relative overflow-hidden border-white/10"
             >
-              <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-                <span className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-pink-300 text-xs font-mono font-bold uppercase tracking-wider mb-4">
-                  Bergabung Sekarang
-                </span>
-                <h2 className="text-3xl sm:text-5xl font-heading font-black uppercase text-white tracking-tight leading-tight mb-4">
-                  Daftarkan Identitasmu di{" "}
-                  <span className="text-[#FF1752] display-skew inline-block">ESPORT SUMBAR™</span>
+              <div className="relative z-10 max-w-xl mx-auto flex flex-col items-center">
+                <h2 className="text-2xl sm:text-3xl font-heading font-black uppercase text-white tracking-tight mb-6">
+                  Mulai daftarkan profilmu di ekosistem resmi.
                 </h2>
-                <p className="text-sm sm:text-base text-white/70 leading-relaxed mb-8 max-w-xl">
-                  Satu akun terikat pada satu identitas bidang spesifik. Dapatkan kartu identitas digital, kode verifikasi tunggal, dan keterhubungan ekosistem se-Sumatera Barat.
-                </p>
-                <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                  <Link href="/register" className="w-full sm:w-auto">
-                    <GlassButton variant="primary" size="lg" className="w-full sm:w-auto font-heading font-black uppercase tracking-wider">
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      Mulai Pendaftaran
-                    </GlassButton>
-                  </Link>
-                  <Link href="/verification-standard" className="w-full sm:w-auto">
-                    <GlassButton variant="secondary" size="lg" className="w-full sm:w-auto font-heading font-black uppercase tracking-wider">
-                      <ShieldCheck className="w-4 h-4 mr-2 text-emerald-400" />
-                      Standar Verifikasi
-                    </GlassButton>
-                  </Link>
-                </div>
+                <Link href="/register">
+                  <GlassButton variant="primary" size="lg" className="font-heading font-bold uppercase tracking-wider">
+                    Daftar Sekarang
+                  </GlassButton>
+                </Link>
               </div>
             </GlassSurface>
           </ScrollReveal>

@@ -126,7 +126,7 @@ export function SharedProfileActions({ profile, isOwner = false }: SharedProfile
             </button>
 
             <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-wider mb-1">
-              PASPOR DIGITAL ESPORT SUMBAR
+              KARTU DIGITAL ESPORT SUMBAR
             </span>
             <h3 className="text-base font-heading font-black text-white mb-1">
               {profile.displayName}

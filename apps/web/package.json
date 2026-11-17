@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@esport-sumbar/contracts": "*",
+    "@esport-sumbar/design-tokens": "*",
+    "@esport-sumbar/domain": "*",
     "@esport-sumbar/lib": "*",
+    "@esport-sumbar/ui": "*",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
     "@types/sharp": "^0.31.1",

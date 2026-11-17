@@ -1,0 +1,12 @@
+{
+  "extends": "@esport-sumbar/config/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@esport-sumbar/design-tokens": ["../design-tokens/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}

@@ -29,13 +29,14 @@ import { StatusBadge } from "@/components/shared/StatusBadge";
 import { RarityTag } from "@/components/shared/RarityTag";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
 import { IssuedBy } from "@/components/brand";
-import { MockCardVariant, GALLERY_CARDS } from "@/data/mockCards";
+import { CardVariantItem } from "@/types/card";
 
 interface PublicProfileViewProps {
-  card: MockCardVariant;
+  card: CardVariantItem;
+  relatedProfiles?: CardVariantItem[];
 }
 
-export function PublicProfileView({ card }: PublicProfileViewProps) {
+export function PublicProfileView({ card, relatedProfiles = [] }: PublicProfileViewProps) {
   const [activeTab, setActiveTab] = useState<"summary" | "achievements" | "team">("summary");
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
@@ -45,11 +46,6 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
   const [reportSubmitted, setReportSubmitted] = useState(false);
 
   const { type, rarity, verification, data } = card;
-
-  // Related profiles (from same region or same game)
-  const relatedProfiles = GALLERY_CARDS.filter(
-    (c) => c.id !== card.id && (c.data.region.code === data.region.code || c.data.game === data.game)
-  ).slice(0, 4);
 
   const handleReportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -434,46 +430,48 @@ export function PublicProfileView({ card }: PublicProfileViewProps) {
         </div>
 
         {/* 4. RELATED PROFILES SECTION */}
-        <section className="pt-12 border-t border-white/[0.08]">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="font-heading font-bold text-base uppercase text-white tracking-wide">
-              Profil Terkait di {data.region.name}
-            </h3>
-            <Link
-              href="/explore"
-              className="text-xs font-heading font-bold text-[#D4AF37] hover:underline"
-            >
-              Lihat Semua →
-            </Link>
-          </div>
+        {relatedProfiles.length > 0 && (
+          <section className="pt-12 border-t border-white/[0.08]">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-heading font-bold text-base uppercase text-white tracking-wide">
+                Profil Terkait di {data.region.name}
+              </h3>
+              <Link
+                href="/explore"
+                className="text-xs font-heading font-bold text-[#D4AF37] hover:underline"
+              >
+                Lihat Semua →
+              </Link>
+            </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-            {relatedProfiles.map((rel) => {
-              const relSlug = (rel.data.ign || rel.data.displayName)
-                .toLowerCase()
-                .replace(/\s+/g, "-");
-              return (
-                <Link
-                  key={rel.id}
-                  href={`/player/${relSlug}`}
-                  className="group flex flex-col items-center hover:-translate-y-1.5 transition-transform"
-                >
-                  <EsportCard
-                    type={rel.type}
-                    rarity={rel.rarity}
-                    verification={rel.verification}
-                    data={rel.data}
-                    size="sm"
-                    interactive={false}
-                  />
-                  <span className="mt-2.5 text-xs font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors">
-                    {rel.data.ign || rel.data.displayName}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+              {relatedProfiles.map((rel) => {
+                const relSlug = (rel.data.ign || rel.data.displayName)
+                  .toLowerCase()
+                  .replace(/\s+/g, "-");
+                return (
+                  <Link
+                    key={rel.id}
+                    href={`/player/${relSlug}`}
+                    className="group flex flex-col items-center hover:-translate-y-1.5 transition-transform"
+                  >
+                    <EsportCard
+                      type={rel.type}
+                      rarity={rel.rarity}
+                      verification={rel.verification}
+                      data={rel.data}
+                      size="sm"
+                      interactive={false}
+                    />
+                    <span className="mt-2.5 text-xs font-heading font-bold text-white group-hover:text-[#D4AF37] transition-colors">
+                      {rel.data.ign || rel.data.displayName}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />

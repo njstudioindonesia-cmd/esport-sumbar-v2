@@ -284,7 +284,7 @@ export function DesktopVerificationView() {
         <div>
           <h2 className="text-lg font-heading font-black text-white">Belum Ada Profil Terdaftar</h2>
           <p className="text-xs text-white/50 max-w-sm mt-1">
-            Silakan buat profil digital atau kartu paspor terlebih dahulu sebelum mengajukan verifikasi keabsahan ESPORT SUMBAR.
+            Silakan buat profil digital atau kartu identitas terlebih dahulu sebelum mengajukan verifikasi keabsahan ESPORT SUMBAR.
           </p>
         </div>
         <Link href="/me/profile/new" className="px-5 py-2.5 rounded-xl bg-[#D4AF37] text-black font-heading font-black text-xs uppercase tracking-wider">

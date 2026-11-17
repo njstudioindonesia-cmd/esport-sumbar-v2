@@ -92,7 +92,7 @@ export function DesktopCardsView() {
   }, []);
 
   const handleDownload = (cardTitle: string) => {
-    showToast(`Kartu paspor ${cardTitle} beresolusi HD PNG berhasil disiapkan.`);
+    showToast(`Kartu kartu ${cardTitle} beresolusi HD PNG berhasil disiapkan.`);
   };
 
   return (
@@ -108,10 +108,10 @@ export function DesktopCardsView() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-heading font-black text-white tracking-tight">
-            Kartu Paspor Saya
+            Kartu Identitas Saya
           </h1>
           <p className="text-xs text-white/50 mt-1">
-            Kelola paspor esport digital kamu yang terdaftar di ESPORT SUMBAR.
+            Kelola profil esport digital kamu yang terdaftar di ESPORT SUMBAR.
           </p>
         </div>
 
@@ -149,9 +149,9 @@ export function DesktopCardsView() {
             <Layers className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Paspor</h3>
+            <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Identitas</h3>
             <p className="text-xs text-white/50 max-w-md mt-1 leading-relaxed">
-              Anda belum memiliki kartu paspor digital ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan ESPORT ID dan akses turnamen.
+              Anda belum memiliki kartu kartu digital ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan ESPORT ID dan akses turnamen.
             </p>
           </div>
           <Link
@@ -159,7 +159,7 @@ export function DesktopCardsView() {
             className="btn-brand-primary text-xs py-2.5 px-6 flex items-center gap-2 mt-2"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>Buat Kartu Paspor Pertama</span>
+            <span>Buat Kartu Identitas Pertama</span>
           </Link>
         </div>
       ) : (

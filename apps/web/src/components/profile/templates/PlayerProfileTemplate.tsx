@@ -51,7 +51,7 @@ export function PlayerProfileTemplate({ profile }: { profile: UnifiedProfileDeta
               <VerificationStatusBadge status={profile.verificationStatus} badgeNo={profile.verifiedBadgeNo} />
             </div>
 
-            {/* Avatar Foto Paspor Atlet 4:5 */}
+            {/* Avatar Foto Kartu Atlet 4:5 */}
             <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden border border-white/10 shadow-xl bg-black/40 my-2">
               {profile.avatarUrl ? (
                 <>
@@ -219,7 +219,7 @@ export function PlayerProfileTemplate({ profile }: { profile: UnifiedProfileDeta
                     <span className="font-semibold text-white">{attributes.year_started || "-"}</span>
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono text-white/40 block">Kelengkapan Paspor</span>
+                    <span className="text-[10px] font-mono text-white/40 block">Kelengkapan Kartu</span>
                     <span className="font-semibold text-[#D4AF37]">{profile.completenessScore}%</span>
                   </div>
                 </GlassCard>

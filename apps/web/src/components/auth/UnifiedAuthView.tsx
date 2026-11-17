@@ -23,7 +23,6 @@ import {
 } from "lucide-react";
 import { signInAction, signUpAction, resetPasswordAction } from "@/app/actions/auth";
 import { createClient } from "@/lib/supabase/client";
-import { GALLERY_CARDS } from "@/data/mockCards";
 import { GlassSurface } from "@/components/glass/GlassSurface";
 import { GlassCard } from "@/components/glass/GlassCard";
 import { GlassButton } from "@/components/glass/GlassButton";
@@ -202,7 +201,7 @@ export function UnifiedAuthView({ initialMode = "login" }: UnifiedAuthViewProps)
         if (res.success) {
           setAuthSuccess("Autentikasi berhasil! Mengalihkan...");
           setTimeout(() => {
-            window.location.href = "/dashboard";
+            window.location.href = "/me";
           }, 1000);
         } else {
           setAuthError(res.error || "Email atau kata sandi tidak cocok.");
@@ -215,7 +214,23 @@ export function UnifiedAuthView({ initialMode = "login" }: UnifiedAuthViewProps)
     }
   };
 
-  const showcaseCard = GALLERY_CARDS[0];
+  // Official archetype preview card (Zero fake people, official brand template)
+  const showcaseCard = {
+    id: "archetype-player",
+    type: "player" as const,
+    rarity: "elite" as const,
+    verification: "verified" as const,
+    data: {
+      displayName: "Atlet Esport Sumbar",
+      ign: "ATLET_SUMBAR",
+      role: "Atlet Terdaftar",
+      game: "Esport Sumbar",
+      region: { name: "Sumatera Barat", code: "SB" },
+      esportId: "ESB-SB-PL-100001",
+      badgeNumber: "ESP-SB-VER-2026-0001",
+      avatarUrl: undefined,
+    },
+  };
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8 select-none">
@@ -244,7 +259,7 @@ export function UnifiedAuthView({ initialMode = "login" }: UnifiedAuthViewProps)
             </Link>
             <GlassBadge variant="subtle" size="sm">
               <Sparkles className="w-3 h-3 text-[#D4AF37]" />
-              <span>PASPOR 2026</span>
+              <span>EDISI 2026</span>
             </GlassBadge>
           </div>
 
@@ -274,7 +289,7 @@ export function UnifiedAuthView({ initialMode = "login" }: UnifiedAuthViewProps)
               </div>
             </motion.div>
             <p className="text-[11px] font-mono text-white/40 mt-4 tracking-wider uppercase">
-              Paspor Atlet Digital Ranah Minang
+              Kartu Atlet Digital Ranah Minang
             </p>
           </div>
 
@@ -321,7 +336,7 @@ export function UnifiedAuthView({ initialMode = "login" }: UnifiedAuthViewProps)
                 </span>
               </Link>
               <GlassBadge variant="subtle" size="sm">
-                Paspor Digital
+                Kartu Digital
               </GlassBadge>
             </div>
 
@@ -362,11 +377,11 @@ export function UnifiedAuthView({ initialMode = "login" }: UnifiedAuthViewProps)
             {/* Header Text */}
             <div>
               <h1 className="text-xl sm:text-2xl font-heading font-black text-white uppercase tracking-tight">
-                {mode === "login" ? "Selamat Datang Kembali" : "Penerbitan Paspor Digital"}
+                {mode === "login" ? "Selamat Datang Kembali" : "Penerbitan Kartu Digital"}
               </h1>
               <p className="text-xs text-white/60 mt-1 leading-relaxed">
                 {mode === "login"
-                  ? "Masuk ke area paspor digital Anda untuk mengakses status verifikasi dan ekosistem."
+                  ? "Masuk ke area kartu digital Anda untuk mengakses status verifikasi dan ekosistem."
                   : "Daftarkan akun Anda satu kali untuk menerbitkan kartu digital dan terhubung ke 7 bidang ekosistem."}
               </p>
             </div>
@@ -513,7 +528,7 @@ export function UnifiedAuthView({ initialMode = "login" }: UnifiedAuthViewProps)
                     <span>Memproses...</span>
                   </span>
                 ) : mode === "login" ? (
-                  "Masuk ke Paspor"
+                  "Masuk ke Kartu"
                 ) : (
                   "Buat Akun Sekarang"
                 )}

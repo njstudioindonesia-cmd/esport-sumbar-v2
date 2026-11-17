@@ -35,7 +35,7 @@ import {
 import {
   VerificationQueueItem,
   ActivityLogItem,
-} from "@/data/mockAdminData";
+} from "@/types/admin";
 
 export type AdminRole = "region" | "province" | "platform";
 

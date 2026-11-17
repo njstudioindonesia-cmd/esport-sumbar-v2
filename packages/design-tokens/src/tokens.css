@@ -1,0 +1,53 @@
+/**
+ * ESPORT SUMBAR V3: Tokens CSS Custom Properties
+ * Sumber kebenaran variabel CSS untuk web, admin, dan seluruh modul frontend.
+ */
+
+:root {
+  /* Tonal Surfaces (Arah B - Matte Glass) */
+  --ink-base: #05051A;
+  --surface-1: #0C0C26;
+  --surface-2: #14143A;
+  --surface-3: #1D1D4A;
+
+  /* Dividers & Borders */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.20);
+  --border-bold: rgba(255, 255, 255, 0.30);
+
+  /* Clean Monochrome Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.64);
+  --text-muted: rgba(255, 255, 255, 0.40);
+
+  /* Single Brand Pink Accent (From official V-S Mark) */
+  --brand-pink: #FF1752;
+  --brand-pink-hover: #E01246;
+  --brand-pink-subtle: rgba(255, 23, 82, 0.12);
+  --brand-pink-border: rgba(255, 23, 82, 0.35);
+
+  /* Status Gold (Exclusively for Verified badge & Elite tier) */
+  --verified-gold: #D4AF37;
+  --verified-gold-subtle: rgba(212, 175, 55, 0.12);
+  --verified-gold-border: rgba(212, 175, 55, 0.40);
+
+  /* Functional Semantics */
+  --success: #2BB673;
+  --success-subtle: rgba(43, 182, 115, 0.12);
+  --warning: #F2A33A;
+  --warning-subtle: rgba(242, 163, 58, 0.12);
+  --danger: #F04438;
+  --danger-subtle: rgba(240, 68, 56, 0.12);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-card: 20px;
+  --radius-full: 9999px;
+
+  /* Motion */
+  --motion-fast: 180ms;
+  --motion-normal: 240ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}

@@ -80,7 +80,7 @@ export function BrandLogo({
 
       {variant === "lockup" && (
         <Image
-          src="/brand/logo-lockup-navy-cropped.png"
+          src="/brand/logo-lockup-white.png"
           alt="ESPORT SUMBAR Lockup"
           width={dimensions.lockupWidth}
           height={dimensions.lockupHeight}
@@ -106,15 +106,15 @@ export function BrandLogo({
                 ESPORT<span className="text-[#FF1752] ml-1">SUMBAR</span>
               </span>
               <span className="text-[7.5px] font-mono text-white/50 tracking-widest uppercase">
-                Pusat Data
+                Ranah Minang
               </span>
             </div>
           </div>
 
-          {/* Desktop/Tablet view (>= 640px): Lockup lengkap */}
+          {/* Desktop/Tablet view (>= 640px): Lockup transparan tanpa kotak navy */}
           <span className="hidden sm:block">
             <Image
-              src="/brand/logo-lockup-navy-cropped.png"
+              src="/brand/logo-lockup-white.png"
               alt="ESPORT SUMBAR"
               width={dimensions.lockupWidth}
               height={dimensions.lockupHeight}

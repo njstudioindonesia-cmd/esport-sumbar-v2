@@ -16,7 +16,7 @@ const FAQ_DATA: FaqItem[] = [
   {
     category: "Dasar & Akun",
     q: "Apa itu platform ESPORT SUMBAR?",
-    a: "ESPORT SUMBAR adalah entitas mandiri pengelola platform esports Sumatera Barat yang menyediakan paspor digital atlet, kartu identitas ekosistem 7 entitas, verifikasi data kompetitif, dan rekam jejak turnamen daerah.",
+    a: "ESPORT SUMBAR adalah entitas mandiri pengelola platform esports Sumatera Barat yang menyediakan kartu digital atlet, kartu identitas ekosistem 7 entitas, verifikasi data kompetitif, dan rekam jejak turnamen daerah.",
   },
   {
     category: "Dasar & Akun",
@@ -25,8 +25,8 @@ const FAQ_DATA: FaqItem[] = [
   },
   {
     category: "Kartu & Identitas",
-    q: "Bagaimana cara menerbitkan kartu paspor digital saya?",
-    a: "Setelah mendaftar dan mengonfirmasi email, Anda dapat menyelesaikan wizard penerbitan kartu (/me/profile/new). Anda akan memilih 1 bidang entitas, melengkapi atribut, mengunggah foto profil/logo, dan kartu langsung terbit dengan ESPORT ID unik.",
+    q: "Bagaimana cara menerbitkan kartu digital saya?",
+    a: "Setelah mendaftar dan mengonfirmasi email, Anda dapat menyelesaikan wizard penerbitan kartu (/onboarding). Anda akan memilih 1 bidang entitas, melengkapi atribut, mengunggah foto profil/logo, dan kartu langsung terbit dengan ESPORT ID unik.",
   },
   {
     category: "Kartu & Identitas",
@@ -36,7 +36,7 @@ const FAQ_DATA: FaqItem[] = [
   {
     category: "Verifikasi",
     q: "Bagaimana alur pengajuan verifikasi profil?",
-    a: "Masuk ke menu /me/verification, unggah dokumen bukti pendukung (tangkapan layar akun in-game & UID, SK tim, atau piagam juara), lalu kirim pengajuan. Tim kurator akan menelaah berkas Anda dalam 1–3 hari kerja.",
+    a: "Buka halaman profil Anda, klik tombol 'Verifikasi & Lencana' di bilah pemilik, unggah dokumen bukti pendukung (tangkapan layar akun in-game & UID, SK tim, atau piagam juara), lalu kirim pengajuan. Tim kurator akan menelaah berkas Anda dalam 1–3 hari kerja.",
   },
   {
     category: "Verifikasi",
@@ -46,7 +46,7 @@ const FAQ_DATA: FaqItem[] = [
   {
     category: "Ekosistem",
     q: "Bagaimana cara menghubungkan profil saya dengan Tim atau Sekolah?",
-    a: "Buka menu Ekosistem (/me/ecosystem atau /me/memberships), pilih tombol '+ Hubungkan Profil', pilih jenis hubungan yang diizinkan (misal: Roster Tim, Atlet Pelajar Binaan, atau Pelatih), dan kirim undangan ke entitas tujuan.",
+    a: "Buka tab Ekosistem langsung di halaman profil Anda, pilih tombol '+ Hubungkan Profil', tentukan jenis hubungan yang diizinkan (misal: Roster Tim, Atlet Pelajar Binaan, atau Pelatih), dan kirim undangan ke entitas tujuan.",
   },
   {
     category: "Privasi & Keamanan",
@@ -88,7 +88,7 @@ export default function FaqPage() {
             Pertanyaan yang Sering Diajukan
           </h1>
           <p className="text-sm sm:text-base text-white/70 max-w-xl leading-relaxed">
-            Temukan jawaban cepat seputar ESPORT ID, kartu paspor digital, aturan ekosistem, dan tata cara verifikasi.
+            Temukan jawaban cepat seputar ESPORT ID, kartu kartu digital, aturan ekosistem, dan tata cara verifikasi.
           </p>
 
           {/* Search Box */}

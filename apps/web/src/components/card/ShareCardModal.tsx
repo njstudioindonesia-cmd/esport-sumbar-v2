@@ -142,7 +142,7 @@ export function ShareCardModal({
               onClick={() => setFormat("story")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all ${
                 format === "story"
-                  ? "bg-[#FF1752] text-white shadow-md pink-glow-sm"
+                  ? "bg-[#FF1752] text-white shadow-md"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -155,7 +155,7 @@ export function ShareCardModal({
               onClick={() => setFormat("feed")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all ${
                 format === "feed"
-                  ? "bg-[#FF1752] text-white shadow-md pink-glow-sm"
+                  ? "bg-[#FF1752] text-white shadow-md"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -168,7 +168,7 @@ export function ShareCardModal({
               onClick={() => setFormat("card")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-heading font-bold uppercase tracking-wider transition-all ${
                 format === "card"
-                  ? "bg-[#FF1752] text-white shadow-md pink-glow-sm"
+                  ? "bg-[#FF1752] text-white shadow-md"
                   : "text-gray-400 hover:text-white"
               }`}
             >
@@ -220,7 +220,7 @@ export function ShareCardModal({
                       </span>
                     </div>
                     <span className="text-[8px] font-mono font-bold text-[#FF4D77] uppercase tracking-wider">
-                      PASPOR ATLET DIGITAL
+                      KARTU ATLET DIGITAL
                     </span>
                   </div>
                 </>

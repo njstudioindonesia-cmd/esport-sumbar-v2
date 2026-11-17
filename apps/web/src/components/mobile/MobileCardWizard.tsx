@@ -363,7 +363,7 @@ export function MobileCardWizard() {
           ))}
         </div>
 
-        <div className="text-[10px] font-mono tracking-widest text-white/40 uppercase">
+        <div className="text-xs font-mono tracking-wider text-white/40 uppercase">
           {rarityTier.toUpperCase()}
         </div>
       </div>
@@ -692,7 +692,7 @@ export function MobileCardWizard() {
                   Foto Profil
                 </div>
                 <p className="text-[11px] text-white/50 mb-3">
-                  Potong sesuai rasio paspor digital (WebP &le; 2 MB).
+                  Potong sesuai rasio kartu digital (WebP &le; 2 MB).
                 </p>
 
                 <div className="flex items-center gap-2 mb-3">
@@ -847,7 +847,7 @@ export function MobileCardWizard() {
               type="button"
               onClick={handleNext}
               disabled={isFinishing}
-              className="px-6 py-2.5 rounded-xl bg-[#D4AF37] text-[#07080C] text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 shadow-lg active:scale-95"
+              className="px-6 py-2.5 rounded-xl bg-[#FF1752] hover:bg-[#E01246] text-white text-xs font-heading font-black uppercase tracking-wider flex items-center gap-1.5 shadow-lg shadow-[#FF1752]/25 active:scale-95"
             >
               {isFinishing ? (
                 <span>Menerbitkan...</span>

@@ -162,7 +162,7 @@ export function MobileDashboardView() {
         {/* KARTU UTAMA 3D */}
         <div className="w-full p-4 rounded-2xl bg-[#0F1118]/80 border border-white/[0.08] shadow-xl flex flex-col items-center">
           <div className="w-full flex items-center justify-between mb-3 text-[10px] font-mono uppercase tracking-wider text-white/50">
-            <span>KARTU PASPOR DIGITAL</span>
+            <span>KARTU KARTU DIGITAL</span>
             <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-bold">
               {userCard ? userCard.rarity : "BELUM ADA"}
             </span>
@@ -232,9 +232,9 @@ export function MobileDashboardView() {
           ) : (
             <div className="py-8 flex flex-col items-center text-center gap-2">
               <ShieldCheck className="w-10 h-10 text-[#FF1752]" />
-              <h4 className="font-heading font-bold text-white text-sm">Belum Ada Kartu Paspor</h4>
+              <h4 className="font-heading font-bold text-white text-sm">Belum Ada Kartu Identitas</h4>
               <p className="text-[11px] text-white/50 max-w-xs">
-                Buat paspor digital Anda untuk mendapatkan kartu identitas berstandar ESPORT SUMBAR.
+                Buat kartu digital Anda untuk mendapatkan kartu identitas berstandar ESPORT SUMBAR.
               </p>
               <Link href="/me/profile/new" className="btn-brand-primary text-xs py-2 px-4 mt-2">
                 <span>Buat Kartu Baru</span>

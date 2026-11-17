@@ -97,7 +97,7 @@ const mockProfiles: UnifiedProfileDetail[] = [
 
 describe("Halaman Publik Liquid Glass V3 (Bagian 7)", () => {
   describe("7.1 Beranda (HomePageClient)", () => {
-    it("harus merender panggung sinematik liquid glass, headline ala brand, dan 5 langkah alur", () => {
+    it("harus merender panggung sinematik liquid glass, headline ala brand, dan ekosistem 7 bidang", () => {
       const html = renderToString(
         <HomePageClient
           stats={mockStats}
@@ -107,21 +107,12 @@ describe("Halaman Publik Liquid Glass V3 (Bagian 7)", () => {
       );
 
       // Headline
-      expect(html).toContain("BANGUN NAMAMU DI");
-      expect(html).toContain("ARENA SUMBAR");
+      expect(html).toContain("Identitas Resmi");
+      expect(html).toContain("Esport Sumbar");
 
-      // 5 Langkah Cara Kerja
-      expect(html).toContain("Cara Kerja Sistem V3");
-      expect(html).toContain("01");
-      expect(html).toContain("Pilih 1 Bidang");
-      expect(html).toContain("02");
-      expect(html).toContain("Terbitkan Kartu");
-      expect(html).toContain("03");
-      expect(html).toContain("Koneksi 7 Entitas");
-      expect(html).toContain("04");
-      expect(html).toContain("Verifikasi Standar");
-      expect(html).toContain("05");
-      expect(html).toContain("Tampil di Roster");
+      // Tombol Aksi Hero (Anggaran Kata Minimalis)
+      expect(html).toContain("Buat Kartu");
+      expect(html).toContain("Jelajahi");
 
       // Ekosistem 7 Bidang
       expect(html).toContain("Jaringan Ekosistem 7 Bidang");

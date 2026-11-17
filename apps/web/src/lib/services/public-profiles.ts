@@ -1,6 +1,5 @@
 import { createPublicServerClient } from "@/lib/supabase/server";
 import type { EntityType, RarityTier, VerificationStatus } from "@/lib/supabase/database.types";
-import { GALLERY_CARDS } from "@/data/mockCards";
 import { FLAGS } from "@/lib/config/flags";
 import { getPublicProfileRelations, type ActiveRelationItem } from "@/lib/services/relations";
 import { searchDirectory } from "@/lib/services/directory";
@@ -216,74 +215,11 @@ export async function getPublicProfileBySlug(
       };
     }
   } catch (err) {
-    console.warn("Database fetch warning (falling back to mock catalog):", err);
+    console.warn("Database fetch warning for profile slug:", err);
   }
 
-  // Fallback: cari dari katalog mockCards jika belum ada di database lokal dan mode demo aktif
-  if (!FLAGS.SHOW_DEMO_DATA) {
-    return null;
-  }
-
-  const mockCard = GALLERY_CARDS.find((c) => {
-    const slugName = (c.data.ign || c.data.displayName).toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    return slugName === slug || c.data.esportId.toLowerCase() === slug.toLowerCase();
-  });
-
-  if (!mockCard) return null;
-
-  return {
-    id: mockCard.id,
-    accountId: "00000000-0000-0000-0000-000000000001",
-    entityType: mockCard.type as EntityType,
-    esportId: mockCard.data.esportId,
-    slug: (mockCard.data.ign || mockCard.data.displayName).toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    displayName: mockCard.data.displayName,
-    ign: mockCard.data.ign,
-    regionId: "reg-pdg-01",
-    regionName: mockCard.data.region.name,
-    regionCode: mockCard.data.region.code,
-    regionType: "Kota",
-    mainGameId: "game-mlbb-01",
-    mainGameName: mockCard.data.game,
-    mainGameShort: mockCard.data.game.slice(0, 4).toUpperCase(),
-    roleName: mockCard.data.role,
-    avatarUrl: mockCard.data.avatarUrl || null,
-    coverUrl: undefined,
-    bio: (mockCard.data as any).bio || "Identitas terdaftar ESPORT SUMBAR.",
-    attributes: {
-      team_name: mockCard.data.team?.name || mockCard.data.teamName,
-      social_media: {
-        instagram: "@" + (mockCard.data.ign || "esport").toLowerCase(),
-      },
-    },
-    visibility: {
-      stats: true,
-      history: true,
-      achievements: true,
-      email: false,
-      phone: false,
-      realName: true,
-    },
-    verificationStatus: mockCard.verification as VerificationStatus,
-    verifiedAt: mockCard.verification === "verified" ? "2026-01-15T00:00:00Z" : null,
-    verifiedBadgeNo: mockCard.data.badgeNumber || null,
-    rarityTier: mockCard.rarity as RarityTier,
-    completenessScore: mockCard.rarity === "legend" ? 95 : mockCard.rarity === "elite" ? 85 : 70,
-    isDemo: true,
-    createdAt: "2026-01-01T00:00:00Z",
-    relations: [],
-    achievements: (mockCard.data.achievements || []).map((ach, idx) => ({
-      id: `ach-${idx}`,
-      title: ach.title,
-      eventName: ach.placement || ach.title,
-      placement: ach.placement || ach.title,
-      year: parseInt(ach.year, 10) || 2024,
-      level: "province",
-      isVerified: mockCard.verification === "verified",
-    })),
-    gallery: [],
-    isOwner: false,
-  };
+  // Profil tidak ditemukan di database: kembalikan null (tidak menggunakan data dummy fiktif)
+  return null;
 }
 
 export interface PublicProfilesQueryOptions {
@@ -492,63 +428,12 @@ export async function getPublicProfilesList(
     };
   }
 
-  // Fallback ke mock cards jika DB belum siap
-  let fallback = GALLERY_CARDS;
-  if (options?.entityType) {
-    fallback = fallback.filter((c) => c.type === options.entityType);
-  }
-  if (options?.regionCode) {
-    fallback = fallback.filter((c) => c.data.region.code === options.regionCode);
-  }
-  if (options?.search) {
-    const s = options.search.toLowerCase();
-    fallback = fallback.filter(
-      (c) =>
-        c.data.displayName.toLowerCase().includes(s) ||
-        (c.data.ign && c.data.ign.toLowerCase().includes(s)) ||
-        c.data.esportId.toLowerCase().includes(s)
-    );
-  }
-
-  const mappedFallback = fallback.map((c) => ({
-    id: c.id,
-    accountId: "00000000-0000-0000-0000-000000000001",
-    entityType: c.type as EntityType,
-    esportId: c.data.esportId,
-    slug: (c.data.ign || c.data.displayName).toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-    displayName: c.data.displayName,
-    ign: c.data.ign,
-    regionId: "reg-pdg-01",
-    regionName: c.data.region.name,
-    regionCode: c.data.region.code,
-    regionType: "Kota",
-    mainGameId: "game-mlbb-01",
-    mainGameName: c.data.game,
-    mainGameShort: c.data.game.slice(0, 4).toUpperCase(),
-    roleName: c.data.role,
-    avatarUrl: c.data.avatarUrl || null,
-    coverUrl: undefined,
-    bio: (c.data as any).bio || "Identitas terdaftar ESPORT SUMBAR.",
-    attributes: {
-      team_name: c.data.team?.name || c.data.teamName,
-    },
-    visibility: { stats: true, history: true, achievements: true },
-    verificationStatus: c.verification as VerificationStatus,
-    verifiedBadgeNo: c.data.badgeNumber || null,
-    rarityTier: c.rarity as RarityTier,
-    completenessScore: c.rarity === "legend" ? 95 : 75,
-    isDemo: true,
-    createdAt: "2026-01-01T00:00:00Z",
-  }));
-
-  const paged = mappedFallback.slice(offset, offset + limit);
-
   return {
-    profiles: paged,
-    total: mappedFallback.length,
+    profiles: [],
+    total: 0,
     page,
     limit,
-    totalPages: Math.ceil(mappedFallback.length / limit),
+    totalPages: 0,
   };
 }
 

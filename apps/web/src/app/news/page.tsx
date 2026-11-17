@@ -17,15 +17,30 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_NEWS, Article } from "@/data/mockNews";
 import { FLAGS } from "@/lib/config/flags";
 import { createClient } from "@/lib/supabase/client";
+
+export interface NewsCardItem {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string[];
+  category: string;
+  region: string;
+  author: string;
+  date: string;
+  readTime: string;
+  imageUrl: string;
+  coverImage?: string;
+  isHeadline?: boolean;
+}
 
 export default function NewsIndexPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedRegion, setSelectedRegion] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<NewsCardItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadNews = React.useCallback(async () => {
@@ -56,14 +71,13 @@ export default function NewsIndexPage() {
             }))
           );
         } else {
-          // Jika DB kosong, hanya tampilkan mock bila flag demo aktif
-          setArticles(FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS : []);
+          setArticles([]);
         }
       } else {
-        setArticles(FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS : []);
+        setArticles([]);
       }
     } catch {
-      setArticles(FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS : []);
+      setArticles([]);
     } finally {
       setIsLoading(false);
     }
@@ -93,9 +107,10 @@ export default function NewsIndexPage() {
   const categories = [
     { id: "all", label: "Semua Kategori" },
     { id: "Agenda Platform", label: "Agenda Platform" },
-    { id: "Turnamen Daerah", label: "Turnamen" },
-    { id: "Tata Kelola", label: "Tata Kelola" },
-    { id: "Prestasi Klub", label: "Prestasi" },
+    { id: "Turnamen Daerah", label: "Turnamen Daerah" },
+    { id: "Prestasi & Atlet", label: "Prestasi & Atlet" },
+    { id: "Komunitas & Klub", label: "Komunitas & Klub" },
+    { id: "Tata Kelola PBESI", label: "Tata Kelola PBESI" },
   ];
 
   const regions = [

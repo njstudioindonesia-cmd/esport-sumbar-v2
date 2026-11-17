@@ -11,6 +11,18 @@ export interface DynamicGameWithDetails extends GameCategory {
  * Mendukung fallback ke in-memory OFFICIAL_GAMES jika database offline/placeholder.
  */
 export async function getGamesCatalog(): Promise<DynamicGameWithDetails[]> {
+  const isTestOrPlaceholder =
+    process.env.NODE_ENV === "test" ||
+    (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
+
+  if (isTestOrPlaceholder) {
+    return OFFICIAL_GAMES.map((og) => ({
+      ...og,
+      rolesList: og.roles.map((r, i) => ({ id: `${og.id}-role-${i}`, roleName: r, description: null, sortOrder: i + 1 })),
+      ranksList: (og.ranks || []).map((rk, i) => ({ id: `${og.id}-rank-${i}`, tierName: rk, tierLevel: i + 1, sortOrder: i + 1 })),
+    }));
+  }
+
   try {
     const supabase = await createClient();
     const { data: games, error } = await supabase

@@ -148,7 +148,7 @@ export default async function GameDetailPage({ params }: GameDetailPageProps) {
               Mulai Karier Atlet di Cabang {game.shortName || game.name}
             </h3>
             <p className="text-xs text-white/60 mt-1">
-              Daftarkan kartu paspor digital Anda atau jelajahi atlet dan tim terdata di cabang ini.
+              Daftarkan kartu kartu digital Anda atau jelajahi atlet dan tim terdata di cabang ini.
             </p>
           </div>
 

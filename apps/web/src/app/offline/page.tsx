@@ -21,7 +21,7 @@ export default function OfflinePage() {
       {/* Header */}
       <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between pt-2">
         <BrandLogo variant="lockup" size="sm" withLink={true} />
-        <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+        <span className="text-xs font-mono uppercase tracking-wider text-white/40">
           Mode Luring (Offline)
         </span>
       </header>
@@ -52,7 +52,7 @@ export default function OfflinePage() {
           </button>
 
           <Link
-            href="/me/cards"
+            href="/me/card"
             className="w-full py-3 rounded-xl bg-white/[0.06] hover:bg-white/10 text-white font-mono text-xs flex items-center justify-center gap-2 transition-all border border-white/10"
           >
             <CreditCard className="w-3.5 h-3.5 text-[#D4AF37]" />

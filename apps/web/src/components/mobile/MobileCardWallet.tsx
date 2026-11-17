@@ -23,8 +23,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
-import { GALLERY_CARDS, MockCardVariant } from "@/data/mockCards";
-import { mapVerificationToCard } from "@/types/card";
+import { mapVerificationToCard, CardVariantItem } from "@/types/card";
 import { EsportCard } from "@/components/card/EsportCard";
 import { MobileBottomBar } from "./MobileBottomBar";
 
@@ -152,7 +151,7 @@ export function MobileCardWallet() {
       {/* TOP HEADER: JUDUL MAKS 2 KATA + INFO ICON + TOMBOL TAMBAH KARTU */}
       <div className="sticky top-0 z-30 px-5 pt-3 pb-2 bg-[#07080C]/80 backdrop-blur-xl flex items-center justify-between">
         <div>
-          <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block">
+          <span className="text-xs font-mono text-white/40 uppercase tracking-wider block">
             Dompet Digital
           </span>
           <h1 className="font-heading font-bold text-xl text-white">Kartu Saya</h1>
@@ -281,9 +280,9 @@ export function MobileCardWallet() {
         <Sparkles className="w-8 h-8" />
       </div>
       <div>
-        <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Paspor</h3>
+        <h3 className="font-heading font-black text-xl text-white">Belum Ada Kartu Identitas</h3>
         <p className="text-xs text-white/50 max-w-xs mt-1 leading-relaxed">
-          Anda belum memiliki kartu paspor digital ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan identitas esport Anda.
+          Anda belum memiliki kartu kartu digital ESPORT SUMBAR. Daftarkan identitas Anda sekarang untuk mendapatkan identitas esport Anda.
         </p>
       </div>
       <Link
@@ -332,7 +331,7 @@ export function MobileCardWallet() {
 
               {/* Satu Baris ESPORT ID (Font Mono) */}
               <div className="text-center">
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block">
+                <span className="text-xs font-mono text-white/40 uppercase tracking-wider block">
                   Identitas Terdaftar
                 </span>
                 <span className="font-mono font-bold text-base text-[#D4AF37] tracking-wider">
@@ -498,7 +497,7 @@ export function MobileCardWallet() {
 
               {/* Arti Lencana (4 Baris Ikon + 1 Kata) */}
               <div className="pt-2 border-t border-white/[0.08]">
-                <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block mb-2.5">
+                <span className="text-xs font-mono text-white/40 uppercase tracking-wider block mb-2.5">
                   Arti Lencana
                 </span>
                 <div className="grid grid-cols-2 gap-2">

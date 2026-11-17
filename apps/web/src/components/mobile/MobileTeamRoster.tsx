@@ -197,7 +197,7 @@ export function MobileTeamRoster() {
         {requests.length > 0 && (
           <div className="w-full flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+              <span className="text-xs font-mono uppercase tracking-wider text-white/50">
                 Permintaan Masuk
               </span>
               <span className="px-2 py-0.5 rounded-full bg-[#4C7DFF]/20 text-[#4C7DFF] text-[9px] font-mono font-bold">
@@ -262,7 +262,7 @@ export function MobileTeamRoster() {
         {/* ================================================================== */}
         <div className="w-full flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+            <span className="text-xs font-mono uppercase tracking-wider text-white/50">
               Anggota Aktif ({teamName})
             </span>
             <span className="text-[10px] font-mono text-[#D4AF37]">

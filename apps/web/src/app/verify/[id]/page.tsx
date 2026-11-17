@@ -64,7 +64,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
                   {isVerified ? <ShieldCheck className="w-7 h-7" /> : <AlertCircle className="w-7 h-7" />}
                 </div>
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-white/50 block">
+                  <span className="text-xs font-mono uppercase tracking-wider text-white/50 block">
                     Hasil Pindaian QR Verifikasi
                   </span>
                   <h1 className="text-xl sm:text-2xl font-heading font-black text-white uppercase">
@@ -150,7 +150,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
               {/* Action Buttons */}
               <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
                 <Link
-                  href={`/profile/${profile.slug}`}
+                  href={`/${profile.entityType}/${profile.slug}`}
                   className="w-full sm:w-auto"
                 >
                   <GlassButton variant="primary" size="md" className="w-full sm:w-auto text-xs font-heading font-black uppercase tracking-wider">

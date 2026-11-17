@@ -22,6 +22,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(maintenanceUrl);
   }
 
+  // 0B. Penanganan Pembatasan Pendaftaran (Registration Toggle - Keputusan W9/P11)
+  if (
+    process.env.NEXT_PUBLIC_ENABLE_REGISTRATION === "false" &&
+    path === "/register"
+  ) {
+    const closedUrl = new URL("/maintenance?reason=registration_paused", request.url);
+    return NextResponse.redirect(closedUrl);
+  }
+
   // 1. Penanganan Khusus Permintaan Preflight CORS untuk API (/api/*)
   if (path.startsWith("/api") && request.method === "OPTIONS") {
     return handleCorsPreflight(request);
@@ -42,6 +51,18 @@ export async function middleware(request: NextRequest) {
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+
+  // Proteksi Non-Produksi: Cegah pengindeksan mesin pencari pada domain Staging / Preview
+  const host = request.headers.get("host") || "";
+  const isNonProduction =
+    process.env.NEXT_PUBLIC_APP_ENV === "staging" ||
+    process.env.VERCEL_ENV === "preview" ||
+    host.includes("staging") ||
+    (host.includes("vercel.app") && !host.includes("esport-sumbar-v2.vercel.app"));
+
+  if (isNonProduction) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
 
   // Jika permintaan menuju endpoint API (/api/*), terapkan header CORS ketat
   if (path.startsWith("/api")) {
@@ -76,35 +97,23 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 3. Proteksi Rute Panel Admin UI (/admin/*): Wajib peran platform_admin
+  // 3. Pengalihan Rute Panel Admin UI (/admin/*) ke Deploy Terpisah (Section 6.4 - ADR 002)
   if (path.startsWith("/admin")) {
-    if (!user) {
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirectTo", path);
-      return NextResponse.redirect(loginUrl);
-    }
+    const adminBaseUrl =
+      process.env.NEXT_PUBLIC_ADMIN_URL ||
+      (request.nextUrl.hostname === "localhost"
+        ? "http://localhost:3001"
+        : request.nextUrl.hostname.includes("staging")
+        ? "https://admin-staging.esportsumbar.com"
+        : "https://admin.esportsumbar.com");
 
-    // Periksa peran akun di tabel accounts
-    const { data: account } = await supabase
-      .from("accounts")
-      .select("role, is_active")
-      .eq("id", user.id)
-      .single();
+    const subPath = path.replace(/^\/admin/, "") || "/";
+    const targetUrl = new URL(subPath, adminBaseUrl);
+    request.nextUrl.searchParams.forEach((val, key) => {
+      targetUrl.searchParams.set(key, val);
+    });
 
-    if (!account || !account.is_active || account.role !== "platform_admin") {
-      const dashboardUrl = new URL("/dashboard", request.url);
-      dashboardUrl.searchParams.set("error", "unauthorized_admin");
-      return NextResponse.redirect(dashboardUrl);
-    }
-
-    // 3b. Penegakan MFA (AAL2): Admin wajib menyelesaikan tantangan MFA jika terdaftar
-    const { data: aalData } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (aalData && aalData.nextLevel === "aal2" && aalData.currentLevel !== "aal2") {
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("mfa", "required");
-      loginUrl.searchParams.set("redirectTo", path);
-      return NextResponse.redirect(loginUrl);
-    }
+    return NextResponse.redirect(targetUrl, 301);
   }
 
   // 4. Proteksi Rute Member / Autentikasi Pengguna UI

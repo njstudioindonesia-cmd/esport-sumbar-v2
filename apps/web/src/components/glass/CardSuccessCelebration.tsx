@@ -76,7 +76,7 @@ export function CardSuccessCelebration({
 
       {/* Success Title */}
       <h3 className="text-xl sm:text-2xl font-heading font-black text-white tracking-tight relative z-10">
-        Kartu Paspor Berhasil Diterbitkan!
+        Kartu Identitas Berhasil Diterbitkan!
       </h3>
       <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-sm relative z-10">
         Identitas digital terdaftar di database ESPORT SUMBAR. Simpan ESPORT ID unik Anda untuk kebutuhan turnamen.
@@ -102,13 +102,13 @@ export function CardSuccessCelebration({
         </button>
       </div>
 
-      {/* Next Actions: Dashboard & Verification */}
+      {/* Next Actions: Lihat Profil & Verifikasi */}
       <div className="flex flex-wrap items-center justify-center gap-3 mt-6 relative z-10 w-full">
         <Link
-          href="/dashboard"
-          className="flex-1 min-w-[140px] px-5 py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#F5D77F] text-slate-950 text-xs font-heading font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg shadow-amber-950/20 hover:brightness-110 transition-all min-h-[44px]"
+          href="/me"
+          className="flex-1 min-w-[140px] px-5 py-3 rounded-2xl bg-[#FF1752] hover:bg-[#E01246] text-white text-xs font-heading font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg shadow-pink-950/20 transition-all min-h-[44px]"
         >
-          <span>Dashboard</span>
+          <span>Lihat Profil</span>
           <ChevronRight className="w-4 h-4" />
         </Link>
 

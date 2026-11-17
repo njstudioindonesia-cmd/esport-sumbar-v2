@@ -154,7 +154,7 @@ export function MobileVerificationTracker() {
         {/* ================================================================== */}
         <div className="w-full flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block">
+            <span className="text-xs font-mono text-white/40 uppercase tracking-wider block">
               Status Verifikasi
             </span>
             <h1 className="font-heading font-black text-3xl tracking-tight text-white mt-0.5">
@@ -284,7 +284,7 @@ export function MobileVerificationTracker() {
         {/* ================================================================== */}
         <div className="w-full flex flex-col gap-2.5">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+            <span className="text-xs font-mono uppercase tracking-wider text-white/50">
               Dokumen Pendukung
             </span>
             {/* Teks 1 Baris Kepatuhan Privasi: Ikon Gembok + "Hanya dilihat admin" */}

@@ -177,7 +177,7 @@ export function MobileProfileEditView({
 
         {/* Section 1: Identitas Utama */}
         <div className="p-4 rounded-2xl bg-[#0F1118] border border-white/[0.08] flex flex-col gap-4">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+          <span className="text-xs font-mono uppercase tracking-wider text-white/40">
             IDENTITAS DASAR
           </span>
 
@@ -214,7 +214,7 @@ export function MobileProfileEditView({
 
         {/* Section 2: Spesifikasi Khusus Bidang */}
         <div className="p-4 rounded-2xl bg-[#0F1118] border border-white/[0.08] flex flex-col gap-4">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+          <span className="text-xs font-mono uppercase tracking-wider text-white/40">
             SPESIFIKASI &amp; ATRIBUT BIDANG
           </span>
 

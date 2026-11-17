@@ -24,7 +24,6 @@ import {
   Layers,
   X,
 } from "lucide-react";
-import { GALLERY_CARDS } from "@/data/mockCards";
 import { MobileBottomBar } from "./MobileBottomBar";
 import { signOutAction } from "@/app/actions/auth";
 
@@ -40,7 +39,17 @@ interface NotificationItem {
   group: "Hari ini" | "Kemarin";
 }
 
-export function MobileProfileSettings() {
+interface MobileProfileSettingsProps {
+  displayName?: string;
+  esportId?: string;
+  avatarUrl?: string;
+}
+
+export function MobileProfileSettings({
+  displayName = "Pengguna Terdaftar",
+  esportId = "ESB-SB-PL-100001",
+  avatarUrl,
+}: MobileProfileSettingsProps) {
   const router = useRouter();
 
   // Active Sub-screen
@@ -91,8 +100,6 @@ export function MobileProfileSettings() {
   const [deleteStep, setDeleteStep] = useState<1 | 2>(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const heroCard = GALLERY_CARDS.find((c) => c.id === "pl-contender") || GALLERY_CARDS[1];
-
   const triggerHaptic = (ms = 10) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
       try {
@@ -140,7 +147,7 @@ export function MobileProfileSettings() {
             <ArrowLeft className="w-4 h-4" />
           </button>
         ) : (
-          <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
+          <span className="text-xs font-mono text-white/40 uppercase tracking-wider">
             Pengaturan Akun
           </span>
         )}
@@ -190,19 +197,23 @@ export function MobileProfileSettings() {
             >
               {/* Avatar Besar & Nama */}
               <div className="flex flex-col items-center mt-2">
-                <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-[0_0_28px_rgba(212,175,55,0.25)] p-0.5 bg-[#0F1118]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={heroCard.data.avatarUrl}
-                    alt="Avatar"
-                    className="w-full h-full object-cover rounded-full"
-                  />
+                <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-[0_0_28px_rgba(212,175,55,0.25)] p-0.5 bg-[#0F1118] flex items-center justify-center">
+                  {avatarUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={avatarUrl}
+                      alt="Avatar"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <User className="w-10 h-10 text-white/50" />
+                  )}
                 </div>
                 <h2 className="font-heading font-black text-xl text-white mt-3">
-                  Sutan Aim
+                  {displayName}
                 </h2>
                 <span className="text-xs font-mono font-bold text-[#D4AF37]">
-                  ESB-PDG-PL-000124
+                  {esportId}
                 </span>
               </div>
 
@@ -357,7 +368,7 @@ export function MobileProfileSettings() {
               className="w-full flex flex-col gap-4"
             >
               {/* Petunjuk Geser */}
-              <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest text-center">
+              <span className="text-xs font-mono text-white/40 uppercase tracking-wider text-center">
                 Geser notifikasi untuk mengarsipkan
               </span>
 
@@ -367,7 +378,7 @@ export function MobileProfileSettings() {
 
                 return (
                   <div key={grp} className="flex flex-col gap-2">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-white/50">
+                    <span className="text-xs font-mono uppercase tracking-wider text-white/50">
                       {grp}
                     </span>
 
@@ -447,20 +458,24 @@ export function MobileProfileSettings() {
               {/* Pratinjau Tampilan Publik yang Berubah Langsung */}
               <div className="w-full p-4 rounded-2xl bg-[#0F1118] border border-white/[0.08] flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest block">
+                  <span className="text-xs font-mono text-white/40 uppercase tracking-wider block">
                     Tampilan Publik
                   </span>
                   <div className="font-heading font-black text-sm text-white mt-0.5">
-                    {privacyToggles.namaAsli ? "Sutan Aim (Rian P.)" : "Sutan Aim"}
+                    {privacyToggles.namaAsli ? `${displayName} (Terverifikasi)` : displayName}
                   </div>
                   <div className="text-[10px] font-mono text-[#D4AF37]">
-                    {privacyToggles.riwayatTim ? "Singkarak Esports" : "Klub Privat"}
+                    {privacyToggles.riwayatTim ? "Klub Terdaftar" : "Klub Privat"}
                   </div>
                 </div>
 
-                <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={heroCard.data.avatarUrl} alt="Hero" className="w-full h-full object-cover" />
+                <div className="w-12 h-12 rounded-xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+                  {avatarUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={avatarUrl} alt="Hero" className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-6 h-6 text-white/40" />
+                  )}
                 </div>
               </div>
 

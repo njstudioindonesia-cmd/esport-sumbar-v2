@@ -1,15 +1,24 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getProfileByAccountId } from "@/lib/services/core/profile";
 
-import React from "react";
-import { UserShell } from "@/components/dashboard/DesktopUserShell";
-import { DesktopVerificationView } from "@/components/dashboard/DesktopVerificationView";
+/**
+ * Pengalihan Arsitektur W1: Profil Terpadu (In-Place Verification)
+ * Mengalihkan /me/verification langsung ke profil pemilik dengan parameter aksi ?action=verify.
+ */
+export default async function VerificationPage() {
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
 
-export default function VerificationPage() {
-  return (
-    <main className="min-h-screen w-full bg-[#07080C]">
-      <UserShell breadcrumb="Status Verifikasi">
-        <DesktopVerificationView />
-      </UserShell>
-    </main>
-  );
+  if (!authData?.user) {
+    redirect("/login?redirect=/me/verification");
+  }
+
+  const profile = await getProfileByAccountId(authData.user.id);
+
+  if (!profile || !profile.slug) {
+    redirect("/onboarding");
+  }
+
+  redirect(`/${profile.entityType}/${profile.slug}?action=verify`);
 }

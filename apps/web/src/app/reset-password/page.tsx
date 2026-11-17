@@ -85,7 +85,7 @@ export default function ResetPasswordPage() {
             ESPORT SUMBAR
           </span>
         </Link>
-        <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+        <span className="text-xs font-mono uppercase tracking-wider text-white/40">
           Ubah Kata Sandi
         </span>
       </header>
@@ -112,7 +112,7 @@ export default function ResetPasswordPage() {
                 </h1>
               </div>
               <p className="text-xs text-white/70 leading-relaxed max-w-sm">
-                Kata sandi akun Anda telah diperbarui. Silakan masuk kembali menggunakan kata sandi baru Anda untuk melanjutkan ke paspor digital.
+                Kata sandi akun Anda telah diperbarui. Silakan masuk kembali menggunakan kata sandi baru Anda untuk melanjutkan ke kartu digital.
               </p>
               <div className="pt-2">
                 <Link href="/login">
@@ -133,7 +133,7 @@ export default function ResetPasswordPage() {
                   Atur Kata Sandi Baru
                 </h1>
                 <p className="text-xs text-white/60 mt-1.5 leading-relaxed">
-                  Buat kata sandi baru yang kuat untuk melindungi akun dan paspor digital Anda.
+                  Buat kata sandi baru yang kuat untuk melindungi akun dan kartu digital Anda.
                 </p>
               </div>
 

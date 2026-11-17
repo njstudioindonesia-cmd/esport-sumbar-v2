@@ -23,6 +23,9 @@ const IGNORED_DIRS = new Set([
   ".git",
   "dist",
   ".turbo",
+  "build",
+  ".dart_tool",
+  ".gradle",
 ]);
 
 function scanFile(filePath, leaks = []) {
@@ -33,7 +36,10 @@ function scanFile(filePath, leaks = []) {
     filePath.endsWith(".jpg") ||
     filePath.endsWith(".svg") ||
     filePath.endsWith(".lock") ||
-    filePath.endsWith(".log")
+    filePath.endsWith(".log") ||
+    filePath.endsWith(".dill") ||
+    filePath.endsWith(".bin") ||
+    filePath.endsWith(".jar")
   ) {
     return leaks;
   }

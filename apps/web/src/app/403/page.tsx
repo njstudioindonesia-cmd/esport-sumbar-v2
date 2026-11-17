@@ -19,7 +19,7 @@ export default function ForbiddenPage() {
       {/* Header */}
       <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between pt-2">
         <BrandLogo variant="lockup" size="sm" withLink={true} />
-        <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400">
+        <span className="text-xs font-mono uppercase tracking-wider text-amber-400">
           Galat 403
         </span>
       </header>
@@ -44,11 +44,11 @@ export default function ForbiddenPage() {
 
         <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
           <Link
-            href="/dashboard"
+            href="/me"
             className="w-full py-3 rounded-xl bg-white/[0.06] hover:bg-white/10 text-white font-mono text-xs flex items-center justify-center gap-2 transition-all border border-white/10"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Ke Dashboard Saya</span>
+            <span>Ke Profil Saya</span>
           </Link>
 
           <Link

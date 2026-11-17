@@ -36,7 +36,7 @@ interface DesktopUserShellProps {
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Ringkasan", icon: LayoutDashboard },
-  { href: "/me", label: "Paspor Saya", icon: User },
+  { href: "/me", label: "Kartu Saya", icon: User },
   { href: "/me/edit", label: "Edit Profil", icon: Edit3 },
   { href: "/me/card", label: "Kartu Digital", icon: CreditCard },
   { href: "/me/verification", label: "Verifikasi", icon: ShieldCheck },
@@ -141,8 +141,8 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                 <span className="font-heading font-black text-xs tracking-wider text-white group-hover:text-[#D4AF37] transition-colors">
                   ESPORT SUMBAR
                 </span>
-                <span className="text-[9px] font-mono text-white/40 tracking-widest uppercase">
-                  PASPOR DIGITAL
+                <span className="text-xs font-mono text-white/40 tracking-wider uppercase">
+                  KARTU DIGITAL
                 </span>
               </div>
             )}
@@ -231,16 +231,16 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
                     {userSession?.role === "platform_admin"
                       ? "ADMIN PLATFORM"
                       : userSession?.entityType === "team"
-                      ? "PASPOR TIM"
+                      ? "KARTU TIM"
                       : userSession?.entityType === "coach"
-                      ? "PASPOR PELATIH"
+                      ? "KARTU PELATIH"
                       : userSession?.entityType === "school" || userSession?.entityType === "campus"
                       ? "AKADEMIK"
                       : userSession?.entityType === "community"
                       ? "KOMUNITAS"
                       : userSession?.entityType === "venue"
                       ? "VENUE"
-                      : "PASPOR ATLET"}
+                      : "KARTU ATLET"}
                   </span>
                 </div>
               )}
@@ -293,7 +293,7 @@ export function DesktopUserShell({ children, breadcrumb }: DesktopUserShellProps
             <div className="hidden sm:flex items-center gap-2 text-xs font-mono">
               <span className="text-white/40">Area Pengguna</span>
               <span className="text-white/20">/</span>
-              <span className="text-white font-semibold">{breadcrumb || "Paspor"}</span>
+              <span className="text-white font-semibold">{breadcrumb || "Kartu"}</span>
             </div>
           </div>
 

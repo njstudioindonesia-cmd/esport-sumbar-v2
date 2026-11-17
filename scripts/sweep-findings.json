@@ -1,1 +1,850 @@
-[]
+[
+  {
+    "file": "apps\\web\\src\\app\\api\\revalidate\\route.ts",
+    "line": 28,
+    "rule": "KLAIM_SAH",
+    "matches": [
+      "sah"
+    ],
+    "snippet": "{ success: false, message: verification.reason || \"Tanda tangan HMAC tidak sah\" },"
+  },
+  {
+    "file": "apps\\web\\src\\app\\dashboard\\page.tsx",
+    "line": 7,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "* Mengalihkan /dashboard langsung ke halaman profil publik pemilik resmi."
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 48,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "// 7 Bidang Resmi (Section 3.6: satu kata + satu ikon)"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 354,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Rumah resmi ekosistem olahraga elektronik 19 Kota dan Kabupaten Sumatera Barat."
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 448,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "Identitas Resmi Olahraga Elektronik"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 514,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Official"
+    ],
+    "snippet": "{/* Central Graphic Silhouette (Official V-S Mark, No Fake Stock Photo) */}"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 519,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "RESMI"
+    ],
+    "snippet": "<span className=\"text-xs font-mono text-white/40\">KARTU ATLET RESMI</span>"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 548,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "aria-label=\"Pengumuman dan Banner Resmi\""
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 603,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "<p className=\"text-xs text-white/50\">Tujuh pilar terhubung dalam satu tata kelola resmi.</p>"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 648,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Sistem identitas digital baru saja diluncurkan. Daftarkan diri Anda atau klub Anda untuk mendapatkan"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\explorations\\page.tsx",
+    "line": 861,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Satu akun mewakili satu peran resmi dalam ekosistem."
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\page.tsx",
+    "line": 79,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "subtitle: \"Kejuaraan resmi antar-kabupaten/kota se-Sumatera Barat.\","
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\page.tsx",
+    "line": 81,
+    "rule": "DISPORA_TERM",
+    "matches": [
+      "Dispora"
+    ],
+    "snippet": "sponsorName: \"Dispora Sumbar\","
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\page.tsx",
+    "line": 90,
+    "rule": "PBESI_TERM",
+    "matches": [
+      "PBESI"
+    ],
+    "snippet": "sponsorName: \"PBESI Sumbar\","
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\page.tsx",
+    "line": 170,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "RESMI"
+    ],
+    "snippet": "{/* 1. PALET WARNA & TOKEN RESMI */}"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\page.tsx",
+    "line": 251,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "placeholder=\"Masukkan IGN resmi...\""
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\page.tsx",
+    "line": 309,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "<span className=\"text-xs font-semibold text-white/70 block mb-2\">Lencana Status Verifikasi Resmi:</s"
+  },
+  {
+    "file": "apps\\web\\src\\app\\design-system\\page.tsx",
+    "line": 411,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "title=\"Konfirmasi Tindakan Resmi\""
+  },
+  {
+    "file": "apps\\web\\src\\app\\globals.css",
+    "line": 6,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Satu sumber kebenaran warna resmi dari berkas logo."
+  },
+  {
+    "file": "apps\\web\\src\\app\\globals.css",
+    "line": 25,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "official"
+    ],
+    "snippet": "/* Single Brand Pink Accent (from official Mark V-S) */"
+  },
+  {
+    "file": "apps\\web\\src\\app\\globals.css",
+    "line": 108,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Official"
+    ],
+    "snippet": "/* Official Typography Pairing */"
+  },
+  {
+    "file": "apps\\web\\src\\app\\layout.tsx",
+    "line": 104,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "\"Platform data, identitas digital kartu atlet resmi (ESPORT ID), dan ekosistem esport Sumatera Barat"
+  },
+  {
+    "file": "apps\\web\\src\\app\\me\\page.tsx",
+    "line": 7,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "* Mengalihkan /me langsung ke profil publik pemilik resmi."
+  },
+  {
+    "file": "apps\\web\\src\\app\\news\\page.tsx",
+    "line": 113,
+    "rule": "PBESI_TERM",
+    "matches": [
+      "PBESI"
+    ],
+    "snippet": "{ id: \"Tata Kelola PBESI\", label: \"Tata Kelola PBESI\" },"
+  },
+  {
+    "file": "apps\\web\\src\\app\\page.tsx",
+    "line": 12,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "\"Platform data, identitas digital kartu atlet resmi (ESPORT ID), dan ekosistem turnamen esport Sumat"
+  },
+  {
+    "file": "apps\\web\\src\\components\\auth\\DesktopAuthView.tsx",
+    "line": 215,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Official",
+      "official"
+    ],
+    "snippet": "// Official archetype preview card (Zero fake people, official brand template)"
+  },
+  {
+    "file": "apps\\web\\src\\components\\auth\\UnifiedAuthView.tsx",
+    "line": 217,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Official",
+      "official"
+    ],
+    "snippet": "// Official archetype preview card (Zero fake people, official brand template)"
+  },
+  {
+    "file": "apps\\web\\src\\components\\banner\\AccessibleBannerSlider.tsx",
+    "line": 20,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "ariaLabel = \"Banner Promosi & Pengumuman Resmi\","
+  },
+  {
+    "file": "apps\\web\\src\\components\\home\\HomePageClient.tsx",
+    "line": 372,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "Identitas Resmi{\" \"}"
+  },
+  {
+    "file": "apps\\web\\src\\components\\home\\HomePageClient.tsx",
+    "line": 765,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Roster publik hanya menampilkan atlet dan entitas resmi Sumatera Barat yang telah terverifikasi. Daf"
+  },
+  {
+    "file": "apps\\web\\src\\components\\home\\HomePageClient.tsx",
+    "line": 790,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Mulai daftarkan profilmu di ekosistem resmi."
+  },
+  {
+    "file": "apps\\web\\src\\components\\layout\\UserProfileDropdown.tsx",
+    "line": 240,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "<span>Status Verifikasi Resmi</span>"
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\ProfileEditDrawer.tsx",
+    "line": 134,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "placeholder=\"Nama lengkap resmi...\""
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\ProfileEditDrawer.tsx",
+    "line": 145,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "placeholder=\"Nickname resmi...\""
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\VerificationDrawer.tsx",
+    "line": 108,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "Status Verifikasi Resmi"
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\VerificationDrawer.tsx",
+    "line": 146,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Kartu dan identitas resmi Anda telah melalui verifikasi berkas dan terafiliasi resmi"
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\VerificationDrawer.tsx",
+    "line": 162,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "Dapatkan lencana emas resmi dan legitimasi kejuaraan dengan mengunggah bukti kepemilikan"
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\VerificationDrawer.tsx",
+    "line": 163,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "akun game resmi dan identitas diri."
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\VerificationDrawer.tsx",
+    "line": 173,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "{isRevision ? \"Unggah Perbaikan Berkas\" : \"Ajukan Verifikasi Resmi\"}"
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\drawers\\VerificationDrawer.tsx",
+    "line": 222,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "placeholder=\"Tuliskan informasi pendukung atau riwayat turnamen resmi...\""
+  },
+  {
+    "file": "apps\\web\\src\\components\\profile\\OwnerControlBar.tsx",
+    "line": 87,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "RESMI"
+    ],
+    "snippet": "PEMILIK RESMI"
+  },
+  {
+    "file": "apps\\web\\src\\data\\mockNews.ts",
+    "line": 6,
+    "rule": "PBESI_TERM",
+    "matches": [
+      "PBESI"
+    ],
+    "snippet": "| \"Tata Kelola PBESI\";"
+  },
+  {
+    "file": "apps\\web\\src\\data\\mockNews.ts",
+    "line": 79,
+    "rule": "PBESI_TERM",
+    "matches": [
+      "PBESI"
+    ],
+    "snippet": "category: \"Tata Kelola PBESI\","
+  },
+  {
+    "file": "apps\\web\\src\\data\\mockNews.ts",
+    "line": 118,
+    "rule": "PBESI_TERM",
+    "matches": [
+      "PBESI"
+    ],
+    "snippet": "category: \"Tata Kelola PBESI\","
+  },
+  {
+    "file": "apps\\web\\src\\lib\\services\\cms.ts",
+    "line": 121,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "question: \"Bagaimana cara mendaftarkan diri sebagai atlet esport resmi di Sumatera Barat?\","
+  },
+  {
+    "file": "apps\\web\\src\\lib\\services\\cms.ts",
+    "line": 129,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "question: \"Berapa lama proses verifikasi lencana resmi?\","
+  },
+  {
+    "file": "apps\\web\\src\\lib\\services\\cms.ts",
+    "line": 130,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "answer: \"Proses verifikasi oleh tim peninjau Pengprov ESI Sumatera Barat memakan waktu antara 1 hing"
+  },
+  {
+    "file": "apps\\web\\src\\lib\\services\\cms.ts",
+    "line": 130,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "answer: \"Proses verifikasi oleh tim peninjau Pengprov ESI Sumatera Barat memakan waktu antara 1 hing"
+  },
+  {
+    "file": "apps\\web\\src\\types\\card.ts",
+    "line": 52,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "esportId: string; // e.g. ESB-SB-PL-100001 (Format resmi ESPORT SUMBAR V3)"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\auth-and-onboarding-v3.test.tsx",
+    "line": 100,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "it(\"harus merender bar pemilik resmi dengan lencana status dan kontrol laci\", () => {"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\auth-and-onboarding-v3.test.tsx",
+    "line": 110,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "RESMI"
+    ],
+    "snippet": "expect(html).toContain(\"PEMILIK RESMI\");"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 22,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "alt_text: \"Banner resmi turnamen esport piala gubernur sumatera barat musim 2026\","
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 33,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "title: \"Sponsor Resmi Bank Nagari Esport League\","
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 37,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "alt_text: \"Logo dan promosi kemitraan Bank Nagari dengan Pengprov ESI Sumatera Barat\","
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 37,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "alt_text: \"Logo dan promosi kemitraan Bank Nagari dengan Pengprov ESI Sumatera Barat\","
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 83,
+    "rule": "KLAIM_SAH",
+    "matches": [
+      "sah"
+    ],
+    "snippet": "it(\"tanda tangan HMAC yang sah dan timestamp terkini diverifikasi sukses\", () => {"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 126,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "const check = checkProhibitedTerms(\"Sponsor Resmi Slot Gacor & Pinjol Cepat Cair\");"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 133,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "it(\"teks resmi esport bersih dan lolos tanpa pelanggaran\", () => {"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 134,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "const check = checkProhibitedTerms(\"Turnamen Mobile Legends Piala Pengprov ESI Sumbar 2026\");"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 134,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "const check = checkProhibitedTerms(\"Turnamen Mobile Legends Piala Pengprov ESI Sumbar 2026\");"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 159,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "it(\"memiliki nilai default resmi Pengprov ESI Sumatera Barat\", () => {"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 159,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "it(\"memiliki nilai default resmi Pengprov ESI Sumatera Barat\", () => {"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 159,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "it(\"memiliki nilai default resmi Pengprov ESI Sumatera Barat\", () => {"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 160,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "expect(DEFAULT_SITE_SETTINGS.legal_entity_name).toBe(\"Pengprov ESI Sumatera Barat\");"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\cms-and-banners.test.tsx",
+    "line": 160,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "expect(DEFAULT_SITE_SETTINGS.legal_entity_name).toBe(\"Pengprov ESI Sumatera Barat\");"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\public-pages-liquid-glass.test.tsx",
+    "line": 110,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "expect(html).toContain(\"Identitas Resmi\");"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\unified-profile-w1.test.tsx",
+    "line": 49,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "it(\"OwnerControlBar merender kontrol pemilik resmi dengan aksi lengkap di tempat\", () => {"
+  },
+  {
+    "file": "apps\\web\\src\\__tests__\\unified-profile-w1.test.tsx",
+    "line": 60,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "RESMI"
+    ],
+    "snippet": "expect(html).toContain(\"PEMILIK RESMI\");"
+  },
+  {
+    "file": "packages\\contracts\\src\\schemas\\cms.ts",
+    "line": 60,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "legal_entity_name: z.string().default(\"Pengprov ESI Sumatera Barat\"),"
+  },
+  {
+    "file": "packages\\contracts\\src\\schemas\\cms.ts",
+    "line": 60,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "legal_entity_name: z.string().default(\"Pengprov ESI Sumatera Barat\"),"
+  },
+  {
+    "file": "packages\\contracts\\src\\schemas\\cms.ts",
+    "line": 89,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "title: \"ESPORT SUMBAR V3 - Identitas & Ekosistem Esport Resmi Sumatera Barat\","
+  },
+  {
+    "file": "packages\\contracts\\src\\schemas\\cms.ts",
+    "line": 90,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "description: \"Portal resmi registrasi atlet, tim, pelatih, komunitas, dan ekosistem esport Sumatera "
+  },
+  {
+    "file": "packages\\contracts\\src\\schemas\\cms.ts",
+    "line": 340,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "credit: z.string().default(\"Pengprov ESI Sumatera Barat\"),"
+  },
+  {
+    "file": "packages\\contracts\\src\\schemas\\cms.ts",
+    "line": 340,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "credit: z.string().default(\"Pengprov ESI Sumatera Barat\"),"
+  },
+  {
+    "file": "packages\\contracts\\src\\schemas\\relations.ts",
+    "line": 73,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "description: \"Markas latihan resmi tim di gaming cafe atau arena lokal.\","
+  },
+  {
+    "file": "packages\\design-tokens\\src\\colors.ts",
+    "line": 2,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Official"
+    ],
+    "snippet": "* ESPORT SUMBAR V3: Official Color Design Tokens"
+  },
+  {
+    "file": "packages\\design-tokens\\src\\colors.ts",
+    "line": 3,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "* Sumber tunggal nilai warna resmi berdasarkan berkas logo dan filosofi Arah B (Matte Glass)."
+  },
+  {
+    "file": "packages\\design-tokens\\src\\colors.ts",
+    "line": 30,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "// Aksen Merek Tunggal (Pink Resmi dari Mark V-S)"
+  },
+  {
+    "file": "packages\\design-tokens\\src\\rarity.ts",
+    "line": 3,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "* 4 Tier resmi: Rookie, Contender, Elite, Legend."
+  },
+  {
+    "file": "packages\\design-tokens\\src\\tokens.css",
+    "line": 23,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "official"
+    ],
+    "snippet": "/* Single Brand Pink Accent (From official V-S Mark) */"
+  },
+  {
+    "file": "packages\\design-tokens\\src\\typography.ts",
+    "line": 2,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Official"
+    ],
+    "snippet": "* ESPORT SUMBAR V3: Official Typography Design Tokens"
+  },
+  {
+    "file": "packages\\domain\\src\\cms\\service.ts",
+    "line": 34,
+    "rule": "ESI_TERM",
+    "matches": [
+      "ESI"
+    ],
+    "snippet": "legal_entity_name: \"Pengprov ESI Sumatera Barat\","
+  },
+  {
+    "file": "packages\\domain\\src\\cms\\service.ts",
+    "line": 34,
+    "rule": "PENGPROV_TERM",
+    "matches": [
+      "Pengprov"
+    ],
+    "snippet": "legal_entity_name: \"Pengprov ESI Sumatera Barat\","
+  },
+  {
+    "file": "packages\\domain\\src\\cms\\service.ts",
+    "line": 40,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "{ platform: \"instagram\", url: \"https://instagram.com/esi_sumbar\", label: \"Instagram Resmi\" },"
+  },
+  {
+    "file": "packages\\domain\\src\\cms\\service.ts",
+    "line": 45,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "title: \"ESPORT SUMBAR V3 - Identitas & Ekosistem Esport Resmi Sumatera Barat\","
+  },
+  {
+    "file": "packages\\domain\\src\\cms\\service.ts",
+    "line": 46,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "description: \"Portal resmi registrasi atlet, tim, pelatih, komunitas, dan ekosistem esport Sumatera "
+  },
+  {
+    "file": "packages\\domain\\src\\cms\\validator.ts",
+    "line": 53,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "warnings.push(\"Banner berbayar/iklan disarankan mencantumkan nama sponsor resmi secara transparan\");"
+  },
+  {
+    "file": "packages\\domain\\src\\ecosystem\\index.ts",
+    "line": 43,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "description: \"Markas latihan resmi tim di gaming cafe atau arena lokal.\","
+  },
+  {
+    "file": "packages\\ui\\src\\Avatar.tsx",
+    "line": 37,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Official"
+    ],
+    "snippet": "// Designed placeholder: Official Mark V-S silhouette (No initial letter in neon circle)"
+  },
+  {
+    "file": "packages\\ui\\src\\Carousel.tsx",
+    "line": 76,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "aria-label=\"Pengumuman dan Banner Resmi\""
+  },
+  {
+    "file": "packages\\ui\\src\\Carousel.tsx",
+    "line": 94,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "Resmi"
+    ],
+    "snippet": "Pengumuman Resmi"
+  },
+  {
+    "file": "packages\\ui\\src\\Footer.tsx",
+    "line": 24,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "brandDescription = \"Pusat data, identitas digital, dan ekosistem resmi olahraga elektronik 19 Kota d"
+  },
+  {
+    "file": "scripts\\ci\\lint-design-tokens.mjs",
+    "line": 7,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "* - Tidak ada font usang di luar token resmi (Saira, Rajdhani)"
+  },
+  {
+    "file": "scripts\\ci\\lint-design-tokens.mjs",
+    "line": 36,
+    "rule": "KLAIM_RESMI",
+    "matches": [
+      "resmi"
+    ],
+    "snippet": "name: \"Penggunaan font usang di luar token resmi\","
+  }
+]

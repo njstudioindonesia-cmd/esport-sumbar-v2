@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --bg-base: #05051A;
+  --surface-1: #0C0C26;
+  --surface-2: #14143A;
+  --surface-3: #1D1D4A;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.20);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.64);
+  --text-muted: rgba(255, 255, 255, 0.40);
+
+  --brand-pink: #FF1752;
+  --brand-pink-hover: #E01246;
+
+  --verified-gold: #D4AF37;
+  --success: #2BB673;
+  --warning: #F2A33A;
+  --danger: #F04438;
+
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans), sans-serif;
+  min-height: 100vh;
+}
+
+/* Accessible focus ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #FF1752;
+  outline-offset: 2px;
+}
+
+/* Mobile tap target >= 44px */
+@media (max-width: 640px) {
+  button,
+  a[role="button"],
+  input,
+  select {
+    min-height: 44px;
+  }
+}
+
+/* Reduced motion preference (WCAG 2.2.2) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -39,7 +39,7 @@ export default function GamesCatalogPage() {
             Cabang Game Kompetitif
           </h1>
           <p className="text-sm sm:text-base text-white/70 max-w-2xl leading-relaxed">
-            Daftar cabang game yang terintegrasi dalam sistem paspor digital, turnamen daerah, dan pembinaan atlet ESPORT SUMBAR.
+            Daftar cabang game yang terintegrasi dalam sistem kartu digital, turnamen daerah, dan pembinaan atlet ESPORT SUMBAR.
           </p>
         </header>
 

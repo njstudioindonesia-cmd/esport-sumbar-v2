@@ -21,7 +21,10 @@
     "paths": {
       "@/*": ["./src/*"],
       "@esport-sumbar/contracts": ["../../packages/contracts/src"],
+      "@esport-sumbar/design-tokens": ["../../packages/design-tokens/src"],
+      "@esport-sumbar/domain": ["../../packages/domain/src"],
       "@esport-sumbar/lib": ["../../packages/lib/src"],
+      "@esport-sumbar/ui": ["../../packages/ui/src"],
       "@esport-sumbar/config": ["../../packages/config"]
     }
   },

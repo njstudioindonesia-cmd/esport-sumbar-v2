@@ -372,7 +372,7 @@ export function UnifiedSettingsView() {
                   Zona Bahaya Akun
                 </h2>
                 <p className="text-[11px] text-white/50">
-                  Tindakan ini menghapus seluruh profil &amp; paspor Anda.
+                  Tindakan ini menghapus seluruh profil &amp; kartu Anda.
                 </p>
               </div>
             </div>

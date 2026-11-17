@@ -1,0 +1,50 @@
+name: esport_sumbar_mobile
+description: "Aplikasi Mobile ESPORT SUMBAR V3 - Platform Ekosistem Atlet dan Komunitas Esport Sumatera Barat"
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Supabase Client & Realtime WebSocket
+  supabase_flutter: ^2.8.0
+
+  # HTTP Client for BFF API
+  http: ^1.2.2
+
+  # State Management & Dependency Injection
+  provider: ^6.1.2
+
+  # 3D Sensor & Gyroscope physics
+  sensors_plus: ^6.1.1
+
+  # QR Code Generator & Scanner
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^5.2.3
+
+  # UI & Media
+  cached_network_image: ^3.4.1
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+  lucide_icons: ^0.257.0
+
+  # Local Cache / Offline Mode
+  shared_preferences: ^2.3.2
+
+  # Deep Linking Engine
+  app_links: ^6.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

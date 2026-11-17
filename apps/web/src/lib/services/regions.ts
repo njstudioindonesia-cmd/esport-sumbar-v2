@@ -18,6 +18,14 @@ export interface PublicRegion {
  * Mengambil daftar seluruh 19 kota & kabupaten di Sumatera Barat
  */
 export async function getRegionsList(): Promise<PublicRegion[]> {
+  const isTestOrPlaceholder =
+    process.env.NODE_ENV === "test" ||
+    (process.env.NEXT_PUBLIC_SUPABASE_URL || "").includes("placeholder");
+
+  if (isTestOrPlaceholder) {
+    return [];
+  }
+
   try {
     const supabase = createPublicServerClient();
     const { data, error } = await supabase

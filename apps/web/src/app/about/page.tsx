@@ -75,7 +75,7 @@ export default function AboutPage() {
               Siapa Kami
             </h2>
             <p className="text-sm text-white/80 leading-relaxed">
-              <strong className="text-white">ESPORT SUMBAR™</strong> adalah platform teknologi dan basis data esport independen yang berdiri pada tahun 2026. Kami menghadirkan sistem paspor atlet digital (ESPORT ID), direktori ekosistem 7 entitas, serta agregator warta kejuaraan terintegrasi bagi ekosistem esport Sumatera Barat.
+              <strong className="text-white">ESPORT SUMBAR™</strong> adalah platform teknologi dan basis data esport independen yang berdiri pada tahun 2026. Kami menghadirkan sistem kartu atlet digital (ESPORT ID), direktori ekosistem 7 entitas, serta agregator warta kejuaraan terintegrasi bagi ekosistem esport Sumatera Barat.
             </p>
           </QuietSurface>
 
@@ -100,7 +100,7 @@ export default function AboutPage() {
                   Identitas Digital
                 </h3>
                 <p className="text-xs text-white/60 leading-relaxed">
-                  Penerbitan kartu digital paspor atlet (ESPORT ID) dengan tingkat kelangkaan (rarity) dan nomor registrasi terdaftar untuk validasi turnamen.
+                  Penerbitan kartu digital kartu atlet (ESPORT ID) dengan tingkat kelangkaan (rarity) dan nomor registrasi terdaftar untuk validasi turnamen.
                 </p>
               </GlassCard>
 

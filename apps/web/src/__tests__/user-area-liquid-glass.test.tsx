@@ -5,7 +5,6 @@ import { UnifiedAuthView } from "@/components/auth/UnifiedAuthView";
 import { UserShell } from "@/components/dashboard/DesktopUserShell";
 import { UnifiedSettingsView } from "@/components/dashboard/UnifiedSettingsView";
 import { EsportCard } from "@/components/card/EsportCard";
-import { GALLERY_CARDS } from "@/data/mockCards";
 
 // Mock Next.js navigation
 vi.mock("next/navigation", () => ({
@@ -54,7 +53,7 @@ describe("Bagian 8: Autentikasi, Onboarding, dan Area Pengguna Liquid Glass 2026
 
     it("harus merender form registrasi dengan syarat ketentuan & pilar ekosistem", () => {
       const html = renderToString(<UnifiedAuthView initialMode="register" />);
-      expect(html).toContain("Penerbitan Paspor Digital");
+      expect(html).toContain("Penerbitan Kartu Digital");
       expect(html).toContain("Buat Akun Sekarang");
       expect(html).toContain("Ketentuan Layanan");
       expect(html).toContain("Tata Kelola Privasi Data");
@@ -72,7 +71,7 @@ describe("Bagian 8: Autentikasi, Onboarding, dan Area Pengguna Liquid Glass 2026
       );
 
       expect(html).toContain("Ringkasan");
-      expect(html).toContain("Paspor Saya");
+      expect(html).toContain("Kartu Saya");
       expect(html).toContain("Edit Profil");
       expect(html).toContain("Kartu Digital");
       expect(html).toContain("Verifikasi");
@@ -103,9 +102,21 @@ describe("Bagian 8: Autentikasi, Onboarding, dan Area Pengguna Liquid Glass 2026
     });
   });
 
-  describe("8.4 Kartu Paspor Digital & Frame Rarity (EsportCard)", () => {
-    it("harus merender kartu paspor dengan tier rarity dan lencana verifikasi terpisah", () => {
-      const card = GALLERY_CARDS[0];
+  describe("8.4 Kartu Identitas Digital & Frame Rarity (EsportCard)", () => {
+    it("harus merender kartu digital dengan tier rarity dan lencana verifikasi terpisah", () => {
+      const card = {
+        type: "player" as const,
+        rarity: "contender" as const,
+        verification: "verified" as const,
+        data: {
+          displayName: "Atlet Terdaftar",
+          ign: "ATLET_SUMBAR",
+          role: "Athlete",
+          game: "Esport Sumbar",
+          region: { name: "Sumatera Barat", code: "SB" },
+          esportId: "ESB-SB-PL-100001",
+        },
+      };
       const html = renderToString(
         <EsportCard
           type={card.type}

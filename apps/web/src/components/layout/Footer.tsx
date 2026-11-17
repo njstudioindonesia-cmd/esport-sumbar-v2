@@ -25,7 +25,7 @@ export function Footer() {
             <BrandLogo variant="lockup" size="md" withLink={true} />
 
             <p className="text-xs text-slate-300 max-w-sm leading-relaxed">
-              Platform data, identitas digital paspor atlet (ESPORT ID), dan ekosistem esports Sumatera Barat oleh <strong className="text-white">ESPORT SUMBAR™</strong>.
+              Platform data, identitas digital kartu atlet (ESPORT ID), dan ekosistem esports Sumatera Barat oleh <strong className="text-white">ESPORT SUMBAR™</strong>.
             </p>
 
             {/* Visual Quality Mode Switcher */}

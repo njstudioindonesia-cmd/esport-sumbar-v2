@@ -1,9 +1,9 @@
 export type ArticleCategory =
-  | "Agenda Turnamen"
+  | "Agenda Platform"
   | "Turnamen Daerah"
-  | "Tata Kelola"
-  | "Prestasi Klub"
-  | "Prestasi & Atlet";
+  | "Prestasi & Atlet"
+  | "Komunitas & Klub"
+  | "Tata Kelola PBESI";
 
 export interface Article {
   id: string;
@@ -76,7 +76,7 @@ export const MOCK_NEWS: Article[] = [
       "Kegiatan ini dihadiri oleh puluhan manajer tim, pemilik game house, pembina ekskul sekolah, serta perwakilan komunitas gamer dari kawasan Luak Agam dan Luak Limopuluah.",
       "Perwakilan pengelola memaparkan alur pemeriksaan satu tahap langsung oleh ESPORT SUMBAR, di mana tim dan atlet yang terdata akan mendapatkan kartu digital berstandar satu akun satu profil.",
     ],
-    category: "Tata Kelola",
+    category: "Tata Kelola PBESI",
     region: "Kota Bukittinggi",
     author: "Koresponden Bukittinggi",
     date: "1 Nov 2026",
@@ -96,7 +96,7 @@ export const MOCK_NEWS: Article[] = [
       "Dipimpin oleh kapten dan sniper handal Aidil 'SINGA_SINGKARAK' Syahputra, skuad Ranah Garuda menunjukkan konsistensi permainan rotasi dan penguasaan zona yang sangat matang sepanjang lima ronde pertandingan fase grup.",
       "Prestasi gemilang ini semakin mengukuhkan reputasi Ranah Garuda sebagai pemegang status kartu Tier 4 (Legend) dengan status terverifikasi langsung dari ESPORT SUMBAR.",
     ],
-    category: "Prestasi Klub",
+    category: "Komunitas & Klub",
     region: "Kab. Padang Pariaman",
     author: "Liputan Lapangan Esport",
     date: "31 Okt 2026",
@@ -115,7 +115,7 @@ export const MOCK_NEWS: Article[] = [
       "PADANG — ESPORT SUMBAR menutup rangkaian program sertifikasi kepelatihan esport mandiri yang berlangsung selama tiga hari.",
       "Para pelatih yang lulus kini tercatat di database direktori ESPORT SUMBAR dengan kartu profil khusus Coach berlisensi.",
     ],
-    category: "Tata Kelola",
+    category: "Tata Kelola PBESI",
     region: "Sumatera Barat",
     author: "Tim Redaksi ESPORT SUMBAR",
     date: "28 Okt 2026",

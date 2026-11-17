@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { signInAction, signUpAction, resetPasswordAction } from "@/app/actions/auth";
 import { createClient } from "@/lib/supabase/client";
-import { GALLERY_CARDS } from "@/data/mockCards";
 
 interface DesktopAuthViewProps {
   mode: "login" | "register";
@@ -196,7 +195,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             } else if (res.role === "platform_admin") {
               router.push("/admin");
             } else {
-              router.push("/dashboard");
+              router.push("/me");
             }
           }, 600);
         } else {
@@ -210,8 +209,26 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
     }
   };
 
-  // Featured showcase card for left panel (Elite Card from Bukittinggi)
-  const showcaseCard = GALLERY_CARDS[2] || GALLERY_CARDS[0];
+  const DESIGNED_AVATAR_PLACEHOLDER =
+    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%230C0C26'/%3E%3Ccircle cx='100' cy='75' r='38' fill='%231D1D4A'/%3E%3Cpath d='M40 180c0-33.1 26.9-60 60-60s60 26.9 60 60H40z' fill='%231D1D4A'/%3E%3Cpath d='M85 85L100 115L115 85H108L100 102L92 85H85Z' fill='%23FF1A52' fill-opacity='0.8'/%3E%3C/svg%3E";
+
+  // Official archetype preview card (Zero fake people, official brand template)
+  const showcaseCard = {
+    id: "archetype-player",
+    type: "player" as const,
+    rarity: "elite" as const,
+    verification: "verified" as const,
+    data: {
+      displayName: "Atlet Esport Sumbar",
+      ign: "ATLET_SUMBAR",
+      role: "Atlet Terdaftar",
+      game: "Esport Sumbar",
+      region: { name: "Sumatera Barat", code: "SB" },
+      esportId: "ESB-SB-PL-100001",
+      badgeNumber: "ESP-SB-VER-2026-0001",
+      avatarUrl: undefined,
+    },
+  };
 
   return (
     <div className="w-full min-h-screen bg-[#07080C] text-white flex select-none overflow-hidden">
@@ -240,7 +257,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
               <span className="font-heading font-black text-sm tracking-wider text-white group-hover:text-[#D4AF37] transition-colors">
                 ESPORT SUMBAR
               </span>
-              <span className="text-[9px] font-mono text-white/40 tracking-widest uppercase">
+              <span className="text-xs font-mono text-white/40 tracking-wider uppercase">
                 ESPORT SUMBAR SUMATERA BARAT
               </span>
             </div>
@@ -295,7 +312,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
                 <div className="relative w-28 h-28 rounded-2xl overflow-hidden border border-[#D4AF37]/40 shadow-xl bg-[#0F1118]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={showcaseCard.data.avatarUrl || "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop"}
+                    src={showcaseCard.data.avatarUrl || DESIGNED_AVATAR_PLACEHOLDER}
                     alt={showcaseCard.data.displayName}
                     className="w-full h-full object-cover"
                   />
@@ -331,7 +348,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             </div>
           </motion.div>
 
-          <span className="mt-4 text-[10px] font-mono text-white/30 tracking-widest uppercase">
+          <span className="mt-4 text-xs font-mono text-white/30 tracking-wider uppercase">
             Arahkan kursor untuk efek 3D tilt
           </span>
         </div>
@@ -342,7 +359,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             Identitas Digital Atlet Ranah Minang
           </h2>
           <p className="mt-1 text-xs font-sans text-white/50 leading-relaxed max-w-sm">
-            Paspor esport digital berbasis verifikasi ESPORT SUMBAR. Terlindungi UU PDP No. 27/2022.
+            Kartu esport digital berbasis verifikasi ESPORT SUMBAR. Terlindungi UU PDP No. 27/2022.
           </p>
 
           <div className="mt-4 flex items-center gap-6 pt-3 border-t border-white/[0.06] text-white/40 text-[11px] font-mono">
@@ -380,7 +397,7 @@ export function DesktopAuthView({ mode }: DesktopAuthViewProps) {
             </h1>
             <p className="text-xs text-white/50 font-sans mt-1">
               {mode === "login"
-                ? "Akses paspor esport digital kamu."
+                ? "Akses profil esport digital kamu."
                 : "Mulai perjalanan atlet esport kamu."}
             </p>
           </div>

@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { EsportCard } from "@/components/card/EsportCard";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
-import { GALLERY_CARDS, MockCardVariant } from "@/data/mockCards";
 import {
   CardRarity,
   CardVerification,
@@ -31,12 +30,31 @@ import {
 } from "@/types/card";
 import { FLAGS } from "@/lib/config/flags";
 
+export interface GalleryCardItem {
+  id: string;
+  type: CardEntityType;
+  rarity: CardRarity;
+  verification: CardVerification;
+  slug?: string;
+  data: {
+    displayName: string;
+    ign?: string;
+    game: string;
+    role: string;
+    region: { name: string; code: string };
+    esportId: string;
+    badgeNumber?: string;
+    avatarUrl?: string;
+    teamName?: string;
+  };
+}
+
 export default function GaleriKartuPage() {
   if (!FLAGS.ENABLE_GALLERY) {
     notFound();
   }
 
-  const [cards, setCards] = useState<MockCardVariant[]>(FLAGS.SHOW_DEMO_DATA ? GALLERY_CARDS : []);
+  const [cards, setCards] = useState<GalleryCardItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   React.useEffect(() => {
@@ -47,7 +65,7 @@ export default function GaleriKartuPage() {
         if (res.ok) {
           const json = await res.json();
           if (json.profiles && json.profiles.length > 0) {
-            const mapped: MockCardVariant[] = json.profiles.map((p: any) => ({
+            const mapped: GalleryCardItem[] = json.profiles.map((p: any) => ({
               id: p.id,
               type: p.entityType || "player",
               rarity: (p.rarityTier as CardRarity) || "rookie",
@@ -66,7 +84,7 @@ export default function GaleriKartuPage() {
             }));
             setCards(mapped);
           } else {
-            setCards(FLAGS.SHOW_DEMO_DATA ? GALLERY_CARDS : []);
+            setCards([]);
           }
         }
       } catch (err) {
@@ -83,7 +101,7 @@ export default function GaleriKartuPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [cardSize, setCardSize] = useState<CardSize>("md");
   const [allFlipped, setAllFlipped] = useState(false);
-  const [shareModalCard, setShareModalCard] = useState<MockCardVariant | null>(null);
+  const [shareModalCard, setShareModalCard] = useState<GalleryCardItem | null>(null);
 
   // Live filter predicate
   const filteredCards = useMemo(() => {

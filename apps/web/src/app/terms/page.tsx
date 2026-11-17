@@ -53,7 +53,7 @@ export default function TermsPage() {
               Penyedia Platform &amp; Sifat Layanan
             </h2>
             <p className="text-white/70">
-              Platform <strong>ESPORT SUMBAR™</strong> disediakan dan dikelola sepenuhnya secara mandiri oleh entitas <strong>ESPORT SUMBAR™</strong> sebagai pangkalan data dan paspor identitas digital esport Sumatera Barat. Seluruh operasional, verifikasi profil, kurasi direktori, dan regulasi platform dijalankan di bawah kendali teknis tunggal ESPORT SUMBAR™.
+              Platform <strong>ESPORT SUMBAR™</strong> disediakan dan dikelola sepenuhnya secara mandiri oleh entitas <strong>ESPORT SUMBAR™</strong> sebagai pangkalan data dan kartu identitas digital esport Sumatera Barat. Seluruh operasional, verifikasi profil, kurasi direktori, dan regulasi platform dijalankan di bawah kendali teknis tunggal ESPORT SUMBAR™.
             </p>
           </section>
 

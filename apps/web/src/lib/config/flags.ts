@@ -127,6 +127,47 @@ export const FLAGS = {
   },
 
   /**
+   * Lingkungan Aplikasi Aktif: production | staging | development
+   */
+  get APP_ENV(): "production" | "staging" | "development" {
+    if (process.env.NEXT_PUBLIC_APP_ENV === "production" || process.env.VERCEL_ENV === "production") {
+      return "production";
+    }
+    if (
+      process.env.NEXT_PUBLIC_APP_ENV === "staging" ||
+      process.env.VERCEL_ENV === "preview" ||
+      (typeof window !== "undefined" && window.location.hostname.includes("staging"))
+    ) {
+      return "staging";
+    }
+    return "development";
+  },
+
+  get IS_STAGING(): boolean {
+    return this.APP_ENV === "staging";
+  },
+
+  get IS_PRODUCTION(): boolean {
+    return this.APP_ENV === "production";
+  },
+
+  /**
+   * Mode Pratinjau Khusus Pemilik (Owner-Only Preview)
+   * Mengizinkan pemilik meninjau tata letak atau fitur baru sebelum diluncurkan umum.
+   */
+  get OWNER_ONLY_PREVIEW(): boolean {
+    return process.env.OWNER_ONLY_PREVIEW === "true";
+  },
+
+  /**
+   * Ambang batas minimum profil nyata sebelum statistik publik ditampilkan (Keputusan W6)
+   * Mencegah tampilan angka nol "0 Profil Terdaftar" yang merusak citra di beranda.
+   */
+  get MIN_PROFILES_THRESHOLD(): number {
+    return parseInt(process.env.NEXT_PUBLIC_MIN_PROFILES_THRESHOLD || "10", 10);
+  },
+
+  /**
    * Daftar tipe entitas yang didukung untuk registrasi publik.
    */
   ENABLED_ENTITY_TYPES: [

@@ -13,7 +13,7 @@ export default function NotFound() {
       {/* Top Header: Lockup */}
       <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between pt-4">
         <BrandLogo variant="lockup" size="sm" withLink={true} />
-        <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+        <span className="text-xs font-mono uppercase tracking-wider text-white/40">
           Galat 404
         </span>
       </header>

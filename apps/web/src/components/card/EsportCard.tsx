@@ -36,7 +36,7 @@ import {
 import { VerificationBadge } from "./VerificationBadge";
 import { BrandWatermark, BrandPattern, IssuedBy } from "@/components/brand";
 
-// Helper color and styling mapping for Rarity Tiers
+// Helper color and styling mapping for Rarity Tiers (Physical Materials)
 const RARITY_CONFIG: Record<
   CardRarity,
   {
@@ -52,47 +52,51 @@ const RARITY_CONFIG: Record<
 > = {
   rookie: {
     name: "Rookie",
-    label: "TIER 1 • ROOKIE",
-    frameBorder: "border-[#8C5A3C] shadow-[0_0_15px_rgba(140,90,60,0.35)]",
-    badgeBg: "bg-gradient-to-r from-[#5E3821] to-[#8C5A3C]",
-    badgeText: "text-[#E6B89C]",
-    glowColor: "rgba(140, 90, 60, 0.4)",
-    accentGlow: "from-[#8C5A3C]/20 to-transparent",
+    label: "TIER 1 • MATTE BRONZE",
+    frameBorder: "border-[#8C5A3C]/60 shadow-sm",
+    badgeBg: "bg-[#1E1612] border border-[#8C5A3C]/50",
+    badgeText: "text-[#D4A373]",
+    glowColor: "rgba(140, 90, 60, 0.15)",
+    accentGlow: "from-[#8C5A3C]/10 to-transparent",
     bgGradient: "from-[#191412] via-[#12151C] to-[#0E1015]",
   },
   contender: {
     name: "Contender",
-    label: "TIER 2 • CONTENDER",
-    frameBorder: "border-[#94A3B8] shadow-[0_0_20px_rgba(148,163,184,0.4)]",
-    badgeBg: "bg-gradient-to-r from-[#475569] to-[#94A3B8]",
+    label: "TIER 2 • SATIN SILVER",
+    frameBorder: "border-[#94A3B8]/60 shadow-sm",
+    badgeBg: "bg-[#161B24] border border-[#94A3B8]/50",
     badgeText: "text-[#F1F5F9]",
-    glowColor: "rgba(148, 163, 184, 0.45)",
-    accentGlow: "from-[#94A3B8]/20 to-transparent",
+    glowColor: "rgba(148, 163, 184, 0.15)",
+    accentGlow: "from-[#94A3B8]/10 to-transparent",
     bgGradient: "from-[#141820] via-[#12151C] to-[#0E1015]",
   },
   elite: {
     name: "Elite",
-    label: "TIER 3 • ELITE",
-    frameBorder:
-      "border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.55)] ring-1 ring-[#D4AF37]/40",
-    badgeBg: "bg-gradient-to-r from-[#996515] via-[#D4AF37] to-[#FFA751]",
-    badgeText: "text-[#12151C] font-extrabold",
-    glowColor: "rgba(212, 175, 55, 0.6)",
-    accentGlow: "from-[#D4AF37]/25 via-[#D4AF37]/10 to-transparent",
+    label: "TIER 3 • BRUSHED GOLD",
+    frameBorder: "border-[#D4AF37]/70 shadow-sm ring-1 ring-[#D4AF37]/30",
+    badgeBg: "bg-[#211B0C] border border-[#D4AF37]/60",
+    badgeText: "text-[#FDE68A] font-extrabold",
+    glowColor: "rgba(212, 175, 55, 0.2)",
+    accentGlow: "from-[#D4AF37]/15 to-transparent",
     bgGradient: "from-[#1E1A11] via-[#12151C] to-[#0E1015]",
   },
   legend: {
     name: "Legend",
-    label: "TIER 4 • LEGEND",
-    frameBorder:
-      "border-transparent bg-gradient-to-br from-[#C084FC] via-[#60A5FA] to-[#34D399] p-[1.5px] shadow-[0_0_35px_rgba(192,132,252,0.6)] animate-crystal",
-    badgeBg: "bg-gradient-to-r from-[#7C3AED] via-[#3B82F6] to-[#06B6D4]",
-    badgeText: "text-white font-black",
-    glowColor: "rgba(192, 132, 252, 0.7)",
-    accentGlow: "from-[#C084FC]/30 via-[#3B82F6]/20 to-transparent",
+    label: "TIER 4 • OBSIDIAN GLASS",
+    frameBorder: "border-[#A855F7]/60 shadow-sm ring-1 ring-[#A855F7]/25",
+    badgeBg: "bg-[#1D1429] border border-[#A855F7]/50",
+    badgeText: "text-[#F3E8FF] font-black",
+    glowColor: "rgba(168, 85, 247, 0.2)",
+    accentGlow: "from-[#A855F7]/15 to-transparent",
     bgGradient: "from-[#191224] via-[#12151C] to-[#0E1015]",
   },
 };
+
+const DESIGNED_AVATAR_PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%230C0C26'/%3E%3Ccircle cx='100' cy='75' r='38' fill='%231D1D4A'/%3E%3Cpath d='M40 180c0-33.1 26.9-60 60-60s60 26.9 60 60H40z' fill='%231D1D4A'/%3E%3Cpath d='M85 85L100 115L115 85H108L100 102L92 85H85Z' fill='%23FF1A52' fill-opacity='0.8'/%3E%3C/svg%3E";
+
+const DESIGNED_TEAM_PLACEHOLDER =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%230C0C26'/%3E%3Cpolygon points='100,28 165,65 165,135 100,172 35,135 35,65' fill='%231D1D4A' stroke='%232B2B5C' stroke-width='3'/%3E%3Cpath d='M80 85L100 125L120 85H110L100 105L90 85H80Z' fill='%23FF1A52'/%3E%3C/svg%3E";
 
 const SIZE_CLASSES: Record<CardSize, string> = {
   sm: "w-[240px] h-[336px] text-xs",
@@ -350,8 +354,20 @@ export function EsportCard({
                 </div>
 
                 {/* Entity Type Tag */}
-                <span className="text-[8px] font-heading uppercase px-1.5 py-0.5 rounded bg-[#1A1E28] border border-[#262B38] text-gray-400 font-bold tracking-wider">
-                  {type === "player" ? "Player" : type === "coach" ? "Coach" : "Team"}
+                <span className="text-[8px] font-heading uppercase px-1.5 py-0.5 rounded bg-[#1A1E28] border border-[#262B38] text-gray-300 font-bold tracking-wider">
+                  {type === "player"
+                    ? "Pemain"
+                    : type === "coach"
+                    ? "Pelatih"
+                    : type === "community"
+                    ? "Komunitas"
+                    : type === "venue"
+                    ? "Venue"
+                    : type === "campus"
+                    ? "Kampus"
+                    : type === "school"
+                    ? "Sekolah"
+                    : "Tim"}
                 </span>
               </div>
 
@@ -382,8 +398,7 @@ export function EsportCard({
                       alt={data.teamName || data.displayName}
                       className="w-full h-full object-contain relative z-10 drop-shadow-md transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=200&auto=format&fit=crop";
+                        (e.target as HTMLImageElement).src = DESIGNED_TEAM_PLACEHOLDER;
                       }}
                     />
                   </div>
@@ -411,8 +426,7 @@ export function EsportCard({
                     alt={data.ign || data.displayName}
                     className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop";
+                      (e.target as HTMLImageElement).src = DESIGNED_AVATAR_PLACEHOLDER;
                     }}
                   />
 
@@ -619,7 +633,7 @@ export function EsportCard({
                 /* TEAM BACK: Roster Members & Coach */
                 <div className="mt-2.5 flex flex-col gap-2">
                   <div>
-                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
                       Roster Aktif Terdaftar
                     </span>
                     <div className="grid grid-cols-2 gap-1.5">
@@ -668,7 +682,7 @@ export function EsportCard({
                   {/* Team Achievements */}
                   {data.achievements && data.achievements.length > 0 && (
                     <div>
-                      <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-0.5">
+                      <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-0.5">
                         Prestasi Terkini
                       </span>
                       <p className="text-[10px] text-[#D4AF37] font-semibold truncate">
@@ -682,7 +696,7 @@ export function EsportCard({
                 /* COACH BACK: Certifications & Coaching History */
                 <div className="mt-2.5 flex flex-col gap-2">
                   <div>
-                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
                       Sertifikasi & Lisensi
                     </span>
                     {data.certification?.isCertified ? (
@@ -705,7 +719,7 @@ export function EsportCard({
                   </div>
 
                   <div>
-                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
                       Riwayat Tim Dilatih
                     </span>
                     {data.history && data.history.length > 0 ? (
@@ -735,7 +749,7 @@ export function EsportCard({
                 /* PLAYER BACK: Achievements & History */
                 <div className="mt-2.5 flex flex-col gap-2">
                   <div>
-                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
                       Prestasi Pilihan
                     </span>
                     {data.achievements && data.achievements.length > 0 ? (
@@ -767,7 +781,7 @@ export function EsportCard({
                   </div>
 
                   <div>
-                    <span className="text-[9px] uppercase font-mono tracking-widest text-[#9AA3B2] block mb-1">
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
                       Riwayat Tim
                     </span>
                     {data.history && data.history.length > 0 ? (

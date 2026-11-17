@@ -47,6 +47,21 @@ import { InitialsAvatar } from "@/components/ui/InitialsAvatar";
 import { saveWizardDraft, loadWizardDraft, clearWizardDraft } from "@/lib/entities/draft";
 import { CardSuccessCelebration } from "@/components/glass/CardSuccessCelebration";
 
+const ENTITY_CHOICES: {
+  type: EntityType;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  code: string;
+}[] = [
+  { type: "player", label: "Pemain", icon: Gamepad2, code: "PL" },
+  { type: "coach", label: "Pelatih", icon: GraduationCap, code: "CO" },
+  { type: "team", label: "Tim", icon: Users, code: "TM" },
+  { type: "community", label: "Komunitas", icon: Sparkles, code: "CM" },
+  { type: "venue", label: "Venue", icon: Building, code: "VN" },
+  { type: "campus", label: "Kampus", icon: Landmark, code: "CP" },
+  { type: "school", label: "Sekolah", icon: Award, code: "SC" },
+];
+
 export function DesktopCardWizard() {
   const router = useRouter();
 
@@ -504,7 +519,7 @@ export function DesktopCardWizard() {
                 >
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-[#D4AF37]" />
-                    <span>Pratinjau Kartu Paspor Live</span>
+                    <span>Pratinjau Kartu Identitas Live</span>
                   </div>
                   <span className="text-[11px] font-mono text-[#D4AF37]">
                     {showMobilePreview ? "Tutup ▲" : "Buka Pratinjau ▼"}
@@ -561,13 +576,14 @@ export function DesktopCardWizard() {
                         Pilih Bidang
                       </h2>
                       <p className="text-xs text-white/50 mb-6">
-                        Pilih kategori identitas digital Anda dalam ekosistem ESPORT SUMBAR™.
+                        Satu akun terikat pada satu identitas bidang.
                       </p>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {Object.values(ENTITY_REGISTRY).map((entity) => {
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                        {ENTITY_CHOICES.map((entity) => {
                           const isEnabled = isEntityTypeEnabled(entity.type);
                           const isSelected = entityType === entity.type;
+                          const Icon = entity.icon;
 
                           return (
                             <button
@@ -579,36 +595,33 @@ export function DesktopCardWizard() {
                                 }
                               }}
                               disabled={!isEnabled}
-                              className={`p-4 rounded-2xl border text-left transition-all relative flex flex-col justify-between ${
+                              className={`p-4 rounded-2xl border text-left transition-all relative flex flex-col justify-between min-h-[110px] ${
                                 !isEnabled
                                   ? "bg-white/[0.02] border-white/[0.05] opacity-50 cursor-not-allowed"
                                   : isSelected
-                                  ? "bg-[#D4AF37]/10 border-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.2)]"
+                                  ? "bg-[#FF1752]/10 border-[#FF1752] shadow-[0_0_20px_rgba(255,23,82,0.2)]"
                                   : "bg-[#161A24] border-white/[0.06] hover:border-white/20 hover:bg-[#1A1F2C]"
                               }`}
                             >
-                              <div className="flex items-center justify-between mb-2">
-                                <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${entity.badgeColor}`}>
-                                  {entity.code}
-                                </span>
-                                {!isEnabled ? (
-                                  <span className="text-[9px] font-mono text-white/40 bg-white/5 px-2 py-0.5 rounded">
-                                    Segera Hadir
-                                  </span>
-                                ) : isSelected ? (
-                                  <div className="w-5 h-5 rounded-full bg-[#D4AF37] flex items-center justify-center text-[#07080C]">
+                              <div className="flex items-center justify-between mb-3">
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                                  isSelected ? "bg-[#FF1752] text-white" : "bg-white/5 text-white/70"
+                                }`}>
+                                  <Icon className="w-4 h-4" />
+                                </div>
+                                {isSelected ? (
+                                  <div className="w-5 h-5 rounded-full bg-[#FF1752] flex items-center justify-center text-white">
                                     <Check className="w-3 h-3 stroke-[3]" />
                                   </div>
-                                ) : null}
+                                ) : (
+                                  <span className="text-[10px] font-mono text-white/40">
+                                    {entity.code}
+                                  </span>
+                                )}
                               </div>
 
-                              <div>
-                                <div className="text-sm font-heading font-black text-white">
-                                  {entity.label}
-                                </div>
-                                <div className="text-[11px] text-white/50 mt-1 line-clamp-2">
-                                  {entity.description}
-                                </div>
+                              <div className="text-base font-heading font-black text-white">
+                                {entity.label}
                               </div>
                             </button>
                           );
@@ -837,7 +850,7 @@ export function DesktopCardWizard() {
                           : "Foto Profil Atlet"}
                       </h2>
                       <p className="text-xs text-white/50 mb-5">
-                        Potong dan sesuaikan foto dengan rasio paspor digital. Gambar akan dikonversi ke WebP otomatis tanpa metadata lokasi.
+                        Potong dan sesuaikan foto dengan rasio kartu digital. Gambar akan dikonversi ke WebP otomatis tanpa metadata lokasi.
                       </p>
 
                       {/* Area Unggah & Tampilan Foto Saat Ini */}
@@ -1067,7 +1080,7 @@ export function DesktopCardWizard() {
                           <span className="font-semibold text-white truncate block">{displayName}</span>
                         </div>
                         <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
-                          <span className="text-[10px] font-mono text-white/40 block">Wilayah Wilayah</span>
+                          <span className="text-[10px] font-mono text-white/40 block">Wilayah Domisili</span>
                           <span className="font-semibold text-[#D4AF37] truncate block">{selectedRegion.name}</span>
                         </div>
                         <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
@@ -1076,7 +1089,7 @@ export function DesktopCardWizard() {
                         </div>
                         <div className="p-3 rounded-xl bg-[#161A24] border border-white/[0.06]">
                           <span className="text-[10px] font-mono text-white/40 block">Status Verifikasi</span>
-                          <span className="font-semibold text-white/60 truncate block">Unverified (Siap Diajukan)</span>
+                          <span className="font-semibold text-white/60 truncate block">Belum Terverifikasi (Siap Diajukan)</span>
                         </div>
                       </div>
 
@@ -1115,11 +1128,7 @@ export function DesktopCardWizard() {
                     type="button"
                     onClick={handleNext}
                     disabled={isFinishing}
-                    className={`px-8 py-3 rounded-xl font-heading font-black text-xs tracking-wider uppercase transition-all flex items-center gap-2 shadow-lg active:scale-[0.99] disabled:opacity-50 ${
-                      step === 6
-                        ? "bg-gradient-to-r from-[#D4AF37] via-[#F5D77F] to-[#AA7C11] text-[#07080C] shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:brightness-110"
-                        : "bg-[#D4AF37] hover:bg-[#E5C158] text-[#07080C]"
-                    }`}
+                    className="px-8 py-3 rounded-xl font-heading font-black text-xs tracking-wider uppercase transition-all flex items-center gap-2 shadow-lg active:scale-[0.99] disabled:opacity-50 bg-[#FF1752] hover:bg-[#E01246] text-white shadow-[#FF1752]/25"
                   >
                     {isFinishing ? (
                       <span>Menerbitkan Kartu...</span>
@@ -1260,31 +1269,24 @@ export function DesktopCardWizard() {
       {/* MODAL KONFIRMASI PEMILIHAN BIDANG (1 AKUN = 1 BIDANG) */}
       {showEntityConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-[#0D1017] border border-[#D4AF37]/40 shadow-2xl flex flex-col gap-4 animate-in fade-in zoom-in-95">
+          <div className="w-full max-w-md p-6 rounded-3xl bg-[#0D1017] border border-white/10 shadow-2xl flex flex-col gap-4 animate-in fade-in zoom-in-95">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]">
+              <div className="w-10 h-10 rounded-xl bg-[#FF1752]/15 border border-[#FF1752]/30 flex items-center justify-center text-[#FF1752]">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="font-heading font-black text-sm text-white uppercase">
-                  Konfirmasi Pemilihan Bidang
+                  Konfirmasi Bidang
                 </h3>
-                <p className="text-[11px] font-mono text-[#D4AF37]">
-                  1 Akun = 1 Bidang Entitas
+                <p className="text-[11px] font-mono text-[#FF4D77]">
+                  1 Akun = 1 Bidang
                 </p>
               </div>
             </div>
 
             <p className="text-xs text-white/70 leading-relaxed">
-              Anda memilih kategori <strong className="text-white">{entityDef.label}</strong>. Sesuai prinsip integritas ekosistem, pilihan bidang ini bersifat permanen untuk akun Anda dan tidak dapat diubah setelah paspor digital diterbitkan.
+              Pilihan bidang <strong className="text-white">{entityDef.singularLabel}</strong> bersifat permanen untuk akun Anda dan tidak dapat diubah setelah kartu diterbitkan.
             </p>
-
-            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 flex items-center gap-3 text-xs text-white/60">
-              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${entityDef.badgeColor}`}>
-                {entityDef.code}
-              </span>
-              <span className="truncate">{entityDef.description}</span>
-            </div>
 
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
@@ -1300,9 +1302,9 @@ export function DesktopCardWizard() {
                   setShowEntityConfirmModal(false);
                   setStep(2);
                 }}
-                className="px-5 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#E5C158] text-black font-heading font-black text-xs uppercase shadow-lg shadow-[#D4AF37]/20"
+                className="px-5 py-2.5 rounded-xl bg-[#FF1752] hover:bg-[#E01246] text-white font-heading font-black text-xs uppercase shadow-lg shadow-[#FF1752]/20"
               >
-                Konfirmasi &amp; Lanjutkan
+                Konfirmasi
               </button>
             </div>
           </div>

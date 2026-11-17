@@ -195,92 +195,79 @@ export function UserProfileDropdown({
 
       {/* 2. TAUTAN MENU */}
       <div className="p-2.5 flex flex-col gap-1">
-        <Link
-          href="/me"
-          onClick={() => {
-            setIsOpen(false);
-            if (onClose) onClose();
-          }}
-          className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-white hover:bg-white/[0.08] transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <User className="w-4 h-4 text-pink-400" />
-            <span>Profil Saya</span>
-          </div>
-          <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
-        </Link>
+        {(() => {
+          const profileUrl = profile ? `/${profile.entityType}/${profile.slug}` : "/onboarding";
+          return (
+            <>
+              <Link
+                href={profileUrl}
+                onClick={() => {
+                  setIsOpen(false);
+                  if (onClose) onClose();
+                }}
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-white hover:bg-white/[0.08] transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <User className="w-4 h-4 text-pink-400" />
+                  <span>Profil &amp; Kartu Saya</span>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-slate-500" />
+              </Link>
 
-        <Link
-          href="/me/edit"
-          onClick={() => {
-            setIsOpen(false);
-            if (onClose) onClose();
-          }}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
-        >
-          <Edit3 className="w-4 h-4 text-slate-400" />
-          <span>Edit Biodata</span>
-        </Link>
+              {profile && (
+                <>
+                  <Link
+                    href={`${profileUrl}?action=edit`}
+                    onClick={() => {
+                      setIsOpen(false);
+                      if (onClose) onClose();
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+                  >
+                    <Edit3 className="w-4 h-4 text-slate-400" />
+                    <span>Edit Data &amp; Foto</span>
+                  </Link>
 
-        <Link
-          href="/me/card"
-          onClick={() => {
-            setIsOpen(false);
-            if (onClose) onClose();
-          }}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
-        >
-          <CreditCard className="w-4 h-4 text-slate-400" />
-          <span>Kartu Paspor Digital & QR</span>
-        </Link>
+                  <Link
+                    href={`${profileUrl}?action=verify`}
+                    onClick={() => {
+                      setIsOpen(false);
+                      if (onClose) onClose();
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-amber-400" />
+                    <span>Status Verifikasi Resmi</span>
+                  </Link>
 
-        <Link
-          href="/me/verification"
-          onClick={() => {
-            setIsOpen(false);
-            if (onClose) onClose();
-          }}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
-        >
-          <ShieldCheck className="w-4 h-4 text-amber-400" />
-          <span>Status Verifikasi Satu Tahap</span>
-        </Link>
+                  <Link
+                    href={`${profileUrl}?action=ecosystem`}
+                    onClick={() => {
+                      setIsOpen(false);
+                      if (onClose) onClose();
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+                  >
+                    <Network className="w-4 h-4 text-slate-400" />
+                    <span>Kemitraan Ekosistem</span>
+                  </Link>
 
-        <Link
-          href="/me/ecosystem"
-          onClick={() => {
-            setIsOpen(false);
-            if (onClose) onClose();
-          }}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
-        >
-          <Network className="w-4 h-4 text-slate-400" />
-          <span>Keterhubungan Ekosistem</span>
-        </Link>
-
-        <Link
-          href="/me/privacy"
-          onClick={() => {
-            setIsOpen(false);
-            if (onClose) onClose();
-          }}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
-        >
-          <Lock className="w-4 h-4 text-slate-400" />
-          <span>Privasi & Izin Data</span>
-        </Link>
-
-        <Link
-          href="/me/settings"
-          onClick={() => {
-            setIsOpen(false);
-            if (onClose) onClose();
-          }}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
-        >
-          <Settings className="w-4 h-4 text-slate-400" />
-          <span>Pengaturan & Efek Visual</span>
-        </Link>
+                  <Link
+                    href={`${profileUrl}?action=privacy`}
+                    onClick={() => {
+                      setIsOpen(false);
+                      if (onClose) onClose();
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+                  >
+                    <Lock className="w-4 h-4 text-slate-400" />
+                    <span>Privasi &amp; Izin Data</span>
+                  </Link>
+                </>
+              )}
+            </>
+          );
+        })()}
 
         {/* Panel Admin jika berhak */}
         {isAdmin && (

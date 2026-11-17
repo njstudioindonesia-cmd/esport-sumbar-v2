@@ -20,8 +20,6 @@ import {
 } from "lucide-react";
 import { FLAGS } from "@/lib/config/flags";
 import { mapVerificationToCard } from "@/types/card";
-import { GALLERY_CARDS } from "@/data/mockCards";
-import { MOCK_NEWS } from "@/data/mockNews";
 import { MobileBottomBar } from "./MobileBottomBar";
 import { EsportCard } from "@/components/card/EsportCard";
 import { BrandLogo, BrandWatermark, IssuedBy, OwnershipNote } from "@/components/brand";
@@ -64,7 +62,26 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
       }
     : null;
 
-  const heroCard = dbHeroCard || GALLERY_CARDS.find((c) => c.id === "pl-contender") || GALLERY_CARDS[0];
+  const fallbackHeroCard = {
+    id: "archetype-player",
+    slug: "register",
+    type: "player" as const,
+    rarity: "elite" as const,
+    verification: "verified" as const,
+    data: {
+      slug: "register",
+      displayName: "Pemain Esport",
+      ign: "ATLET_SUMBAR",
+      role: "Atlet Terdaftar",
+      game: "Esport Sumbar",
+      region: { name: "Sumatera Barat", code: "SB" },
+      esportId: "ESB-SB-PL-100001",
+      badgeNumber: "ESP-SB-VER-2026-0001",
+      avatarUrl: undefined,
+    },
+  };
+
+  const heroCard = dbHeroCard || fallbackHeroCard;
 
   // Recent 3 News items
   const recentNews = articles && articles.length > 0
@@ -82,7 +99,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
         readTime: "3 min baca",
         imageUrl: a.coverImageUrl || "/images/news-placeholder.jpg",
       }))
-    : (FLAGS.SHOW_DEMO_DATA ? MOCK_NEWS.slice(0, 3) : []);
+    : [];
 
   const triggerHaptic = (ms = 12) => {
     if (typeof window !== "undefined" && "vibrate" in navigator) {
@@ -124,7 +141,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
       <div className="w-full flex justify-center pt-2">
         <button
           onClick={handlePullToRefresh}
-          className="text-[10px] font-mono text-white/30 hover:text-[#D4AF37] transition-colors uppercase tracking-widest flex items-center gap-1.5"
+          className="text-xs font-mono text-white/30 hover:text-[#D4AF37] transition-colors uppercase tracking-wider flex items-center gap-1.5"
         >
           {isRefreshing ? (
             <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
@@ -177,7 +194,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           </div>
 
           <h1 className="text-3xl font-heading font-black uppercase text-white tracking-tight leading-none">
-            PASPOR ATLET DIGITAL <span className="text-[#D4AF37] display-skew">SUMATERA BARAT</span>
+            KARTU ATLET DIGITAL <span className="text-[#D4AF37] display-skew">SUMATERA BARAT</span>
           </h1>
 
           <p className="text-xs text-white/60 leading-relaxed">
@@ -185,12 +202,12 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           </p>
 
           <Link
-            href="/me/profile/new"
+            href="/register"
             onClick={() => triggerHaptic()}
             className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F59E0B] to-[#D4AF37] text-black font-heading font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_4px_24px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-[0.99] transition-all"
           >
             <Sparkles className="w-4 h-4 fill-black" />
-            <span>Terbitkan Paspor Digital Sekarang</span>
+            <span>Terbitkan Kartu Digital Sekarang</span>
           </Link>
         </section>
 
@@ -251,7 +268,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           </div>
           {copiedLink && (
             <span className="text-[9px] font-mono text-[#D4AF37] mt-1.5 font-bold">
-              ✓ Tautan Paspor Disalin ke Papan Klip!
+              ✓ Tautan Kartu Disalin ke Papan Klip!
             </span>
           )}
         </section>
@@ -374,7 +391,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#07080C] via-[#07080C]/60 to-transparent" />
 
                   <div className="absolute bottom-3 left-3 right-3 z-10">
-                    <span className="text-[8px] font-mono text-[#D4AF37] uppercase tracking-widest block mb-1 font-bold">
+                    <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider block mb-1 font-bold">
                       {news.category}
                     </span>
                     <p className="font-heading font-bold text-xs text-white line-clamp-2 leading-snug">

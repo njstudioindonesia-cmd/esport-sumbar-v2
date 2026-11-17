@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { MOCK_NEWS, Article } from "@/data/mockNews";
 import { getArticleBySlug, getLatestArticles } from "@/lib/services/news";
 import { FLAGS } from "@/lib/config/flags";
 import { QuietSurface } from "@/components/glass/QuietSurface";
@@ -31,61 +30,52 @@ export default async function NewsDetailPage({
 }) {
   const { slug } = await params;
   const dbArticle = await getArticleBySlug(slug);
-  const mockArticle = FLAGS.SHOW_DEMO_DATA
-    ? MOCK_NEWS.find((n) => n.slug === slug)
-    : null;
 
-  if (!dbArticle && !mockArticle) {
+  if (!dbArticle) {
     notFound();
   }
 
-  const article = dbArticle
-    ? {
-        id: dbArticle.id,
-        title: dbArticle.title,
-        slug: dbArticle.slug,
-        excerpt: dbArticle.summary || "",
-        content: dbArticle.content ? [dbArticle.content] : [],
-        category: dbArticle.category,
-        region: dbArticle.regionName || "Sumatera Barat",
-        author: dbArticle.authorName || "Tim Redaksi ESPORT SUMBAR",
-        date: new Date(dbArticle.publishedAt).toLocaleDateString("id-ID", {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-        }),
-        readTime: "3 min baca",
-        imageUrl: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
-        coverImage: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
-      }
-    : mockArticle!;
+  const article = {
+    id: dbArticle.id,
+    title: dbArticle.title,
+    slug: dbArticle.slug,
+    excerpt: dbArticle.summary || "",
+    content: dbArticle.content ? [dbArticle.content] : [],
+    category: dbArticle.category,
+    region: dbArticle.regionName || "Sumatera Barat",
+    author: dbArticle.authorName || "Tim Redaksi ESPORT SUMBAR",
+    date: new Date(dbArticle.publishedAt).toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }),
+    readTime: "3 min baca",
+    imageUrl: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
+    coverImage: dbArticle.coverImageUrl || "/images/news-placeholder.jpg",
+  };
 
-  // Related articles
+  // Related articles (hanya dari database berita nyata)
   const dbRelated = await getLatestArticles({ limit: 4 });
-  const relatedArticles = dbRelated.length > 0
-    ? dbRelated
-        .filter((n) => n.slug !== article.slug)
-        .slice(0, 3)
-        .map((r) => ({
-          id: r.id,
-          title: r.title,
-          slug: r.slug,
-          excerpt: r.summary || "",
-          content: [r.content],
-          category: r.category,
-          region: r.regionName || "Sumatera Barat",
-          author: "Tim Redaksi ESPORT SUMBAR",
-          date: new Date(r.publishedAt).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          }),
-          readTime: "3 min",
-          imageUrl: r.coverImageUrl || "/images/news-placeholder.jpg",
-        }))
-    : (FLAGS.SHOW_DEMO_DATA
-        ? MOCK_NEWS.filter((n) => n.slug !== article.slug).slice(0, 3)
-        : []);
+  const relatedArticles = dbRelated
+    .filter((n) => n.slug !== article.slug)
+    .slice(0, 3)
+    .map((r) => ({
+      id: r.id,
+      title: r.title,
+      slug: r.slug,
+      excerpt: r.summary || "",
+      content: [r.content],
+      category: r.category,
+      region: r.regionName || "Sumatera Barat",
+      author: r.authorName || "Tim Redaksi ESPORT SUMBAR",
+      date: new Date(r.publishedAt).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
+      readTime: "3 min",
+      imageUrl: r.coverImageUrl || "/images/news-placeholder.jpg",
+    }));
 
   return (
     <div className="min-h-screen bg-[var(--bg-base)] text-white flex flex-col selection:bg-[#FF1752]/30 selection:text-white">

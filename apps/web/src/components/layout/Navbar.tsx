@@ -21,6 +21,7 @@ import {
 import { BrandLogo, BrandBar, OwnershipNote } from "@/components/brand";
 import { CommandPalette } from "@/components/shared/CommandPalette";
 import { UserProfileDropdown } from "@/components/layout/UserProfileDropdown";
+import { NotificationPanel } from "@/components/layout/NotificationPanel";
 import { GlassButton } from "@/components/glass/GlassButton";
 import { MOTION_SPRINGS } from "@/components/glass/MotionPresets";
 import { createClient } from "@/lib/supabase/client";
@@ -180,7 +181,10 @@ export function Navbar() {
               </button>
 
               {currentUser ? (
-                <UserProfileDropdown />
+                <div className="flex items-center gap-2">
+                  <NotificationPanel />
+                  <UserProfileDropdown />
+                </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Link href="/login">
@@ -202,6 +206,8 @@ export function Navbar() {
 
             {/* MOBILE RIGHT CONTROLS: CIRCULAR GLASS BUTTONS */}
             <div className="flex lg:hidden items-center gap-2">
+              {currentUser && <NotificationPanel />}
+
               <button
                 type="button"
                 onClick={() => setIsCommandOpen(true)}

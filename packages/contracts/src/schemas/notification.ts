@@ -1,7 +1,14 @@
 import { z } from "zod";
 
-export const NotificationChannelSchema = z.enum(["email", "in_app"]);
+export const NotificationChannelSchema = z.enum(["email", "in_app", "push"]);
 export type NotificationChannel = z.infer<typeof NotificationChannelSchema>;
+
+export const RegisterDeviceTokenSchema = z.object({
+  token: z.string().min(10).max(1024),
+  platform: z.enum(["android", "ios"]),
+  deviceId: z.string().optional(),
+});
+export type RegisterDeviceToken = z.infer<typeof RegisterDeviceTokenSchema>;
 
 export const NotificationTypeSchema = z.enum([
   "verification_approved",

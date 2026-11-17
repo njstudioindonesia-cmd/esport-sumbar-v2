@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyAdminAuth } from "@/lib/auth/api-guard";
 import { execSync } from "child_process";
+import { FLAGS } from "@/lib/config/flags";
 
 function getGitCommit(): { hash: string; branch: string } {
   if (process.env.VERCEL_GIT_COMMIT_SHA) {
@@ -32,6 +33,15 @@ export async function GET(request: NextRequest) {
     commitBranch: git.branch,
     buildTime: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development",
+    appEnv: FLAGS.APP_ENV,
+    isStaging: FLAGS.IS_STAGING,
+    isProduction: FLAGS.IS_PRODUCTION,
+    flags: {
+      maintenanceMode: FLAGS.MAINTENANCE_MODE,
+      enableRegistration: FLAGS.ENABLE_REGISTRATION,
+      showDemoData: FLAGS.SHOW_DEMO_DATA,
+      ownerOnlyPreview: FLAGS.OWNER_ONLY_PREVIEW,
+    },
     vercelUrl: process.env.VERCEL_URL || null,
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://esport-sumbar-v2.vercel.app",
     nodeVersion: process.version,
