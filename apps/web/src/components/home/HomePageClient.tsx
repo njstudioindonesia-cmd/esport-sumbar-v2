@@ -101,7 +101,7 @@ export function HomePageClient({
             const userProfile =
               Array.isArray(json.profiles) && json.profiles.length > 0
                 ? json.profiles[0]
-                : null;
+                : json.profile || null;
             if (userProfile) {
               setCurrentUserProfile({
                 id: userProfile.id,
