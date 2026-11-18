@@ -125,6 +125,33 @@ describe("Halaman Publik Liquid Glass V3 (Bagian 7)", () => {
       expect(html).toContain("Sekolah");
     });
 
+    it("harus menampilkan kartu pengguna dan tombol 'Lihat Kartu Saya' ketika pengguna sudah terdaftar", () => {
+      const html = renderToString(
+        <HomePageClient
+          stats={mockStats}
+          articles={mockArticles}
+          profiles={mockProfiles}
+          initialMyProfile={mockProfiles[0]}
+        />
+      );
+
+      // Kartu digital dan sapaan personal pengguna
+      expect(html).toContain("Kartu Digital Terdaftar");
+      expect(html).toContain("Selamat datang kembali, Randi Pratama");
+
+      // Tombol hero adaptif
+      expect(html).toContain("Lihat Kartu Saya");
+      expect(html).not.toContain("Buat Kartu");
+
+      // Badge kartu Anda & switcher "Saya"
+      expect(html).toContain("Kartu Anda");
+      expect(html).toContain("Saya");
+
+      // Tautan ke profil terpadu pemilik /me
+      expect(html).toContain("Kelola Profil Saya");
+      expect(html).toContain('href="/me"');
+    });
+
     it("tidak boleh mengandung istilah dan klaim terlarang di HTML keluaran", () => {
       const html = renderToString(
         <HomePageClient
@@ -159,6 +186,33 @@ describe("Halaman Publik Liquid Glass V3 (Bagian 7)", () => {
       expect(html).toContain("Venue");
       expect(html).toContain("Kampus");
       expect(html).toContain("Sekolah");
+    });
+
+    it("harus menampilkan kartu pengguna dan tombol 'Lihat Kartu Saya' ketika pengguna sudah terdaftar", () => {
+      const html = renderToString(
+        <HomePageClient
+          stats={mockStats}
+          articles={mockArticles}
+          profiles={mockProfiles}
+          initialMyProfile={mockProfiles[0]}
+        />
+      );
+
+      // Kartu digital dan sapaan personal pengguna
+      expect(html).toContain("Kartu Digital Terdaftar");
+      expect(html).toContain("Selamat datang kembali, Randi Pratama");
+
+      // Tombol hero adaptif
+      expect(html).toContain("Lihat Kartu Saya");
+      expect(html).not.toContain("Buat Kartu");
+
+      // Badge kartu Anda & switcher "Saya"
+      expect(html).toContain("Kartu Anda");
+      expect(html).toContain("Saya");
+
+      // Tautan ke profil terpadu pemilik /me
+      expect(html).toContain("Kelola Profil Saya");
+      expect(html).toContain('href="/me"');
     });
 
     it("EntityDirectoryView harus merender direktori dengan status verifikasi tunggal", () => {

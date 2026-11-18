@@ -25,6 +25,7 @@ import {
   Flame,
   Layers,
   Share2,
+  CreditCard,
 } from "lucide-react";
 import { FLAGS } from "@/lib/config/flags";
 import { Navbar } from "@/components/layout/Navbar";
@@ -65,6 +66,7 @@ interface HomePageClientProps {
   topBanners?: Banner[];
   middleBanners?: Banner[];
   heroBlock?: ContentBlock | null;
+  initialMyProfile?: UnifiedProfileDetail | null;
 }
 
 export function HomePageClient({
@@ -74,14 +76,86 @@ export function HomePageClient({
   topBanners = [],
   middleBanners = [],
   heroBlock,
+  initialMyProfile,
 }: HomePageClientProps) {
   const [productCardFlipped, setProductCardFlipped] = useState(false);
   const [liveArticles, setLiveArticles] = useState<PublicArticle[]>(articles);
   const [activeHeroIdx, setActiveHeroIdx] = useState(0);
+  const [currentUserProfile, setCurrentUserProfile] = useState<UnifiedProfileDetail | null>(
+    initialMyProfile || null
+  );
 
   useEffect(() => {
     setLiveArticles(articles);
   }, [articles]);
+
+  // Pantau profil pengguna yang terdaftar / login (sinkronisasi SSR & Client Session)
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchMyProfile() {
+      try {
+        const res = await fetch("/api/me/profiles");
+        if (res.ok) {
+          const json = await res.json();
+          if (isMounted) {
+            const userProfile =
+              Array.isArray(json.profiles) && json.profiles.length > 0
+                ? json.profiles[0]
+                : null;
+            if (userProfile) {
+              setCurrentUserProfile({
+                id: userProfile.id,
+                accountId: json.user?.id || userProfile.id,
+                entityType: userProfile.entityType,
+                esportId: userProfile.esportId,
+                slug: userProfile.slug,
+                displayName: userProfile.displayName,
+                ign: userProfile.ign,
+                regionId: userProfile.regionId || "",
+                regionName: userProfile.regionName || "Sumatera Barat",
+                regionCode: userProfile.regionCode || "SB",
+                mainGameName: userProfile.mainGameName || "Esport",
+                roleName: userProfile.roleName || "Athlete",
+                avatarUrl: userProfile.avatarUrl,
+                verificationStatus: userProfile.verificationStatus,
+                rarityTier: userProfile.rarityTier || "rookie",
+                verifiedBadgeNo: userProfile.verifiedBadgeNo,
+                completenessScore: userProfile.completenessScore || 0,
+                attributes: userProfile.attributes || {},
+                visibility: {},
+                isDemo: userProfile.isDemo || false,
+                createdAt: userProfile.createdAt || "",
+              });
+            } else if (!json.user) {
+              setCurrentUserProfile(null);
+            }
+          }
+        }
+      } catch {
+        // Silently ignored
+      }
+    }
+
+    fetchMyProfile();
+
+    const supabase = createClient();
+    const { data: authSub } = supabase.auth.onAuthStateChange((event) => {
+      if (
+        event === "SIGNED_IN" ||
+        event === "USER_UPDATED" ||
+        event === "TOKEN_REFRESHED"
+      ) {
+        fetchMyProfile();
+      } else if (event === "SIGNED_OUT") {
+        setCurrentUserProfile(null);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      authSub.subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     const supabase = createClient();
@@ -177,26 +251,84 @@ export function HomePageClient({
     },
   ];
 
-  const heroCards = sortedProfiles.length > 0
-    ? sortedProfiles.slice(0, 3).map((p) => ({
-        id: p.id,
-        slug: p.slug,
-        type: p.entityType,
-        rarity: p.rarityTier,
-        verification: mapVerificationToCard(p.verificationStatus),
+  // 1. Kartu Pengguna yang Login (Slot #1 jika sudah terdaftar)
+  const myHeroCard = currentUserProfile
+    ? {
+        id: currentUserProfile.id,
+        slug: currentUserProfile.slug,
+        type: currentUserProfile.entityType,
+        rarity: currentUserProfile.rarityTier || "rookie",
+        verification: mapVerificationToCard(currentUserProfile.verificationStatus),
+        isMyCard: true,
         data: {
-          slug: p.slug,
-          displayName: p.displayName,
-          ign: p.ign || undefined,
-          role: p.roleName || "Athlete",
-          game: p.mainGameName || "Esport",
-          region: { name: p.regionName, code: p.regionCode },
-          esportId: p.esportId,
-          badgeNumber: p.verifiedBadgeNo || undefined,
-          avatarUrl: p.avatarUrl || undefined,
+          slug: currentUserProfile.slug,
+          displayName: currentUserProfile.displayName,
+          ign: currentUserProfile.ign || undefined,
+          role: currentUserProfile.roleName || "Athlete",
+          game: currentUserProfile.mainGameName || "Esport",
+          region: {
+            name: currentUserProfile.regionName,
+            code: currentUserProfile.regionCode,
+          },
+          esportId: currentUserProfile.esportId,
+          badgeNumber: currentUserProfile.verifiedBadgeNo || undefined,
+          avatarUrl: currentUserProfile.avatarUrl || undefined,
         },
-      }))
-    : brandArchetypeCards;
+      }
+    : null;
+
+  // 2. Kartu Komunitas / Terverifikasi Lainnya (dari database)
+  const otherProfiles = sortedProfiles.filter(
+    (p) => !currentUserProfile || p.id !== currentUserProfile.id
+  );
+
+  const communityCards = otherProfiles.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    type: p.entityType,
+    rarity: p.rarityTier,
+    verification: mapVerificationToCard(p.verificationStatus),
+    isMyCard: false,
+    data: {
+      slug: p.slug,
+      displayName: p.displayName,
+      ign: p.ign || undefined,
+      role: p.roleName || "Athlete",
+      game: p.mainGameName || "Esport",
+      region: { name: p.regionName, code: p.regionCode },
+      esportId: p.esportId,
+      badgeNumber: p.verifiedBadgeNo || undefined,
+      avatarUrl: p.avatarUrl || undefined,
+    },
+  }));
+
+  // 3. Rakit heroCards: Kartu pengguna selalu menjadi kartu utama di indeks 0
+  let heroCards: Array<{
+    id: string;
+    slug: string;
+    type: any;
+    rarity: any;
+    verification: any;
+    isMyCard: boolean;
+    data: any;
+  }> = [];
+
+  if (myHeroCard) {
+    heroCards = [myHeroCard, ...communityCards.slice(0, 2)];
+    if (heroCards.length < 3) {
+      const needed = 3 - heroCards.length;
+      const archetypesToAdd = brandArchetypeCards.slice(0, needed).map((a) => ({
+        ...a,
+        isMyCard: false,
+      }));
+      heroCards.push(...archetypesToAdd);
+    }
+  } else {
+    heroCards =
+      communityCards.length > 0
+        ? communityCards.slice(0, 3).map((c) => ({ ...c, isMyCard: false }))
+        : brandArchetypeCards.map((a) => ({ ...a, isMyCard: false }));
+  }
 
   // News bento articles (hanya dari database berita nyata)
   const headlineArticle = liveArticles.length > 0
@@ -357,9 +489,16 @@ export function HomePageClient({
                   className="object-contain"
                 />
               </div>
-              <span className="text-[11px] font-mono font-bold tracking-wider text-white/80 uppercase">
-                Pusat Data ESPORT SUMBAR™
-              </span>
+              {currentUserProfile ? (
+                <span className="text-[11px] font-mono font-bold tracking-wider text-emerald-400 uppercase flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Kartu Digital Terdaftar
+                </span>
+              ) : (
+                <span className="text-[11px] font-mono font-bold tracking-wider text-white/80 uppercase">
+                  Pusat Data ESPORT SUMBAR™
+                </span>
+              )}
             </motion.div>
 
             {/* Main Headline (Brand Slanted Style) */}
@@ -380,7 +519,9 @@ export function HomePageClient({
               transition={{ ...MOTION_SPRINGS.fluid, delay: 0.25 }}
               className="text-sm sm:text-base lg:text-lg text-white/80 leading-relaxed mb-8 max-w-xl drop-shadow-md"
             >
-              Satu kartu digital untuk pemain, tim, dan ekosistem kompetisi.
+              {currentUserProfile
+                ? `Selamat datang kembali, ${currentUserProfile.displayName}. Kartu digital resmi Anda telah aktif di ekosistem Esport Sumbar.`
+                : "Satu kartu digital untuk pemain, tim, dan ekosistem kompetisi."}
             </motion.p>
 
             {/* Action Buttons */}
@@ -390,12 +531,29 @@ export function HomePageClient({
               transition={{ ...MOTION_SPRINGS.snappy, delay: 0.35 }}
               className="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto"
             >
-              <Link href="/register" className="w-full sm:w-auto">
-                <GlassButton variant="primary" size="lg" className="w-full sm:w-auto text-sm font-heading font-black uppercase tracking-wider">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Buat Kartu
-                </GlassButton>
-              </Link>
+              {currentUserProfile ? (
+                <Link href="/me" className="w-full sm:w-auto">
+                  <GlassButton
+                    variant="primary"
+                    size="lg"
+                    className="w-full sm:w-auto text-sm font-heading font-black uppercase tracking-wider shadow-lg shadow-[#FF1752]/20"
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    Lihat Kartu Saya
+                  </GlassButton>
+                </Link>
+              ) : (
+                <Link href="/register" className="w-full sm:w-auto">
+                  <GlassButton
+                    variant="primary"
+                    size="lg"
+                    className="w-full sm:w-auto text-sm font-heading font-black uppercase tracking-wider"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Buat Kartu
+                  </GlassButton>
+                </Link>
+              )}
 
               <Link href="/explore" className="w-full sm:w-auto">
                 <GlassButton variant="secondary" size="lg" className="w-full sm:w-auto text-sm font-heading font-black uppercase tracking-wider">
@@ -416,20 +574,28 @@ export function HomePageClient({
             <div className="relative p-5 sm:p-8 flex flex-col items-center max-w-[360px] sm:max-w-[380px] w-full rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] border border-white/20 bg-[#0B0E17]/85 backdrop-blur-xl overflow-visible">
               {/* Card Switcher Pills */}
               <div className="w-full flex items-center justify-between gap-1 mb-4 pb-3 border-b border-white/10 text-xs font-mono">
-                <span className="text-white/60 text-[10px] uppercase tracking-wider font-semibold">Panggung Kartu</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-white/60 text-[10px] uppercase tracking-wider font-semibold">Panggung Kartu</span>
+                  {currentHeroCard.isMyCard && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FF1752]/20 text-[#FF4D77] border border-[#FF1752]/40">
+                      <Sparkles className="w-2.5 h-2.5" />
+                      Kartu Anda
+                    </span>
+                  )}
+                </div>
                 <div className="flex items-center gap-1.5">
-                  {heroCards.map((_, idx) => (
+                  {heroCards.map((card, idx) => (
                     <button
                       key={idx}
                       onClick={() => setActiveHeroIdx(idx)}
-                      className={`w-7 h-7 rounded-lg text-xs font-bold transition-all ${
+                      className={`px-2 h-7 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1 ${
                         activeHeroIdx === idx
                           ? "bg-[#FF1752] text-white shadow-md shadow-pink-500/30 ring-1 ring-white/30"
                           : "bg-white/10 text-white/60 hover:bg-white/20"
                       }`}
-                      aria-label={`Lihat kartu ${idx + 1}`}
+                      aria-label={card.isMyCard ? "Lihat Kartu Saya" : `Lihat kartu ${idx + 1}`}
                     >
-                      {idx + 1}
+                      {card.isMyCard ? "Saya" : idx + 1}
                     </button>
                   ))}
                 </div>
@@ -459,10 +625,14 @@ export function HomePageClient({
                   {currentHeroCard.data.esportId}
                 </span>
                 <Link
-                  href={`/${currentHeroCard.type || "player"}/${(currentHeroCard as any).slug || (currentHeroCard.data as any).slug || currentHeroCard.data.ign?.toLowerCase() || "profile"}`}
+                  href={
+                    currentHeroCard.isMyCard
+                      ? "/me"
+                      : `/${currentHeroCard.type || "player"}/${currentHeroCard.slug || (currentHeroCard.data as any).slug || currentHeroCard.data.ign?.toLowerCase() || "profile"}`
+                  }
                   className="text-[11px] text-pink-300 hover:text-pink-200 flex items-center gap-1 font-semibold transition-colors group"
                 >
-                  Buka Profil
+                  {currentHeroCard.isMyCard ? "Kelola Profil Saya" : "Buka Profil"}
                   <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
               </div>

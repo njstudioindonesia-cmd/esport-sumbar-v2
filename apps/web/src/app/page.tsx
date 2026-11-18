@@ -2,9 +2,10 @@ import React from "react";
 import type { Metadata } from "next";
 import { getPlatformStats } from "@/lib/services/stats";
 import { getLatestArticles } from "@/lib/services/news";
-import { getPublicProfilesList } from "@/lib/services/public-profiles";
+import { getPublicProfilesList, getPublicProfileByAccountId } from "@/lib/services/public-profiles";
 import { getActiveBanners, getContentBlocks } from "@/lib/services/cms";
 import { HomePageClient } from "@/components/home/HomePageClient";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "ESPORT SUMBAR™ | Pusat Data & Kartu Digital Atlet Ranah Minang",
@@ -13,7 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [stats, articles, profilesResult, topBanners, middleBanners, homeBlocks] =
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+
+  const [stats, articles, profilesResult, topBanners, middleBanners, homeBlocks, myProfile] =
     await Promise.all([
       getPlatformStats(),
       getLatestArticles({ limit: 4 }),
@@ -21,6 +25,7 @@ export default async function HomePage() {
       getActiveBanners("home_top"),
       getActiveBanners("home_middle"),
       getContentBlocks("home"),
+      authData?.user ? getPublicProfileByAccountId(authData.user.id) : Promise.resolve(null),
     ]);
 
   const heroBlock = homeBlocks.find((b) => b.slot === "hero") || null;
@@ -33,6 +38,7 @@ export default async function HomePage() {
       topBanners={topBanners}
       middleBanners={middleBanners}
       heroBlock={heroBlock}
+      initialMyProfile={myProfile}
     />
   );
 }
