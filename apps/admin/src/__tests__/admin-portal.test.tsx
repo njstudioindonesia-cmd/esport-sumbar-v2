@@ -7,6 +7,7 @@ import AdminSystemStatusPage from "@admin/app/system/page";
 import AdminVerificationPage from "@admin/app/verification/page";
 import { AdminUserDetailClient } from "@admin/app/users/[id]/AdminUserDetailClient";
 import { transitionVerificationAction } from "@admin/app/actions/verification";
+import { StatusBadge } from "@esport-sumbar/ui";
 
 // Mock Next.js navigation
 vi.mock("next/navigation", () => ({
@@ -122,5 +123,23 @@ describe("Apps/Admin: Portal Deployment Tests (ADR 002 & Bagian 11)", () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toContain("Administrator dilarang memverifikasi atau mengubah status akun miliknya sendiri");
+  });
+
+  it("StatusBadge menangani seluruh varian status termasuk 'submitted', null, dan status tak terduga tanpa melempar TypeError", () => {
+    // Memastikan status 'submitted' dari antrean Supabase tidak melempar error
+    const submittedHtml = renderToString(<StatusBadge status="submitted" />);
+    expect(submittedHtml).toContain("Menunggu Review");
+
+    const pendingHtml = renderToString(<StatusBadge status="pending" />);
+    expect(pendingHtml).toContain("Menunggu Review");
+
+    const verifiedHtml = renderToString(<StatusBadge status="verified" />);
+    expect(verifiedHtml).toContain("Terverifikasi");
+
+    const fallbackHtml = renderToString(<StatusBadge status={"unknown_status" as any} />);
+    expect(fallbackHtml).toContain("Belum Verifikasi");
+
+    const nullHtml = renderToString(<StatusBadge status={null as any} />);
+    expect(nullHtml).toContain("Belum Verifikasi");
   });
 });

@@ -13,6 +13,7 @@ import {
   Loader2,
   Sparkles,
   ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 import { Card, CardHeader, CardContent, StatusBadge, Button } from "@esport-sumbar/ui";
 import {
@@ -31,26 +32,29 @@ export default function AdminDashboardPage() {
     recentQueue: [],
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [errorNotice, setErrorNotice] = useState<string | null>(null);
+
+  const loadMetrics = async () => {
+    setIsLoading(true);
+    setErrorNotice(null);
+    try {
+      const res = await getDashboardMetricsAction();
+      if (res.success && res.data) {
+        setMetrics(res.data);
+      } else if (res.error) {
+        setErrorNotice(res.error);
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Gagal memuat metrik admin";
+      console.error("Gagal memuat metrik admin:", err);
+      setErrorNotice(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    let isMounted = true;
-    async function loadMetrics() {
-      try {
-        const res = await getDashboardMetricsAction();
-        if (isMounted && res.success) {
-          setMetrics(res.data);
-        }
-      } catch (err) {
-        console.error("Gagal memuat metrik admin:", err);
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
-    }
-
     loadMetrics();
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   return (
@@ -70,12 +74,36 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={loadMetrics}
+              disabled={isLoading}
+              className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-colors disabled:opacity-50"
+              title="Segarkan Data"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              Segarkan
+            </button>
             <span className="px-3 py-1.5 rounded-lg bg-[#2BB673]/15 border border-[#2BB673]/30 text-[#2BB673] text-xs font-bold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#2BB673] animate-pulse" />
               Supabase Terhubung
             </span>
           </div>
         </div>
+
+        {errorNotice && (
+          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3 text-xs text-amber-300">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
+              <span>Peringatan sistem: {errorNotice}</span>
+            </div>
+            <button
+              onClick={loadMetrics}
+              className="text-amber-200 underline hover:text-white font-semibold shrink-0"
+            >
+              Coba lagi
+            </button>
+          </div>
+        )}
 
         {/* Operational Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -144,7 +172,7 @@ export default function AdminDashboardPage() {
                   </h3>
                   <Link href="/verification">
                     <Button variant="ghost" size="sm" className="text-xs text-pink-400 hover:text-pink-300">
-                      Lihat Semua ({metrics.recentQueue.length})
+                      Lihat Semua ({metrics.recentQueue?.length ?? 0})
                     </Button>
                   </Link>
                 </div>
@@ -155,7 +183,7 @@ export default function AdminDashboardPage() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                     Memuat data antrean dari Supabase...
                   </div>
-                ) : metrics.recentQueue.length === 0 ? (
+                ) : !metrics.recentQueue || metrics.recentQueue.length === 0 ? (
                   <div className="text-center py-12 text-white/40 text-xs">
                     Tidak ada pengajuan verifikasi yang tertunda saat ini.
                   </div>
@@ -170,28 +198,28 @@ export default function AdminDashboardPage() {
                           {item.avatarUrl ? (
                             <img
                               src={item.avatarUrl}
-                              alt={item.name}
+                              alt={item.name || "Avatar"}
                               className="w-10 h-10 rounded-xl object-cover border border-white/10"
                             />
                           ) : (
                             <div className="w-10 h-10 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-sm font-bold text-white/70">
-                              {item.name.charAt(0).toUpperCase()}
+                              {(item.name || "U").charAt(0).toUpperCase()}
                             </div>
                           )}
                           <div className="flex flex-col gap-0.5">
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-xs text-white">{item.name}</span>
-                              {item.ign !== "-" && (
+                              <span className="font-bold text-xs text-white">{item.name || "Tanpa Nama"}</span>
+                              {item.ign && item.ign !== "-" && (
                                 <span className="text-[11px] font-mono text-[#D4AF37]">
                                   &quot;{item.ign}&quot;
                                 </span>
                               )}
                               <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white/70 uppercase font-mono">
-                                {item.type}
+                                {item.type || "player"}
                               </span>
                             </div>
                             <span className="text-[11px] text-white/40 font-mono">
-                              {item.esportId} &bull; {item.game} &bull; {item.region}
+                              {item.esportId || "-"} &bull; {item.game || "Esport"} &bull; {item.region || "Sumatera Barat"}
                             </span>
                           </div>
                         </div>

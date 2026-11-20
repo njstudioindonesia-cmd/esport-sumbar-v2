@@ -9,9 +9,9 @@ import type { Database } from "./database.types";
  */
 export function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder-esport-sumbar.supabase.co";
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!serviceKey) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY is not defined in environment");
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY is not defined in environment");
   }
 
   return createSupabaseClient<Database>(supabaseUrl, serviceKey, {
