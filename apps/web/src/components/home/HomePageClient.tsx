@@ -324,10 +324,16 @@ export function HomePageClient({
       heroCards.push(...archetypesToAdd);
     }
   } else {
-    heroCards =
-      communityCards.length > 0
-        ? communityCards.slice(0, 3).map((c) => ({ ...c, isMyCard: false }))
-        : brandArchetypeCards.map((a) => ({ ...a, isMyCard: false }));
+    const cards: any[] = communityCards.slice(0, 3).map((c) => ({ ...c, isMyCard: false }));
+    if (cards.length > 0 && cards.length < 3) {
+      const needed = 3 - cards.length;
+      const archetypesToAdd = brandArchetypeCards.slice(0, needed).map((a) => ({
+        ...a,
+        isMyCard: false,
+      }));
+      cards.push(...archetypesToAdd);
+    }
+    heroCards = cards.length > 0 ? cards : brandArchetypeCards.map((a) => ({ ...a, isMyCard: false }));
   }
 
   // News bento articles (hanya dari database berita nyata)
@@ -362,9 +368,9 @@ export function HomePageClient({
       }))
     : [];
 
-  // Featured profiles for carousel/grid (Hanya tampilkan jika memenuhi ambang batas profil nyata terverifikasi)
+  // Featured profiles for carousel/grid (Tampilkan seluruh profil terverifikasi yang ada)
   const featuredCards =
-    profiles.length >= FLAGS.MIN_PROFILES_THRESHOLD
+    profiles.length > 0
       ? profiles.map((p) => ({
           id: p.id,
           slug: p.slug,
@@ -379,6 +385,7 @@ export function HomePageClient({
             game: p.mainGameName || "Esport",
             region: { name: p.regionName, code: p.regionCode },
             esportId: p.esportId,
+            badgeNumber: p.verifiedBadgeNo || undefined,
             avatarUrl: p.avatarUrl || undefined,
           },
         }))
