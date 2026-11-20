@@ -168,12 +168,26 @@ export function AdminUserDetailClient({ id }: { id: string }) {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <Link
-                      href={`/${user.profile.entityType}/${user.profile.slug}`}
-                      className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-slate-200 flex items-center gap-1.5 transition-colors"
-                    >
-                      Buka Profil Publik <ExternalLink className="w-3.5 h-3.5" />
-                    </Link>
+                    {(() => {
+                      const entity = user.profile.entityType || "player";
+                      const path = `/${entity}/${user.profile.slug}`;
+                      const webUrl =
+                        typeof window !== "undefined" &&
+                        (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+                          ? `http://localhost:3000${path}`
+                          : `${(process.env.NEXT_PUBLIC_SITE_URL || "https://esport-sumbar-v2.vercel.app").replace(/\/$/, "")}${path}`;
+
+                      return (
+                        <a
+                          href={webUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-slate-200 flex items-center gap-1.5 transition-colors border border-white/5 hover:border-white/10"
+                        >
+                          Buka Profil Publik <ExternalLink className="w-3.5 h-3.5 text-pink-400" />
+                        </a>
+                      );
+                    })()}
                   </div>
                 </div>
               ) : (

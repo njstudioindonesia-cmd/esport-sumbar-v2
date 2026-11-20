@@ -91,22 +91,39 @@ export async function getAdminUserDetailAction(id: string) {
       .eq("account_id", id)
       .maybeSingle();
 
+    const mappedProfile = profile
+      ? {
+          id: profile.id,
+          displayName: profile.display_name || account.email?.split("@")[0] || "Pengguna",
+          entityType: profile.entity_type,
+          ign: profile.ign || "-",
+          esportId: profile.esport_id || "-",
+          slug: profile.slug,
+          verificationStatus: profile.verification_status,
+          regionName: (profile as any)?.regions?.name || "-",
+          gameName: (profile as any)?.games?.name || "-",
+          avatarUrl: profile.avatar_url,
+          bio: profile.bio,
+        }
+      : null;
+
     return {
       success: true,
       user: {
         id: account.id,
         email: account.email || "-",
         role: account.role || "user",
+        status: (account as any).is_active !== false ? "active" : "inactive",
         createdAt: account.created_at,
-        displayName: profile?.display_name || account.email?.split("@")[0] || "Pengguna",
-        ign: profile?.ign || "-",
-        branch: profile?.entity_type || "-",
-        region: (profile as any)?.regions?.name || "-",
-        status: profile?.verification_status || "unverified",
-        esportId: profile?.esport_id || "-",
-        avatarUrl: profile?.avatar_url,
-        bio: profile?.bio,
-        profile,
+        displayName: mappedProfile?.displayName || account.email?.split("@")[0] || "Pengguna",
+        ign: mappedProfile?.ign || "-",
+        branch: mappedProfile?.entityType || "-",
+        region: mappedProfile?.regionName || "-",
+        statusBadge: mappedProfile?.verificationStatus || "unverified",
+        esportId: mappedProfile?.esportId || "-",
+        avatarUrl: mappedProfile?.avatarUrl,
+        bio: mappedProfile?.bio,
+        profile: mappedProfile,
       },
     };
   } catch (err: unknown) {
