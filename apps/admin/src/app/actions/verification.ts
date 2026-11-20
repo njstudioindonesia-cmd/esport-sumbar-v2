@@ -116,3 +116,84 @@ export async function transitionVerificationAction(
     return { success: false, error: errorMsg };
   }
 }
+
+export async function getVerificationQueueAction() {
+  try {
+    const adminDb = createAdminClient();
+
+    // 1. Ambil permohonan dari tabel verification_requests
+    const { data: requests, error } = await adminDb
+      .from("verification_requests")
+      .select("id, profile_id, status, submitted_at, notes, evidence_files, profiles(id, account_id, display_name, ign, entity_type, esport_id, rarity_tier, avatar_url, bio, games(name), regions(name, code))")
+      .order("submitted_at", { ascending: true });
+
+    const items: any[] = [];
+
+    if (!error && requests && requests.length > 0) {
+      requests.forEach((q: any) => {
+        const prof = q.profiles || {};
+        items.push({
+          id: q.id,
+          profileId: q.profile_id,
+          name: prof.display_name || "Tanpa Nama",
+          ign: prof.ign || "-",
+          esportId: prof.esport_id || "-",
+          type: prof.entity_type || "player",
+          game: prof.games?.name || "Esport",
+          region: prof.regions?.name || "Sumatera Barat",
+          regionCode: prof.regions?.code || "SB",
+          status: q.status || "submitted",
+          submittedDate: q.submitted_at || new Date().toISOString(),
+          notes: q.notes || "",
+          documents: Array.isArray(q.evidence_files) && q.evidence_files.length > 0
+            ? q.evidence_files.map((f: any, idx: number) => ({
+                type: f.type || "dokumen_bukti",
+                title: f.title || f.name || `Dokumen Bukti #${idx + 1}`,
+                url: f.url || "/brand/og-image.png",
+                fileSize: f.size || "1.2 MB",
+              }))
+            : [],
+        });
+      });
+    }
+
+    // 2. Jika antrean permohonan kosong, sertakan profil unverified agar admin bisa memverifikasi langsung
+    if (items.length === 0) {
+      const { data: unverifiedProfiles } = await adminDb
+        .from("profiles")
+        .select("id, account_id, display_name, ign, entity_type, esport_id, rarity_tier, avatar_url, bio, verification_status, created_at, games(name), regions(name, code)")
+        .neq("verification_status", "verified")
+        .order("created_at", { ascending: false });
+
+      (unverifiedProfiles || []).forEach((p: any) => {
+        items.push({
+          id: p.id,
+          profileId: p.id,
+          name: p.display_name || "Tanpa Nama",
+          ign: p.ign || "-",
+          esportId: p.esport_id || "-",
+          type: p.entity_type || "player",
+          game: p.games?.name || "Esport",
+          region: p.regions?.name || "Sumatera Barat",
+          regionCode: p.regions?.code || "SB",
+          status: p.verification_status || "unverified",
+          submittedDate: p.created_at || new Date().toISOString(),
+          notes: "Profil terdaftar baru, menunggu kurasi status verifikasi.",
+          documents: [
+            {
+              type: "identitas_resmi",
+              title: "Kartu Digital Terdaftar",
+              url: p.avatar_url || "/brand/og-image.png",
+              fileSize: "100% Data Lengkap",
+            },
+          ],
+        });
+      });
+    }
+
+    return { success: true, items };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Gagal memuat antrean verifikasi";
+    return { success: false, items: [], error: errorMsg };
+  }
+}

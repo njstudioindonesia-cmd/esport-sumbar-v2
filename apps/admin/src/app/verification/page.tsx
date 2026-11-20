@@ -26,7 +26,7 @@ import {
 import { AdminNavbar } from "@/components/AdminNavbar";
 import { Footer, QuietSurface } from "@esport-sumbar/ui";
 import { AdminCardPreview } from "@/components/AdminCardPreview";
-import { transitionVerificationAction } from "@/app/actions/verification";
+import { transitionVerificationAction, getVerificationQueueAction } from "@/app/actions/verification";
 import {
   type UnifiedCardData,
   type CardEntityType,
@@ -97,10 +97,9 @@ export default function AdminVerificationQueuePage() {
   const fetchQueue = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/admin/queue");
-      if (res.ok) {
-        const json = await res.json();
-        const items = (json.items || []).map((q: any) => {
+      const res = await getVerificationQueueAction();
+      if (res.success && res.items) {
+        const items = res.items.map((q: any) => {
           const submittedTime = q.submittedDate ? new Date(q.submittedDate).getTime() : Date.now();
           const hoursAgo = Math.max(0, Math.floor((Date.now() - submittedTime) / (1000 * 60 * 60)));
           let slaColor: "green" | "yellow" | "red" = "green";
