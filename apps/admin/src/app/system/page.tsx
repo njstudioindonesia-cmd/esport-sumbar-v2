@@ -18,9 +18,11 @@ import {
   HardDrive,
   KeyRound,
   Users,
+  FolderArchive,
 } from "lucide-react";
 import { AdminNavbar } from "@/components/AdminNavbar";
-import { Footer, QuietSurface } from "@esport-sumbar/ui";
+import { QuietSurface } from "@esport-sumbar/ui";
+import { getSystemStorageAction, type SystemStorageMetrics } from "@/app/actions/system";
 
 interface BuildInfo {
   app: string;
@@ -36,24 +38,22 @@ interface BuildInfo {
 
 export default function AdminSystemObservabilityPage() {
   const [buildInfo, setBuildInfo] = useState<BuildInfo | null>(null);
-  const [healthStatus, setHealthStatus] = useState<any>(null);
+  const [storageMetrics, setStorageMetrics] = useState<SystemStorageMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastCheck, setLastCheck] = useState<string>("");
 
   const loadSystemData = async () => {
     setIsLoading(true);
     try {
-      const [buildRes, healthRes] = await Promise.all([
+      const [buildRes, storageRes] = await Promise.all([
         fetch("/api/admin/build-info")
           .then((r) => (r.ok && r.headers.get("content-type")?.includes("application/json") ? r.json() : null))
           .catch(() => null),
-        fetch("/api/healthz")
-          .then((r) => (r.ok && r.headers.get("content-type")?.includes("application/json") ? r.json() : null))
-          .catch(() => null),
+        getSystemStorageAction(),
       ]);
 
       if (buildRes) setBuildInfo(buildRes);
-      if (healthRes) setHealthStatus(healthRes);
+      if (storageRes.success) setStorageMetrics(storageRes.data);
       setLastCheck(new Date().toLocaleTimeString("id-ID"));
     } catch (err) {
       console.error("Gagal memuat info sistem:", err);
@@ -78,12 +78,21 @@ export default function AdminSystemObservabilityPage() {
   const quotas = [
     {
       title: "Penyimpanan Berkas Bukti",
-      used: "1.2 GB",
-      limit: "10 GB",
-      pct: 12,
-      note: "Bucket privat berkas verifikasi digital",
+      used: storageMetrics?.formattedProofSize || "0 Bytes (0 berkas)",
+      limit: storageMetrics?.formattedLimit || "10 GB",
+      pct: storageMetrics ? Math.max(storageMetrics.percentUsed, 0.1) : 0,
+      note: "Bucket privat verifikasi digital di Supabase Live",
       icon: HardDrive,
       color: "text-blue-400",
+    },
+    {
+      title: "Total Storage Supabase",
+      used: storageMetrics?.formattedTotalUsed || "0 Bytes",
+      limit: "10 GB",
+      pct: storageMetrics ? Math.max(storageMetrics.percentUsed, 0.1) : 0,
+      note: "Akumulasi seluruh bucket (avatars, proofs, gallery)",
+      icon: FolderArchive,
+      color: "text-purple-400",
     },
     {
       title: "API Gateway Rate Limit",
@@ -102,15 +111,6 @@ export default function AdminSystemObservabilityPage() {
       note: "URL bertanda tangan pendek bukti telaah",
       icon: KeyRound,
       color: "text-amber-400",
-    },
-    {
-      title: "Sesi Admin Aktif (MFA Enforced)",
-      used: "1 Sesi",
-      limit: "5 Bersamaan",
-      pct: 20,
-      note: "Sesi administratif terproteksi AAL2",
-      icon: Users,
-      color: "text-pink-400",
     },
   ];
 
@@ -132,7 +132,7 @@ export default function AdminSystemObservabilityPage() {
               Kesehatan Sistem &amp; Info Build
             </h1>
             <p className="text-xs text-white/50 mt-1">
-              Pemantauan paritas deployment, hash commit, integritas microservices, kuota, dan penegakan MFA.
+              Pemantauan paritas deployment, hash commit, integritas microservices, kuota riil Supabase, dan penegakan MFA.
             </p>
           </div>
 
@@ -147,7 +147,7 @@ export default function AdminSystemObservabilityPage() {
           </button>
         </div>
 
-        {/* 1. MFA ENFORCEMENT & SECURITY BANNER (MANDATE 9.4) */}
+        {/* 1. MFA ENFORCEMENT & SECURITY BANNER */}
         <QuietSurface radius="2xl" elevation="raised" className="p-6 border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-[#0B0E17] to-transparent">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3.5">
@@ -164,7 +164,7 @@ export default function AdminSystemObservabilityPage() {
                   </span>
                 </div>
                 <p className="text-xs text-white/60 leading-relaxed max-w-3xl">
-                  Sesuai Mandat 9.4, seluruh sesi panel admin wajib menegakkan Autentikasi Dua Faktor (TOTP/MFA). Sesi administratif tanpa MFA terpasang secara otomatis ditolak dari pengambilan keputusan verifikasi atau perubahan data platform.
+                  Seluruh sesi panel admin menegakkan Autentikasi Dua Faktor (TOTP/MFA). Sesi administratif tanpa MFA terpasang secara otomatis ditolak dari pengambilan keputusan verifikasi atau perubahan data platform.
                 </p>
               </div>
             </div>
@@ -178,7 +178,7 @@ export default function AdminSystemObservabilityPage() {
           </div>
         </QuietSurface>
 
-        {/* 2. Build Info Card (Paritas Deployment D11/D12) */}
+        {/* 2. Build Info Card */}
         <QuietSurface radius="3xl" elevation="raised" className="p-6 sm:p-8">
           <h2 className="text-sm font-heading font-black uppercase text-white tracking-wider mb-4 flex items-center gap-2">
             <GitCommit className="w-4 h-4 text-[#FF1752]" />
@@ -189,7 +189,7 @@ export default function AdminSystemObservabilityPage() {
             <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06]">
               <span className="text-[10px] text-white/40 block mb-1 uppercase">Commit Hash (HEAD)</span>
               <span className="text-[#D4AF37] font-bold text-sm truncate block">
-                {buildInfo?.commitHash?.slice(0, 10) || "0d2311b"}
+                {buildInfo?.commitHash?.slice(0, 10) || "9deae7a"}
               </span>
               <span className="text-[10px] text-white/40 mt-1 block">
                 Branch: {buildInfo?.commitBranch || "main"}
@@ -269,12 +269,17 @@ export default function AdminSystemObservabilityPage() {
           </div>
         </QuietSurface>
 
-        {/* 4. Quotas & Resource Allocation (Mandate 9.4) */}
+        {/* 4. Quotas & Resource Allocation (Live Supabase Storage) */}
         <QuietSurface radius="3xl" elevation="raised" className="p-6 sm:p-8">
-          <h2 className="text-sm font-heading font-black uppercase text-white tracking-wider mb-4 flex items-center gap-2">
-            <HardDrive className="w-4 h-4 text-amber-400" />
-            <span>Alokasi &amp; Batasan Kuota Sistem (Quotas)</span>
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-heading font-black uppercase text-white tracking-wider flex items-center gap-2">
+              <HardDrive className="w-4 h-4 text-amber-400" />
+              <span>Alokasi &amp; Batasan Kuota Sistem (Live Supabase)</span>
+            </h2>
+            <span className="text-[10px] font-mono text-white/40">
+              Sinkronisasi Storage Supabase
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {quotas.map((q) => {
@@ -297,7 +302,7 @@ export default function AdminSystemObservabilityPage() {
                     <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-emerald-400 transition-all"
-                        style={{ width: `${q.pct}%` }}
+                        style={{ width: `${Math.min(q.pct, 100)}%` }}
                       />
                     </div>
                   </div>
@@ -307,9 +312,33 @@ export default function AdminSystemObservabilityPage() {
               );
             })}
           </div>
+
+          {/* Rincian Bucket Storage Supabase */}
+          {storageMetrics && storageMetrics.buckets.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-white/[0.06]">
+              <h3 className="text-xs font-mono font-bold text-white/70 uppercase mb-3 flex items-center gap-2">
+                <Database className="w-3.5 h-3.5 text-[#D4AF37]" />
+                Rincian Bucket Supabase Storage Live ({storageMetrics.buckets.length} Bucket)
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                {storageMetrics.buckets.map((b) => (
+                  <div
+                    key={b.name}
+                    className="p-3 rounded-xl bg-black/20 border border-white/5 flex flex-col gap-1 text-xs font-mono"
+                  >
+                    <span className="text-[#D4AF37] font-bold text-[11px] truncate">{b.name}</span>
+                    <div className="flex justify-between items-center text-[10px] text-white/50 mt-1">
+                      <span>{b.fileCount} berkas</span>
+                      <span className="text-white font-semibold">{b.formattedSize}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </QuietSurface>
 
-        {/* 5. Cache & Isolasi Klien Status */}
+        {/* 5. Isolasi Arsitektur BFF */}
         <QuietSurface radius="2xl" elevation="raised" className="p-6 flex items-start gap-4 text-xs text-white/70">
           <Shield className="w-5 h-5 text-[#D4AF37] shrink-0 mt-0.5" />
           <div className="leading-relaxed">
