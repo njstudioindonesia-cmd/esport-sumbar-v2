@@ -89,17 +89,17 @@ export async function transitionVerificationAction(
       return { success: false, error: "Profil target tidak dapat diidentifikasi." };
     }
 
-    // Ambil data profil jika account_id belum diketahui
-    if (!targetAccountId) {
-      const { data: profData } = await adminDb
-        .from("profiles")
-        .select("id, account_id, verification_status")
-        .eq("id", targetProfileId)
-        .maybeSingle();
+    // Ambil data profil jika account_id atau region_id belum diketahui
+    let targetRegionId: string | null = null;
+    const { data: profData } = await adminDb
+      .from("profiles")
+      .select("id, account_id, region_id, verification_status")
+      .eq("id", targetProfileId)
+      .maybeSingle();
 
-      if (profData) {
-        targetAccountId = profData.account_id;
-      }
+    if (profData) {
+      targetAccountId = profData.account_id;
+      targetRegionId = profData.region_id;
     }
 
     // 2. Integritas Admin (Bagian 11.2): Admin dilarang memverifikasi atau mengubah status akun miliknya sendiri
@@ -167,6 +167,7 @@ export async function transitionVerificationAction(
           .from("verification_requests")
           .insert({
             profile_id: targetProfileId,
+            region_id: targetRegionId || "reg-pdg",
             status: input.newStatus,
             submitted_at: now,
             decided_at: now,
