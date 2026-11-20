@@ -30,7 +30,6 @@ export function GlassNav({
   items = [
     { href: "/", label: "Beranda" },
     { href: "/explore", label: "Jelajah" },
-    { href: "/ecosystem", label: "Ekosistem" },
     { href: "/tournaments", label: "Turnamen" },
     { href: "/news", label: "Berita" },
   ],

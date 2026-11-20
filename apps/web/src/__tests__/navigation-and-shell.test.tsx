@@ -33,7 +33,7 @@ describe("Kerangka Aplikasi dan Navigasi V3 (Bagian 6)", () => {
       expect(html).toContain('aria-label="Navigasi Utama"');
       expect(html).toContain("Beranda");
       expect(html).toContain("Jelajah");
-      expect(html).toContain("Ekosistem");
+      expect(html).not.toContain("Ekosistem");
       if (FLAGS.ENABLE_TOURNAMENTS) {
         expect(html).toContain("Turnamen");
       }

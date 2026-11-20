@@ -121,8 +121,8 @@ export function Footer() {
             <span className="font-bold text-white uppercase tracking-wider text-xs mb-1">
               Ekosistem & Warta
             </span>
-            <Link href="/ecosystem" className="hover:text-white transition-colors">
-              Peta Ekosistem
+            <Link href="/explore" className="hover:text-white transition-colors">
+              Direktori Jelajah
             </Link>
             {FLAGS.ENABLE_TOURNAMENTS && (
               <Link href="/tournaments" className="hover:text-white transition-colors">

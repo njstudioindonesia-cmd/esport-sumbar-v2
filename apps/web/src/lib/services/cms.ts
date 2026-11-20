@@ -99,9 +99,8 @@ function getFallbackNavItems(location?: NavLocation): NavItem[] {
     return [
       { id: "nav-1", location: "header", label: "Beranda", href: "/", order_index: 0, is_visible: true, is_external: false, target_role: "all" },
       { id: "nav-2", location: "header", label: "Direktori", href: "/explore", order_index: 1, is_visible: true, is_external: false, target_role: "all" },
-      { id: "nav-3", location: "header", label: "Ekosistem", href: "/ecosystem", order_index: 2, is_visible: true, is_external: false, target_role: "all" },
-      { id: "nav-4", location: "header", label: "Berita", href: "/news", order_index: 3, is_visible: true, is_external: false, target_role: "all" },
-      { id: "nav-5", location: "header", label: "Standar Verifikasi", href: "/verification-standard", order_index: 4, is_visible: true, is_external: false, target_role: "all" },
+      { id: "nav-4", location: "header", label: "Berita", href: "/news", order_index: 2, is_visible: true, is_external: false, target_role: "all" },
+      { id: "nav-5", location: "header", label: "Standar Verifikasi", href: "/verification-standard", order_index: 3, is_visible: true, is_external: false, target_role: "all" },
     ];
   }
   return [

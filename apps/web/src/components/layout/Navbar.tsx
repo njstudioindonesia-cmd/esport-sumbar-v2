@@ -38,7 +38,6 @@ export function Navbar() {
   const navLinks = [
     { href: "/", label: "Beranda" },
     { href: "/explore", label: "Jelajah", icon: Compass },
-    { href: "/ecosystem", label: "Ekosistem", icon: Network },
     ...(FLAGS.ENABLE_TOURNAMENTS ? [{ href: "/tournaments", label: "Turnamen", icon: Trophy }] : []),
     { href: "/news", label: "Berita", icon: Newspaper },
     { href: "/regions", label: "Daerah", icon: MapPin },

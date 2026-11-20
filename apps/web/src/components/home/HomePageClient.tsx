@@ -727,9 +727,9 @@ export function HomePageClient({
                 </p>
               </div>
 
-              <Link href="/ecosystem">
+              <Link href="/explore">
                 <GlassButton variant="secondary" size="sm" className="font-mono text-xs">
-                  <span>Lihat Peta Lengkap</span>
+                  <span>Jelajahi Direktori</span>
                   <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
                 </GlassButton>
               </Link>
