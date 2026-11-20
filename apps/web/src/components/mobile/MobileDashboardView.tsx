@@ -73,7 +73,7 @@ export function MobileDashboardView() {
           displayName: activeProfile.displayName,
           ign: activeProfile.ign || undefined,
           role: activeProfile.roleName || (entityType === "team" ? "Organisasi Tim" : "Athlete"),
-          game: activeProfile.mainGameName || "Esport",
+          game: (activeProfile.attributes?.game_division as string) || activeProfile.mainGameName || "Esport",
           region: { name: activeProfile.regionName, code: activeProfile.regionCode },
           esportId: activeProfile.esportId,
           avatarUrl: activeProfile.avatarUrl || undefined,
@@ -308,7 +308,7 @@ export function MobileDashboardView() {
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="p-2.5 rounded-xl bg-[#161A24]">
                 <span className="text-[9px] font-mono text-white/40 block">Divisi Game</span>
-                <span className="font-bold text-white truncate block">{activeProfile?.mainGameName || "Esport"}</span>
+                <span className="font-bold text-white truncate block">{(activeProfile?.attributes?.game_division as string) || activeProfile?.mainGameName || "Esport"}</span>
               </div>
               <div className="p-2.5 rounded-xl bg-[#161A24]">
                 <span className="text-[9px] font-mono text-white/40 block">Wilayah Asal</span>

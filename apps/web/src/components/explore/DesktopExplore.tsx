@@ -75,7 +75,7 @@ export function DesktopExplore() {
                   displayName: p.displayName,
                   ign: p.ign || undefined,
                   role: p.roleName || "Member",
-                  game: p.mainGameName || "Esport",
+                  game: (p.attributes as any)?.game_division || p.mainGameName || "Esport",
                   team: (p.attributes as any)?.team_name
                     ? { name: (p.attributes as any).team_name }
                     : undefined,

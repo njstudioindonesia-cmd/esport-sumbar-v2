@@ -51,7 +51,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
           displayName: profiles[0].displayName,
           ign: profiles[0].ign || undefined,
           role: profiles[0].roleName || "Athlete",
-          game: profiles[0].mainGameName || "Esport",
+          game: (profiles[0].attributes as any)?.game_division || profiles[0].mainGameName || "Esport",
           team: (profiles[0].attributes as any)?.team_name
             ? { name: (profiles[0].attributes as any).team_name }
             : undefined,

@@ -190,9 +190,36 @@ export function MobileCardWizard() {
 
   // Active game details
   const activeGame = useMemo(() => {
-    const gameId = attributes.game_id || attributes.main_game_id || "mlbb";
-    return OFFICIAL_GAMES.find((g) => g.id === gameId) || OFFICIAL_GAMES[0];
-  }, [attributes.game_id, attributes.main_game_id]);
+    // 1. Explicit game_id / main_game_id
+    const explicitId = attributes.game_id || attributes.main_game_id;
+    if (explicitId) {
+      const found = OFFICIAL_GAMES.find((g) => g.id === explicitId || g.slug === explicitId);
+      if (found) return found;
+    }
+
+    // 2. Divisi game tim (game_division)
+    if (attributes.game_division) {
+      const div = String(attributes.game_division).trim().toLowerCase();
+      const found = OFFICIAL_GAMES.find(
+        (g) =>
+          g.name.toLowerCase() === div ||
+          g.id.toLowerCase() === div ||
+          g.slug.toLowerCase() === div ||
+          g.shortName.toLowerCase() === div
+      );
+      if (found) return found;
+    }
+
+    // 3. Spesialisasi game pelatih (game_specialization)
+    if (Array.isArray(attributes.game_specialization) && attributes.game_specialization.length > 0) {
+      const specId = attributes.game_specialization[0];
+      const found = OFFICIAL_GAMES.find((g) => g.id === specId || g.slug === specId);
+      if (found) return found;
+    }
+
+    // 4. Default aman: game-mlbb atau entri game pertama
+    return OFFICIAL_GAMES.find((g) => g.id === "game-mlbb" || g.slug === "mlbb") || OFFICIAL_GAMES[0];
+  }, [attributes.game_id, attributes.main_game_id, attributes.game_division, attributes.game_specialization]);
 
   // Skor Kelengkapan & Rarity
   const completenessScore = useMemo(() => {
@@ -288,6 +315,8 @@ export function MobileCardWizard() {
             : undefined,
         metadata: {
           ...attributes,
+          game_id: activeGame.id,
+          game_division: attributes.game_division || activeGame.name,
           cover_url: coverUrl || undefined,
         },
         visibility: {

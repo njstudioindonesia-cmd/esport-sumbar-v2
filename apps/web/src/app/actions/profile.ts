@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import type { EntityType, RarityTier } from "@/lib/supabase/database.types";
 import { calculateCompletenessScore, calculateRarityTier } from "@/lib/entities";
+import { OFFICIAL_GAMES } from "@/data/games";
 
 export interface CreateProfileInput {
   entityType: EntityType;
@@ -176,7 +177,40 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       .replace(/^-+|-+$/g, "");
     const slug = `${cleanName}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // 4. Kalkulasi kelengkapan & rarity tier profil
+    // 4. Resolusi Game Utama yang Akurat (Mendukung game_division tim dan game_specialization pelatih)
+    let resolvedMainGameId = input.mainGameId || null;
+    const rawMeta = { ...(input.metadata || {}) };
+
+    if (!resolvedMainGameId || resolvedMainGameId === "game-hok" || input.entityType === "team") {
+      if (rawMeta.game_division) {
+        const div = String(rawMeta.game_division).trim().toLowerCase();
+        const matched = OFFICIAL_GAMES.find(
+          (g) =>
+            g.name.toLowerCase() === div ||
+            g.id.toLowerCase() === div ||
+            g.slug.toLowerCase() === div ||
+            g.shortName.toLowerCase() === div
+        );
+        if (matched) {
+          resolvedMainGameId = matched.id;
+          rawMeta.game_id = matched.id;
+        }
+      } else if (rawMeta.game_id) {
+        const gId = String(rawMeta.game_id).trim();
+        const matched = OFFICIAL_GAMES.find((g) => g.id === gId || g.slug === gId);
+        if (matched) {
+          resolvedMainGameId = matched.id;
+        }
+      } else if (Array.isArray(rawMeta.game_specialization) && rawMeta.game_specialization.length > 0) {
+        const sId = String(rawMeta.game_specialization[0]).trim();
+        const matched = OFFICIAL_GAMES.find((g) => g.id === sId || g.slug === sId);
+        if (matched) {
+          resolvedMainGameId = matched.id;
+        }
+      }
+    }
+
+    // Kalkulasi kelengkapan & rarity tier profil
     const completeness = calculateCompletenessScore(
       input.entityType,
       {
@@ -184,9 +218,9 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
         region_id: cleanRegionId,
         avatar_url: input.avatarUrl,
         bio: input.bio,
-        main_game_id: input.mainGameId,
+        main_game_id: resolvedMainGameId || undefined,
       },
-      input.metadata || {}
+      rawMeta
     );
 
     const rarityTier: RarityTier = calculateRarityTier({
@@ -196,7 +230,6 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
     });
 
     // 5. Sanitasi atribut publik (Keluarkan data kontak privat sebelum simpan ke profiles)
-    const rawMeta = { ...(input.metadata || {}) };
     const publicAttributes: Record<string, unknown> = {};
     const privateKeys = new Set([
       "whatsapp",
@@ -226,7 +259,7 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
         display_name: cleanDisplayName,
         ign: input.ign?.trim() || null,
         region_id: cleanRegionId,
-        main_game_id: input.mainGameId || null,
+        main_game_id: resolvedMainGameId || null,
         role_name: input.roleName || null,
         avatar_url: input.avatarUrl || null,
         avatar_path: input.avatarUrl || null,
@@ -519,19 +552,47 @@ export async function updateProfileAction(
       }
     }
 
+    // Resolusi game bila ada perubahan game_division atau game_id di metadata
+    let updatedGameId: string | undefined = undefined;
+    if (rawMeta.game_division) {
+      const div = String(rawMeta.game_division).trim().toLowerCase();
+      const matched = OFFICIAL_GAMES.find(
+        (g) =>
+          g.name.toLowerCase() === div ||
+          g.id.toLowerCase() === div ||
+          g.slug.toLowerCase() === div ||
+          g.shortName.toLowerCase() === div
+      );
+      if (matched) {
+        updatedGameId = matched.id;
+        publicAttrs.game_id = matched.id;
+      }
+    } else if (rawMeta.game_id) {
+      const gId = String(rawMeta.game_id).trim();
+      const matched = OFFICIAL_GAMES.find((g) => g.id === gId || g.slug === gId);
+      if (matched) updatedGameId = matched.id;
+    }
+
     // 4. Update tabel profiles
+    const profileUpdates: Record<string, any> = {
+      display_name: input.displayName.trim(),
+      ign: input.ign?.trim() || null,
+      bio: input.bio?.trim() || null,
+      role_name: input.roleName || null,
+      avatar_url: input.avatarUrl || undefined,
+      attributes: publicAttrs as any,
+      metadata_jsonb: publicAttrs as any,
+      verification_status: newStatus as any,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (updatedGameId) {
+      profileUpdates.main_game_id = updatedGameId;
+    }
+
     const { error: updateErr } = await supabase
       .from("profiles")
-      .update({
-        display_name: input.displayName.trim(),
-        ign: input.ign?.trim() || null,
-        bio: input.bio?.trim() || null,
-        role_name: input.roleName || null,
-        avatar_url: input.avatarUrl || undefined,
-        attributes: publicAttrs as any,
-        verification_status: newStatus as any,
-        updated_at: new Date().toISOString(),
-      })
+      .update(profileUpdates as any)
       .eq("id", profileId)
       .eq("account_id", userId);
 

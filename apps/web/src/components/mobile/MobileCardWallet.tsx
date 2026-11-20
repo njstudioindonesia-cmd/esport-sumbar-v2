@@ -56,7 +56,7 @@ export function MobileCardWallet() {
                   name: p.regionName || "Sumatera Barat",
                   code: p.regionCode || "SB",
                 },
-                game: p.mainGameName || "Esport",
+                game: (p.attributes as any)?.game_division || p.mainGameName || "Esport",
                 role: p.roleName || undefined,
               },
             }));

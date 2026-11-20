@@ -636,8 +636,20 @@ export function DynamicEntityFields({
                 <FieldBadge required={true} visibility="PB" />
               </div>
               <select
-                value={attributes.game_division || OFFICIAL_GAMES[0].name}
-                onChange={(e) => onChange("game_division", e.target.value)}
+                aria-label="Divisi Game Utama"
+                value={
+                  attributes.game_division ||
+                  (attributes.game_id ? OFFICIAL_GAMES.find((g) => g.id === attributes.game_id)?.name : undefined) ||
+                  OFFICIAL_GAMES[0].name
+                }
+                onChange={(e) => {
+                  const selectedVal = e.target.value;
+                  const targetGame = OFFICIAL_GAMES.find((g) => g.name === selectedVal || g.id === selectedVal);
+                  onChange("game_division", targetGame ? targetGame.name : selectedVal);
+                  if (targetGame) {
+                    onChange("game_id", targetGame.id);
+                  }
+                }}
                 className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
               >
                 {OFFICIAL_GAMES.map((game) => (
