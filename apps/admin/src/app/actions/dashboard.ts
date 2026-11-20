@@ -41,7 +41,10 @@ export async function getDashboardMetricsAction(): Promise<{
       { data: unverifiedProfiles },
       { data: verificationRequests },
     ] = await Promise.all([
-      admin.from("accounts").select("*", { count: "exact", head: true }),
+      admin
+        .from("accounts")
+        .select("*", { count: "exact", head: true })
+        .neq("is_active", false),
       admin.from("profiles").select("*", { count: "exact", head: true }),
       admin.from("profiles").select("*", { count: "exact", head: true }).eq("verification_status", "verified"),
       admin.from("articles").select("*", { count: "exact", head: true }).eq("status", "published"),
