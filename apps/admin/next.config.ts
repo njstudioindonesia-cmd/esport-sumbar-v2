@@ -34,15 +34,6 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  async rewrites() {
-    const webUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${webUrl}/api/:path*`,
-      },
-    ];
-  },
   turbopack: {
     rules: {
       "*.css": {

@@ -22,7 +22,7 @@ import {
 import { AdminNavbar } from "@/components/AdminNavbar";
 import { Footer, QuietSurface } from "@esport-sumbar/ui";
 import { REGIONS_DETAIL } from "@esport-sumbar/contracts";
-import { saveArticleAction, deleteArticleAction } from "@/app/actions/news";
+import { saveArticleAction, deleteArticleAction, getArticlesAction } from "@/app/actions/news";
 import { createClient } from "@/lib/supabase/client";
 
 interface NewsItemWithStats {
@@ -71,34 +71,29 @@ export default function AdminNewsPage() {
   const loadArticles = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/news?status=all&limit=100");
-      if (res.ok) {
-        const json = await res.json();
-        if (json.articles && Array.isArray(json.articles)) {
-          setArticles(
-            json.articles.map((a: any, i: number) => ({
-              id: a.id,
-              slug: a.slug,
-              title: a.title,
-              category: a.category,
-              region: a.regionName || "Sumatera Barat",
-              excerpt: a.summary || (a.content ? a.content.slice(0, 150) + "..." : ""),
-              content: a.content ? [a.content] : [],
-              author: a.authorName || "Redaksi ESPORT SUMBAR",
-              date: new Date(a.publishedAt).toLocaleDateString("id-ID", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              }),
-              readTime: "3 min baca",
-              imageUrl: a.coverImageUrl || "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
-              status: (a.status as any) || "published",
-              views: 120 + i * 35,
-            }))
-          );
-        } else {
-          setArticles([]);
-        }
+      const res = await getArticlesAction();
+      if (res.success && Array.isArray(res.articles)) {
+        setArticles(
+          res.articles.map((a: any, i: number) => ({
+            id: a.id,
+            slug: a.slug,
+            title: a.title,
+            category: a.category,
+            region: a.regions?.name || a.regionName || "Sumatera Barat",
+            excerpt: a.summary || (a.content ? a.content.slice(0, 150) + "..." : ""),
+            content: a.content ? [a.content] : [],
+            author: a.authorName || "Redaksi ESPORT SUMBAR",
+            date: new Date(a.created_at || a.publishedAt || Date.now()).toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            }),
+            readTime: "3 min baca",
+            imageUrl: a.cover_image_url || a.coverImageUrl || "/brand/og-image.png",
+            status: (a.status as any) || "published",
+            views: 120 + i * 35,
+          }))
+        );
       } else {
         setArticles([]);
       }

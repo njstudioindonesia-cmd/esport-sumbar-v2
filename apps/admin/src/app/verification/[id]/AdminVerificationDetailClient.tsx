@@ -22,6 +22,7 @@ import {
 import { AdminNavbar } from "@/components/AdminNavbar";
 import { Footer, QuietSurface, StatusBadge } from "@esport-sumbar/ui";
 import { copy } from "@esport-sumbar/lib";
+import { getVerificationDetailAction, transitionVerificationAction } from "@/app/actions/verification";
 
 interface VerificationDetail {
   id: string;
@@ -69,22 +70,10 @@ export function AdminVerificationDetailClient({
     async function fetchDetail() {
       setIsLoading(true);
       try {
-        // Fetch current user identity to enforce "cannot review own account" rule
-        const meRes = await fetch("/api/auth/me");
-        if (meRes.ok) {
-          const meJson = await meRes.json();
-          if (meJson?.user?.id) setCurrentAdminId(meJson.user.id);
-        }
-
-        const res = await fetch(`/api/admin/verification?id=${encodeURIComponent(id)}`);
-        if (res.ok) {
-          const json = await res.json();
-          const found = json.items?.find((q: any) => q.id === id || q.profileId === id) || json.item;
-          if (found) {
-            setItem(found);
-          } else {
-            setItem(null);
-          }
+        const res = await getVerificationDetailAction(id);
+        if (res.success && res.item) {
+          if (res.currentAdminId) setCurrentAdminId(res.currentAdminId);
+          setItem(res.item as any);
         } else {
           setItem(null);
         }
@@ -125,21 +114,15 @@ export function AdminVerificationDetailClient({
     setFeedback(null);
 
     try {
-      const res = await fetch("/api/admin/verification/decide", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          verificationId: item?.id,
-          profileId: item?.profileId,
-          decision,
-          reason,
-          notes: adminNotes,
-        }),
+      const res = await transitionVerificationAction({
+        requestId: item?.id || id,
+        newStatus: decision,
+        reason,
+        notes: adminNotes,
       });
 
-      if (!res.ok) {
-        const errorJson = await res.json();
-        throw new Error(errorJson.error || "Gagal menyimpan keputusan verifikasi.");
+      if (!res.success) {
+        throw new Error(res.error || "Gagal menyimpan keputusan verifikasi.");
       }
 
       setFeedback({

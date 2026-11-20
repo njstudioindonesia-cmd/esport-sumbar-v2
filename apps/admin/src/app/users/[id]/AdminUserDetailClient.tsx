@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { AdminNavbar } from "@/components/AdminNavbar";
 import { Footer, QuietSurface, StatusBadge } from "@esport-sumbar/ui";
+import { getAdminUserDetailAction } from "@/app/actions/users";
 
 interface UserDetail {
   id: string;
@@ -46,15 +47,9 @@ export function AdminUserDetailClient({ id }: { id: string }) {
     async function loadUser() {
       setIsLoading(true);
       try {
-        const res = await fetch(`/api/admin/accounts?id=${encodeURIComponent(id)}`);
-        if (res.ok) {
-          const json = await res.json();
-          const found = json.accounts?.find((a: any) => a.id === id) || json.account;
-          if (found) {
-            setUser(found);
-          } else {
-            setUser(null);
-          }
+        const res = await getAdminUserDetailAction(id);
+        if (res.success && res.user) {
+          setUser(res.user as any);
         } else {
           setUser(null);
         }

@@ -120,3 +120,19 @@ export async function deleteArticleAction(id: string) {
     return { success: false, error: errorMsg };
   }
 }
+
+export async function getArticlesAction() {
+  try {
+    const adminDb = createAdminClient();
+    const { data: articles, error } = await adminDb
+      .from("articles")
+      .select("*, regions(name, code)")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return { success: true, articles: articles || [] };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Gagal memuat artikel";
+    return { success: false, articles: [], error: errorMsg };
+  }
+}

@@ -59,3 +59,46 @@ export async function getAdminUsersAction(): Promise<{
     return { success: false, users: [], error: errorMsg };
   }
 }
+
+export async function getAdminUserDetailAction(id: string) {
+  try {
+    const admin = createAdminClient();
+    const { data: account, error: accError } = await admin
+      .from("accounts")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (accError || !account) {
+      return { success: false, user: null, error: accError?.message || "Akun tidak ditemukan" };
+    }
+
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("*, regions(name, code), games(name, short_name)")
+      .eq("account_id", id)
+      .maybeSingle();
+
+    return {
+      success: true,
+      user: {
+        id: account.id,
+        email: account.email || "-",
+        role: account.role || "user",
+        createdAt: account.created_at,
+        displayName: profile?.display_name || account.email?.split("@")[0] || "Pengguna",
+        ign: profile?.ign || "-",
+        branch: profile?.entity_type || "-",
+        region: (profile as any)?.regions?.name || "-",
+        status: profile?.verification_status || "unverified",
+        esportId: profile?.esport_id || "-",
+        avatarUrl: profile?.avatar_url,
+        bio: profile?.bio,
+        profile,
+      },
+    };
+  } catch (err: unknown) {
+    const errorMsg = err instanceof Error ? err.message : "Gagal memuat rincian akun";
+    return { success: false, user: null, error: errorMsg };
+  }
+}

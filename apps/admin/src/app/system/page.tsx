@@ -44,8 +44,12 @@ export default function AdminSystemObservabilityPage() {
     setIsLoading(true);
     try {
       const [buildRes, healthRes] = await Promise.all([
-        fetch("/api/admin/build-info").then((r) => (r.ok ? r.json() : null)),
-        fetch("/api/healthz").then((r) => (r.ok ? r.json() : null)),
+        fetch("/api/admin/build-info")
+          .then((r) => (r.ok && r.headers.get("content-type")?.includes("application/json") ? r.json() : null))
+          .catch(() => null),
+        fetch("/api/healthz")
+          .then((r) => (r.ok && r.headers.get("content-type")?.includes("application/json") ? r.json() : null))
+          .catch(() => null),
       ]);
 
       if (buildRes) setBuildInfo(buildRes);
