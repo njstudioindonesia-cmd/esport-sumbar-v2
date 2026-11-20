@@ -40,18 +40,35 @@ vi.mock("@/lib/supabase/server", () => {
               },
               error: null,
             }),
+            maybeSingle: vi.fn().mockResolvedValue({
+              data: {
+                id: "req-self-1",
+                profile_id: "prof-self-1",
+                status: "pending",
+                profiles: {
+                  id: "prof-self-1",
+                  account_id: "admin-user-123",
+                },
+              },
+              error: null,
+            }),
           }),
         }),
         update: vi.fn().mockReturnValue({
           eq: vi.fn().mockResolvedValue({ error: null }),
         }),
+        insert: vi.fn().mockResolvedValue({ error: null }),
       };
     }
     return {
       select: vi.fn().mockReturnValue({
         eq: vi.fn().mockReturnValue({
           single: vi.fn().mockResolvedValue({ data: null, error: null }),
+          maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
         }),
+      }),
+      update: vi.fn().mockReturnValue({
+        eq: vi.fn().mockResolvedValue({ error: null }),
       }),
       insert: vi.fn().mockResolvedValue({ error: null }),
     };

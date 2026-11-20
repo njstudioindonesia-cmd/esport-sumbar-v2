@@ -6,6 +6,7 @@ import { recordAuditLog } from "@esport-sumbar/domain";
 
 export interface VerificationReviewInput {
   requestId: string;
+  profileId?: string;
   newStatus: "verified" | "revision_requested" | "rejected" | "suspended";
   reason: string;
   notes?: string;
@@ -24,8 +25,8 @@ export interface VerificationActionResult {
 export async function transitionVerificationAction(
   input: VerificationReviewInput
 ): Promise<VerificationActionResult> {
-  if (!input.requestId || !input.newStatus) {
-    return { success: false, error: "ID permohonan dan target status wajib ditentukan." };
+  if ((!input.requestId && !input.profileId) || !input.newStatus) {
+    return { success: false, error: "ID permohonan/profil dan target status wajib ditentukan." };
   }
 
   if (
@@ -43,103 +44,175 @@ export async function transitionVerificationAction(
     // Use admin client with service role to execute review safely
     const adminDb = createAdminClient();
 
-    // 1. Integritas Admin (Bagian 11.2): Admin dilarang memverifikasi atau mengubah status akun miliknya sendiri
-    const { data: requestRecord } = await adminDb
-      .from("verification_requests")
-      .select("id, profile_id, status, profiles(id, account_id)")
-      .eq("id", input.requestId)
-      .single();
+    // 1. Resolusi Target Profile & Request Record
+    let requestRecord: any = null;
+    let targetProfileId = input.profileId;
+    let targetAccountId: string | null = null;
 
-    if (requestRecord) {
-      const targetAccountId = (requestRecord as any)?.profiles?.account_id;
-      const targetProfileId = (requestRecord as any)?.profile_id;
-      if (reviewerId && (reviewerId === targetAccountId || reviewerId === targetProfileId)) {
-        return {
-          success: false,
-          error: "Pelanggaran Integritas: Administrator dilarang memverifikasi atau mengubah status akun miliknya sendiri.",
-        };
+    // Cek verification_requests berdasarkan requestId
+    if (input.requestId) {
+      const { data: reqById } = await adminDb
+        .from("verification_requests")
+        .select("id, profile_id, status, profiles(id, account_id)")
+        .eq("id", input.requestId)
+        .maybeSingle();
+
+      if (reqById) {
+        requestRecord = reqById;
+        targetProfileId = reqById.profile_id;
+        targetAccountId = (reqById as any)?.profiles?.account_id || null;
       }
     }
 
-    // 2. Eksekusi pembaruan status verifikasi langsung melalui Service Role
+    // Jika tidak ditemukan di verification_requests berdasarkan id, periksa apakah input.requestId adalah profile_id
+    if (!requestRecord && input.requestId) {
+      const { data: reqByProf } = await adminDb
+        .from("verification_requests")
+        .select("id, profile_id, status, profiles(id, account_id)")
+        .eq("profile_id", input.requestId)
+        .maybeSingle();
+
+      if (reqByProf) {
+        requestRecord = reqByProf;
+        targetProfileId = reqByProf.profile_id;
+        targetAccountId = (reqByProf as any)?.profiles?.account_id || null;
+      } else {
+        targetProfileId = input.requestId;
+      }
+    }
+
+    if (!targetProfileId && input.profileId) {
+      targetProfileId = input.profileId;
+    }
+
+    if (!targetProfileId) {
+      return { success: false, error: "Profil target tidak dapat diidentifikasi." };
+    }
+
+    // Ambil data profil jika account_id belum diketahui
+    if (!targetAccountId) {
+      const { data: profData } = await adminDb
+        .from("profiles")
+        .select("id, account_id, verification_status")
+        .eq("id", targetProfileId)
+        .maybeSingle();
+
+      if (profData) {
+        targetAccountId = profData.account_id;
+      }
+    }
+
+    // 2. Integritas Admin (Bagian 11.2): Admin dilarang memverifikasi atau mengubah status akun miliknya sendiri
+    if (reviewerId && (reviewerId === targetAccountId || reviewerId === targetProfileId)) {
+      return {
+        success: false,
+        error: "Pelanggaran Integritas: Administrator dilarang memverifikasi atau mengubah status akun miliknya sendiri.",
+      };
+    }
+
+    // 3. Eksekusi pembaruan status verifikasi langsung melalui Service Role
     const now = new Date().toISOString();
-    const targetAccountId = (requestRecord as any)?.profiles?.account_id;
-    const targetProfileId = (requestRecord as any)?.profile_id;
 
     // Generate nomor lencana resmi bila disetujui
     const generatedBadgeNo =
       input.badgeNo ||
       (input.newStatus === "verified"
-        ? `ESP-SB-VER-${new Date().getFullYear()}-${(targetProfileId || "0001").slice(-4).toUpperCase()}`
+        ? `ESP-SB-VER-${new Date().getFullYear()}-${targetProfileId.slice(-4).toUpperCase()}`
         : null);
 
-    // Perbarui tabel verification_requests sesuai kolom skema riil Supabase
-    const { error: updateErr } = await adminDb
-      .from("verification_requests")
-      .update({
-        status: input.newStatus,
-        decided_at: now,
-        current_reviewer_id: reviewerId || null,
-        notes: input.reason || input.notes || null,
-        updated_at: now,
-      } as any)
-      .eq("id", input.requestId);
+    // Perbarui tabel profiles agar profil publik dan kartu langsung terverifikasi
+    const profileUpdates: any = {
+      verification_status: input.newStatus,
+      updated_at: now,
+    };
 
-    if (updateErr) {
-      return { success: false, error: updateErr.message };
+    if (input.newStatus === "verified") {
+      profileUpdates.verified_at = now;
+      profileUpdates.verified_badge_no = generatedBadgeNo;
+    } else {
+      profileUpdates.verified_at = null;
+      profileUpdates.verified_badge_no = null;
     }
 
-    // Perbarui status pada tabel profiles agar profil publik langsung terverifikasi/terupdate
-    if (targetProfileId) {
-      const profileUpdates: any = {
-        verification_status: input.newStatus,
-        updated_at: now,
-      };
+    const { error: profErr } = await adminDb
+      .from("profiles")
+      .update(profileUpdates)
+      .eq("id", targetProfileId);
 
-      if (input.newStatus === "verified") {
-        profileUpdates.verified_at = now;
-        if (generatedBadgeNo) {
-          profileUpdates.verified_badge_no = generatedBadgeNo;
-        }
+    if (profErr) {
+      console.error("Gagal memperbarui status profil di Supabase:", profErr);
+      return { success: false, error: `Gagal memperbarui status profil: ${profErr.message}` };
+    }
+
+    // Perbarui atau sisipkan riwayat di verification_requests
+    if (requestRecord) {
+      const { error: updateErr } = await adminDb
+        .from("verification_requests")
+        .update({
+          status: input.newStatus,
+          decided_at: now,
+          current_reviewer_id: reviewerId || null,
+          notes: input.reason || input.notes || null,
+          updated_at: now,
+        } as any)
+        .eq("id", requestRecord.id);
+
+      if (updateErr) {
+        console.warn("Gagal memperbarui verification_requests:", updateErr);
       }
-
-      const { error: profErr } = await adminDb
-        .from("profiles")
-        .update(profileUpdates)
-        .eq("id", targetProfileId);
-
-      if (profErr) {
-        console.error("Gagal sinkronisasi status verifikasi ke profil:", profErr);
+    } else {
+      // Sisipkan baris permohonan agar jejak verifikasi tercatat di tabel verification_requests
+      try {
+        await adminDb
+          .from("verification_requests")
+          .insert({
+            profile_id: targetProfileId,
+            status: input.newStatus,
+            submitted_at: now,
+            decided_at: now,
+            current_reviewer_id: reviewerId || null,
+            notes: input.reason || input.notes || null,
+          } as any);
+      } catch (e: unknown) {
+        console.warn("Gagal menyisipkan entri verification_requests:", e);
       }
     }
 
-    // 3. Jejak Audit Append-Only (Bagian 11.2): Seluruh aksi administratif wajib tercatat
-    await recordAuditLog(adminDb as any, {
-      actorId: reviewerId || "admin-system",
-      actorRole: "admin",
-      action: `verification_${input.newStatus}`,
-      entityType: "verification_request",
-      entityId: input.requestId,
-      details: {
-        previousStatus: (requestRecord as any)?.status,
-        newStatus: input.newStatus,
-        reason: input.reason || null,
-        notes: input.notes || null,
-        badgeNo: input.badgeNo || null,
-      },
-    });
+    // 4. Jejak Audit Append-Only (Bagian 11.2): Seluruh aksi administratif wajib tercatat
+    try {
+      await recordAuditLog(adminDb as any, {
+        actorId: reviewerId || "admin-system",
+        actorRole: "admin",
+        action: `verification_${input.newStatus}`,
+        entityType: "verification_request",
+        entityId: requestRecord ? requestRecord.id : targetProfileId,
+        details: {
+          targetProfileId,
+          targetAccountId,
+          previousStatus: requestRecord?.status,
+          newStatus: input.newStatus,
+          reason: input.reason || null,
+          notes: input.notes || null,
+          badgeNo: generatedBadgeNo,
+        },
+      });
+    } catch (auditErr) {
+      console.warn("Audit log warning:", auditErr);
+    }
 
     revalidatePath("/verification");
+    revalidatePath("/users");
     revalidatePath("/");
 
     return {
       success: true,
-      message: `Status permohonan berhasil diperbarui menjadi "${input.newStatus}".`,
+      message: `Status verifikasi berhasil diperbarui menjadi "${input.newStatus}".`,
       newStatus: input.newStatus,
-      badgeNo: input.badgeNo,
+      badgeNo: generatedBadgeNo || undefined,
     };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : "Terjadi kesalahan internal";
+    console.error("transitionVerificationAction error:", errorMsg);
     return { success: false, error: errorMsg };
   }
 }
@@ -149,16 +222,18 @@ export async function getVerificationQueueAction() {
     const adminDb = createAdminClient();
 
     // 1. Ambil permohonan dari tabel verification_requests
-    const { data: requests, error } = await adminDb
+    const { data: requests, error: reqErr } = await adminDb
       .from("verification_requests")
       .select("id, profile_id, status, submitted_at, notes, evidence_files, profiles(id, account_id, display_name, ign, entity_type, esport_id, rarity_tier, avatar_url, bio, games(name), regions(name, code))")
       .order("submitted_at", { ascending: true });
 
     const items: any[] = [];
+    const seenProfileIds = new Set<string>();
 
-    if (!error && requests && requests.length > 0) {
+    if (!reqErr && requests && requests.length > 0) {
       requests.forEach((q: any) => {
         const prof = q.profiles || {};
+        if (q.profile_id) seenProfileIds.add(q.profile_id);
         items.push({
           id: q.id,
           profileId: q.profile_id,
@@ -179,20 +254,26 @@ export async function getVerificationQueueAction() {
                 url: f.url || "/brand/og-image.png",
                 fileSize: f.size || "1.2 MB",
               }))
-            : [],
+            : [
+                {
+                  type: "identitas_resmi",
+                  title: "Kartu Digital Terdaftar",
+                  url: prof.avatar_url || "/brand/og-image.png",
+                  fileSize: "100% Data Lengkap",
+                },
+              ],
         });
       });
     }
 
-    // 2. Jika antrean permohonan kosong, sertakan profil unverified agar admin bisa memverifikasi langsung
-    if (items.length === 0) {
-      const { data: unverifiedProfiles } = await adminDb
-        .from("profiles")
-        .select("id, account_id, display_name, ign, entity_type, esport_id, rarity_tier, avatar_url, bio, verification_status, created_at, games(name), regions(name, code)")
-        .neq("verification_status", "verified")
-        .order("created_at", { ascending: false });
+    // 2. Sertakan juga profil yang belum memiliki permohonan resmi di tabel verification_requests
+    const { data: allProfiles } = await adminDb
+      .from("profiles")
+      .select("id, account_id, display_name, ign, entity_type, esport_id, rarity_tier, avatar_url, bio, verification_status, created_at, games(name), regions(name, code)")
+      .order("created_at", { ascending: false });
 
-      (unverifiedProfiles || []).forEach((p: any) => {
+    (allProfiles || []).forEach((p: any) => {
+      if (!seenProfileIds.has(p.id)) {
         items.push({
           id: p.id,
           profileId: p.id,
@@ -205,7 +286,7 @@ export async function getVerificationQueueAction() {
           regionCode: p.regions?.code || "SB",
           status: p.verification_status || "unverified",
           submittedDate: p.created_at || new Date().toISOString(),
-          notes: "Profil terdaftar baru, menunggu kurasi status verifikasi.",
+          notes: "Profil terdaftar baru, verifikasi status langsung.",
           documents: [
             {
               type: "identitas_resmi",
@@ -215,8 +296,8 @@ export async function getVerificationQueueAction() {
             },
           ],
         });
-      });
-    }
+      }
+    });
 
     return { success: true, items };
   } catch (err: unknown) {

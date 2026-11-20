@@ -153,7 +153,7 @@ export default function AdminVerificationQueuePage() {
 
       let matchesStatus = true;
       if (statusFilter === "pending") {
-        matchesStatus = ["submitted", "in_review_regional", "in_review_provincial", "regional_checked"].includes(item.status);
+        matchesStatus = ["submitted", "under_review", "in_review_regional", "in_review_provincial", "regional_checked"].includes(item.status);
       } else if (statusFilter === "verified") {
         matchesStatus = item.status === "verified";
       } else if (statusFilter === "revision") {
@@ -179,6 +179,7 @@ export default function AdminVerificationQueuePage() {
     try {
       const res = await transitionVerificationAction({
         requestId: selectedItem.id,
+        profileId: selectedItem.profileId,
         newStatus: reviewDecision,
         reason: reviewReason.trim() || "Verifikasi berkas dan keabsahan data disetujui oleh ESPORT SUMBAR.",
         notes: adminNotes.trim() || undefined,
@@ -191,11 +192,18 @@ export default function AdminVerificationQueuePage() {
           type: "success",
           text: `Keputusan berhasil disimpan! Status profil kini: "${res.newStatus}"${res.badgeNo ? ` (Nomor: ${res.badgeNo})` : ""}`,
         });
+        setQueueItems((prev) =>
+          prev.map((item) =>
+            item.id === selectedItem.id || item.profileId === selectedItem.profileId
+              ? { ...item, status: reviewDecision }
+              : item
+          )
+        );
         setTimeout(() => {
           setSelectedItem(null);
           setActionMessage(null);
           fetchQueue();
-        }, 1500);
+        }, 1200);
       }
     } catch (err: any) {
       setActionMessage({ type: "error", text: err.message || "Terjadi kesalahan internal" });
