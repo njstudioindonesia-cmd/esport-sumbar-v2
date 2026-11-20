@@ -86,9 +86,9 @@ describe("Apps/Admin: Portal Deployment Tests (ADR 002 & Bagian 11)", () => {
     const html = renderToString(<AdminDashboardPage />);
     expect(html).toContain("Ringkasan Operasional Platform");
     expect(html).toContain("Antrean Verifikasi");
-    expect(html).toContain("Profil Terverifikasi");
+    expect(html).toContain("Profil Terdaftar");
     expect(html).toContain("Artikel Warta Terbit");
-    expect(html).toContain("Sistem Staging Aktif");
+    expect(html).toContain("Supabase Terhubung");
   });
 
   it("AdminSystemStatusPage merender pemantauan infrastruktur", () => {
