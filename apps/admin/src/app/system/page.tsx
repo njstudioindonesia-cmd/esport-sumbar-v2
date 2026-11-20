@@ -41,6 +41,7 @@ export default function AdminSystemObservabilityPage() {
   const [storageMetrics, setStorageMetrics] = useState<SystemStorageMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastCheck, setLastCheck] = useState<string>("");
+  const [isMounted, setIsMounted] = useState(false);
 
   const loadSystemData = async () => {
     setIsLoading(true);
@@ -63,6 +64,7 @@ export default function AdminSystemObservabilityPage() {
   };
 
   useEffect(() => {
+    setIsMounted(true);
     loadSystemData();
   }, []);
 
@@ -143,7 +145,7 @@ export default function AdminSystemObservabilityPage() {
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-mono text-white transition-all self-start sm:self-auto disabled:opacity-50"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-[#D4AF37] ${isLoading ? "animate-spin" : ""}`} />
-            <span>Segarkan Status {lastCheck && `(${lastCheck})`}</span>
+            <span suppressHydrationWarning>Segarkan Status {isMounted && lastCheck ? `(${lastCheck})` : ""}</span>
           </button>
         </div>
 
@@ -188,37 +190,39 @@ export default function AdminSystemObservabilityPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
             <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06]">
               <span className="text-[10px] text-white/40 block mb-1 uppercase">Commit Hash (HEAD)</span>
-              <span className="text-[#D4AF37] font-bold text-sm truncate block">
-                {buildInfo?.commitHash?.slice(0, 10) || "9deae7a"}
+              <span className="text-[#D4AF37] font-bold text-sm truncate block" suppressHydrationWarning>
+                {buildInfo?.commitHash?.slice(0, 10) || "2ddc570"}
               </span>
-              <span className="text-[10px] text-white/40 mt-1 block">
+              <span className="text-[10px] text-white/40 mt-1 block" suppressHydrationWarning>
                 Branch: {buildInfo?.commitBranch || "main"}
               </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06]">
               <span className="text-[10px] text-white/40 block mb-1 uppercase">Versi Aplikasi</span>
-              <span className="text-white font-bold text-sm block">
+              <span className="text-white font-bold text-sm block" suppressHydrationWarning>
                 v{buildInfo?.version || "3.0.0"}
               </span>
-              <span className="text-[10px] text-white/40 mt-1 block">
+              <span className="text-[10px] text-white/40 mt-1 block" suppressHydrationWarning>
                 Next.js {buildInfo?.nextVersion || "16.4.5"}
               </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06]">
               <span className="text-[10px] text-white/40 block mb-1 uppercase">Waktu Build</span>
-              <span className="text-white font-semibold text-xs truncate block">
-                {buildInfo?.buildTime ? new Date(buildInfo.buildTime).toLocaleString("id-ID") : "Baru saja"}
+              <span className="text-white font-semibold text-xs truncate block" suppressHydrationWarning>
+                {isMounted && buildInfo?.buildTime
+                  ? new Date(buildInfo.buildTime).toLocaleString("id-ID")
+                  : "Baru saja"}
               </span>
-              <span className="text-[10px] text-emerald-400 mt-1 block">
-                Node {buildInfo?.nodeVersion || process.version}
+              <span className="text-[10px] text-emerald-400 mt-1 block" suppressHydrationWarning>
+                Node {buildInfo?.nodeVersion || "v22 (LTS)"}
               </span>
             </div>
 
             <div className="p-4 rounded-2xl bg-[#161A24] border border-white/[0.06]">
               <span className="text-[10px] text-white/40 block mb-1 uppercase">Lingkungan Aktif</span>
-              <span className="text-emerald-400 font-bold uppercase text-xs block">
+              <span className="text-emerald-400 font-bold uppercase text-xs block" suppressHydrationWarning>
                 {buildInfo?.environment || "production"}
               </span>
               <span className="text-[10px] text-white/40 mt-1 block truncate">
@@ -296,7 +300,7 @@ export default function AdminSystemObservabilityPage() {
 
                   <div>
                     <div className="flex items-baseline justify-between text-xs mb-1.5 font-mono">
-                      <span className="text-white font-bold">{q.used}</span>
+                      <span className="text-white font-bold" suppressHydrationWarning>{q.used}</span>
                       <span className="text-white/40">Batas: {q.limit}</span>
                     </div>
                     <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
