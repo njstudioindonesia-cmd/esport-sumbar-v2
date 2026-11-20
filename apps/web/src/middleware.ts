@@ -105,7 +105,7 @@ export async function middleware(request: NextRequest) {
         ? "http://localhost:3001"
         : request.nextUrl.hostname.includes("staging")
         ? "https://admin-staging.esportsumbar.com"
-        : "https://admin.esportsumbar.com");
+        : "https://urangdalamesportsumbar.vercel.app");
 
     const subPath = path.replace(/^\/admin/, "") || "/";
     const targetUrl = new URL(subPath, adminBaseUrl);
