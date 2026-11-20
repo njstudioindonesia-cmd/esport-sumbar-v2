@@ -61,32 +61,59 @@ export async function transitionVerificationAction(
       }
     }
 
-    // Call RPC or update record directly
-    const { data, error } = await adminDb.rpc("transition_verification", {
-      p_request_id: input.requestId,
-      p_new_status: input.newStatus,
-      p_rejection_reason: input.reason || null,
-      p_reviewer_id: reviewerId || null,
-    } as any);
+    // 2. Eksekusi pembaruan status verifikasi langsung melalui Service Role
+    const now = new Date().toISOString();
+    const targetAccountId = (requestRecord as any)?.profiles?.account_id;
+    const targetProfileId = (requestRecord as any)?.profile_id;
 
-    if (error) {
-      // Fallback direct update if RPC is missing
-      const { error: updateErr } = await adminDb
-        .from("verification_requests")
-        .update({
-          status: input.newStatus,
-          rejection_reason: input.reason || null,
-          reviewed_by: reviewerId || null,
-          reviewed_at: new Date().toISOString(),
-        } as any)
-        .eq("id", input.requestId);
+    // Generate nomor lencana resmi bila disetujui
+    const generatedBadgeNo =
+      input.badgeNo ||
+      (input.newStatus === "verified"
+        ? `ESP-SB-VER-${new Date().getFullYear()}-${(targetProfileId || "0001").slice(-4).toUpperCase()}`
+        : null);
 
-      if (updateErr) {
-        return { success: false, error: updateErr.message };
+    // Perbarui tabel verification_requests sesuai kolom skema riil Supabase
+    const { error: updateErr } = await adminDb
+      .from("verification_requests")
+      .update({
+        status: input.newStatus,
+        decided_at: now,
+        current_reviewer_id: reviewerId || null,
+        notes: input.reason || input.notes || null,
+        updated_at: now,
+      } as any)
+      .eq("id", input.requestId);
+
+    if (updateErr) {
+      return { success: false, error: updateErr.message };
+    }
+
+    // Perbarui status pada tabel profiles agar profil publik langsung terverifikasi/terupdate
+    if (targetProfileId) {
+      const profileUpdates: any = {
+        verification_status: input.newStatus,
+        updated_at: now,
+      };
+
+      if (input.newStatus === "verified") {
+        profileUpdates.verified_at = now;
+        if (generatedBadgeNo) {
+          profileUpdates.verified_badge_no = generatedBadgeNo;
+        }
+      }
+
+      const { error: profErr } = await adminDb
+        .from("profiles")
+        .update(profileUpdates)
+        .eq("id", targetProfileId);
+
+      if (profErr) {
+        console.error("Gagal sinkronisasi status verifikasi ke profil:", profErr);
       }
     }
 
-    // 2. Jejak Audit Append-Only (Bagian 11.2): Seluruh aksi administratif wajib tercatat
+    // 3. Jejak Audit Append-Only (Bagian 11.2): Seluruh aksi administratif wajib tercatat
     await recordAuditLog(adminDb as any, {
       actorId: reviewerId || "admin-system",
       actorRole: "admin",
