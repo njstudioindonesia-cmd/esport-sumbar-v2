@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { FLAGS } from "@/lib/config/flags";
 import { mapVerificationToCard } from "@/types/card";
+import { mapProfileToCardVariantItem } from "@/lib/cards/mapping";
 import { MobileBottomBar } from "./MobileBottomBar";
 import { EsportCard } from "@/components/card/EsportCard";
 import { BrandLogo, BrandWatermark, IssuedBy, OwnershipNote } from "@/components/brand";
@@ -40,26 +41,7 @@ export function MobileHome({ stats, articles, profiles }: MobileHomeProps) {
 
   // User's Active Hero Card
   const dbHeroCard = profiles && profiles.length > 0
-    ? {
-        id: profiles[0].id,
-        slug: profiles[0].slug,
-        type: profiles[0].entityType,
-        rarity: profiles[0].rarityTier,
-        verification: mapVerificationToCard(profiles[0].verificationStatus),
-        data: {
-          slug: profiles[0].slug,
-          displayName: profiles[0].displayName,
-          ign: profiles[0].ign || undefined,
-          role: profiles[0].roleName || "Athlete",
-          game: (profiles[0].attributes as any)?.game_division || profiles[0].mainGameName || "Esport",
-          team: (profiles[0].attributes as any)?.team_name
-            ? { name: (profiles[0].attributes as any).team_name }
-            : undefined,
-          region: { name: profiles[0].regionName, code: profiles[0].regionCode },
-          esportId: profiles[0].esportId,
-          avatarUrl: profiles[0].avatarUrl || undefined,
-        },
-      }
+    ? mapProfileToCardVariantItem(profiles[0])
     : null;
 
   const fallbackHeroCard = {

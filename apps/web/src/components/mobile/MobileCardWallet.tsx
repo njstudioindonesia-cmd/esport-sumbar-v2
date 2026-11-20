@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { mapVerificationToCard, CardVariantItem } from "@/types/card";
+import { mapProfileToCardVariantItem } from "@/lib/cards/mapping";
 import { EsportCard } from "@/components/card/EsportCard";
 import { MobileBottomBar } from "./MobileBottomBar";
 
@@ -41,25 +42,7 @@ export function MobileCardWallet() {
         if (res.ok) {
           const json = await res.json();
           if (json.profiles && json.profiles.length > 0) {
-            const mapped = json.profiles.map((p: any) => ({
-              id: p.id,
-              type: p.entityType || "player",
-              rarity: p.rarityTier || "rookie",
-              verification: mapVerificationToCard(p.verificationStatus),
-              slug: p.slug,
-              data: {
-                esportId: p.esportId,
-                displayName: p.displayName,
-                ign: p.ign || undefined,
-                avatarUrl: p.avatarUrl || undefined,
-                region: {
-                  name: p.regionName || "Sumatera Barat",
-                  code: p.regionCode || "SB",
-                },
-                game: (p.attributes as any)?.game_division || p.mainGameName || "Esport",
-                role: p.roleName || undefined,
-              },
-            }));
+            const mapped = json.profiles.map((p: any) => mapProfileToCardVariantItem(p));
             setDbCards(mapped);
           }
         }

@@ -51,6 +51,7 @@ import {
   MOTION_EASINGS,
 } from "@/components/glass";
 import { mapVerificationToCard } from "@/types/card";
+import { mapProfileToCardVariantItem } from "@/lib/cards/mapping";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { createClient } from "@/lib/supabase/client";
 import type { PlatformStats } from "@/lib/services/stats";
@@ -254,26 +255,9 @@ export function HomePageClient({
   // 1. Kartu Pengguna yang Login (Slot #1 jika sudah terdaftar)
   const myHeroCard = currentUserProfile
     ? {
-        id: currentUserProfile.id,
-        slug: currentUserProfile.slug,
-        type: currentUserProfile.entityType,
-        rarity: currentUserProfile.rarityTier || "rookie",
-        verification: mapVerificationToCard(currentUserProfile.verificationStatus),
+        ...mapProfileToCardVariantItem(currentUserProfile),
+        slug: currentUserProfile.slug || "",
         isMyCard: true,
-        data: {
-          slug: currentUserProfile.slug,
-          displayName: currentUserProfile.displayName,
-          ign: currentUserProfile.ign || undefined,
-          role: currentUserProfile.roleName || "Athlete",
-          game: (currentUserProfile.attributes?.game_division as string) || currentUserProfile.mainGameName || "Esport",
-          region: {
-            name: currentUserProfile.regionName,
-            code: currentUserProfile.regionCode,
-          },
-          esportId: currentUserProfile.esportId,
-          badgeNumber: currentUserProfile.verifiedBadgeNo || undefined,
-          avatarUrl: currentUserProfile.avatarUrl || undefined,
-        },
       }
     : null;
 
@@ -283,23 +267,9 @@ export function HomePageClient({
   );
 
   const communityCards = otherProfiles.map((p) => ({
-    id: p.id,
-    slug: p.slug,
-    type: p.entityType,
-    rarity: p.rarityTier,
-    verification: mapVerificationToCard(p.verificationStatus),
+    ...mapProfileToCardVariantItem(p),
+    slug: p.slug || "",
     isMyCard: false,
-    data: {
-      slug: p.slug,
-      displayName: p.displayName,
-      ign: p.ign || undefined,
-      role: p.roleName || "Athlete",
-      game: (p.attributes?.game_division as string) || p.mainGameName || "Esport",
-      region: { name: p.regionName, code: p.regionCode },
-      esportId: p.esportId,
-      badgeNumber: p.verifiedBadgeNo || undefined,
-      avatarUrl: p.avatarUrl || undefined,
-    },
   }));
 
   // 3. Rakit heroCards: Kartu pengguna selalu menjadi kartu utama di indeks 0
@@ -371,24 +341,7 @@ export function HomePageClient({
   // Featured profiles for carousel/grid (Tampilkan seluruh profil terverifikasi yang ada)
   const featuredCards =
     profiles.length > 0
-      ? profiles.map((p) => ({
-          id: p.id,
-          slug: p.slug,
-          type: p.entityType,
-          rarity: p.rarityTier,
-          verification: mapVerificationToCard(p.verificationStatus),
-          data: {
-            slug: p.slug,
-            displayName: p.displayName,
-            ign: p.ign || undefined,
-            role: p.roleName || "Athlete",
-            game: (p.attributes?.game_division as string) || p.mainGameName || "Esport",
-            region: { name: p.regionName, code: p.regionCode },
-            esportId: p.esportId,
-            badgeNumber: p.verifiedBadgeNo || undefined,
-            avatarUrl: p.avatarUrl || undefined,
-          },
-        }))
+      ? profiles.map((p) => mapProfileToCardVariantItem(p))
       : [];
 
   const entityPillars = [

@@ -61,7 +61,13 @@ export function CommunityProfileTemplate({ profile }: { profile: UnifiedProfileD
                 <VerificationStatusBadge status={profile.verificationStatus} badgeNo={profile.verifiedBadgeNo} />
               </div>
               <h1 className="text-2xl font-heading font-black text-white">{profile.displayName}</h1>
-              <p className="text-xs font-mono text-emerald-400 mt-0.5">Komunitas Wilayah {profile.regionName}</p>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1">
+                <p className="text-xs font-mono text-emerald-400">Komunitas Wilayah {profile.regionName}</p>
+                <span className="text-white/30">•</span>
+                <p className="text-xs font-mono text-[#D4AF37] font-semibold">
+                  Fokus: {profile.mainGameName || profile.attributes?.primary_game || "Multi-Game"}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -133,6 +139,27 @@ export function CommunityProfileTemplate({ profile }: { profile: UnifiedProfileD
               <p className="leading-relaxed">
                 {profile.bio || "Komunitas esport penggerak kegiatan mabar, turnamen mingguan, dan wadah silaturahmi pelaku esport di Sumatera Barat."}
               </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-white/[0.08]">
+              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                <span className="text-[10px] font-mono text-white/40 block uppercase">Game Fokus Utama</span>
+                <span className="font-semibold text-white text-xs mt-0.5 block">
+                  {profile.mainGameName || profile.attributes?.primary_game || "Multi-Platform"}
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                <span className="text-[10px] font-mono text-white/40 block uppercase">Cakupan Wilayah</span>
+                <span className="font-semibold text-white text-xs mt-0.5 block">
+                  {profile.attributes?.coverage_area || profile.regionName || "-"}
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04]">
+                <span className="text-[10px] font-mono text-white/40 block uppercase">Ketua / Koordinator</span>
+                <span className="font-semibold text-white text-xs mt-0.5 block">
+                  {profile.attributes?.manager_name || "-"}
+                </span>
+              </div>
             </div>
           </div>
         )}

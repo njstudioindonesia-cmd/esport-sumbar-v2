@@ -177,11 +177,11 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
       .replace(/^-+|-+$/g, "");
     const slug = `${cleanName}-${Math.floor(1000 + Math.random() * 9000)}`;
 
-    // 4. Resolusi Game Utama yang Akurat (Mendukung game_division tim dan game_specialization pelatih)
+    // 4. Resolusi Game Utama yang Akurat (Mendukung game_division tim, primary_game/game_focus komunitas, dan coached_games kampus/sekolah)
     let resolvedMainGameId = input.mainGameId || null;
     const rawMeta = { ...(input.metadata || {}) };
 
-    if (!resolvedMainGameId || resolvedMainGameId === "game-hok" || input.entityType === "team") {
+    if (!resolvedMainGameId || resolvedMainGameId === "game-hok" || input.entityType === "team" || input.entityType === "community" || input.entityType === "campus" || input.entityType === "school") {
       if (rawMeta.game_division) {
         const div = String(rawMeta.game_division).trim().toLowerCase();
         const matched = OFFICIAL_GAMES.find(
@@ -190,6 +190,45 @@ export async function createProfileAction(input: CreateProfileInput): Promise<Pr
             g.id.toLowerCase() === div ||
             g.slug.toLowerCase() === div ||
             g.shortName.toLowerCase() === div
+        );
+        if (matched) {
+          resolvedMainGameId = matched.id;
+          rawMeta.game_id = matched.id;
+        }
+      } else if (rawMeta.primary_game) {
+        const pGame = String(rawMeta.primary_game).trim().toLowerCase();
+        const matched = OFFICIAL_GAMES.find(
+          (g) =>
+            g.name.toLowerCase() === pGame ||
+            g.id.toLowerCase() === pGame ||
+            g.slug.toLowerCase() === pGame ||
+            g.shortName.toLowerCase() === pGame
+        );
+        if (matched) {
+          resolvedMainGameId = matched.id;
+          rawMeta.game_id = matched.id;
+        }
+      } else if (Array.isArray(rawMeta.game_focus) && rawMeta.game_focus.length > 0) {
+        const fId = String(rawMeta.game_focus[0]).trim().toLowerCase();
+        const matched = OFFICIAL_GAMES.find(
+          (g) =>
+            g.id.toLowerCase() === fId ||
+            g.slug.toLowerCase() === fId ||
+            g.name.toLowerCase() === fId ||
+            g.shortName.toLowerCase() === fId
+        );
+        if (matched) {
+          resolvedMainGameId = matched.id;
+          rawMeta.game_id = matched.id;
+        }
+      } else if (Array.isArray(rawMeta.coached_games) && rawMeta.coached_games.length > 0) {
+        const cId = String(rawMeta.coached_games[0]).trim().toLowerCase();
+        const matched = OFFICIAL_GAMES.find(
+          (g) =>
+            g.id.toLowerCase() === cId ||
+            g.slug.toLowerCase() === cId ||
+            g.name.toLowerCase() === cId ||
+            g.shortName.toLowerCase() === cId
         );
         if (matched) {
           resolvedMainGameId = matched.id;
@@ -552,7 +591,7 @@ export async function updateProfileAction(
       }
     }
 
-    // Resolusi game bila ada perubahan game_division atau game_id di metadata
+    // Resolusi game bila ada perubahan game_division, primary_game, game_focus, coached_games, atau game_id di metadata
     let updatedGameId: string | undefined = undefined;
     if (rawMeta.game_division) {
       const div = String(rawMeta.game_division).trim().toLowerCase();
@@ -562,6 +601,45 @@ export async function updateProfileAction(
           g.id.toLowerCase() === div ||
           g.slug.toLowerCase() === div ||
           g.shortName.toLowerCase() === div
+      );
+      if (matched) {
+        updatedGameId = matched.id;
+        publicAttrs.game_id = matched.id;
+      }
+    } else if (rawMeta.primary_game) {
+      const pGame = String(rawMeta.primary_game).trim().toLowerCase();
+      const matched = OFFICIAL_GAMES.find(
+        (g) =>
+          g.name.toLowerCase() === pGame ||
+          g.id.toLowerCase() === pGame ||
+          g.slug.toLowerCase() === pGame ||
+          g.shortName.toLowerCase() === pGame
+      );
+      if (matched) {
+        updatedGameId = matched.id;
+        publicAttrs.game_id = matched.id;
+      }
+    } else if (Array.isArray(rawMeta.game_focus) && rawMeta.game_focus.length > 0) {
+      const fId = String(rawMeta.game_focus[0]).trim().toLowerCase();
+      const matched = OFFICIAL_GAMES.find(
+        (g) =>
+          g.id.toLowerCase() === fId ||
+          g.slug.toLowerCase() === fId ||
+          g.name.toLowerCase() === fId ||
+          g.shortName.toLowerCase() === fId
+      );
+      if (matched) {
+        updatedGameId = matched.id;
+        publicAttrs.game_id = matched.id;
+      }
+    } else if (Array.isArray(rawMeta.coached_games) && rawMeta.coached_games.length > 0) {
+      const cId = String(rawMeta.coached_games[0]).trim().toLowerCase();
+      const matched = OFFICIAL_GAMES.find(
+        (g) =>
+          g.id.toLowerCase() === cId ||
+          g.slug.toLowerCase() === cId ||
+          g.name.toLowerCase() === cId ||
+          g.shortName.toLowerCase() === cId
       );
       if (matched) {
         updatedGameId = matched.id;

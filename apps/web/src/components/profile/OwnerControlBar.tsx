@@ -20,6 +20,7 @@ import { VerificationDrawer } from "./drawers/VerificationDrawer";
 import { PrivacySettingsModal } from "./drawers/PrivacySettingsModal";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
 import { mapVerificationToCard } from "@esport-sumbar/contracts";
+import { mapProfileToUnifiedCardData } from "@/lib/cards/mapping";
 
 export interface OwnerControlBarProps {
   profile: UnifiedProfileDetail;
@@ -191,19 +192,7 @@ export function OwnerControlBar({
             type: profile.entityType as any,
             rarity: (profile.rarityTier as any) || "rookie",
             verification: (cardStatus === "prov_verified" ? "verified" : cardStatus) as any,
-            data: {
-              slug: profile.slug,
-              esportId: profile.esportId,
-              displayName: profile.displayName,
-              ign: profile.ign || profile.displayName,
-              game: profile.mainGameName || "Esport",
-              role: profile.roleName || "-",
-              region: {
-                name: profile.regionName || "Sumatera Barat",
-                code: profile.regionCode || "SB",
-              },
-              avatarUrl: profile.avatarUrl || undefined,
-            },
+            data: mapProfileToUnifiedCardData(profile),
           }}
         />
       )}

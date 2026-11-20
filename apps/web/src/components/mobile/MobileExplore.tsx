@@ -18,6 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { CardVariantItem } from "@/types/card";
+import { mapProfileToCardVariantItem } from "@/lib/cards/mapping";
 import { REGIONS_DETAIL } from "@/data/regions";
 import { OFFICIAL_GAMES } from "@/data/games";
 import { MobileBottomBar } from "./MobileBottomBar";
@@ -46,29 +47,7 @@ export function MobileExplore() {
         if (res.ok) {
           const json = await res.json();
           if (json.profiles) {
-            setDbCards(
-              json.profiles.map((p: any) => ({
-                id: p.id,
-                slug: p.slug,
-                type: p.entityType,
-                rarity: p.rarityTier,
-                verification: p.verificationStatus,
-                data: {
-                  slug: p.slug,
-                  displayName: p.displayName,
-                  ign: p.ign || undefined,
-                  role: p.roleName || "Member",
-                  game: (p.attributes as any)?.game_division || p.mainGameName || "Esport",
-                  team: (p.attributes as any)?.team_name
-                    ? { name: (p.attributes as any).team_name }
-                    : undefined,
-                  region: { name: p.regionName, code: p.regionCode },
-                  esportId: p.esportId,
-                  badgeNumber: p.verifiedBadgeNo || undefined,
-                  avatarUrl: p.avatarUrl || undefined,
-                },
-              }))
-            );
+            setDbCards(json.profiles.map((p: any) => mapProfileToCardVariantItem(p)));
           } else {
             setDbCards([]);
           }

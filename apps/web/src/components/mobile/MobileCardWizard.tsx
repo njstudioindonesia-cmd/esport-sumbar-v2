@@ -210,16 +210,63 @@ export function MobileCardWizard() {
       if (found) return found;
     }
 
-    // 3. Spesialisasi game pelatih (game_specialization)
+    // 3. Primary game / Game fokus komunitas atau institusi (primary_game)
+    if (attributes.primary_game) {
+      const pGame = String(attributes.primary_game).trim().toLowerCase();
+      const found = OFFICIAL_GAMES.find(
+        (g) =>
+          g.name.toLowerCase() === pGame ||
+          g.id.toLowerCase() === pGame ||
+          g.slug.toLowerCase() === pGame ||
+          g.shortName.toLowerCase() === pGame
+      );
+      if (found) return found;
+    }
+
+    // 4. Fokus game komunitas (game_focus)
+    if (Array.isArray(attributes.game_focus) && attributes.game_focus.length > 0) {
+      const fId = String(attributes.game_focus[0]).trim().toLowerCase();
+      const found = OFFICIAL_GAMES.find(
+        (g) =>
+          g.id.toLowerCase() === fId ||
+          g.slug.toLowerCase() === fId ||
+          g.name.toLowerCase() === fId ||
+          g.shortName.toLowerCase() === fId
+      );
+      if (found) return found;
+    }
+
+    // 5. Game binaan kampus / sekolah (coached_games)
+    if (Array.isArray(attributes.coached_games) && attributes.coached_games.length > 0) {
+      const cId = String(attributes.coached_games[0]).trim().toLowerCase();
+      const found = OFFICIAL_GAMES.find(
+        (g) =>
+          g.id.toLowerCase() === cId ||
+          g.slug.toLowerCase() === cId ||
+          g.name.toLowerCase() === cId ||
+          g.shortName.toLowerCase() === cId
+      );
+      if (found) return found;
+    }
+
+    // 6. Spesialisasi game pelatih (game_specialization)
     if (Array.isArray(attributes.game_specialization) && attributes.game_specialization.length > 0) {
       const specId = attributes.game_specialization[0];
       const found = OFFICIAL_GAMES.find((g) => g.id === specId || g.slug === specId);
       if (found) return found;
     }
 
-    // 4. Default aman: game-mlbb atau entri game pertama
+    // 7. Default aman: game-mlbb atau entri game pertama
     return OFFICIAL_GAMES.find((g) => g.id === "game-mlbb" || g.slug === "mlbb") || OFFICIAL_GAMES[0];
-  }, [attributes.game_id, attributes.main_game_id, attributes.game_division, attributes.game_specialization]);
+  }, [
+    attributes.game_id,
+    attributes.main_game_id,
+    attributes.game_division,
+    attributes.primary_game,
+    attributes.game_focus,
+    attributes.coached_games,
+    attributes.game_specialization,
+  ]);
 
   // Skor Kelengkapan & Rarity
   const completenessScore = useMemo(() => {
@@ -317,6 +364,9 @@ export function MobileCardWizard() {
           ...attributes,
           game_id: activeGame.id,
           game_division: attributes.game_division || activeGame.name,
+          primary_game: attributes.primary_game || activeGame.name,
+          game_focus: entityType === "community" ? (attributes.game_focus || [activeGame.id]) : attributes.game_focus,
+          coached_games: (entityType === "campus" || entityType === "school") ? (attributes.coached_games || [activeGame.id]) : attributes.coached_games,
           cover_url: coverUrl || undefined,
         },
         visibility: {
@@ -490,7 +540,17 @@ export function MobileCardWizard() {
           {/* Bottom Card Strip: Game + Role + Region */}
           <div className="w-full pt-1.5 border-t border-white/[0.08] flex items-center justify-between text-[8px] font-mono text-white/70 z-10">
             <div className="truncate max-w-[95px] text-[#4C7DFF]">
-              {activeGame.shortName} • {attributes.role || entityDef.singularLabel}
+              {entityType === "venue"
+                ? `${(attributes.venue_type || "Arena").toUpperCase()} • Venue`
+                : entityType === "community"
+                ? `${activeGame.shortName} • Komunitas`
+                : entityType === "campus"
+                ? `${activeGame.shortName} • UKM Kampus`
+                : entityType === "school"
+                ? `${activeGame.shortName} • Ekskul Sekolah`
+                : entityType === "team"
+                ? `${activeGame.shortName} • Divisi Tim`
+                : `${activeGame.shortName} • ${attributes.role || entityDef.singularLabel}`}
             </div>
             <div className="px-1.5 py-0.5 rounded bg-white/[0.06] text-[#D4AF37] font-bold">
               {regionCode}

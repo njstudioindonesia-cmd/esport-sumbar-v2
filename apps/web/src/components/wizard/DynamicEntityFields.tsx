@@ -752,7 +752,42 @@ export function DynamicEntityFields({
       {/* ==================================================================== */}
       {entityType === "community" && (
         <>
+          {/* Baris 1: Game Fokus Utama Komunitas & Cakupan Wilayah */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
+                  Game Fokus Utama Komunitas
+                </label>
+                <FieldBadge required={true} visibility="PB" />
+              </div>
+              <select
+                aria-label="Game Fokus Utama Komunitas"
+                value={
+                  attributes.primary_game ||
+                  (attributes.game_id ? OFFICIAL_GAMES.find((g) => g.id === attributes.game_id)?.name : undefined) ||
+                  (Array.isArray(attributes.game_focus) && attributes.game_focus.length > 0 ? (OFFICIAL_GAMES.find((g) => g.id === attributes.game_focus[0] || g.name === attributes.game_focus[0])?.name || attributes.game_focus[0]) : undefined) ||
+                  OFFICIAL_GAMES[0].name
+                }
+                onChange={(e) => {
+                  const selectedVal = e.target.value;
+                  const targetGame = OFFICIAL_GAMES.find((g) => g.name === selectedVal || g.id === selectedVal);
+                  const gameName = targetGame ? targetGame.name : selectedVal;
+                  const gameId = targetGame ? targetGame.id : selectedVal;
+                  onChange("primary_game", gameName);
+                  onChange("game_id", gameId);
+                  onChange("game_focus", [gameId]);
+                }}
+                className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
+              >
+                {OFFICIAL_GAMES.map((game) => (
+                  <option key={game.id} value={game.name} className="bg-[#161A24]">
+                    {game.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
@@ -769,25 +804,25 @@ export function DynamicEntityFields({
                 className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none"
               />
             </div>
+          </div>
 
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
-                  Frekuensi Kegiatan
-                </label>
-                <FieldBadge required={false} visibility="PB" />
-              </div>
-              <select
-                value={attributes.activity_frequency || "bulanan"}
-                onChange={(e) => onChange("activity_frequency", e.target.value)}
-                className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
-              >
-                <option value="mingguan" className="bg-[#161A24]">Mingguan (Mabar Rutin)</option>
-                <option value="dua_mingguan" className="bg-[#161A24]">Dua Mingguan</option>
-                <option value="bulanan" className="bg-[#161A24]">Bulanan (Turnamen Mini)</option>
-                <option value="insidental" className="bg-[#161A24]">Insidental / Musiman</option>
-              </select>
+          <div className="mb-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
+                Frekuensi Kegiatan
+              </label>
+              <FieldBadge required={false} visibility="PB" />
             </div>
+            <select
+              value={attributes.activity_frequency || "bulanan"}
+              onChange={(e) => onChange("activity_frequency", e.target.value)}
+              className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
+            >
+              <option value="mingguan" className="bg-[#161A24]">Mingguan (Mabar Rutin)</option>
+              <option value="dua_mingguan" className="bg-[#161A24]">Dua Mingguan</option>
+              <option value="bulanan" className="bg-[#161A24]">Bulanan (Turnamen Mini)</option>
+              <option value="insidental" className="bg-[#161A24]">Insidental / Musiman</option>
+            </select>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1094,21 +1129,57 @@ export function DynamicEntityFields({
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
-                WhatsApp Kontak UKM
-              </label>
-              <FieldBadge required={true} visibility="P" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
+                  Divisi Game Binaan Utama
+                </label>
+                <FieldBadge required={true} visibility="PB" />
+              </div>
+              <select
+                aria-label="Divisi Game Binaan Utama"
+                value={
+                  attributes.primary_game ||
+                  (attributes.game_id ? OFFICIAL_GAMES.find((g) => g.id === attributes.game_id)?.name : undefined) ||
+                  (Array.isArray(attributes.coached_games) && attributes.coached_games.length > 0 ? (OFFICIAL_GAMES.find((g) => g.id === attributes.coached_games[0] || g.name === attributes.coached_games[0])?.name || attributes.coached_games[0]) : undefined) ||
+                  OFFICIAL_GAMES[0].name
+                }
+                onChange={(e) => {
+                  const selectedVal = e.target.value;
+                  const targetGame = OFFICIAL_GAMES.find((g) => g.name === selectedVal || g.id === selectedVal);
+                  const gameName = targetGame ? targetGame.name : selectedVal;
+                  const gameId = targetGame ? targetGame.id : selectedVal;
+                  onChange("primary_game", gameName);
+                  onChange("game_id", gameId);
+                  onChange("coached_games", [gameId]);
+                }}
+                className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
+              >
+                {OFFICIAL_GAMES.map((game) => (
+                  <option key={game.id} value={game.name} className="bg-[#161A24]">
+                    {game.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            <input
-              type="text"
-              value={attributes.official_whatsapp || ""}
-              onChange={(e) => onChange("official_whatsapp", e.target.value)}
-              placeholder="0812xxxxxxxx"
-              maxLength={20}
-              className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none font-mono"
-            />
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
+                  WhatsApp Kontak UKM
+                </label>
+                <FieldBadge required={true} visibility="P" />
+              </div>
+              <input
+                type="text"
+                value={attributes.official_whatsapp || ""}
+                onChange={(e) => onChange("official_whatsapp", e.target.value)}
+                placeholder="0812xxxxxxxx"
+                maxLength={20}
+                className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none font-mono"
+              />
+            </div>
           </div>
         </>
       )}
@@ -1178,19 +1249,53 @@ export function DynamicEntityFields({
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
-                  NPSN (Nomor Pokok Sekolah)
+                  Game Binaan Utama Sekolah
                 </label>
-                <FieldBadge required={false} visibility="PB" />
+                <FieldBadge required={true} visibility="PB" />
               </div>
-              <input
-                type="text"
-                value={attributes.npsn || ""}
-                onChange={(e) => onChange("npsn", e.target.value)}
-                placeholder="8 digit NPSN"
-                maxLength={20}
-                className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none font-mono"
-              />
+              <select
+                aria-label="Game Binaan Utama Sekolah"
+                value={
+                  attributes.primary_game ||
+                  (attributes.game_id ? OFFICIAL_GAMES.find((g) => g.id === attributes.game_id)?.name : undefined) ||
+                  (Array.isArray(attributes.coached_games) && attributes.coached_games.length > 0 ? (OFFICIAL_GAMES.find((g) => g.id === attributes.coached_games[0] || g.name === attributes.coached_games[0])?.name || attributes.coached_games[0]) : undefined) ||
+                  OFFICIAL_GAMES[0].name
+                }
+                onChange={(e) => {
+                  const selectedVal = e.target.value;
+                  const targetGame = OFFICIAL_GAMES.find((g) => g.name === selectedVal || g.id === selectedVal);
+                  const gameName = targetGame ? targetGame.name : selectedVal;
+                  const gameId = targetGame ? targetGame.id : selectedVal;
+                  onChange("primary_game", gameName);
+                  onChange("game_id", gameId);
+                  onChange("coached_games", [gameId]);
+                }}
+                className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white outline-none cursor-pointer"
+              >
+                {OFFICIAL_GAMES.map((game) => (
+                  <option key={game.id} value={game.name} className="bg-[#161A24]">
+                    {game.name}
+                  </option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[11px] font-mono uppercase tracking-wider text-white/70">
+                NPSN (Nomor Pokok Sekolah)
+              </label>
+              <FieldBadge required={false} visibility="PB" />
+            </div>
+            <input
+              type="text"
+              value={attributes.npsn || ""}
+              onChange={(e) => onChange("npsn", e.target.value)}
+              placeholder="8 digit NPSN"
+              maxLength={20}
+              className="w-full h-11 bg-[#161A24] border border-white/[0.08] focus:border-[#D4AF37] rounded-xl px-3.5 text-xs text-white placeholder-white/30 outline-none font-mono"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

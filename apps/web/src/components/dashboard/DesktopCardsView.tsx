@@ -19,6 +19,7 @@ import {
 import { EsportCard } from "@/components/card/EsportCard";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
 import { UnifiedCardData, CardRarity, CardVerification, mapVerificationToCard } from "@/types/card";
+import { mapProfileToUnifiedCardData } from "@/lib/cards/mapping";
 
 interface UserProfileCardItem {
   id: string;
@@ -59,19 +60,7 @@ export function DesktopCardsView() {
               verification: mapVerificationToCard(p.verificationStatus),
               title: `Kartu ${p.displayName}`,
               slug: p.slug,
-              data: {
-                esportId: p.esportId,
-                displayName: p.displayName,
-                ign: p.ign || undefined,
-                avatarUrl: p.avatarUrl || undefined,
-                region: {
-                  name: p.regionName || "Sumatera Barat",
-                  code: p.regionCode || "SB",
-                },
-                game: p.mainGameName || "Esport",
-                role: p.roleName || undefined,
-                joinedAt: p.createdAt ? new Date(p.createdAt).getFullYear().toString() : undefined,
-              },
+              data: mapProfileToUnifiedCardData(p),
             }));
             setCards(mapped);
             if (mapped.length > 0) {

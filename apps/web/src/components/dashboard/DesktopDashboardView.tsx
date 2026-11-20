@@ -28,6 +28,7 @@ import {
 import { EsportCard } from "@/components/card/EsportCard";
 import { ShareCardModal } from "@/components/card/ShareCardModal";
 import { mapVerificationToCard } from "@/types/card";
+import { mapProfileToCardVariantItem } from "@/lib/cards/mapping";
 
 export function DesktopDashboardView() {
   const [showShareModal, setShowShareModal] = useState(false);
@@ -62,24 +63,7 @@ export function DesktopDashboardView() {
   const activeProfile = liveProfiles && liveProfiles.length > 0 ? liveProfiles[selectedProfileIndex] || liveProfiles[0] : null;
   const entityType = activeProfile?.entityType || "player";
 
-  const userCard = activeProfile
-    ? {
-        id: activeProfile.id,
-        type: activeProfile.entityType || "player",
-        rarity: (activeProfile.rarityTier as any) || "rookie",
-        verification: mapVerificationToCard(activeProfile.verificationStatus),
-        slug: activeProfile.slug,
-        data: {
-          displayName: activeProfile.displayName,
-          ign: activeProfile.ign || undefined,
-          role: activeProfile.roleName || (entityType === "team" ? "Organisasi Tim" : "Athlete"),
-          game: activeProfile.mainGameName || "Esport",
-          region: { name: activeProfile.regionName, code: activeProfile.regionCode },
-          esportId: activeProfile.esportId,
-          avatarUrl: activeProfile.avatarUrl || undefined,
-        },
-      }
-    : null;
+  const userCard = activeProfile ? mapProfileToCardVariantItem(activeProfile) : null;
 
   const completeness = activeProfile ? (activeProfile.completenessScore || 75) : 0;
   const isVerified = activeProfile?.verificationStatus === "verified";

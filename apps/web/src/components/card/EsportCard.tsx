@@ -26,6 +26,10 @@ import {
   UserCheck,
   Briefcase,
   Layers,
+  Flame,
+  Building2,
+  ShieldCheck,
+  Monitor,
 } from "lucide-react";
 import {
   EsportCardProps,
@@ -443,12 +447,44 @@ export function EsportCard({
                           : "Pelatih Esport"}
                       </span>
                     </div>
+                  ) : type === "community" ? (
+                    <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
+                      <Flame className="w-3 h-3 text-[#10B981]" />
+                      <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
+                        {data.game} •{" "}
+                        <span className="text-[#10B981]">Komunitas</span>
+                      </span>
+                    </div>
+                  ) : type === "venue" ? (
+                    <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
+                      <Building2 className="w-3 h-3 text-[#F97316]" />
+                      <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
+                        {data.venue?.venueType || "Arena"} •{" "}
+                        <span className="text-[#F97316]">Venue</span>
+                      </span>
+                    </div>
+                  ) : type === "campus" ? (
+                    <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
+                      <GraduationCap className="w-3 h-3 text-[#6366F1]" />
+                      <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
+                        {data.game} •{" "}
+                        <span className="text-[#6366F1]">UKM Kampus</span>
+                      </span>
+                    </div>
+                  ) : type === "school" ? (
+                    <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
+                      <Building2 className="w-3 h-3 text-[#14B8A6]" />
+                      <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
+                        {data.game} •{" "}
+                        <span className="text-[#14B8A6]">Ekskul Sekolah</span>
+                      </span>
+                    </div>
                   ) : (
                     <div className="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#0B0D12]/85 border border-[#262B38] backdrop-blur-md">
                       <Gamepad2 className="w-3 h-3 text-[#3B82F6]" />
                       <span className="text-[10px] font-heading font-medium tracking-wide text-gray-200">
                         {data.game} •{" "}
-                        <span className="text-[#3B82F6]">{data.role}</span>
+                        <span className="text-[#3B82F6]">{data.role || "Athlete"}</span>
                       </span>
                     </div>
                   )}
@@ -472,6 +508,10 @@ export function EsportCard({
                   >
                     {type === "team"
                       ? data.teamName || data.displayName
+                      : type === "campus"
+                      ? data.campus?.clubName || data.displayName
+                      : type === "school"
+                      ? data.school?.schoolName || data.displayName
                       : data.ign || data.displayName}
                   </h3>
                 </div>
@@ -479,6 +519,16 @@ export function EsportCard({
                 <span className="text-[11px] text-[#9AA3B2] font-sans truncate font-medium">
                   {type === "team"
                     ? `Divisi: ${data.game}`
+                    : type === "community"
+                    ? `Fokus: ${data.game || "Multi-Platform"}`
+                    : type === "venue"
+                    ? `Kategori: ${data.venue?.venueType || "Gaming Hub"}`
+                    : type === "campus"
+                    ? `${data.campus?.campusName || data.displayName}`
+                    : type === "school"
+                    ? `${data.school?.educationLevel ? "Jenjang " + data.school.educationLevel : "Pendidikan"} • Ekskul Esport`
+                    : type === "coach"
+                    ? `Pelatih: ${data.displayName}`
                     : data.displayName}
                 </span>
               </div>
@@ -501,12 +551,72 @@ export function EsportCard({
                       </span>
                     </div>
                   </>
+                ) : type === "community" ? (
+                  <>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <Crown className="w-3 h-3 text-[#10B981] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        Pengurus: {data.captainOrManager?.name || "Koordinator"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 overflow-hidden justify-end">
+                      <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.homebase || data.region.name}
+                      </span>
+                    </div>
+                  </>
+                ) : type === "venue" ? (
+                  <>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <Monitor className="w-3 h-3 text-[#F97316] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.venue?.capacityUnits ? `${data.venue.capacityUnits} Unit PC` : "Gaming Station"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 overflow-hidden justify-end">
+                      <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.region.name}
+                      </span>
+                    </div>
+                  </>
+                ) : type === "campus" ? (
+                  <>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <GraduationCap className="w-3 h-3 text-[#6366F1] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.campus?.clubName || "UKM Esport"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 overflow-hidden justify-end">
+                      <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.region.name}
+                      </span>
+                    </div>
+                  </>
+                ) : type === "school" ? (
+                  <>
+                    <div className="flex items-center gap-1.5 overflow-hidden">
+                      <ShieldCheck className="w-3 h-3 text-[#14B8A6] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        Pembinaan Pelajar
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 overflow-hidden justify-end">
+                      <MapPin className="w-3 h-3 text-[#D4AF37] shrink-0" />
+                      <span className="text-[10px] text-gray-300 truncate font-medium">
+                        {data.region.name}
+                      </span>
+                    </div>
+                  </>
                 ) : type === "coach" ? (
                   <>
                     <div className="flex items-center gap-1.5 overflow-hidden">
                       <Briefcase className="w-3 h-3 text-[#3B82F6] shrink-0" />
                       <span className="text-[10px] text-gray-300 truncate font-medium">
-                        {data.team?.name || "Free Agent"}
+                        {data.team?.name || "Klub Mandiri"}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 overflow-hidden justify-end">
@@ -604,9 +714,17 @@ export function EsportCard({
               <div className="flex items-center justify-between border-b border-[#262B38] pb-1.5">
                 <div className="flex items-center gap-1.5">
                   {type === "team" ? (
-                    <Users className="w-3.5 h-3.5 text-[#3B82F6]" />
+                    <Users className="w-3.5 h-3.5 text-[#38BDF8]" />
                   ) : type === "coach" ? (
                     <GraduationCap className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  ) : type === "community" ? (
+                    <Flame className="w-3.5 h-3.5 text-[#10B981]" />
+                  ) : type === "venue" ? (
+                    <Building2 className="w-3.5 h-3.5 text-[#F97316]" />
+                  ) : type === "campus" ? (
+                    <GraduationCap className="w-3.5 h-3.5 text-[#6366F1]" />
+                  ) : type === "school" ? (
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#14B8A6]" />
                   ) : (
                     <Trophy className="w-3.5 h-3.5 text-[#D4AF37]" />
                   )}
@@ -615,6 +733,14 @@ export function EsportCard({
                       ? "Struktur Tim & Roster"
                       : type === "coach"
                       ? "Rekam Jejak Kepelatihan"
+                      : type === "community"
+                      ? "Profil & Agenda Komunitas"
+                      : type === "venue"
+                      ? "Fasilitas & Akses Venue"
+                      : type === "campus"
+                      ? "Pembinaan Esport Kampus"
+                      : type === "school"
+                      ? "Ekstrakurikuler Pelajar"
                       : "Rekam Jejak Atlet"}
                   </span>
                 </div>
@@ -743,6 +869,149 @@ export function EsportCard({
                         Belum ada riwayat tim sebelumnya.
                       </p>
                     )}
+                  </div>
+                </div>
+              ) : type === "community" ? (
+                /* COMMUNITY BACK: Overview & Activities */
+                <div className="mt-2.5 flex flex-col gap-2">
+                  <div>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
+                      Cakupan & Kegiatan Komunitas
+                    </span>
+                    <div className="p-2 rounded-md bg-[#161922] border border-white/[0.08] flex flex-col gap-1 text-[10px]">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Wilayah:</span>
+                        <span className="font-semibold text-white">{data.homebase || data.region.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Agenda:</span>
+                        <span className="font-semibold text-emerald-400 capitalize">
+                          {data.community?.activityFrequency || "Rutin"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Anggota:</span>
+                        <span className="font-semibold text-white">
+                          {data.community?.memberCount ? `${data.community.memberCount} Orang` : "Komunitas Terbuka"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
+                      Fokus Utama & Pengurus
+                    </span>
+                    <div className="p-2 rounded-md bg-[#161922] border border-white/[0.08] flex flex-col gap-1 text-[10px]">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Game Fokus:</span>
+                        <span className="font-semibold text-[#D4AF37]">{data.game}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Koordinator:</span>
+                        <span className="font-semibold text-white">{data.captainOrManager?.name || "-"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : type === "venue" ? (
+                /* VENUE BACK: Facilities & Capacity */
+                <div className="mt-2.5 flex flex-col gap-2">
+                  <div>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
+                      Kapasitas & Fasilitas Arena
+                    </span>
+                    <div className="p-2 rounded-md bg-[#161922] border border-white/[0.08] flex flex-col gap-1 text-[10px]">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Unit Station:</span>
+                        <span className="font-semibold text-orange-400">
+                          {data.venue?.capacityUnits ? `${data.venue.capacityUnits} Unit Gaming` : "Station Aktif"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Turnamen Ready:</span>
+                        <span className="font-semibold text-white">
+                          {data.venue?.isTournamentReady ? "Ya (Siap Tanding)" : "Casual & Mabar"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
+                      Lokasi Usaha
+                    </span>
+                    <p className="text-[10px] text-gray-300 bg-[#161922] p-2 rounded-md border border-white/[0.08]">
+                      {data.venue?.address || data.region.name}
+                    </p>
+                  </div>
+                </div>
+              ) : type === "campus" ? (
+                /* CAMPUS BACK: UKM details */
+                <div className="mt-2.5 flex flex-col gap-2">
+                  <div>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
+                      Unit Kegiatan Mahasiswa
+                    </span>
+                    <div className="p-2 rounded-md bg-[#161922] border border-white/[0.08] flex flex-col gap-1 text-[10px]">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Perguruan Tinggi:</span>
+                        <span className="font-semibold text-white truncate max-w-[150px]">
+                          {data.campus?.campusName || data.displayName}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Klub / UKM:</span>
+                        <span className="font-semibold text-indigo-400 truncate max-w-[150px]">
+                          {data.campus?.clubName || "UKM Esport"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Divisi Game:</span>
+                        <span className="font-semibold text-white">{data.game}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
+                      Pembinaan Kemahasiswaan
+                    </span>
+                    <div className="p-2 rounded-md bg-[#161922] border border-white/[0.08] text-[10px]">
+                      <span className="text-gray-400">Pembina: </span>
+                      <span className="font-semibold text-white">{data.captainOrManager?.name || "Dosen Pembina"}</span>
+                    </div>
+                  </div>
+                </div>
+              ) : type === "school" ? (
+                /* SCHOOL BACK: Ekskul details */
+                <div className="mt-2.5 flex flex-col gap-2">
+                  <div>
+                    <span className="text-xs uppercase font-mono tracking-wider text-[#9AA3B2] block mb-1">
+                      Ekstrakurikuler Sekolah
+                    </span>
+                    <div className="p-2 rounded-md bg-[#161922] border border-white/[0.08] flex flex-col gap-1 text-[10px]">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Sekolah:</span>
+                        <span className="font-semibold text-white truncate max-w-[150px]">
+                          {data.school?.schoolName || data.displayName}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Jenjang:</span>
+                        <span className="font-semibold text-teal-400">
+                          {data.school?.educationLevel || "Pelajar"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Game Binaan:</span>
+                        <span className="font-semibold text-white">{data.game}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-2 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-[9px] text-emerald-300 leading-relaxed">
+                    <strong>Perlindungan Privasi Pelajar:</strong> Identitas dan kontak pelajar terlindungi sesuai UU PDP No. 27/2022.
                   </div>
                 </div>
               ) : (
